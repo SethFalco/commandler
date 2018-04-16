@@ -1,0 +1,134 @@
+plugins {
+    id "java"
+    id "idea"
+    id "maven"
+    id "maven-publish"
+    id "jacoco"
+    id "com.jfrog.bintray" version "1.8.0"
+}
+
+String projectName = 'Commandler'
+String projectVersion = '1.0.0'
+String projectDescription = "Commandler is an command framework designed for Discord bots with JDA."
+String projectGit = 'https://gitlab.com/Elypia/Commandler.git'
+
+jar {
+    from sourceSets.main.allSource
+
+    manifest {
+        attributes 'Implementation-Title'   : projectName,
+                   'Implementation-Version' : projectVersion
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['Commandler']
+
+    pkg {
+        repo = projectName
+        name = projectName
+        userOrg = 'elypia'
+        licenses = ['Apache-2.0']
+        vcsUrl = projectGit
+
+        version {
+            name = projectVersion
+            desc = projectDescription
+            released = new Date()
+        }
+    }
+}
+
+publishing {
+    def details = {
+        licenses{
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution projectName
+            }
+        }
+
+        developers{
+            developer {
+                id 'Seth'
+                name 'Seth'
+                email "seth@elypia.com"
+            }
+        }
+
+        scm{
+            url projectGit
+        }
+    }
+
+    publications {
+        Elypiai(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            groupId 'com.elypia'
+            artifactId 'commandler'
+            version projectVersion
+
+            pom.withXml {
+                def root = asNode()
+
+                root.appendNode('description', projectDescription)
+                root.appendNode('name', projectName)
+                root.appendNode('url', 'https://elypia.com/')
+                root.children().last() + details
+            }
+        }
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'net.dv8tion:JDA:3.6.0_356'
+    implementation 'com.elypia:elypiai:1.0.4'
+
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.15.0'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.1.0'
+
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.1.0'
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.1.0'
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+
+    reports {
+        html.enabled = false
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.0"
+}
+
+task wrapper(type: Wrapper) {
+    description = 'Generates gradlew[.bat] scripts'
+    gradleVersion = '4.6'
+}
