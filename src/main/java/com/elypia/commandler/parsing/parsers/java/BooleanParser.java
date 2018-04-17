@@ -1,8 +1,8 @@
 package com.elypia.commandler.parsing.parsers.java;
 
-import com.elypia.commandler.parsing.impl.Parser;
+import com.elypia.commandler.parsing.impl.IParser;
 
-public class BooleanParser implements Parser<Boolean> {
+public class BooleanParser implements IParser<Boolean> {
 
     private static final String[] BOOLEAN = {"true", "yes", "1", "✔"};
 

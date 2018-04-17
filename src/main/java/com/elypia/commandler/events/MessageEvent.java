@@ -1,6 +1,7 @@
 package com.elypia.commandler.events;
 
 import com.elypia.commandler.annotations.command.Command;
+import com.elypia.commandler.annotations.command.Reaction;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -18,13 +19,12 @@ import java.util.regex.Pattern;
 
 public class MessageEvent {
 
-	private static final String COMMAND_REGEX = "(?i)^(?<prefix><@!?%s>|%s)\\s{0,2}(?<module>[A-Z]+)(?:\\.(?<submodule>[A-Z]+))?(?: (?<command>[A-Z]+))?(?: (?<params>.*))?";
+	private static final String COMMAND_REGEX = "(?i)^(?:<@!?%s>|%s)\\s{0,2}(?<module>[A-Z]+)(?:\\.(?<submodule>[A-Z]+))?(?: (?<command>[A-Z]+))?(?: (?<params>.*))?";
 	private static final Pattern PARAM_PATTERN = Pattern.compile("(?<quotes>\\b(?<=\")(?:\\\\\"|[^\"])*(?=\"))|(?<args>[^\\s\",]+(?:\\s*,\\s*[^\\s\",]+)*)");
 
 	private MessageReceivedEvent event;
 
 	private boolean isValid;
-	private String prefix;
 	private String module;
 	private String submodule;
 	private String command;
@@ -35,11 +35,11 @@ public class MessageEvent {
 
 	private Message reply;
 
-	public MessageEvent(MessageReceivedEvent event) {
-		this(event, event.getMessage().getContentRaw());
+	public MessageEvent(MessageReceivedEvent event, String prefix) {
+		this(event, event.getMessage().getContentRaw(), prefix);
 	}
 
-	public MessageEvent(MessageReceivedEvent event, String content) {
+	public MessageEvent(MessageReceivedEvent event, String prefix, String content) {
 		this.event = event;
 		params = new ArrayList<>();
 
@@ -54,7 +54,6 @@ public class MessageEvent {
 		if (!isValid)
 			return;
 
-		prefix = matcher.group("prefix");
 		module = matcher.group("module").toLowerCase();
 
 		submodule = matcher.group("submodule");
@@ -92,10 +91,8 @@ public class MessageEvent {
 		}
 	}
 
-	// Functions
-
 	public void reply(Object body) {
-		getChannel().sendMessage(body.toString()).queue(this::afterReply);
+		event.getChannel().sendMessage(body.toString()).queue(this::afterReply);
 	}
 
 	public void reply(EmbedBuilder builder) {
@@ -103,14 +100,14 @@ public class MessageEvent {
 	}
 
 	public void reply(EmbedBuilder builder, Consumer<Message> consumer) {
-		Guild guild = getGuild();
+		Guild guild = event.getGuild();
 
 		if (guild != null) {
 			Color color = guild.getSelfMember().getColor();
 			builder.setColor(color);
 		}
 
-		getChannel().sendMessage(builder.build()).queue(msg -> {
+		event.getChannel().sendMessage(builder.build()).queue(msg -> {
 			if (consumer != null)
 				consumer.accept(msg);
 
@@ -119,44 +116,30 @@ public class MessageEvent {
 	}
 
 	private void afterReply(Message message) {
-//		reply = message;
-//
-//		PostReactions post = method.getAnnotation(PostReactions.class);
-//
-//		if (post != null) {
-//			for (String reaction : post.value())
-//				message.addReaction(reaction).queue();
-//		}
+		reply = message;
+
+		Reaction[] reactions = method.getAnnotationsByType(Reaction.class);
+
+		for (Reaction reaction : reactions)
+			message.addReaction(reaction.alias()).queue();
 	}
 
 	public void tryDeleteMessage() {
 		if (canDeleteMessage())
-			getMessage().delete().queue();
+			event.getMessage().delete().queue();
 	}
 
 	public boolean canDeleteMessage() {
-		if (getChannel().getType() == ChannelType.TEXT)
-			return getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE);
+		if (event.getChannel().getType() == ChannelType.TEXT)
+			return event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE);
 
-		return getAuthor() == getJDA().getSelfUser();
-	}
-
-	public void commit() {
-		if (guildData != null)
-			guildData.commit();
-
-		if (userData != null)
-			userData.commit();
+		return event.getAuthor() == event.getJDA().getSelfUser();
 	}
 
 	// Getters and setters
 
 	public boolean isValid() {
 		return isValid;
-	}
-
-	public String getPrefix() {
-		return prefix;
 	}
 
 	public String getModule() {
@@ -169,11 +152,6 @@ public class MessageEvent {
 
 	public String getCommand() {
 		return command;
-	}
-
-	public void setCommand(CommandHandler handler) {
-		Module module = handler.getClass().getAnnotation(Module.class);
-		this.command = module.defaultCommand();
 	}
 
 	public List<Object> getParams() {
@@ -195,5 +173,9 @@ public class MessageEvent {
 
 	public Message getReply() {
 		return reply;
+	}
+
+	public MessageReceivedEvent getMessageEvent() {
+		return event;
 	}
 }

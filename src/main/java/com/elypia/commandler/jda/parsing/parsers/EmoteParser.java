@@ -18,7 +18,7 @@ public class EmoteParser extends JDAParser<Emote> {
     }
 
     @Override
-    public Emote parse(MessageEvent event, String input, SearchScope scope) {
+    public Emote parse(MessageEvent event, String input, SearchScope scope) throws IllegalArgumentException {
         final Collection<Emote> emotes = new ArrayList<>();
 
         switch (scope) {
@@ -27,13 +27,13 @@ public class EmoteParser extends JDAParser<Emote> {
                 break;
 
             case MUTUAL:
-                User user = event.getMessage().getAuthor();
+                User user = event.getMessageEvent().getAuthor();
                 Collection<Guild> guilds = user.getMutualGuilds();
                 guilds.forEach(g -> emotes.addAll(g.getEmotes()));
                 break;
 
             case LOCAL:
-                emotes.addAll(event.getMessage().getGuild().getEmotes());
+                emotes.addAll(event.getMessageEvent().getGuild().getEmotes());
                 break;
         }
 

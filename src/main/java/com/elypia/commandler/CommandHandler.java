@@ -4,12 +4,16 @@ import com.elypia.commandler.annotations.command.Command;
 import com.elypia.commandler.annotations.command.Module;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.MetaModule;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.JDA;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public abstract class CommandHandler {
+
+	protected JDA jda;
 
 	/**
 	 * If this module is enabled or out of service.
@@ -22,7 +26,7 @@ public abstract class CommandHandler {
 	}
 
 	@Command(aliases = "help", help = "Displays all help information for commands in the module.")
-	public void help(MessageEvent event) {
+	public String help() {
 		MetaModule module = new MetaModule(this);
 
 		StringBuilder builder = new StringBuilder();
@@ -35,10 +39,18 @@ public abstract class CommandHandler {
 			}
 		}
 
-		event.reply(builder.toString());
+		return "";
 	}
 
 	public boolean isEnabled() {
 		return enabled;
+	}
+
+	protected JDA getJDA() {
+		return jda;
+	}
+
+	public void setJDA(JDA jda) {
+		this.jda = jda;
 	}
 }

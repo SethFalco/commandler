@@ -1,21 +1,21 @@
 package com.elypia.commandler.jda.parsing.parsers;
 
-import com.elypia.commandler.parsing.impl.Parser;
+import com.elypia.commandler.data.SearchScope;
+import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.jda.parsing.parsers.impl.JDAParser;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Role;
 
 import java.util.Collection;
 
-public class RoleParser implements Parser<Role> {
-
-    private JDA jda;
+public class RoleParser extends JDAParser<Role> {
 
     public RoleParser(JDA jda) {
-        this.jda = jda;
+        super(jda);
     }
 
     @Override
-    public Role parse(String input) throws IllegalArgumentException {
+    public Role parse(MessageEvent event, String input, SearchScope scope) throws IllegalArgumentException {
         Collection<Role> roles = jda.getRoles();
 
         for (Role role : roles) {

@@ -1,7 +1,7 @@
 package com.elypia.commandler.parsing;
 
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.impl.Parser;
+import com.elypia.commandler.parsing.impl.IParser;
 import com.elypia.commandler.parsing.parsers.elypiai.OsuModeParser;
 import com.elypia.commandler.parsing.parsers.java.*;
 import com.elypia.elypiai.osu.data.OsuMode;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class ParamParser {
 
-    private Map<Class<?>, Parser> parsers;
+    private Map<Class<?>, IParser> parsers;
 
     public ParamParser() {
         parsers = new HashMap<>();

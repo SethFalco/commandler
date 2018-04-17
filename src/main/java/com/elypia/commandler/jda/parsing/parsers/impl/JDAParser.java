@@ -19,8 +19,4 @@ public abstract class JDAParser<T> implements Parser<T> {
     public T parse(String input) {
         return parse(null, input, SearchScope.GLOBAL);
     }
-
-    public JDA getJDA() {
-        return jda;
-    }
 }

@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Search {
-    SearchScope scope() default SearchScope.GLOBAL;
+    SearchScope value() default SearchScope.GLOBAL;
 }

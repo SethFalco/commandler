@@ -1,52 +1,90 @@
 package com.elypia.commandler.jda;
 
-import com.elypia.alexis.utils.BotUtils;
-import com.elypia.alexis.utils.CommandUtils;
 import com.elypia.commandler.CommandHandler;
-import com.elypia.commandler.Validator;
 import com.elypia.commandler.annotations.command.Module;
-import com.elypia.commandler.events.MessageEvent;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
- * Received and performs all message or reactions
- * that refer to commands for this chatbot.
+ * This is the manager class which acts as the link between
+ * Commandler and JDA to distribute messages and query information
+ * to deliver to commands / methods.
  */
 
-public class JDACommandler extends ListenerAdapter {
-
-    private JDA jda;
+public class JDACommandler {
 
     /**
-     * All registered handlers for this instance of the chatbot. <br>
-     * The key is an array of aliases that refer to a module. <br>
-     * The value is the module itself.
+     * The JDA instance to retrieve and process messages from.
+     * JDACommandler will create a {@link JDADispatcher} and register
+     * it to this JDA instance in order to process commands to modules
+     * registered via {@link #registerModule(CommandHandler)}.
      */
 
-    private Map<Collection<String>, CommandHandler> handlers;
+    private final JDA jda;
 
-    public JDACommandler(JDA jda) {
-        this.jda = jda;
-        handlers = new HashMap<>();
+    /**
+     * This is the <strong>default</strong> prefix for your bot.
+     * This will assume the value of <em>!</em> if not specified.
+     */
+
+    private final String prefix;
+
+    /**
+     * All registered modules / command handlers with this JDACommandler.
+     */
+
+    private Collection<CommandHandler> handlers;
+
+    /**
+     * See {@link #JDACommandler(JDA, String)}
+     * Creates a JDACommandler instance with the default prefix as "!".
+     *
+     * @param jda The JDA instance to register the {@link JDADispatcher}.
+     */
+
+    public JDACommandler(final JDA jda) {
+        this(jda, "!");
     }
 
     /**
-     * Register multiple handlers.
+     * Creates an instance of the JDACommandler with the provided JDA and prefix.
+     * This prefix is used as a default prefix if no method to obtain the prefix
+     * per event is registered.
      *
-     * @param handlers
+     * @param jda The JDA instance to register the {@link JDADispatcher}.
+     * @param prefix The <strong>default</strong> prefix for command handling.
+     */
+
+    public JDACommandler(final JDA jda, final String prefix) {
+        this.jda = jda;
+        this.prefix = prefix;
+        handlers = new ArrayList<>();
+
+        jda.addEventListener(new JDADispatcher(this));
+    }
+
+    /**
+     * Register multiple handlers at once.
+     * Calls {@link #registerModule(CommandHandler)} for each module specified.
+     *
+     * @param handlers A list of modules to register at once.
      */
 
     public void registerModules(CommandHandler... handlers) {
         for (CommandHandler handler : handlers)
             registerModule(handler);
     }
+
+    /**
+     * Register a module with JDACommandler in order
+     * to execute commands in the module.
+     *
+     * @param handler The command handler / module to register.
+     */
 
     public void registerModule(CommandHandler handler) {
         Module module = handler.getClass().getAnnotation(Module.class);
@@ -59,66 +97,24 @@ public class JDACommandler extends ListenerAdapter {
         for (String alias : module.aliases())
             aliases.add(alias.toLowerCase());
 
-        for (Collection<String> key : handlers.keySet()) {
-            if (!Collections.disjoint(key, aliases))
+        for (CommandHandler h : handlers) {
+            Module m = h.getClass().getAnnotation(Module.class);
+
+            Collection<String> existing = Arrays.asList(m.aliases());
+
+            if (!Collections.disjoint(aliases, existing))
                 throw new IllegalArgumentException("CommandHandler contains alias which is already registered.");
         }
 
-        handlers.put(aliases, handler);
+        handler.setJDA(jda);
+        handlers.add(handler);
     }
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
-        MessageEvent event = new MessageEvent(chatbot, messageReceivedEvent);
+    /**
+     * @return The default / global prefix.
+     */
 
-        if (!event.isValid())
-            return;
-
-        CommandHandler handler = getHandler(event);
-
-        if (handler == null)
-            return;
-
-        if (event.getCommand() == null)
-            event.setCommand(handler);
-
-        Collection<Method> commands = CommandUtils.getCommands(event, handler);
-
-        if (commands.isEmpty()) {
-            event.reply("Sorry, that command doesn't exist, try help?");
-            return;
-        }
-
-        Method method = CommandUtils.getByParamCount(event, commands);
-
-        if (method == null) {
-            event.reply("Those parameters don't look right. DX Try help?");
-            return;
-        }
-
-        try {
-            Object[] params = CommandUtils.parseParameters(event, method);
-            Validator.validate(event, method, params);
-
-            try {
-                method.invoke(handler, params);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                event.reply("Sorry! Something went wrong and I was unable to perform that commands.");
-                BotUtils.LOGGER.log(Level.SEVERE, "Failed to execute command!", ex);
-            }
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
-            event.reply(ex.getMessage());
-        }
-    }
-
-    private CommandHandler getHandler(MessageEvent event) {
-        String module = event.getModule();
-
-        for (Collection<String> key : handlers.keySet()) {
-            if (key.contains(module))
-                return handlers.get(key);
-        }
-
-        return null;
+    public String getPrefix() {
+        return prefix;
     }
 }

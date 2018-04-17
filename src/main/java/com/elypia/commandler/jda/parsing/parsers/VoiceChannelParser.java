@@ -1,21 +1,22 @@
 package com.elypia.commandler.jda.parsing.parsers;
 
+import com.elypia.commandler.data.SearchScope;
+import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.jda.parsing.parsers.impl.JDAParser;
 import com.elypia.commandler.parsing.impl.Parser;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 import java.util.Collection;
 
-public class VoiceChannelParser implements Parser<VoiceChannel> {
-
-    private JDA jda;
+public class VoiceChannelParser extends JDAParser<VoiceChannel> {
 
     public VoiceChannelParser(JDA jda) {
-        this.jda = jda;
+        super(jda);
     }
 
     @Override
-    public VoiceChannel parse(String input) throws IllegalArgumentException {
+    public VoiceChannel parse(MessageEvent event, String input, SearchScope scope) throws IllegalArgumentException {
         Collection<VoiceChannel> channels = jda.getVoiceChannels();
 
         for (VoiceChannel channel : channels) {

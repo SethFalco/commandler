@@ -13,6 +13,12 @@ public class MetaModule {
         clazz = t.getClass();
         module = clazz.getAnnotation(Module.class);
 
+        if (module == null)
+            return;
+    }
+
+    public boolean isValid() {
+        return module != null;
     }
 
     public Class<? extends CommandHandler> getHandler() {
