@@ -1,21 +1,16 @@
 package com.elypia.commandler.events;
 
-import com.elypia.commandler.annotations.command.Command;
-import com.elypia.commandler.annotations.command.Reaction;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
+import com.elypia.commandler.annotations.command.*;
+import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 public class MessageEvent {
 
@@ -36,7 +31,7 @@ public class MessageEvent {
 	private Message reply;
 
 	public MessageEvent(MessageReceivedEvent event, String prefix) {
-		this(event, event.getMessage().getContentRaw(), prefix);
+		this(event, prefix, event.getMessage().getContentRaw());
 	}
 
 	public MessageEvent(MessageReceivedEvent event, String prefix, String content) {

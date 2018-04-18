@@ -1,9 +1,9 @@
 package com.elypia.commandler.parsing.parsers.java;
 
-import com.elypia.commandler.parsing.impl.Parser;
+import com.elypia.commandler.parsing.impl.IParser;
 import com.elypia.elypiai.utils.Regex;
 
-public class IntParser implements Parser<Integer> {
+public class IntParser implements IParser<Integer> {
 
     @Override
     public Integer parse(String input) throws IllegalArgumentException {

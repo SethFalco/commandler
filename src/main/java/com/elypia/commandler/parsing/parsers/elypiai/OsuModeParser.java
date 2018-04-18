@@ -1,9 +1,9 @@
 package com.elypia.commandler.parsing.parsers.elypiai;
 
-import com.elypia.commandler.parsing.impl.Parser;
+import com.elypia.commandler.parsing.impl.IParser;
 import com.elypia.elypiai.osu.data.OsuMode;
 
-public class OsuModeParser implements Parser<OsuMode> {
+public class OsuModeParser implements IParser<OsuMode> {
 
     private static final OsuMode[] modes = OsuMode.values();
 

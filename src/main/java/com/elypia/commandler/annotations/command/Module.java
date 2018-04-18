@@ -9,6 +9,10 @@ import java.lang.annotation.*;
 @Inherited
 public @interface Module {
 
+	long[] icon() default {
+
+	};
+
 	/**
 	 * @return A list of all the alises that grant the
 	 * user access to the module.

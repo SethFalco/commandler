@@ -1,15 +1,8 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.command.Command;
-import com.elypia.commandler.annotations.command.Module;
-import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.metadata.MetaModule;
-import net.dv8tion.jda.core.EmbedBuilder;
+import com.elypia.commandler.annotations.command.*;
+import com.elypia.commandler.metadata.*;
 import net.dv8tion.jda.core.JDA;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
 
 public abstract class CommandHandler {
 
@@ -27,19 +20,21 @@ public abstract class CommandHandler {
 
 	@Command(aliases = "help", help = "Displays all help information for commands in the module.")
 	public String help() {
-		MetaModule module = new MetaModule(this);
+		MetaModule meta = MetaModule.of(this);
+		Module module = meta.getModule();
 
 		StringBuilder builder = new StringBuilder();
 		builder.append(String.format("** %s**\n", module.aliases()[0]));
 		builder.append(module.help() + "\n");
 
-		for (Command command : commands) {
-			if (!command.help().isEmpty()) {
+		for (MetaCommand metaCommand : meta.getCommands()) {
+			Command command = metaCommand.getCommand();
+
+			if (!command.help().isEmpty())
 				builder.append(String.format("`%s`: %s\n", command.aliases()[0], command.help()));
-			}
 		}
 
-		return "";
+		return builder.toString();
 	}
 
 	public boolean isEnabled() {

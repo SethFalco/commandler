@@ -1,9 +1,9 @@
 package com.elypia.commandler.parsing.parsers.java;
 
-import com.elypia.commandler.parsing.impl.Parser;
+import com.elypia.commandler.parsing.impl.IParser;
 import com.elypia.elypiai.utils.Regex;
 
-public class LongParser implements Parser<Long> {
+public class LongParser implements IParser<Long> {
 
     @Override
     public Long parse(String input) throws IllegalArgumentException {

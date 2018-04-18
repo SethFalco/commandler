@@ -3,11 +3,10 @@ package com.elypia.commandler.jda.parsing.parsers;
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.jda.parsing.parsers.impl.JDAParser;
-import com.elypia.commandler.parsing.impl.Parser;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.*;
 
-import java.util.Collection;
+import java.util.*;
 
 public class VoiceChannelParser extends JDAParser<VoiceChannel> {
 
@@ -17,7 +16,23 @@ public class VoiceChannelParser extends JDAParser<VoiceChannel> {
 
     @Override
     public VoiceChannel parse(MessageEvent event, String input, SearchScope scope) throws IllegalArgumentException {
-        Collection<VoiceChannel> channels = jda.getVoiceChannels();
+        final Collection<VoiceChannel> channels = new ArrayList<>();
+
+        switch (scope) {
+            case GLOBAL:
+                channels.addAll(jda.getVoiceChannels());
+                break;
+
+            case MUTUAL:
+                User user = event.getMessageEvent().getAuthor();
+                Collection<Guild> guilds = user.getMutualGuilds();
+                guilds.forEach(g -> channels.addAll(g.getVoiceChannels()));
+                break;
+
+            case LOCAL:
+                channels.addAll(event.getMessageEvent().getGuild().getVoiceChannels());
+                break;
+        }
 
         for (VoiceChannel channel : channels) {
             if (channel.getId().equals(input) || channel.getName().equalsIgnoreCase(input))

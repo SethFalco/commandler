@@ -4,12 +4,9 @@ import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.jda.parsing.parsers.impl.JDAParser;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.Emote;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 public class EmoteParser extends JDAParser<Emote> {
 

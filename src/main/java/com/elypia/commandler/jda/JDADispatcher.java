@@ -1,19 +1,16 @@
 package com.elypia.commandler.jda;
 
-import com.elypia.commandler.CommandHandler;
-import com.elypia.commandler.Validator;
+import com.elypia.commandler.*;
 import com.elypia.commandler.events.MessageEvent;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Channel;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
+import com.elypia.commandler.metadata.MetaModule;
+import com.elypia.commandler.validation.Validator;
+import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class JDADispatcher extends ListenerAdapter {
 
@@ -27,18 +24,24 @@ public class JDADispatcher extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent messageEvent) {
         MessageChannel channel = messageEvent.getChannel();
 
-        MessageEvent event = new MessageEvent(messageEvent);
+        MessageEvent event = new MessageEvent(messageEvent, commandler.getPrefix());
 
         if (!event.isValid())
             return;
 
-        CommandHandler handler = getHandler(event);
+        CommandHandler handler = null;
+
+        for (CommandHandler h : commandler.getHandlers()) {
+            MetaModule m = MetaModule.of(h);
+
+            if (Arrays.asList(m.getModule().aliases()).contains(event.getModule())) {
+                handler = h;
+                break;
+            }
+        }
 
         if (handler == null)
             return;
-
-        if (event.getCommand() == null)
-            event.setCommand(handler);
 
         Collection<Method> commands = CommandUtils.getCommands(event, handler);
 

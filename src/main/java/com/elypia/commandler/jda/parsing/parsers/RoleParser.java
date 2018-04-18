@@ -4,9 +4,9 @@ import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.jda.parsing.parsers.impl.JDAParser;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.*;
 
-import java.util.Collection;
+import java.util.*;
 
 public class RoleParser extends JDAParser<Role> {
 
@@ -16,7 +16,22 @@ public class RoleParser extends JDAParser<Role> {
 
     @Override
     public Role parse(MessageEvent event, String input, SearchScope scope) throws IllegalArgumentException {
-        Collection<Role> roles = jda.getRoles();
+        final Collection<Role> roles = new ArrayList<>();
+
+        switch (scope) {
+            case GLOBAL:
+                roles.addAll(jda.getRoles());
+                break;
+
+            case MUTUAL:
+                User user = event.getMessageEvent().getAuthor();
+                Collection<Guild> guilds = user.getMutualGuilds();
+                guilds.forEach(g -> roles.addAll(g.getRoles()));
+                break;
+
+            case LOCAL:
+                roles.addAll(event.getMessageEvent().getGuild().getRoles());
+        }
 
         for (Role role : roles) {
             if (role.getId().equals(input) || role.getAsMention().equals(input) || role.getName().equalsIgnoreCase(input))

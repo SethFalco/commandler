@@ -1,11 +1,8 @@
-package com.elypia.commandler.jda.annotations.access;
+package com.elypia.commandler.jda.annotations;
 
 import net.dv8tion.jda.core.Permission;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

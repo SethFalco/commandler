@@ -7,12 +7,11 @@ import com.elypia.commandler.parsing.parsers.java.*;
 import com.elypia.elypiai.osu.data.OsuMode;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ParamParser {
 
-    private Map<Class<?>, IParser> parsers;
+    private static Map<Class<?>, IParser> parsers;
 
     public ParamParser() {
         parsers = new HashMap<>();
@@ -26,29 +25,31 @@ public class ParamParser {
         registerParser(URL.class, new UrlParser());
     }
 
-    public <T> void registerParser(Class<T> t, Parser<T> parser) {
+    public <T> void registerParser(Class<T> t, IParser<T> parser) {
         if (parsers.keySet().contains(t))
             throw new IllegalArgumentException("Parser for this type of object has already been registered.");
 
         parsers.put(t, parser);
     }
 
-    public static Object parseParam(MessageEvent event, Object object, Class<?> clazz) throws IllegalArgumentException {
+    public static Object parseParam(Object object, Class<?> clazz) throws IllegalArgumentException {
         boolean array = object.getClass().isArray();
 
         if (clazz.isArray()) {
             String[] input = array ? (String[])object : new String[] {(String)object};
+            Object[] objects = new Object[input.length];
 
-            // temp
+            for (int i = 0; i < input.length; i++)
+                objects[i] = parsers.get(clazz).parse(input[i]);
+
+            return objects;
         } else {
             if (array)
-                throw new IllegalArgumentException("Parameter `" + String.join(", ", object + "` can't be a list.");
+                throw new IllegalArgumentException("Parameter `" + String.join(", ", object + "` can't be a list."));
 
             String input = (String)object;
 
-            // temp
+            return parsers.get(clazz).parse(input);
         }
-
-        throw new IllegalArgumentException("Sorry, this command was made incorrectly.");
     }
 }

@@ -1,9 +1,9 @@
 package com.elypia.commandler.parsing.parsers.java;
 
-import com.elypia.commandler.parsing.impl.Parser;
+import com.elypia.commandler.parsing.impl.IParser;
 import com.elypia.elypiai.utils.Regex;
 
-public class DoubleParser implements Parser<Double> {
+public class DoubleParser implements IParser<Double> {
 
     @Override
     public Double parse(String input) throws IllegalArgumentException {

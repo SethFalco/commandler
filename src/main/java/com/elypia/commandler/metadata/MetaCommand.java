@@ -2,10 +2,8 @@ package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.annotations.command.*;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class MetaCommand {
 
@@ -16,7 +14,11 @@ public class MetaCommand {
     private boolean isStatic;
     private boolean isDefault;
 
-    public MetaCommand(Method method) {
+    public static MetaCommand of(Method method) {
+        return new MetaCommand(method);
+    }
+
+    private MetaCommand(Method method) {
         this.method = method;
         params = new ArrayList<>();
 
@@ -30,7 +32,7 @@ public class MetaCommand {
         Parameter[] parameters = method.getParameters();
 
         for (int i = 1; i < parameters.length; i++) {
-            MetaParam meta = new MetaParam(parameters[i], params[i - 1]);
+            MetaParam meta = MetaParam.of(parameters[i], params[i - 1]);
             this.params.add(meta);
         }
     }

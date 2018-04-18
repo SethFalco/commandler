@@ -2,10 +2,10 @@ package com.elypia.commandler.jda.parsing.parsers.impl;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.impl.Parser;
+import com.elypia.commandler.parsing.impl.IParser;
 import net.dv8tion.jda.core.JDA;
 
-public abstract class JDAParser<T> implements Parser<T> {
+public abstract class JDAParser<T> implements IParser<T> {
 
     protected final JDA jda;
 

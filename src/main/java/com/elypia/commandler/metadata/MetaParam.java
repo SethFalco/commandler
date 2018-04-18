@@ -10,7 +10,11 @@ public class MetaParam {
     private Parameter parameter;
     private Param annotation;
 
-    public MetaParam(Parameter parameter, Param annotation) {
+    public static MetaParam of(Parameter parameter, Param annotation) {
+        return new MetaParam(parameter, annotation);
+    }
+
+    private MetaParam(Parameter parameter, Param annotation) {
         this.parameter = parameter;
         this.annotation = annotation;
     }

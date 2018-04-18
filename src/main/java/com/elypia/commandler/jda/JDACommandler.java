@@ -4,10 +4,7 @@ import com.elypia.commandler.CommandHandler;
 import com.elypia.commandler.annotations.command.Module;
 import net.dv8tion.jda.core.JDA;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * This is the manager class which acts as the link between
@@ -116,5 +113,9 @@ public class JDACommandler {
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public Collection<CommandHandler> getHandlers() {
+        return handlers;
     }
 }

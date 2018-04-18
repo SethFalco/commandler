@@ -1,11 +1,10 @@
 package com.elypia.commandler.parsing.parsers.java;
 
-import com.elypia.commandler.parsing.impl.Parser;
+import com.elypia.commandler.parsing.impl.IParser;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 
-public class UrlParser implements Parser<URL> {
+public class UrlParser implements IParser<URL> {
 
     @Override
     public URL parse(String input) throws IllegalArgumentException {

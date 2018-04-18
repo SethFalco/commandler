@@ -1,24 +1,32 @@
 package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.CommandHandler;
-import com.elypia.commandler.annotations.command.Module;
+import com.elypia.commandler.annotations.command.*;
+
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class MetaModule {
 
     private Class<? extends CommandHandler> clazz;
     private Module module;
-    private MetaCommand commands;
+    private Collection<MetaCommand> commands;
 
-    public <T extends CommandHandler> MetaModule(T t) {
+    public static <T extends CommandHandler> MetaModule of(T t) {
+        return new MetaModule(t);
+    }
+
+    private <T extends CommandHandler> MetaModule(T t) {
+        commands = new ArrayList<>();
         clazz = t.getClass();
         module = clazz.getAnnotation(Module.class);
 
-        if (module == null)
-            return;
-    }
+        Method[] methods = clazz.getDeclaredMethods();
 
-    public boolean isValid() {
-        return module != null;
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(Command.class))
+                commands.add(MetaCommand.of(method));
+        }
     }
 
     public Class<? extends CommandHandler> getHandler() {
@@ -27,5 +35,9 @@ public class MetaModule {
 
     public Module getModule() {
         return module;
+    }
+
+    public Collection<MetaCommand> getCommands() {
+        return commands;
     }
 }
