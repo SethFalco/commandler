@@ -1,6 +1,6 @@
 package com.elypia.commandler.jda.parsing.parsers.impl;
 
-import com.elypia.commandler.data.SearchScope;
+import com.elypia.commandler.jda.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.parsing.impl.IParser;
 import net.dv8tion.jda.core.JDA;

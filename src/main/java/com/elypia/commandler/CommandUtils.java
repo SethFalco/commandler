@@ -115,7 +115,7 @@ public final class CommandUtils {
         Class<?>[] types = method.getParameterTypes();
         Object[] params = new Object[types.length];
 
-        for (int i = 0; i < inputs.size(); i++) {
+        for (int i = 0; i < types.length; i++) {
             Object input = inputs.get(i);
             Class<?> type = types[i];
 
