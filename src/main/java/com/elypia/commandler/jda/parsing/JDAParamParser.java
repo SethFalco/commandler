@@ -7,7 +7,7 @@ import net.dv8tion.jda.core.entities.*;
 
 public class JDAParamParser extends ParamParser {
 
-    protected JDA jda;
+    private JDA jda;
 
     public JDAParamParser(JDA jda) {
         super();

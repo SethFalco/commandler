@@ -107,6 +107,10 @@ public class JDACommandler {
         handlers.add(handler);
     }
 
+    public JDA getJDA() {
+        return jda;
+    }
+
     /**
      * @return The default / global prefix.
      */

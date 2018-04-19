@@ -3,7 +3,7 @@ package com.elypia.commandlerbot.modules;
 import com.elypia.commandler.CommandHandler;
 import com.elypia.commandler.annotations.command.*;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 @Module(aliases = "bot", help = "Fundamental bot debugging or information commands.")
 public class BotModule extends CommandHandler {
@@ -12,6 +12,19 @@ public class BotModule extends CommandHandler {
     @Command(aliases = "ping", help = "pong")
     public String ping() {
         return "pong!";
+    }
+
+    @Static
+    @Command(aliases = "pong")
+    public String pong() {
+        return "ping!";
+    }
+
+    @Static
+    @Command(aliases = "say", help = "Repeat after me...")
+    @Param(name = "message", help = "The message to repeat.")
+    public String say(String message) {
+        return message;
     }
 
     @Command(aliases = "info", help = "Get information on the bot and it's development.")

@@ -90,7 +90,7 @@ public final class CommandUtils {
 
     public static Method getByParamCount(MessageEvent event, Collection<Method> methods) {
         methods = methods.stream().filter(o -> {
-            long i = Arrays.stream(o.getParameterTypes()).filter(ob -> ob == MessageEvent.class).count();
+            long i = Arrays.stream(o.getParameterTypes()).filter(ob -> ob != MessageEvent.class).count();
 
             return i == event.getParams().size();
         }).collect(Collectors.toList());
@@ -110,13 +110,12 @@ public final class CommandUtils {
      * @throws IllegalArgumentException If one of the arguments could not be parsed in the required format.
      */
 
-    public static Object[] parseParameters(MessageEvent event, Method method) throws IllegalArgumentException {
+    public static Object[] parseParameters(ParamParser parser, MessageEvent event, Method method) throws IllegalArgumentException {
         List<Object> inputs = event.getParams();
         Class<?>[] types = method.getParameterTypes();
         Object[] params = new Object[types.length];
 
         for (int i = 0; i < types.length; i++) {
-            Object input = inputs.get(i);
             Class<?> type = types[i];
 
             if (type == MessageEvent.class) {
@@ -124,7 +123,9 @@ public final class CommandUtils {
                 continue;
             }
 
-            params[i] = ParamParser.parseParam(input, type);
+            Object input = inputs.get(i);
+
+            params[i] = parser.parseParam(input, type);
         }
 
         return params;

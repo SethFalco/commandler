@@ -1,17 +1,17 @@
 package com.elypia.commandler.parsing;
 
-import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.parsing.impl.IParser;
 import com.elypia.commandler.parsing.parsers.elypiai.OsuModeParser;
 import com.elypia.commandler.parsing.parsers.java.*;
 import com.elypia.elypiai.osu.data.OsuMode;
+import com.elypia.elypiai.utils.Regex;
 
 import java.net.URL;
 import java.util.*;
 
 public class ParamParser {
 
-    private static Map<Class<?>, IParser> parsers;
+    private Map<Class<?>, IParser> parsers;
 
     public ParamParser() {
         parsers = new HashMap<>();
@@ -22,6 +22,7 @@ public class ParamParser {
         registerParser(double.class, new DoubleParser());
         registerParser(int.class, new IntParser());
         registerParser(long.class, new LongParser());
+        registerParser(String.class, new StringParser());
         registerParser(URL.class, new UrlParser());
     }
 
@@ -32,7 +33,7 @@ public class ParamParser {
         parsers.put(t, parser);
     }
 
-    public static Object parseParam(Object object, Class<?> clazz) throws IllegalArgumentException {
+    public Object parseParam(Object object, Class<?> clazz) throws IllegalArgumentException {
         boolean array = object.getClass().isArray();
 
         if (clazz.isArray()) {
