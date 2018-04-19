@@ -1,10 +1,7 @@
 package com.elypia.commandler.parsing;
 
 import com.elypia.commandler.parsing.impl.IParser;
-import com.elypia.commandler.parsing.parsers.elypiai.OsuModeParser;
-import com.elypia.commandler.parsing.parsers.java.*;
-import com.elypia.elypiai.osu.data.OsuMode;
-import com.elypia.elypiai.utils.Regex;
+import com.elypia.commandler.parsing.parsers.*;
 
 import java.net.URL;
 import java.util.*;
@@ -15,8 +12,6 @@ public class ParamParser {
 
     public ParamParser() {
         parsers = new HashMap<>();
-
-        registerParser(OsuMode.class, new OsuModeParser());
 
         registerParser(boolean.class, new BooleanParser());
         registerParser(double.class, new DoubleParser());

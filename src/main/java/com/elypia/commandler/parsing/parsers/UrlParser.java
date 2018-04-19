@@ -1,4 +1,4 @@
-package com.elypia.commandler.parsing.parsers.java;
+package com.elypia.commandler.parsing.parsers;
 
 import com.elypia.commandler.parsing.impl.IParser;
 
