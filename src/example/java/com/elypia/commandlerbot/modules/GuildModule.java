@@ -1,10 +1,10 @@
 package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.CommandHandler;
-import com.elypia.commandler.annotations.command.*;
-import com.elypia.commandler.annotations.filter.Search;
-import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.jda.annotations.Scope;
+import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.jda.annotations.filter.Search;
+import com.elypia.commandler.jda.events.MessageEvent;
+import com.elypia.commandler.jda.annotations.access.Scope;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 

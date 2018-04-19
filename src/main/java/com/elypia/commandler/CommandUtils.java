@@ -1,7 +1,7 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.command.*;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.jda.events.MessageEvent;
 import com.elypia.commandler.parsing.ParamParser;
 
 import java.lang.reflect.Method;

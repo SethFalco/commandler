@@ -1,6 +1,6 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.command.*;
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.metadata.*;
 import net.dv8tion.jda.core.JDA;
 

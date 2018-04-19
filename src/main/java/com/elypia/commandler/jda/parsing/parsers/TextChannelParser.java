@@ -1,7 +1,7 @@
 package com.elypia.commandler.jda.parsing.parsers;
 
 import com.elypia.commandler.jda.data.SearchScope;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.jda.events.MessageEvent;
 import com.elypia.commandler.jda.parsing.parsers.impl.JDAParser;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;

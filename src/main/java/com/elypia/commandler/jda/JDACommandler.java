@@ -1,7 +1,7 @@
 package com.elypia.commandler.jda;
 
 import com.elypia.commandler.CommandHandler;
-import com.elypia.commandler.annotations.command.Module;
+import com.elypia.commandler.annotations.Module;
 import net.dv8tion.jda.core.JDA;
 
 import java.util.*;

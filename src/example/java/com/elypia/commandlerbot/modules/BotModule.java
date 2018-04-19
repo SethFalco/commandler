@@ -1,7 +1,7 @@
 package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.CommandHandler;
-import com.elypia.commandler.annotations.command.*;
+import com.elypia.commandler.annotations.*;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 

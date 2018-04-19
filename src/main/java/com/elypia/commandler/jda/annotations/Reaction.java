@@ -1,4 +1,4 @@
-package com.elypia.commandler.annotations.command;
+package com.elypia.commandler.jda.annotations;
 
 import java.lang.annotation.*;
 
@@ -6,7 +6,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Reactions.class)
 public @interface Reaction {
-
 	String alias();
 	String help();
 }

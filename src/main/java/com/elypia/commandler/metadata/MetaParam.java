@@ -1,6 +1,6 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.annotations.command.Param;
+import com.elypia.commandler.annotations.Param;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;

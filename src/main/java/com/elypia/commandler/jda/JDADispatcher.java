@@ -1,7 +1,7 @@
 package com.elypia.commandler.jda;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.jda.events.MessageEvent;
 import com.elypia.commandler.jda.parsing.JDAParamParser;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.validation.Validator;

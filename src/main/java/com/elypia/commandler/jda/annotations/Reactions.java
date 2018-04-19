@@ -1,4 +1,4 @@
-package com.elypia.commandler.annotations.command;
+package com.elypia.commandler.jda.annotations;
 
 import java.lang.annotation.*;
 

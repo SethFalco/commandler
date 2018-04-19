@@ -1,6 +1,7 @@
-package com.elypia.commandler.events;
+package com.elypia.commandler.jda.events;
 
-import com.elypia.commandler.annotations.command.*;
+import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.jda.annotations.Reaction;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;

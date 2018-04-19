@@ -3,7 +3,6 @@ package com.elypia.commandlerbot;
 import com.elypia.commandler.jda.JDACommandler;
 import com.elypia.commandlerbot.modules.*;
 import net.dv8tion.jda.core.*;
-import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 

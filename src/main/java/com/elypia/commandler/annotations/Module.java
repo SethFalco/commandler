@@ -1,4 +1,4 @@
-package com.elypia.commandler.annotations.command;
+package com.elypia.commandler.annotations;
 
 import com.elypia.commandler.CommandHandler;
 
@@ -9,9 +9,11 @@ import java.lang.annotation.*;
 @Inherited
 public @interface Module {
 
-	long[] icon() default {
+    /**
+     * @return An optional image to represent the module.
+     */
 
-	};
+	String icon() default "";
 
 	/**
 	 * @return A list of all the alises that grant the

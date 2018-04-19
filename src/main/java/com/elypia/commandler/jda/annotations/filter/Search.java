@@ -1,4 +1,4 @@
-package com.elypia.commandler.annotations.filter;
+package com.elypia.commandler.jda.annotations.filter;
 
 import com.elypia.commandler.jda.data.SearchScope;
 

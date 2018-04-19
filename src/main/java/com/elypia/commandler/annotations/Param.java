@@ -1,4 +1,4 @@
-package com.elypia.commandler.annotations.command;
+package com.elypia.commandler.annotations;
 
 import java.lang.annotation.*;
 
@@ -21,7 +21,7 @@ public @interface Param {
 
 	/**
 	 * If this parameter is sensitive and should be hidden
-	 * as much as possible in the logs, database, or messages.
+	 * as much as possible in the logs, or messages.
 	 */
 
 	boolean secret() default false;
