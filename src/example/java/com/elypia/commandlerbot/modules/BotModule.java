@@ -20,7 +20,6 @@ public class BotModule extends CommandHandler {
         return "ping!";
     }
 
-    @Static
     @Command(aliases = "say", help = "Repeat after me...")
     @Param(name = "message", help = "The message to repeat.")
     public String say(String message) {
