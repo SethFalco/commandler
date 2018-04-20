@@ -11,7 +11,6 @@ import java.lang.annotation.*;
  * method body for what it's meant for, functionality and dynamic data.
  */
 
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
 

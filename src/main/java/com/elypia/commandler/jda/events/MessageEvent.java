@@ -112,12 +112,12 @@ public class MessageEvent {
 	}
 
 	private void afterReply(Message message) {
-		reply = message;
-
-		Reaction[] reactions = method.getAnnotationsByType(Reaction.class);
-
-		for (Reaction reaction : reactions)
-			message.addReaction(reaction.alias()).queue();
+//		reply = message;
+//
+//		Reaction[] reactions = method.getAnnotationsByType(Reaction.class);
+//
+//		for (Reaction reaction : reactions)
+//			message.addReaction(reaction.alias()).queue();
 	}
 
 	public void tryDeleteMessage() {
