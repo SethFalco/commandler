@@ -1,6 +1,8 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Command;
+import com.elypia.commandler.annotations.CommandGroup;
+import com.elypia.commandler.annotations.Default;
 import com.elypia.commandler.jda.events.MessageEvent;
 import com.elypia.commandler.parsing.ParamParser;
 
@@ -32,6 +34,18 @@ public final class CommandUtils {
 
             if (annotation != null) {
                 if (Arrays.asList(annotation.aliases()).contains(command)) {
+                    group = method.getAnnotation(CommandGroup.class);
+                    commands.add(method);
+                    break;
+                }
+            }
+        }
+
+        if (commands.isEmpty()) {
+            for (Method method : methods) {
+                Default def = method.getAnnotation(Default.class);
+
+                if (def != null) {
                     group = method.getAnnotation(CommandGroup.class);
                     commands.add(method);
                     break;
@@ -114,16 +128,18 @@ public final class CommandUtils {
         List<Object> inputs = event.getParams();
         Class<?>[] types = method.getParameterTypes();
         Object[] params = new Object[types.length];
+        int offset = 0;
 
         for (int i = 0; i < types.length; i++) {
             Class<?> type = types[i];
 
             if (type == MessageEvent.class) {
                 params[i] = event;
+                offset++;
                 continue;
             }
 
-            Object input = inputs.get(i);
+            Object input = inputs.get(i - offset);
 
             params[i] = parser.parseParam(input, type);
         }

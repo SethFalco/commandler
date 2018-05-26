@@ -4,11 +4,12 @@ import com.elypia.commandler.parsing.impl.IParser;
 import com.elypia.commandler.parsing.parsers.*;
 
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ParamParser {
 
-    private Map<Class<?>, IParser> parsers;
+    protected Map<Class<?>, IParser> parsers;
 
     public ParamParser() {
         parsers = new HashMap<>();
@@ -36,7 +37,7 @@ public class ParamParser {
             Object[] objects = new Object[input.length];
 
             for (int i = 0; i < input.length; i++)
-                objects[i] = parsers.get(clazz).parse(input[i]);
+                objects[i] = parsers.get(clazz.getComponentType()).parse(input[i]);
 
             return objects;
         } else {

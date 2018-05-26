@@ -4,7 +4,10 @@ import com.elypia.commandler.CommandHandler;
 import com.elypia.commandler.annotations.Module;
 import net.dv8tion.jda.core.JDA;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * This is the manager class which acts as the link between
@@ -18,7 +21,7 @@ public class JDACommandler {
      * The JDA instance to retrieve and process messages from.
      * JDACommandler will create a {@link JDADispatcher} and register
      * it to this JDA instance in order to process commands to modules
-     * registered via {@link #registerModule(CommandHandler)}.
+     * registered via {@link #registerModule(JDACommandHandler)}.
      */
 
     private final JDA jda;
@@ -66,13 +69,13 @@ public class JDACommandler {
 
     /**
      * Register multiple handlers at once.
-     * Calls {@link #registerModule(CommandHandler)} for each module specified.
+     * Calls {@link #registerModule(JDACommandHandler)} for each module specified.
      *
      * @param handlers A list of modules to register at once.
      */
 
-    public void registerModules(CommandHandler... handlers) {
-        for (CommandHandler handler : handlers)
+    public void registerModules(JDACommandHandler... handlers) {
+        for (JDACommandHandler handler : handlers)
             registerModule(handler);
     }
 
@@ -83,7 +86,7 @@ public class JDACommandler {
      * @param handler The command handler / module to register.
      */
 
-    public void registerModule(CommandHandler handler) {
+    public void registerModule(JDACommandHandler handler) {
         Module module = handler.getClass().getAnnotation(Module.class);
 
         if (module == null)

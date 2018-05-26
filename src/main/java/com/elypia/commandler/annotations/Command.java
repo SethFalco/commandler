@@ -1,6 +1,9 @@
 package com.elypia.commandler.annotations;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The Command annotiation is used to supply metadata
@@ -11,6 +14,7 @@ import java.lang.annotation.*;
  * method body for what it's meant for, functionality and dynamic data.
  */
 
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
 

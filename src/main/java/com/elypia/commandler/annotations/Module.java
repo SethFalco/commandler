@@ -9,11 +9,7 @@ import java.lang.annotation.*;
 @Inherited
 public @interface Module {
 
-    /**
-     * @return An optional image to represent the module.
-     */
-
-	String icon() default "";
+	String name();
 
 	/**
 	 * @return A list of all the alises that grant the
@@ -27,7 +23,7 @@ public @interface Module {
 	 * the module is for.
 	 */
 
-	String help();
+	String description();
 
 	/**
 	 * Submodules are what come after module in the command. <br>
