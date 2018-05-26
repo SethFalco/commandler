@@ -68,7 +68,7 @@ public class BotModule extends JDACommandHandler {
         }).collect(Collectors.toList());
 
         EmbedBuilder builder = new EmbedBuilder();
-        users.forEach(o -> builder.addField(o.getName(), "[Invite link!](" + String.format(BOT_URL, o.getIdLong()), true));
+        users.forEach(o -> builder.addField(o.getName(), "[Invite link!](" + String.format(BOT_URL, o.getIdLong()) + ")", true));
 
         return builder;
     }

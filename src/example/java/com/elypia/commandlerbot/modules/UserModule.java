@@ -19,7 +19,7 @@ import static com.elypia.commandler.jda.data.SearchScope.LOCAL;
 
 @Module(
 	name = "User (Member)",
-	aliases = "User",
+	aliases = "user",
 	description = "Get information or stats on global users!"
 )
 public class UserModule extends JDACommandHandler {

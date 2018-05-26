@@ -1,9 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.annotations.Command;
-import com.elypia.commandler.annotations.CommandGroup;
-import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.Param;
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.jda.JDACommandHandler;
 import com.elypia.commandler.jda.annotations.access.Scope;
 import com.elypia.commandler.jda.annotations.filter.Search;
@@ -54,6 +51,7 @@ public class EmotesModule extends JDACommandHandler {
         return builder.toString();
     }
 
+    @Default
     @CommandGroup("post")
     @Command(aliases = {"get", "post"}, help = "Post an emote in the chat!")
     @Param(name = "emote", help = "A way to identify the emote you want to post.")
