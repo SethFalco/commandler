@@ -1,18 +1,18 @@
 package com.elypia.commandlerbot.modules;
 
+import com.elypia.commandler.CommandHandler;
 import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.jda.JDACommandHandler;
-import com.elypia.commandler.jda.annotations.access.Scope;
-import com.elypia.commandler.jda.annotations.filter.Search;
-import com.elypia.commandler.jda.events.MessageEvent;
+import com.elypia.commandler.annotations.access.Scope;
+import com.elypia.commandler.annotations.filter.Search;
+import com.elypia.commandler.events.MessageEvent;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 import java.util.*;
 
-import static com.elypia.commandler.jda.data.SearchScope.LOCAL;
+import static com.elypia.commandler.data.SearchScope.LOCAL;
 import static net.dv8tion.jda.core.entities.ChannelType.TEXT;
 
 @Module(
@@ -20,7 +20,7 @@ import static net.dv8tion.jda.core.entities.ChannelType.TEXT;
     aliases = {"voice", "vc"},
     description = "Convenience commands for voice channels."
 )
-public class VoiceModule extends JDACommandHandler {
+public class VoiceModule extends CommandHandler {
 
     @Scope(TEXT)
     @Command(aliases = {"mention", "at"}, help = "Mention all the users in a voice channel.")

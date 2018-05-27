@@ -1,11 +1,13 @@
 package com.elypia.commandler.parsing.parsers;
 
-import com.elypia.commandler.parsing.impl.IParser;
+import com.elypia.commandler.data.SearchScope;
+import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.parsing.impl.JDAParser;
 
-public class IntParser implements IParser<Integer> {
+public class IntParser extends JDAParser<Integer> {
 
     @Override
-    public Integer parse(String input) throws IllegalArgumentException {
+    public Integer parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
         try {
             return Integer.parseInt(input);
         } catch (NumberFormatException ex) {

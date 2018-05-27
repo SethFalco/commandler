@@ -1,6 +1,5 @@
-package com.elypia.commandler.jda;
+package com.elypia.commandler;
 
-import com.elypia.commandler.CommandHandler;
 import com.elypia.commandler.annotations.Module;
 import net.dv8tion.jda.core.JDA;
 
@@ -15,13 +14,13 @@ import java.util.Collections;
  * to deliver to commands / methods.
  */
 
-public class JDACommandler {
+public class Commandler {
 
     /**
      * The JDA instance to retrieve and process messages from.
-     * JDACommandler will create a {@link JDADispatcher} and register
+     * JDACommandler will create a {@link Dispatcher} and register
      * it to this JDA instance in order to process commands to modules
-     * registered via {@link #registerModule(JDACommandHandler)}.
+     * registered via {@link #registerModule(CommandHandler)}.
      */
 
     private final JDA jda;
@@ -40,13 +39,13 @@ public class JDACommandler {
     private Collection<CommandHandler> handlers;
 
     /**
-     * See {@link #JDACommandler(JDA, String)}
+     * See {@link #Commandler(JDA, String)}
      * Creates a JDACommandler instance with the default prefix as "!".
      *
-     * @param jda The JDA instance to register the {@link JDADispatcher}.
+     * @param jda The JDA instance to register the {@link Dispatcher}.
      */
 
-    public JDACommandler(final JDA jda) {
+    public Commandler(final JDA jda) {
         this(jda, "!");
     }
 
@@ -55,27 +54,27 @@ public class JDACommandler {
      * This prefix is used as a default prefix if no method to obtain the prefix
      * per event is registered.
      *
-     * @param jda The JDA instance to register the {@link JDADispatcher}.
+     * @param jda The JDA instance to register the {@link Dispatcher}.
      * @param prefix The <strong>default</strong> prefix for command handling.
      */
 
-    public JDACommandler(final JDA jda, final String prefix) {
+    public Commandler(final JDA jda, final String prefix) {
         this.jda = jda;
         this.prefix = prefix;
         handlers = new ArrayList<>();
 
-        jda.addEventListener(new JDADispatcher(this));
+        jda.addEventListener(new Dispatcher(this));
     }
 
     /**
      * Register multiple handlers at once.
-     * Calls {@link #registerModule(JDACommandHandler)} for each module specified.
+     * Calls {@link #registerModule(CommandHandler)} for each module specified.
      *
      * @param handlers A list of modules to register at once.
      */
 
-    public void registerModules(JDACommandHandler... handlers) {
-        for (JDACommandHandler handler : handlers)
+    public void registerModules(CommandHandler... handlers) {
+        for (CommandHandler handler : handlers)
             registerModule(handler);
     }
 
@@ -86,7 +85,7 @@ public class JDACommandler {
      * @param handler The command handler / module to register.
      */
 
-    public void registerModule(JDACommandHandler handler) {
+    public void registerModule(CommandHandler handler) {
         Module module = handler.getClass().getAnnotation(Module.class);
 
         if (module == null)

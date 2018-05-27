@@ -1,13 +1,16 @@
 package com.elypia.commandler.parsing.parsers;
 
-import com.elypia.commandler.parsing.impl.IParser;
+import com.elypia.commandler.data.SearchScope;
+import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.parsing.impl.JDAParser;
 
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-public class UrlParser implements IParser<URL> {
+public class UrlParser extends JDAParser<URL> {
 
     @Override
-    public URL parse(String input) throws IllegalArgumentException {
+    public URL parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
         try {
             return new URL(input);
         } catch (MalformedURLException e) {

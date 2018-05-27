@@ -1,4 +1,4 @@
-package com.elypia.commandler.jda.annotations.access;
+package com.elypia.commandler.annotations.access;
 
 import net.dv8tion.jda.core.entities.ChannelType;
 
@@ -13,5 +13,11 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Scope {
+
+    /**
+     * @return The types of channels it will be possible to perform
+     * this command in.
+     */
+
     ChannelType[] value();
 }

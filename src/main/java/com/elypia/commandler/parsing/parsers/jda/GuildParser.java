@@ -1,12 +1,14 @@
-package com.elypia.commandler.jda.parsing.parsers;
+package com.elypia.commandler.parsing.parsers.jda;
 
-import com.elypia.commandler.jda.data.SearchScope;
-import com.elypia.commandler.jda.events.MessageEvent;
-import com.elypia.commandler.jda.parsing.parsers.impl.JDAParser;
+import com.elypia.commandler.data.SearchScope;
+import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.parsing.impl.JDAParser;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class GuildParser extends JDAParser<Guild> {
 
@@ -15,7 +17,7 @@ public class GuildParser extends JDAParser<Guild> {
     }
 
     @Override
-    public Guild parse(MessageEvent event, String input, SearchScope scope) throws IllegalArgumentException {
+    public Guild parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
         final Collection<Guild> guilds = new ArrayList<>();
 
         switch (scope) {

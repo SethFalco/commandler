@@ -1,4 +1,4 @@
-package com.elypia.commandler.validation.annotations;
+package com.elypia.commandler.annotations.validation;
 
 import java.lang.annotation.*;
 
@@ -14,6 +14,16 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Inherited
 public @interface Limit {
+
+    /**
+     * @return The minimum value that the parameter can be, inclusive.
+     */
+
     long min() default Long.MIN_VALUE;
+
+    /**
+     * @return The maximum value that the parameter can be, inclusive.
+     */
+
     long max() default Long.MAX_VALUE;
 }

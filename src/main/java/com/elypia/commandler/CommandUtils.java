@@ -3,8 +3,7 @@ package com.elypia.commandler;
 import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.annotations.CommandGroup;
 import com.elypia.commandler.annotations.Default;
-import com.elypia.commandler.jda.events.MessageEvent;
-import com.elypia.commandler.parsing.ParamParser;
+import com.elypia.commandler.events.MessageEvent;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -42,6 +41,8 @@ public final class CommandUtils {
         }
 
         if (commands.isEmpty()) {
+            event.getParams().add(0, event.getCommand());
+
             for (Method method : methods) {
                 Default def = method.getAnnotation(Default.class);
 
@@ -112,38 +113,5 @@ public final class CommandUtils {
         int size = methods.size();
 
         return size > 0 ? methods.iterator().next() : null;
-    }
-
-    /**
-     * Take the String parameters from the message event and parse them into the required
-     * format the command method required to execute.
-     *
-     * @param event The message event to take parameters from.
-     * @param method The method to imitate the fields of.
-     * @return An Object[] array of all parameters parsed as required for the given method.
-     * @throws IllegalArgumentException If one of the arguments could not be parsed in the required format.
-     */
-
-    public static Object[] parseParameters(ParamParser parser, MessageEvent event, Method method) throws IllegalArgumentException {
-        List<Object> inputs = event.getParams();
-        Class<?>[] types = method.getParameterTypes();
-        Object[] params = new Object[types.length];
-        int offset = 0;
-
-        for (int i = 0; i < types.length; i++) {
-            Class<?> type = types[i];
-
-            if (type == MessageEvent.class) {
-                params[i] = event;
-                offset++;
-                continue;
-            }
-
-            Object input = inputs.get(i - offset);
-
-            params[i] = parser.parseParam(input, type);
-        }
-
-        return params;
     }
 }

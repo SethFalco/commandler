@@ -1,9 +1,9 @@
 package com.elypia.commandlerbot.modules;
 
+import com.elypia.commandler.CommandHandler;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.jda.JDACommandHandler;
-import com.elypia.commandler.jda.annotations.access.Scope;
-import com.elypia.commandler.jda.events.MessageEvent;
+import com.elypia.commandler.annotations.access.Scope;
+import com.elypia.commandler.events.MessageEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
     aliases = {"bot", "robot"},
     description = "Fundamental commands for the bot itself, primiarly for debugging or to obtain public information."
 )
-public class BotModule extends JDACommandHandler {
+public class BotModule extends CommandHandler {
 
     public static final String BOT_URL = "https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot";
 

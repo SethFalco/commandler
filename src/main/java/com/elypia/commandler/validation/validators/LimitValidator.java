@@ -2,7 +2,7 @@ package com.elypia.commandler.validation.validators;
 
 import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.metadata.MetaParam;
-import com.elypia.commandler.validation.annotations.Limit;
+import com.elypia.commandler.annotations.validation.Limit;
 import com.elypia.commandler.validation.impl.IParamValidator;
 
 public class LimitValidator implements IParamValidator<Long, Limit> {

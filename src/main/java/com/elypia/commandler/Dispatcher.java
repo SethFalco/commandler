@@ -1,11 +1,10 @@
-package com.elypia.commandler.jda;
+package com.elypia.commandler;
 
-import com.elypia.commandler.CommandHandler;
-import com.elypia.commandler.CommandUtils;
-import com.elypia.commandler.jda.events.MessageEvent;
-import com.elypia.commandler.jda.parsing.JDAParamParser;
+import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.MetaCommand;
 import com.elypia.commandler.metadata.MetaModule;
+import com.elypia.commandler.metadata.MetaParam;
+import com.elypia.commandler.parsing.Parser;
 import com.elypia.commandler.validation.Validator;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -19,15 +18,16 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
-public class JDADispatcher extends ListenerAdapter {
+public class Dispatcher extends ListenerAdapter {
 
-    private final JDACommandler commandler;
-    private final JDAParamParser parser;
+    private final Commandler commandler;
+    private final Parser parser;
 
-    public JDADispatcher(final JDACommandler commandler) {
+    public Dispatcher(final Commandler commandler) {
         this.commandler = commandler;
-        this.parser = new JDAParamParser(commandler.getJDA());
+        this.parser = new Parser(commandler.getJDA());
     }
 
     @Override
@@ -85,7 +85,7 @@ public class JDADispatcher extends ListenerAdapter {
         }
 
         try {
-            Object[] params = CommandUtils.parseParameters(parser, event, method);
+            Object[] params = parseParameters(event, method);
             Validator.validate(event, method, params);
 
             try {
@@ -109,5 +109,40 @@ public class JDADispatcher extends ListenerAdapter {
         } catch (IllegalArgumentException | IllegalAccessException ex) {
             event.reply(ex.getMessage());
         }
+    }
+
+    /**
+     * Take the String parameters from the message event and parse them into the required
+     * format the command method required to execute.
+     *
+     * @param event The message event to take parameters from.
+     * @param method The method to imitate the fields of.
+     * @return An Object[] array of all parameters parsed as required for the given method.
+     * @throws IllegalArgumentException If one of the arguments could not be parsed in the required format.
+     */
+
+    public Object[] parseParameters(MessageEvent event, Method method) throws IllegalArgumentException {
+        MetaCommand meta = MetaCommand.of(method); // Command data
+        List<MetaParam> params = meta.getParams(); // Parameter data
+        List<Object> inputs = event.getParams(); // User input parameters
+        Object[] objects = new Object[params.size()]; // Parsed parameters to perform command
+
+        int offset = 0;
+
+        for (int i = 0; i < params.size(); i++) {
+            MetaParam param = params.get(i);
+            Class<?> type = param.getParameter().getType();
+
+            if (type == MessageEvent.class) {
+                objects[i] = event;
+                offset++;
+                continue;
+            }
+
+            Object input = inputs.get(i - offset);
+            objects[i] = parser.parseParam(event, param, input);
+        }
+
+        return objects;
     }
 }

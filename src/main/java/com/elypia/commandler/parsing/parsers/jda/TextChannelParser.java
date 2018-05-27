@@ -1,12 +1,15 @@
-package com.elypia.commandler.jda.parsing.parsers;
+package com.elypia.commandler.parsing.parsers.jda;
 
-import com.elypia.commandler.jda.data.SearchScope;
-import com.elypia.commandler.jda.events.MessageEvent;
-import com.elypia.commandler.jda.parsing.parsers.impl.JDAParser;
+import com.elypia.commandler.data.SearchScope;
+import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.parsing.impl.JDAParser;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class TextChannelParser extends JDAParser<TextChannel> {
 
@@ -15,7 +18,7 @@ public class TextChannelParser extends JDAParser<TextChannel> {
     }
 
     @Override
-    public TextChannel parse(MessageEvent event, String input, SearchScope scope) throws IllegalArgumentException {
+    public TextChannel parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
         final Collection<TextChannel> channels = new ArrayList<>();
 
         switch (scope) {

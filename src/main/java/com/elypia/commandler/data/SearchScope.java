@@ -1,4 +1,4 @@
-package com.elypia.commandler.jda.data;
+package com.elypia.commandler.data;
 
 public enum SearchScope {
 

@@ -1,13 +1,13 @@
 package com.elypia.commandlerbot.modules;
 
+import com.elypia.commandler.CommandHandler;
 import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.annotations.CommandGroup;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.jda.JDACommandHandler;
-import com.elypia.commandler.jda.annotations.access.Scope;
-import com.elypia.commandler.jda.annotations.filter.Search;
-import com.elypia.commandler.jda.events.MessageEvent;
+import com.elypia.commandler.annotations.access.Scope;
+import com.elypia.commandler.annotations.filter.Search;
+import com.elypia.commandler.events.MessageEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 
@@ -15,24 +15,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.StringJoiner;
 
-import static com.elypia.commandler.jda.data.SearchScope.LOCAL;
+import static com.elypia.commandler.data.SearchScope.LOCAL;
 
 @Module(
 	name = "User (Member)",
 	aliases = "user",
 	description = "Get information or stats on global users!"
 )
-public class UserModule extends JDACommandHandler {
+public class UserModule extends CommandHandler {
 
 	@CommandGroup("info")
 	public void getInfo(MessageEvent event) {
 		getInfo(event, event.getMessageEvent().getAuthor());
 	}
 
+	@Scope(ChannelType.TEXT)
 	@CommandGroup("info")
 	@Command(aliases = "info", help = "Get some basic information on the user!")
 	@Param(name = "user", help = "The user to display information for.")
-	@Scope(ChannelType.TEXT)
 	public void getInfo(MessageEvent event, @Search(LOCAL) User user) {
 		EmbedBuilder builder = new EmbedBuilder();
 		String avatar = user.getEffectiveAvatarUrl();

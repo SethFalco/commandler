@@ -1,6 +1,7 @@
 package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.events.MessageEvent;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -30,9 +31,15 @@ public class MetaCommand {
 
         Param[] params = method.getAnnotationsByType(Param.class);
         Parameter[] parameters = method.getParameters();
+        int offset = 0;
 
-        for (int i = 1; i < parameters.length; i++) {
-            MetaParam meta = MetaParam.of(parameters[i], params[i - 1]);
+        for (int i = 0; i < parameters.length; i++) {
+            if (parameters[i].getType() == MessageEvent.class) {
+                offset++;
+                continue;
+            }
+
+            MetaParam meta = MetaParam.of(parameters[i], params[i - offset]);
             this.params.add(meta);
         }
     }

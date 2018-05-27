@@ -1,7 +1,6 @@
-package com.elypia.commandler.jda.events;
+package com.elypia.commandler.events;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.jda.annotations.Reaction;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -15,7 +14,7 @@ import java.util.regex.*;
 
 public class MessageEvent {
 
-	private static final String COMMAND_REGEX = "(?i)^(?:<@!?%s>|%s)\\s{0,2}(?<module>[A-Z]+)(?:\\.(?<submodule>[A-Z]+))?(?: (?<command>[A-Z]+))?(?: (?<params>.*))?";
+	private static final String COMMAND_REGEX = "(?i)^(?:<@!?%s>|%s)\\s{0,2}(?<module>[A-Z]+)(?:\\.(?<submodule>[A-Z]+))?(?: (?<command>.+?))?(?: (?<params>.*))?";
 	private static final Pattern PARAM_PATTERN = Pattern.compile("(?<quotes>\\b(?<=\")(?:\\\\\"|[^\"])*(?=\"))|(?<args>[^\\s\",]+(?:\\s*,\\s*[^\\s\",]+)*)");
 
 	private MessageReceivedEvent event;

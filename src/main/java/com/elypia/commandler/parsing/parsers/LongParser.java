@@ -1,11 +1,13 @@
 package com.elypia.commandler.parsing.parsers;
 
-import com.elypia.commandler.parsing.impl.IParser;
+import com.elypia.commandler.data.SearchScope;
+import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.parsing.impl.JDAParser;
 
-public class LongParser implements IParser<Long> {
+public class LongParser extends JDAParser<Long> {
 
     @Override
-    public Long parse(String input) throws IllegalArgumentException {
+    public Long parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
         try {
             return Long.parseLong(input);
         } catch (NumberFormatException ex){
