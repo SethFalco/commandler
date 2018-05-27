@@ -7,10 +7,13 @@ import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.annotations.access.Scope;
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.events.MessageEvent;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.elypia.commandler.data.SearchScope.LOCAL;
 import static net.dv8tion.jda.core.entities.ChannelType.TEXT;
@@ -27,13 +30,18 @@ public class VoiceModule extends CommandHandler {
     @Param(name = "channel", help = "The channel(s) to mention users from.")
     public String mention(MessageEvent event, @Search(LOCAL) VoiceChannel[] channels) {
         Set<Member> members = new HashSet<>();
-        StringJoiner joiner = new StringJoiner(" | ");
-        Arrays.stream(channels).filter(Objects::nonNull).forEach(o -> members.addAll(o.getMembers()));
+        Arrays.stream(channels).map(VoiceChannel::getMembers).forEach(members::addAll);
+        Set<User> users = members.stream().map(Member::getUser).filter(o -> !o.isBot()).collect(Collectors.toSet());
 
-        for (Member member : members) {
-            if (!member.getUser().isBot() && member != event.getMessageEvent().getMember())
-                joiner.add(member.getAsMention());
-        }
+         if (users.remove(event.getMessageEvent().getAuthor())) {
+             if (users.size() == 0) {
+                 String there = channels.length == 1 ? "there" : "those";
+                 return String.format("But... you're the only user in %s? ^-^'", there);
+             }
+         }
+
+        StringJoiner joiner = new StringJoiner(" | ");
+        users.forEach(o -> joiner.add(o.getAsMention()));
 
         return joiner.length() == 0 ? "Wait... who should I be mentioning?" : joiner.toString();
     }
