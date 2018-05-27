@@ -10,6 +10,7 @@ import com.elypia.commandler.parsing.parsers.jda.*;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,7 @@ public class Parser {
 
         registerParser(Emote.class, new EmoteParser(jda));
         registerParser(Guild.class, new GuildParser(jda));
+        registerParser(User.class, new UserParser(jda));
         registerParser(Role.class, new RoleParser(jda));
         registerParser(TextChannel.class, new TextChannelParser(jda));
         registerParser(VoiceChannel.class, new VoiceChannelParser(jda));
@@ -45,9 +47,9 @@ public class Parser {
     }
 
     public Object parseParam(MessageEvent event, MetaParam param, Object object) throws IllegalArgumentException {
-        Class<?> clazz = param.getParameter().getType();
-        boolean array = clazz.isArray();
-        SearchScope scope = null;
+        Class<?> clazz = param.getParameter().getType(); // Class of type required
+        boolean array = clazz.isArray(); // Is type required an array
+        SearchScope scope = null; // The search scope if applicable
 
         Search search = param.getParameter().getAnnotation(Search.class);
 
@@ -55,11 +57,11 @@ public class Parser {
             scope = search.value();
 
         if (clazz.isArray()) {
-            String[] input = array ? (String[])object : new String[] {(String)object};
-            Object[] objects = new Object[input.length];
+            String[] input = object.getClass().isArray() ? (String[])object : new String[] {(String)object};
+            Object[] objects = (Object[])Array.newInstance(clazz.getComponentType(), input.length);
 
             for (int i = 0; i < input.length; i++)
-                objects[i] = parsers.get(clazz).parse(event, scope, input[i]);
+                objects[i] = parsers.get(clazz.getComponentType()).parse(event, scope, input[i]);
 
             return objects;
         } else {

@@ -104,6 +104,7 @@ public class Dispatcher extends ListenerAdapter {
                     channel.sendMessage(message.toString()).queue();
 
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                ex.printStackTrace();
                 event.reply("Sorry! Something went wrong and I was unable to perform that commands.");
             }
         } catch (IllegalArgumentException | IllegalAccessException ex) {

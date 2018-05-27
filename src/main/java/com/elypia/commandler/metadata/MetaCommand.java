@@ -36,6 +36,9 @@ public class MetaCommand {
         for (int i = 0; i < parameters.length; i++) {
             if (parameters[i].getType() == MessageEvent.class) {
                 offset++;
+
+                MetaParam meta = MetaParam.of(parameters[i], null);
+                this.params.add(meta);
                 continue;
             }
 
