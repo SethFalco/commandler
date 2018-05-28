@@ -2,22 +2,16 @@ package com.elypia.commandler.parsing.parsers.jda;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.impl.JDAParser;
-import net.dv8tion.jda.core.JDA;
+import com.elypia.commandler.parsing.ParamParser;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.VoiceChannel;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class UserParser extends JDAParser<User> {
-
-    public UserParser(JDA jda) {
-        super(jda);
-    }
+public class UserParser implements ParamParser<User> {
 
     @Override
     public User parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
@@ -25,7 +19,7 @@ public class UserParser extends JDAParser<User> {
 
         switch (scope) {
             case GLOBAL:
-                users.addAll(jda.getUsers());
+                users.addAll(event.getMessageEvent().getJDA().getUsers());
                 break;
 
             case MUTUAL:

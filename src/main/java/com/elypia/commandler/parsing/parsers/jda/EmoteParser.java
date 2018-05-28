@@ -2,8 +2,7 @@ package com.elypia.commandler.parsing.parsers.jda;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.impl.JDAParser;
-import net.dv8tion.jda.core.JDA;
+import com.elypia.commandler.parsing.ParamParser;
 import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
@@ -12,22 +11,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EmoteParser extends JDAParser<Emote> {
-
-    public EmoteParser(JDA jda) {
-        super(jda);
-    }
+public class EmoteParser implements ParamParser<Emote> {
 
     @Override
     public Emote parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
         final Set<Emote> emotes = new HashSet<>();
 
-        if (event != null)
-            emotes.addAll(event.getMessageEvent().getMessage().getEmotes());
+        emotes.addAll(event.getMessageEvent().getMessage().getEmotes());
 
         switch (scope) {
             case GLOBAL:
-                emotes.addAll(jda.getEmotes());
+                emotes.addAll(event.getMessageEvent().getJDA().getEmotes());
                 break;
 
             case MUTUAL:

@@ -2,9 +2,9 @@ package com.elypia.commandler.parsing.parsers;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.impl.JDAParser;
+import com.elypia.commandler.parsing.ParamParser;
 
-public class BooleanParser extends JDAParser<Boolean> {
+public class BooleanParser implements ParamParser<Boolean> {
 
     private static final String[] BOOLEAN = {
         "true",
@@ -16,7 +16,7 @@ public class BooleanParser extends JDAParser<Boolean> {
     };
 
     @Override
-    public Boolean parse(MessageEvent event, SearchScope scope, String input) {
+    public Boolean parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
         for (String bool : BOOLEAN) {
             if (bool.equalsIgnoreCase(input))
                 return true;

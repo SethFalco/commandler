@@ -2,8 +2,7 @@ package com.elypia.commandler.parsing.parsers.jda;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.impl.JDAParser;
-import net.dv8tion.jda.core.JDA;
+import com.elypia.commandler.parsing.ParamParser;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
@@ -11,11 +10,7 @@ import net.dv8tion.jda.core.entities.User;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class RoleParser extends JDAParser<Role> {
-
-    public RoleParser(JDA jda) {
-        super(jda);
-    }
+public class RoleParser implements ParamParser<Role> {
 
     @Override
     public Role parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
@@ -23,7 +18,7 @@ public class RoleParser extends JDAParser<Role> {
 
         switch (scope) {
             case GLOBAL:
-                roles.addAll(jda.getRoles());
+                roles.addAll(event.getMessageEvent().getJDA().getRoles());
                 break;
 
             case MUTUAL:

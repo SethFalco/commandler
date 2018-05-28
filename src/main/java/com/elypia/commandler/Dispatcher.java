@@ -6,11 +6,8 @@ import com.elypia.commandler.metadata.MetaCommand;
 import com.elypia.commandler.metadata.MetaModule;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.parsing.Parser;
-import com.elypia.commandler.senders.Sender;
+import com.elypia.commandler.sending.Sender;
 import com.elypia.commandler.validation.Validator;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -30,14 +27,14 @@ public class Dispatcher extends ListenerAdapter {
 
     public Dispatcher(final Commandler commandler) {
         this.commandler = commandler;
-        this.parser = new Parser(commandler.getJDA());
-        this.sender = new Sender(commandler.getJDA());
+        this.parser = new Parser();
+        this.sender = new Sender();
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent messageEvent) {
         MessageChannel channel = messageEvent.getChannel();
-        MessageEvent event = new MessageEvent(messageEvent, commandler.getPrefix());
+        MessageEvent event = new MessageEvent(messageEvent, commandler.getConfiler());
 
         if (!event.isValid())
             return;
@@ -45,7 +42,7 @@ public class Dispatcher extends ListenerAdapter {
         CommandHandler handler = null;
 
         for (CommandHandler h : commandler.getHandlers()) {
-            MetaModule m = MetaModule.of(h);
+            MetaModule m = h.getModule();
 
             if (Arrays.asList(m.getModule().aliases()).contains(event.getModule())) {
                 handler = h;
@@ -57,7 +54,7 @@ public class Dispatcher extends ListenerAdapter {
 
         if (handler == null) {
             for (CommandHandler h : commandler.getHandlers()) {
-                MetaModule m = MetaModule.of(h);
+                MetaModule m = h.getModule();
 
                 for (MetaCommand c : m.getCommands()) {
                     if (c.isStatic()) {
@@ -142,5 +139,13 @@ public class Dispatcher extends ListenerAdapter {
         }
 
         return objects;
+    }
+
+    public Parser getParser() {
+        return parser;
+    }
+
+    public Sender getSender() {
+        return sender;
     }
 }

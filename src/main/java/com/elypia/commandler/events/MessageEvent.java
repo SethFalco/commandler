@@ -1,23 +1,20 @@
 package com.elypia.commandler.events;
 
+import com.elypia.commandler.confiler.Confiler;
 import com.elypia.commandler.annotations.*;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.regex.*;
 
 public class MessageEvent {
 
-	private static final String COMMAND_REGEX = "(?i)^(?:<@!?%s>|%s)\\s{0,2}(?<module>[A-Z]+)(?:\\.(?<submodule>[A-Z]+))?(?: (?<command>.+?))?(?: (?<params>.*))?";
-	private static final Pattern PARAM_PATTERN = Pattern.compile("(?<quotes>\\b(?<=\")(?:\\\\\"|[^\"])*(?=\"))|(?<args>[^\\s\",]+(?:\\s*,\\s*[^\\s\",]+)*)");
-
 	private MessageReceivedEvent event;
+
 
 	private boolean isValid;
 	private String module;
@@ -29,19 +26,18 @@ public class MessageEvent {
 	private Command annotation;
 
 	private Message reply;
+	private Confiler confiler;
 
-	public MessageEvent(MessageReceivedEvent event, String prefix) {
-		this(event, prefix, event.getMessage().getContentRaw());
+	public MessageEvent(MessageReceivedEvent event, Confiler confiler) {
+		this(event, confiler, event.getMessage().getContentRaw());
 	}
 
-	public MessageEvent(MessageReceivedEvent event, String prefix, String content) {
+	public MessageEvent(MessageReceivedEvent event, Confiler confiler, String content) {
 		this.event = event;
 		params = new ArrayList<>();
+		this.confiler = confiler;
 
-		String id = event.getJDA().getSelfUser().getId();
-		String regex = String.format(COMMAND_REGEX, id, prefix);
-
-		Pattern pattern = Pattern.compile(regex);
+		Pattern pattern = confiler.getCommandRegex(event);
 		Matcher matcher = pattern.matcher(content);
 
 		isValid = matcher.matches();
@@ -65,7 +61,7 @@ public class MessageEvent {
 
 		// Due to change.
 		if (parameters != null) {
-			matcher = PARAM_PATTERN.matcher(parameters);
+			matcher = confiler.getParamRegex(event).matcher(parameters);
 
 			while (matcher.find()) {
 				String quotes = matcher.group("quotes");

@@ -2,19 +2,14 @@ package com.elypia.commandler.parsing.parsers.jda;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.impl.JDAParser;
-import net.dv8tion.jda.core.JDA;
+import com.elypia.commandler.parsing.ParamParser;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class GuildParser extends JDAParser<Guild> {
-
-    public GuildParser(JDA jda) {
-        super(jda);
-    }
+public class GuildParser implements ParamParser<Guild> {
 
     @Override
     public Guild parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
@@ -22,7 +17,7 @@ public class GuildParser extends JDAParser<Guild> {
 
         switch (scope) {
             case GLOBAL:
-                guilds.addAll(jda.getGuilds());
+                guilds.addAll(event.getMessageEvent().getJDA().getGuilds());
                 break;
 
             case MUTUAL:

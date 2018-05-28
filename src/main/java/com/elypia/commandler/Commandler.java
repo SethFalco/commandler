@@ -1,6 +1,10 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Module;
+import com.elypia.commandler.confiler.Confiler;
+import com.elypia.commandler.confiler.DefaultConfiler;
+import com.elypia.commandler.parsing.ParamParser;
+import com.elypia.commandler.sending.MessageSender;
 import net.dv8tion.jda.core.JDA;
 
 import java.util.ArrayList;
@@ -18,7 +22,7 @@ public class Commandler {
 
     /**
      * The JDA instance to retrieve and process messages from.
-     * JDACommandler will create a {@link Dispatcher} and register
+     * Commandler will create a {@link Dispatcher} and register
      * it to this JDA instance in order to process commands to modules
      * registered via {@link #registerModule(CommandHandler)}.
      */
@@ -30,7 +34,7 @@ public class Commandler {
      * This will assume the value of <em>!</em> if not specified.
      */
 
-    private final String prefix;
+    private final Confiler confiler;
 
     /**
      * All registered modules / command handlers with this JDACommandler.
@@ -38,15 +42,17 @@ public class Commandler {
 
     private Collection<CommandHandler> handlers;
 
+    private Dispatcher dispatcher;
+
     /**
-     * See {@link #Commandler(JDA, String)}
+     * See {@link #Commandler(JDA, Confiler)}
      * Creates a JDACommandler instance with the default prefix as "!".
      *
      * @param jda The JDA instance to register the {@link Dispatcher}.
      */
 
     public Commandler(final JDA jda) {
-        this(jda, "!");
+        this(jda, new DefaultConfiler());
     }
 
     /**
@@ -55,15 +61,16 @@ public class Commandler {
      * per event is registered.
      *
      * @param jda The JDA instance to register the {@link Dispatcher}.
-     * @param prefix The <strong>default</strong> prefix for command handling.
+     * @param confiler The <strong>default</strong> prefix for command handling.
      */
 
-    public Commandler(final JDA jda, final String prefix) {
+    public Commandler(final JDA jda, Confiler confiler) {
         this.jda = jda;
-        this.prefix = prefix;
+        this.confiler = confiler;
         handlers = new ArrayList<>();
 
-        jda.addEventListener(new Dispatcher(this));
+        dispatcher = new Dispatcher(this);
+        jda.addEventListener(dispatcher);
     }
 
     /**
@@ -109,6 +116,14 @@ public class Commandler {
         handlers.add(handler);
     }
 
+    public <T> void registerParser(Class<T> clazz, ParamParser<T> parser) {
+        dispatcher.getParser().registerParser(clazz, parser);
+    }
+
+    public <T> void registerSender(Class<T> clazz, MessageSender<T> sender) {
+        dispatcher.getSender().registerSender(clazz, sender);
+    }
+
     public JDA getJDA() {
         return jda;
     }
@@ -117,8 +132,8 @@ public class Commandler {
      * @return The default / global prefix.
      */
 
-    public String getPrefix() {
-        return prefix;
+    public Confiler getConfiler() {
+        return confiler;
     }
 
     public Collection<CommandHandler> getHandlers() {

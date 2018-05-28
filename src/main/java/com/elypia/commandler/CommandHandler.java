@@ -13,11 +13,17 @@ public abstract class CommandHandler {
 
 	protected JDA jda;
 
+	protected MetaModule module;
+
 	/**
 	 * If this module is enabled or out of service.
 	 */
 
 	protected boolean enabled;
+
+	public CommandHandler() {
+		module = MetaModule.of(this);
+	}
 
 	public boolean test() {
 		return true;
@@ -25,21 +31,20 @@ public abstract class CommandHandler {
 
 	@Command(aliases = "help", help = "Displays all help information for commands in the module.")
 	public Object help() {
-		MetaModule meta = MetaModule.of(this);
-		Module module = meta.getModule();
+		Module annotation = module.getModule();
 
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setTitle(module.name());
+		builder.setTitle(annotation.name());
 
 		StringJoiner joiner = new StringJoiner(", ");
 
-		for (String string : module.aliases())
+		for (String string : annotation.aliases())
 			joiner.add("`" + string + "`");
 
-		String description = "**Aliases**: " + joiner.toString() + "\n" + module.description();
+		String description = "**Aliases**: " + joiner.toString() + "\n" + annotation.description();
 		builder.setDescription(description);
 
-		meta.getCommands().forEach(metaCommand -> {
+		module.getCommands().forEach(metaCommand -> {
 			Command command = metaCommand.getCommand();
 
 			if (!command.help().isEmpty())
@@ -59,5 +64,9 @@ public abstract class CommandHandler {
 
 	public void setJDA(JDA jda) {
 		this.jda = jda;
+	}
+
+	public MetaModule getModule() {
+		return module;
 	}
 }
