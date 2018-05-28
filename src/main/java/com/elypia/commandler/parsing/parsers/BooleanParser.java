@@ -2,9 +2,9 @@ package com.elypia.commandler.parsing.parsers;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.ParamParser;
+import com.elypia.commandler.parsing.IParamParser;
 
-public class BooleanParser implements ParamParser<Boolean> {
+public class BooleanParser implements IParamParser<Boolean> {
 
     private static final String[] BOOLEAN = {
         "true",

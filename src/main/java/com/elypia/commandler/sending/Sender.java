@@ -6,20 +6,16 @@ import com.elypia.commandler.sending.senders.EmbedBuilderSender;
 import com.elypia.commandler.sending.senders.MessageBuilderSender;
 import com.elypia.commandler.sending.senders.StringSender;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.requests.restaction.MessageAction;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class Sender {
 
-    protected Map<Class<?>, MessageSender> senders;
+    protected Map<Class<?>, IMessageSender> senders;
 
     public Sender() {
         this(true);
@@ -36,7 +32,7 @@ public class Sender {
         }
     }
 
-    public <T> void registerSender(Class<T> t, MessageSender<T> parser) {
+    public <T> void registerSender(Class<T> t, IMessageSender<T> parser) {
         if (senders.keySet().contains(t))
             throw new IllegalArgumentException("Sender for this type of object has already been registered.");
 
@@ -45,7 +41,7 @@ public class Sender {
 
     public void sendAsMessage(MessageEvent event, Object object, Consumer<Message> success) throws IllegalArgumentException {
         Class<?> clazz = object.getClass();
-        MessageSender sender;
+        IMessageSender sender;
 
         if (clazz.isArray()) {
             Class<?> type = clazz.getComponentType();

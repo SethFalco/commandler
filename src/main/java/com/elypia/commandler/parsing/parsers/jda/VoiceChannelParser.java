@@ -2,7 +2,7 @@ package com.elypia.commandler.parsing.parsers.jda;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.ParamParser;
+import com.elypia.commandler.parsing.IParamParser;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class VoiceChannelParser implements ParamParser<VoiceChannel> {
+public class VoiceChannelParser implements IParamParser<VoiceChannel> {
 
     @Override
     public VoiceChannel parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {

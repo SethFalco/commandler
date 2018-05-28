@@ -2,7 +2,7 @@ package com.elypia.commandler.parsing.parsers.jda;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.ParamParser;
+import com.elypia.commandler.parsing.IParamParser;
 import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EmoteParser implements ParamParser<Emote> {
+public class EmoteParser implements IParamParser<Emote> {
 
     @Override
     public Emote parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {

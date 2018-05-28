@@ -1,14 +1,19 @@
 package com.elypia.commandler.validation;
 
-import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.annotations.validation.Length;
 import com.elypia.commandler.annotations.validation.Limit;
-import com.elypia.commandler.validation.impl.IParamValidator;
+import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.metadata.MetaCommand;
+import com.elypia.commandler.metadata.MetaParam;
+import com.elypia.commandler.validation.validators.LengthValidator;
+import com.elypia.commandler.validation.validators.LimitValidator;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Vaidates annotations associated with command paremeters to ensure
@@ -18,49 +23,43 @@ import java.util.*;
 
 public class Validator {
 
-    private Map<Annotation, IParamValidator> paramValidators;
+    private Map<Class<? extends Annotation>, IValidator> validators;
 
     public Validator() {
-        paramValidators = new HashMap<>();
+        this(true);
     }
 
-    public void registerValidator(IParamValidator validator) {
-//        paramValidators.add(validator);
-    }
+    public Validator(boolean auto) {
+        validators = new HashMap<>();
 
-    public static void validate(MessageEvent event, Method method, Object[] args) throws IllegalArgumentException, IllegalAccessException {
-        MetaCommand command = MetaCommand.of(method);
-
-        validateCommand(event, command);
-        validateParameters(command, args);
-    }
-
-    private static void validateCommand(MessageEvent event, MetaCommand command) throws IllegalAccessException {
-        Annotation[] annotations = command.getMethod().getAnnotations();
-
-        for (Annotation annotation : annotations) {
-//            if (annotation instanceof Permissions)
-//                validatePermissions(event, (Permissions)annotation);
+        if (auto) {
+            registerValidator(Length.class, new LengthValidator());
+            registerValidator(Limit.class, new LimitValidator());
         }
     }
 
-//    private static void validatePermissions(MessageEvent event, Permissions annotation) throws IllegalAccessException {
-//
-//    }
+    public void registerValidator(Class<? extends Annotation> clazz, IValidator validator) {
+        if (validators.keySet().contains(clazz))
+            throw new IllegalArgumentException("Validator for this type of annotation has already been registered.");
 
-    private static void validateParameters(MetaCommand command, Object[] args) throws IllegalArgumentException {
+        validators.put(clazz, validator);
+    }
+
+    public void validate(MessageEvent event, Method method, Object[] args) throws IllegalArgumentException, IllegalAccessException {
+        MetaCommand command = MetaCommand.of(method);
         List<MetaParam> params = command.getParams();
 
         for (int i = 0; i < params.size(); i++) {
             MetaParam parameter = params.get(i);
-            Parameter p = parameter.getParameter();
+            Annotation[] annotations = parameter.getAnnotations();
 
-            if (p.isAnnotationPresent(Limit.class)) {
-                long d = (int)args[i + 1];
-                Limit limit = p.getAnnotation(Limit.class);
-                Param param = parameter.getParams();
+            for (int ii = 0; ii < annotations.length; ii++) {
+                Annotation a = annotations[ii];
+                Class<?> clazz = a.annotationType();
+                IValidator validator = validators.get(clazz);
 
-//                validateLimit(d, limit, param);
+                if (validator != null)
+                    validator.validate(args[i].getClass().cast(args[i]), a, parameter);
             }
         }
     }

@@ -2,9 +2,9 @@ package com.elypia.commandler.parsing.parsers;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.parsing.ParamParser;
+import com.elypia.commandler.parsing.IParamParser;
 
-public class LongParser implements ParamParser<Long> {
+public class LongParser implements IParamParser<Long> {
 
     @Override
     public Long parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {

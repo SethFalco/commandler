@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class Parser {
 
-    protected Map<Class<?>, ParamParser> parsers;
+    protected Map<Class<?>, IParamParser> parsers;
 
     public Parser() {
         this(true);
@@ -41,7 +41,7 @@ public class Parser {
         }
     }
 
-    public <T> void registerParser(Class<T> t, ParamParser<T> parser) {
+    public <T> void registerParser(Class<T> t, IParamParser<T> parser) {
         if (parsers.keySet().contains(t))
             throw new IllegalArgumentException("Parser for this type of object has already been registered.");
 

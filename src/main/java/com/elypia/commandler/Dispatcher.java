@@ -24,11 +24,13 @@ public class Dispatcher extends ListenerAdapter {
     private final Commandler commandler;
     private final Parser parser;
     private final Sender sender;
+    private final Validator validator;
 
     public Dispatcher(final Commandler commandler) {
         this.commandler = commandler;
         this.parser = new Parser();
         this.sender = new Sender();
+        this.validator = new Validator();
     }
 
     @Override
@@ -87,16 +89,19 @@ public class Dispatcher extends ListenerAdapter {
 
         try {
             Object[] params = parseParameters(event, method);
-            Validator.validate(event, method, params);
+            validator.validate(event, method, params);
 
             try {
                 Object message = method.invoke(handler, params);
-                sender.sendAsMessage(event, message, o -> {
-                    Reaction[] reactions = method.getAnnotationsByType(Reaction.class);
 
-                    for (Reaction reaction : reactions)
-                        o.addReaction(reaction.alias()).queue();
-                });
+                if (message != null) {
+                    sender.sendAsMessage(event, message, o -> {
+                        Reaction[] reactions = method.getAnnotationsByType(Reaction.class);
+
+                        for (Reaction reaction : reactions)
+                            o.addReaction(reaction.alias()).queue();
+                    });
+                }
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 ex.printStackTrace();
                 channel.sendMessage("Sorry! Something went wrong and I was unable to perform that commands.").queue();

@@ -1,14 +1,14 @@
 package com.elypia.commandler.sending.senders;
 
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.sending.MessageSender;
+import com.elypia.commandler.sending.IMessageSender;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.requests.restaction.MessageAction;
 
 import java.awt.*;
 
-public class EmbedBuilderSender implements MessageSender<EmbedBuilder> {
+public class EmbedBuilderSender implements IMessageSender<EmbedBuilder> {
 
     @Override
     public MessageAction send(MessageEvent event, EmbedBuilder toSend) {

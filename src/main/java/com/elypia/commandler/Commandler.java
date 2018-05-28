@@ -3,8 +3,8 @@ package com.elypia.commandler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.confiler.Confiler;
 import com.elypia.commandler.confiler.DefaultConfiler;
-import com.elypia.commandler.parsing.ParamParser;
-import com.elypia.commandler.sending.MessageSender;
+import com.elypia.commandler.parsing.IParamParser;
+import com.elypia.commandler.sending.IMessageSender;
 import net.dv8tion.jda.core.JDA;
 
 import java.util.ArrayList;
@@ -116,11 +116,11 @@ public class Commandler {
         handlers.add(handler);
     }
 
-    public <T> void registerParser(Class<T> clazz, ParamParser<T> parser) {
+    public <T> void registerParser(Class<T> clazz, IParamParser<T> parser) {
         dispatcher.getParser().registerParser(clazz, parser);
     }
 
-    public <T> void registerSender(Class<T> clazz, MessageSender<T> sender) {
+    public <T> void registerSender(Class<T> clazz, IMessageSender<T> sender) {
         dispatcher.getSender().registerSender(clazz, sender);
     }
 
