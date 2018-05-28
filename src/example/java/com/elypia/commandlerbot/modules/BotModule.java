@@ -34,8 +34,14 @@ public class BotModule extends CommandHandler {
 
     @Static
     @Command(aliases = "pong")
+    @Reaction(alias = "\uD83D\uDD01", help = "Want to keep ponging?")
     public String pong() {
         return "ping!";
+    }
+
+    @ReactionCommand(reaction = "\uD83D\uDD01", event = "pong")
+    public String repeatPong() {
+        return pong();
     }
 
     @Command(aliases = "say", help = "Repeat after me...")

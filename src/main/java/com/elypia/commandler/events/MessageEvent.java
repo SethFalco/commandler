@@ -86,39 +86,6 @@ public class MessageEvent {
 		}
 	}
 
-	public void reply(Object body) {
-		event.getChannel().sendMessage(body.toString()).queue(this::afterReply);
-	}
-
-	public void reply(EmbedBuilder builder) {
-		reply(builder, null);
-	}
-
-	public void reply(EmbedBuilder builder, Consumer<Message> consumer) {
-		Guild guild = event.getGuild();
-
-		if (guild != null) {
-			Color color = guild.getSelfMember().getColor();
-			builder.setColor(color);
-		}
-
-		event.getChannel().sendMessage(builder.build()).queue(msg -> {
-			if (consumer != null)
-				consumer.accept(msg);
-
-			afterReply(msg);
-		});
-	}
-
-	private void afterReply(Message message) {
-//		reply = message;
-//
-//		Reaction[] reactions = method.getAnnotationsByType(Reaction.class);
-//
-//		for (Reaction reaction : reactions)
-//			message.addReaction(reaction.alias()).queue();
-	}
-
 	public void tryDeleteMessage() {
 		if (canDeleteMessage())
 			event.getMessage().delete().queue();

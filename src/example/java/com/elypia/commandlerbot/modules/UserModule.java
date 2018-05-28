@@ -33,7 +33,7 @@ public class UserModule extends CommandHandler {
 	@CommandGroup("info")
 	@Command(aliases = "info", help = "Get some basic information on the user!")
 	@Param(name = "user", help = "The user to display information for.")
-	public void getInfo(MessageEvent event, @Search(LOCAL) User user) {
+	public EmbedBuilder getInfo(MessageEvent event, @Search(LOCAL) User user) {
 		EmbedBuilder builder = new EmbedBuilder();
 		String avatar = user.getEffectiveAvatarUrl();
 		DateTimeFormatter format = DateTimeFormatter.ISO_LOCAL_DATE;
@@ -65,6 +65,6 @@ public class UserModule extends CommandHandler {
 
 		builder.setFooter("ID: " + user.getId(), null);
 
-		event.reply(builder);
+		return builder;
 	}
 }

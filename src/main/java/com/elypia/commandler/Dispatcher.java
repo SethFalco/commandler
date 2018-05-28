@@ -1,10 +1,12 @@
 package com.elypia.commandler;
 
+import com.elypia.commandler.annotations.Reaction;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.MetaCommand;
 import com.elypia.commandler.metadata.MetaModule;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.parsing.Parser;
+import com.elypia.commandler.senders.Sender;
 import com.elypia.commandler.validation.Validator;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -24,10 +26,12 @@ public class Dispatcher extends ListenerAdapter {
 
     private final Commandler commandler;
     private final Parser parser;
+    private final Sender sender;
 
     public Dispatcher(final Commandler commandler) {
         this.commandler = commandler;
         this.parser = new Parser(commandler.getJDA());
+        this.sender = new Sender(commandler.getJDA());
     }
 
     @Override
@@ -73,14 +77,14 @@ public class Dispatcher extends ListenerAdapter {
             if (handler == null)
                 return;
 
-            event.reply("Sorry, that command doesn't exist, try help?");
+            channel.sendMessage("Sorry, that command doesn't exist, try help?").queue();
             return;
         }
 
         Method method = CommandUtils.getByParamCount(event, commands);
 
         if (method == null) {
-            event.reply("Those parameters don't look right. DX Try help?");
+            channel.sendMessage("Those parameters don't look right. DX Try help?").queue();
             return;
         }
 
@@ -90,25 +94,18 @@ public class Dispatcher extends ListenerAdapter {
 
             try {
                 Object message = method.invoke(handler, params);
+                sender.sendAsMessage(event, message, o -> {
+                    Reaction[] reactions = method.getAnnotationsByType(Reaction.class);
 
-                if (message instanceof Message)
-                    channel.sendMessage((Message)message).queue();
-
-                else if (message instanceof MessageBuilder)
-                    channel.sendMessage(((MessageBuilder)message).build()).queue();
-
-                else if (message instanceof EmbedBuilder)
-                    channel.sendMessage(((EmbedBuilder)message).build()).queue();
-
-                else
-                    channel.sendMessage(message.toString()).queue();
-
+                    for (Reaction reaction : reactions)
+                        o.addReaction(reaction.alias()).queue();
+                });
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 ex.printStackTrace();
-                event.reply("Sorry! Something went wrong and I was unable to perform that commands.");
+                channel.sendMessage("Sorry! Something went wrong and I was unable to perform that commands.").queue();
             }
         } catch (IllegalArgumentException | IllegalAccessException ex) {
-            event.reply(ex.getMessage());
+            channel.sendMessage(ex.getMessage()).queue();
         }
     }
 

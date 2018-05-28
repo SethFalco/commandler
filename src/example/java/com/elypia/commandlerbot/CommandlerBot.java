@@ -17,6 +17,7 @@ public class CommandlerBot {
         commandler.registerModules(
             new BotModule(),
             new EmotesModule(),
+            new ExampleModule(),
             new GuildModule(),
             new UserModule(),
             new UtilModule(),

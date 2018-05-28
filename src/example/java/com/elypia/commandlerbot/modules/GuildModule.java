@@ -8,6 +8,7 @@ import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.annotations.access.Permissions;
 import com.elypia.commandler.annotations.access.Scope;
 import com.elypia.commandler.annotations.filter.Search;
+import com.elypia.commandler.annotations.validation.Limit;
 import com.elypia.commandler.events.MessageEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -46,7 +47,7 @@ public class GuildModule extends CommandHandler {
         return builder;
     }
 
-    @Permissions(Permission.MANAGE_SERVER)
+    @Permissions({Permission.MESSAGE_MANAGE, Permission.MESSAGE_HISTORY})
     @Scope(ChannelType.TEXT)
     @CommandGroup("prune")
     @Command(aliases = "prune", help = "Delete messages in the guild in bulk.")
@@ -55,17 +56,12 @@ public class GuildModule extends CommandHandler {
         prune(event, count, event.getMessageEvent().getTextChannel());
     }
 
-    @Permissions(Permission.MANAGE_SERVER)
+    @Permissions({Permission.MESSAGE_MANAGE, Permission.MESSAGE_HISTORY})
     @Scope(ChannelType.TEXT)
     @CommandGroup("prune")
     @Param(name = "count", help = "The number of messages to delete.")
     @Param(name = "channel", help = "The channel to delete messages in.")
-    public void prune(MessageEvent event, int count, TextChannel channel) {
-        if (count < 2 || count > 100) {
-            event.reply("Please specify between 2 and 100 messages.");
-            return;
-        }
-
+    public void prune(MessageEvent event, @Limit(min = 2, max = 100) int count, TextChannel channel) {
         channel.getHistoryBefore(event.getMessageEvent().getMessage(), count).queue(o -> {
             channel.deleteMessages(o.getRetrievedHistory()).queue(ob -> {
                 event.tryDeleteMessage();
