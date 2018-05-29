@@ -1,8 +1,8 @@
 ## Commandler
 [![Bintray Download](https://api.bintray.com/packages/elypia/Commandler/Commandler/images/download.svg)](https://bintray.com/elypia/Commandler/Commandler/_latestVersion)
 [![Documentation](https://img.shields.io/badge/Docs-Commandler-blue.svg)](https://commandler.elypia.com/)
-[![GitLab Pipeline Status](https://gitlab.com/Elypia/Commandler/badges/master/pipeline.svg)](https://gitlab.com/Elypia/Elypiai/commits/master)
-[![GitLab Coverage Report](https://gitlab.com/Elypia/Commandler/badges/master/coverage.svg)](https://gitlab.com/Elypia/Elypiai/commits/master)
+[![GitLab Pipeline Status](https://gitlab.com/Elypia/Commandler/badges/master/pipeline.svg)](https://gitlab.com/Elypia/Commandler/commits/master)
+[![GitLab Coverage Report](https://gitlab.com/Elypia/Commandler/badges/master/coverage.svg)](https://gitlab.com/Elypia/Commandler/commits/master)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WLA5BMC34SJVG)
 [![Discord](https://discordapp.com/api/guilds/184657525990359041/widget.png)](https://discord.gg/hprGMaM)
 
