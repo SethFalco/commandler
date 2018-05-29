@@ -101,7 +101,7 @@ publishing {
     }
 
     publications {
-        Elypiai(MavenPublication) {
+        Commandler(MavenPublication) {
             from components.java
             artifact sourcesJar
             artifact javadocJar
