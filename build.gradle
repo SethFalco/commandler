@@ -8,7 +8,7 @@ plugins {
 }
 
 String projectName = 'Commandler'
-String projectVersion = '1.0.0'
+String projectVersion = '1.0.1'
 String projectDescription = "Commandler is an command framework designed for Discord bots with JDA."
 String projectGit = 'https://gitlab.com/Elypia/Commandler.git'
 
@@ -133,6 +133,8 @@ dependencies {
 
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.2.0'
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.2.0'
+
+    exampleImplementation 'com.elypia:elypiai:1.0.5'
 
     exampleRuntimeOnly group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
 }

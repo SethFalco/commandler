@@ -19,6 +19,7 @@ public class CommandlerBot {
             new EmotesModule(),
             new ExampleModule(),
             new GuildModule(),
+            new UrbanDictionaryModule(),
             new UserModule(),
             new UtilModule(),
             new VoiceModule()
