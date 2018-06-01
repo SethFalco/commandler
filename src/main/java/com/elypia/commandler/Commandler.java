@@ -5,11 +5,12 @@ import com.elypia.commandler.confiler.Confiler;
 import com.elypia.commandler.confiler.DefaultConfiler;
 import com.elypia.commandler.parsing.IParamParser;
 import com.elypia.commandler.sending.IMessageSender;
-import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * This is the manager class which acts as the link between
@@ -52,6 +53,10 @@ public class Commandler {
 
     public Commandler(final JDA jda) {
         this(jda, new DefaultConfiler());
+    }
+
+    public Commandler(final JDA jda, String prefix) {
+        this(jda, new DefaultConfiler(prefix));
     }
 
     /**

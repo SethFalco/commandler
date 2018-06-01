@@ -55,8 +55,7 @@ public class Parser {
 
         Search search = param.getParameter().getAnnotation(Search.class);
 
-        if (search != null)
-            scope = search.value();
+        scope = search != null ? search.value() : SearchScope.GLOBAL;
 
         if (clazz.isArray()) {
             String[] input = object.getClass().isArray() ? (String[])object : new String[] {(String)object};

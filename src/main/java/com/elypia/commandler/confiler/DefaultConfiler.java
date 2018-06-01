@@ -6,9 +6,18 @@ import java.util.regex.Pattern;
 
 public class DefaultConfiler implements Confiler {
 
-    private static final String DEFAULT_PREFIX = "!";
     private static final String COMMAND_REGEX = "(?i)^(?:<@!?%s>|%s)\\s{0,2}(?<module>[A-Z]+)(?:\\.(?<submodule>[A-Z]+))?(?: (?<command>[^\\s]+))?(?: (?<params>.*))?";
     private static final Pattern PARAM_PATTERN = Pattern.compile("(?<quotes>\\b(?<=\")(?:\\\\\"|[^\"])*(?=\"))|(?<args>[^\\s\",]+(?:\\s*,\\s*[^\\s\",]+)*)");
+
+    private final String DEFAULT_PREFIX;
+
+    public DefaultConfiler() {
+        this("!");
+    }
+
+    public DefaultConfiler(String prefix) {
+        DEFAULT_PREFIX = prefix;
+    }
 
     @Override
     public Pattern getCommandRegex(MessageReceivedEvent event) {
