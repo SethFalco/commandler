@@ -1,20 +1,24 @@
 package com.elypia.commandler.events;
 
+import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.confiler.Confiler;
-import com.elypia.commandler.annotations.*;
-import net.dv8tion.jda.core.*;
-import net.dv8tion.jda.core.entities.*;
+import com.elypia.commandler.sending.Sender;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MessageEvent {
 
-	private MessageReceivedEvent event;
+	private Sender sender;
 
+	private MessageReceivedEvent event;
 
 	private boolean isValid;
 	private String module;
@@ -28,12 +32,13 @@ public class MessageEvent {
 	private Message reply;
 	private Confiler confiler;
 
-	public MessageEvent(MessageReceivedEvent event, Confiler confiler) {
-		this(event, confiler, event.getMessage().getContentRaw());
+	public MessageEvent(MessageReceivedEvent event, Sender sender, Confiler confiler) {
+		this(event, sender, confiler, event.getMessage().getContentRaw());
 	}
 
-	public MessageEvent(MessageReceivedEvent event, Confiler confiler, String content) {
+	public MessageEvent(MessageReceivedEvent event, Sender sender, Confiler confiler, String content) {
 		this.event = event;
+		this.sender = sender;
 		params = new ArrayList<>();
 		this.confiler = confiler;
 
@@ -80,6 +85,10 @@ public class MessageEvent {
 				}
 			}
 		}
+	}
+
+	public <T extends Object> void reply(T message) {
+		sender.sendAsMessage(this, message, null);
 	}
 
 	public void tryDeleteMessage() {

@@ -5,12 +5,11 @@ import com.elypia.commandler.confiler.Confiler;
 import com.elypia.commandler.confiler.DefaultConfiler;
 import com.elypia.commandler.parsing.IParamParser;
 import com.elypia.commandler.sending.IMessageSender;
+import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.User;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * This is the manager class which acts as the link between

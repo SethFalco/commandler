@@ -36,7 +36,7 @@ public class Dispatcher extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent messageEvent) {
         MessageChannel channel = messageEvent.getChannel();
-        MessageEvent event = new MessageEvent(messageEvent, commandler.getConfiler());
+        MessageEvent event = new MessageEvent(messageEvent, sender, commandler.getConfiler());
 
         if (!event.isValid())
             return;

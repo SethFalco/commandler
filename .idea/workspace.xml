@@ -1,41 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="49fa2074-001d-401b-9327-d5c2d217ff1e" name="Default" comment="- If command returns null, assume they sent a message via JDA message">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Length.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/validators/LengthValidator.java" afterDir="false" />
+    <list default="true" id="49fa2074-001d-401b-9327-d5c2d217ff1e" name="Default" comment="- Renamed interfaces to start with I&#10;- No longer send message is returned object is null from handler&#10;- Validator is now object, not static&#10;- Cleaned up validators, length validator is working, limit is broken (gets mad cause casting int to long)&#10;- Created lnegth validator&#10;- Created more test methods in examplebot">
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__com_elypia_elypiai_1_0_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__com_sedmelluq_lavaplayer_1_2_63.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__com_squareup_okhttp3_okhttp_3_8_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__com_squareup_okio_okio_1_13_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__net_dv8tion_JDA_3_6_0_356.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__org_apache_logging_log4j_log4j_api_2_11_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__org_json_json_20160810.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/894298062/commandler.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/894298062/commandler_example.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/894298062/commandler_main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/894298062/commandler_test.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/Commandler.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/Commandler_example.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/Commandler_main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/Commandler_test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__com_sedmelluq_lavaplayer_1_2_56.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__log4j_log4j_1_2_17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__net_dv8tion_JDA_3_5_1_353.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__org_aspectj_aspectjweaver_1_9_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/libraries/Gradle__org_slf4j_slf4j_log4j12_1_7_25.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/modules/Alexis_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/Alexis_main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/modules/Alexis_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/Alexis_test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/modules/Elypiai.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/.idea/modules/Elypiai.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/handlers/modules/BotHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/handlers/modules/BotHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/handlers/modules/DevHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/handlers/modules/DevHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/handlers/modules/YouTubeHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/handlers/modules/YouTubeHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/utils/BotUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/utils/BotUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/ExampleModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/ExampleModule.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/Commandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/Commandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/Dispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/Dispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Limit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Limit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/ParamParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/IParamParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/Parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/BooleanParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/BooleanParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/DoubleParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/DoubleParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/IntParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/IntParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/LongParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/LongParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/StringParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/StringParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/UrlParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/UrlParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/EmoteParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/EmoteParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/GuildParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/GuildParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/RoleParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/RoleParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/TextChannelParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/TextChannelParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/UserParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/UserParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/VoiceChannelParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/parsing/parsers/jda/VoiceChannelParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/MessageSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/IMessageSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/Sender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/Sender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/senders/DefaultSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/senders/DefaultSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/senders/EmbedBuilderSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/senders/EmbedBuilderSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/senders/MessageBuilderSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/senders/MessageBuilderSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/senders/StringSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/sending/senders/StringSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/Validator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/Validator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/impl/IParamValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/IValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/validators/LimitValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/validators/LimitValidator.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
+    <ignored path="$PROJECT_DIR$/../Alexis/.gradle/" />
+    <ignored path="$PROJECT_DIR$/../Alexis/build/" />
+    <ignored path="$PROJECT_DIR$/../Alexis/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,44 +57,79 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+    <option name="PARALLEL_COMPILATION" value="true" />
+  </component>
   <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/../Alexis">
+      <ProjectState />
+    </projectState>
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/../Alexis">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Alexis" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Alexis" type="f1a62948:ProjectNode" />
+                <item name="Alexis" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Alexis" type="f1a62948:ProjectNode" />
+                <item name="Alexis" type="2d1252cf:ModuleNode" />
+                <item name="Source Sets" type="e897c970:GradleViewContributor$SourceSetsNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Alexis" type="f1a62948:ProjectNode" />
+                <item name="Alexis" type="2d1252cf:ModuleNode" />
+                <item name="Source Sets" type="e897c970:GradleViewContributor$SourceSetsNode" />
+                <item name="main" type="396b929e:GradleViewContributor$SourceSetNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Alexis" type="f1a62948:ProjectNode" />
+                <item name="Alexis" type="2d1252cf:ModuleNode" />
+                <item name="Source Sets" type="e897c970:GradleViewContributor$SourceSetsNode" />
+                <item name="main" type="396b929e:GradleViewContributor$SourceSetNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Alexis" type="f1a62948:ProjectNode" />
+                <item name=":commandler" type="2d1252cf:ModuleNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="Validator.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/Validator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="49" column="39" lean-forward="true" selection-start-line="49" selection-start-column="39" selection-end-line="49" selection-end-column="39" />
-              <folding>
-                <element signature="e#669#670#0" expanded="true" />
-                <element signature="e#688#689#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CommandHandler.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/CommandHandler.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="24" column="28" lean-forward="true" selection-start-line="24" selection-start-column="28" selection-end-line="24" selection-end-column="28" />
-              <folding>
-                <element signature="e#546#547#0" expanded="true" />
-                <element signature="e#581#582#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="Commandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/Commandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="122" column="51" selection-start-line="122" selection-start-column="51" selection-end-line="122" selection-end-column="51" />
+            <state relative-caret-position="1020">
+              <caret line="71" column="8" selection-start-line="71" selection-start-column="8" selection-end-line="71" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -88,23 +137,53 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CommandUtils.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/CommandUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="60" column="41" lean-forward="true" selection-start-line="60" selection-start-column="41" selection-end-line="60" selection-end-column="41" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Dispatcher.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Dispatcher.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/Dispatcher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="107" column="13" lean-forward="true" selection-start-line="107" selection-start-column="13" selection-end-line="107" selection-end-column="13" />
+            <state relative-caret-position="170">
+              <caret line="27" selection-start-line="27" selection-end-line="27" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../Alexis/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="561">
+              <caret line="33" column="39" selection-start-line="33" selection-start-column="39" selection-end-line="33" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BotUtils.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/utils/BotUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="15" selection-start-line="15" selection-end-line="15" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EventManager.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/managers/EventManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="26" column="19" selection-start-line="26" selection-start-column="19" selection-end-line="26" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ReactionHandler.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/handlers/impl/ReactionHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" column="7" lean-forward="true" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -115,35 +194,38 @@
       <file leaf-file-name="ExampleModule.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/ExampleModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="415">
-              <caret line="36" column="30" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="30" />
+            <state relative-caret-position="136">
+              <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CommandlerBot.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/CommandlerBot.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="17" column="19" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1100#1101#0" expanded="true" />
-                <element signature="e#1127#1128#0" expanded="true" />
-                <element signature="e#1367#1368#0" expanded="true" />
-                <element signature="e#1444#1445#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Limit.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Limit.java">
+      <file leaf-file-name="BotModule.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/BotModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UtilModule.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/UtilModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="18" column="39" selection-start-line="18" selection-start-column="39" selection-end-line="18" selection-end-column="39" />
+            <state relative-caret-position="289">
+              <caret line="30" column="17" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="17" />
               <folding>
-                <element signature="e#724#725#0" expanded="true" />
+                <element signature="e#1152#1153#0" expanded="true" />
+                <element signature="e#1182#1183#0" expanded="true" />
+                <element signature="e#1323#1324#0" expanded="true" />
+                <element signature="e#1353#1354#0" expanded="true" />
+                <element signature="e#1451#1452#0" expanded="true" />
+                <element signature="e#1480#1481#0" expanded="true" />
+                <element signature="e#1642#1643#0" expanded="true" />
+                <element signature="e#1672#1673#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -152,17 +234,8 @@
       <file leaf-file-name="UserModule.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/UserModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
+            <state relative-caret-position="306">
               <caret line="35" column="23" selection-start-line="35" selection-start-column="11" selection-end-line="35" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GuildModule.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/GuildModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="47" column="5" lean-forward="true" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -172,23 +245,23 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="AnnotationType" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../Alexis" />
   </component>
   <component name="GradleLocalSettings">
     <option name="myGradleHomes">
       <map>
-        <entry key="$PROJECT_DIR$" value="C:\Users\Seth\.gradle\wrapper\dists\gradle-4.7-bin\73xux3q4721jgr4pjvqf9o30\gradle-4.7" />
+        <entry key="$PROJECT_DIR$/../Alexis" value="C:\Users\Seth\.gradle\wrapper\dists\gradle-4.7-bin\73xux3q4721jgr4pjvqf9o30\gradle-4.7" />
       </map>
     </option>
     <option name="myGradleVersions">
       <map>
-        <entry key="$PROJECT_DIR$" value="4.7" />
+        <entry key="$PROJECT_DIR$/../Alexis" value="4.7" />
       </map>
     </option>
     <option name="availableProjects">
@@ -196,14 +269,18 @@
         <entry>
           <key>
             <ExternalProjectPojo>
-              <option name="name" value="Commandler" />
-              <option name="path" value="$PROJECT_DIR$" />
+              <option name="name" value="Alexis" />
+              <option name="path" value="$PROJECT_DIR$/../Alexis" />
             </ExternalProjectPojo>
           </key>
           <value>
             <list>
               <ExternalProjectPojo>
-                <option name="name" value="Commandler" />
+                <option name="name" value="Alexis" />
+                <option name="path" value="$PROJECT_DIR$/../Alexis" />
+              </ExternalProjectPojo>
+              <ExternalProjectPojo>
+                <option name="name" value=":commandler" />
                 <option name="path" value="$PROJECT_DIR$" />
               </ExternalProjectPojo>
             </list>
@@ -213,206 +290,415 @@
     </option>
     <option name="availableTasks">
       <map>
-        <entry key="$PROJECT_DIR$">
+        <entry key="$PROJECT_DIR$/../Alexis">
           <value>
             <list>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the sub-projects of root project 'Commandler'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="description" value="Displays the sub-projects of root project 'Alexis'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="projects" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Publishes artifacts to bintray.com." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="bintrayUpload" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Generates gradlew[.bat] scripts" />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="wrapper" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Verifies code coverage metrics based on specified rules for the test task." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="jacocoTestCoverageVerification" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="sourcesJar" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Generates the Maven POM file for publication 'Elypiai'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="generatePomFileForElypiaiPublication" />
+                <option name="description" value="Publishes Maven publication 'Commandler' to the local Maven repository." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value="publishCommandlerPublicationToMavenLocal" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles a jar archive containing the main classes." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="jar" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the configuration model of root project 'Commandler'. [incubating]" />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="description" value="Displays the configuration model of root project 'Alexis'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="model" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Processes main resources." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="processResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the tasks runnable from root project 'Commandler'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="description" value="Displays the tasks runnable from root project 'Alexis' (some of the displayed tasks may belong to subprojects)." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="tasks" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Initializes a new Gradle build." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="init" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Runs the unit tests." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="test" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Compiles main Java source." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="compileJava" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="javadocJar" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Runs all checks." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="check" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays all dependencies declared in root project 'Commandler'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="description" value="Displays all dependencies declared in root project 'Alexis'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="dependencies" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+                <option name="description" value="Generates the Maven POM file for publication 'Commandler'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value="generatePomFileForCommandlerPublication" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
                 <option name="description" value="Processes test resources." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="processTestResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Installs the 'archives' artifacts into the local Maven repository." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="install" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles and tests this project and all projects it depends on." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="buildNeeded" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the components produced by root project 'Commandler'. [incubating]" />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="description" value="Create a combined JAR of project and runtime dependencies" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value="shadowJar" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the components produced by root project 'Alexis'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="components" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles and tests this project and all projects that depend on it." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="buildDependents" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles main classes." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="classes" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the dependent components of components in root project 'Commandler'. [incubating]" />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="description" value="Displays the dependent components of components in root project 'Alexis'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="dependentComponents" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Processes example resources." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="processExampleResources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays all buildscript dependencies declared in root project 'Commandler'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="description" value="Displays all buildscript dependencies declared in root project 'Alexis'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="buildEnvironment" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles test classes." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="testClasses" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles example classes." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="exampleClasses" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Generates Javadoc API documentation for the main source code." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="javadoc" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the insight into a specific dependency in root project 'Commandler'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="description" value="Do you know who knows?" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value="knows" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the insight into a specific dependency in root project 'Alexis'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="dependencyInsight" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Generates code coverage report for the test task." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="jacocoTestReport" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles the outputs of this project." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="assemble" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Deletes the build directory." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="clean" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Compiles test Java source." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="compileTestJava" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Compiles example Java source." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="compileExampleJava" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Displays a help message." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="help" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Assembles and tests this project." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="build" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Publishes all publications produced by this project." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="publish" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Publishes all Maven publications produced by this project to the local Maven cache." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="publishToMavenLocal" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the properties of root project 'Commandler'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="description" value="Displays the properties of root project 'Alexis'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
                 <option name="name" value="properties" />
               </ExternalTaskPojo>
+            </list>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <list>
               <ExternalTaskPojo>
-                <option name="description" value="Publishes Maven publication 'Elypiai' to the local Maven repository." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="publishElypiaiPublicationToMavenLocal" />
+                <option name="description" value="Displays the components produced by project ':commandler'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:components" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project and all projects that depend on it." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:buildDependents" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the sub-projects of project ':commandler'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:projects" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles main classes." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:classes" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the dependent components of components in project ':commandler'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:dependentComponents" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes example resources." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:processExampleResources" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Publishes artifacts to bintray.com." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:bintrayUpload" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays all buildscript dependencies declared in project ':commandler'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:buildEnvironment" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Generates gradlew[.bat] scripts" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:wrapper" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Verifies code coverage metrics based on specified rules for the test task." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:jacocoTestCoverageVerification" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:sourcesJar" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles test classes." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:testClasses" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles example classes." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:exampleClasses" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Generates Javadoc API documentation for the main source code." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:javadoc" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Publishes Maven publication 'Commandler' to the local Maven repository." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:publishCommandlerPublicationToMavenLocal" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles a jar archive containing the main classes." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:jar" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the configuration model of project ':commandler'. [incubating]" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:model" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes main resources." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:processResources" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the tasks runnable from project ':commandler'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:tasks" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Runs the unit tests." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:test" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Compiles main Java source." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:compileJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:javadocJar" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the insight into a specific dependency in project ':commandler'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:dependencyInsight" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Runs all checks." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:check" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Generates code coverage report for the test task." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:jacocoTestReport" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles the outputs of this project." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:assemble" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Deletes the build directory." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:clean" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Compiles test Java source." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:compileTestJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Compiles example Java source." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:compileExampleJava" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays all dependencies declared in project ':commandler'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:dependencies" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Generates the Maven POM file for publication 'Commandler'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:generatePomFileForCommandlerPublication" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Processes test resources." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:processTestResources" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays a help message." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:help" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:build" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Installs the 'archives' artifacts into the local Maven repository." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:install" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Assembles and tests this project and all projects it depends on." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:buildNeeded" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Publishes all publications produced by this project." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:publish" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Publishes all Maven publications produced by this project to the local Maven cache." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:publishToMavenLocal" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Displays the properties of project ':commandler'." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/../Alexis" />
+                <option name="name" value=":commandler:properties" />
               </ExternalTaskPojo>
             </list>
           </value>
@@ -421,23 +707,46 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="3054931283686" />
+        <entry key="$PROJECT_DIR$/../Alexis" value="7633943508972" />
+        <entry key="$PROJECT_DIR$/../Alexis/.gradle" value="0" />
+        <entry key="$PROJECT_DIR$/../Alexis/build.gradle" value="3488745630" />
+        <entry key="$PROJECT_DIR$/../Alexis/settings.gradle" value="271427356" />
+        <entry key="$PROJECT_DIR$" value="3055042437777" />
         <entry key="$PROJECT_DIR$/.gradle" value="0" />
-        <entry key="$PROJECT_DIR$/build.gradle" value="3178164177" />
+        <entry key="$PROJECT_DIR$/build.gradle" value="419959292" />
       </map>
     </option>
     <option name="projectBuildClasspath">
       <map>
-        <entry key="$PROJECT_DIR$">
+        <entry key="$PROJECT_DIR$/../Alexis">
           <value>
             <ExternalProjectBuildClasspathPojo>
               <option name="modulesBuildClasspath">
                 <map>
+                  <entry key="$PROJECT_DIR$/../Alexis">
+                    <value>
+                      <ExternalModuleBuildClasspathPojo>
+                        <option name="entries">
+                          <list>
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.jengelman.gradle.plugins/shadow/2.0.4/85f2dc08f8cc3fee53bc3aff60d7501095ffce48/shadow-2.0.4-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.jengelman.gradle.plugins/shadow/2.0.4/30c957bc8507c15a3b6e48a47c6a44bda676c9b5/shadow-2.0.4.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-backports-compat23/2.4.4/8c7351852ffdd79f8e06b4052f662cc996e3598c/groovy-backports-compat23-2.4.4-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-backports-compat23/2.4.4/db18ea377b154334e5323451835d329802222fa/groovy-backports-compat23-2.4.4.jar" />
+                          </list>
+                        </option>
+                        <option name="path" value="$PROJECT_DIR$/../Alexis" />
+                      </ExternalModuleBuildClasspathPojo>
+                    </value>
+                  </entry>
                   <entry key="$PROJECT_DIR$">
                     <value>
                       <ExternalModuleBuildClasspathPojo>
                         <option name="entries">
                           <list>
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.jengelman.gradle.plugins/shadow/2.0.4/85f2dc08f8cc3fee53bc3aff60d7501095ffce48/shadow-2.0.4-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.jengelman.gradle.plugins/shadow/2.0.4/30c957bc8507c15a3b6e48a47c6a44bda676c9b5/shadow-2.0.4.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-backports-compat23/2.4.4/8c7351852ffdd79f8e06b4052f662cc996e3598c/groovy-backports-compat23-2.4.4-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-backports-compat23/2.4.4/db18ea377b154334e5323451835d329802222fa/groovy-backports-compat23-2.4.4.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jfrog.bintray.gradle/gradle-bintray-plugin/1.8.0/2410a7e1d4bf3f55a59a40c367a918152ed54c75/gradle-bintray-plugin-1.8.0-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jfrog.bintray.gradle/gradle-bintray-plugin/1.8.0/bb0572c5310b4a1f3bbe659bbe8279e4619066b3/gradle-bintray-plugin-1.8.0.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy.modules.http-builder/http-builder/0.7.2/f1860181de06236f28f3f247aed57fa4631016d8/http-builder-0.7.2-sources.jar" />
@@ -518,7 +827,7 @@
                   </entry>
                 </map>
               </option>
-              <option name="name" value="Commandler" />
+              <option name="name" value="Alexis" />
               <option name="projectBuildClasspath">
                 <list>
                   <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-4.7-bin/73xux3q4721jgr4pjvqf9o30/gradle-4.7/lib/ant-1.9.9.jar" />
@@ -596,8 +905,8 @@
                   <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-4.7-bin/73xux3q4721jgr4pjvqf9o30/gradle-4.7/lib/plugins/gradle-version-control-4.7.jar" />
                   <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-4.7-bin/73xux3q4721jgr4pjvqf9o30/gradle-4.7/lib/plugins/gradle-workers-4.7.jar" />
                   <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-4.7-bin/73xux3q4721jgr4pjvqf9o30/gradle-4.7/lib/plugins/ivy-2.2.0.jar" />
-                  <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
-                  <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
+                  <option value="$PROJECT_DIR$/../Alexis/buildSrc/src/main/java" />
+                  <option value="$PROJECT_DIR$/../Alexis/buildSrc/src/main/groovy" />
                 </list>
               </option>
             </ExternalProjectBuildClasspathPojo>
@@ -608,17 +917,13 @@
     <option name="projectSyncType">
       <map>
         <entry key="$PROJECT_DIR$/../../Assets/BludBourne" value="PREVIEW" />
-        <entry key="$PROJECT_DIR$/../Alexis" value="PREVIEW" />
-        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+        <entry key="$PROJECT_DIR$/../Alexis" value="RE_IMPORT" />
       </map>
     </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/elypia/commandler/senders/MessageSender.java" />
-        <option value="$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/UserModule.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/elypia/commandler/senders/impl/MessageSender.java" />
         <option value="$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/UtilModule.java" />
         <option value="$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/CommandlerBot.java" />
         <option value="$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/ExampleConfiler.java" />
@@ -663,10 +968,13 @@
         <option value="$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Match.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Length.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/validators/LengthValidator.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/elypia/commandler/Commandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/elypia/commandler/Dispatcher.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/Validator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/elypia/commandler/Commandler.java" />
         <option value="$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/ExampleModule.java" />
+        <option value="$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/GreetingsModule.java" />
+        <option value="$PROJECT_DIR$/../Alexis/build.gradle" />
+        <option value="$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/utils/BotUtils.java" />
       </list>
     </option>
   </component>
@@ -684,73 +992,100 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
             </path>
             <path>
               <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="example" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="example" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="example" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="commandlerbot" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="example" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="commandlerbot" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
             </path>
             <path>
               <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="alexis" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="alexis" type="462c0819:PsiDirectoryNode" />
               <item name="commandler" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="alexis" type="462c0819:PsiDirectoryNode" />
+              <item name="discord" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="alexis" type="462c0819:PsiDirectoryNode" />
+              <item name="discord" type="462c0819:PsiDirectoryNode" />
+              <item name="handlers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="alexis" type="462c0819:PsiDirectoryNode" />
+              <item name="discord" type="462c0819:PsiDirectoryNode" />
+              <item name="handlers" type="462c0819:PsiDirectoryNode" />
+              <item name="impl" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="alexis" type="462c0819:PsiDirectoryNode" />
+              <item name="discord" type="462c0819:PsiDirectoryNode" />
+              <item name="managers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="alexis" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Alexis" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
             </path>
@@ -760,11 +1095,16 @@
       </pane>
       <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java/com/elypia/commandler" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Alexis" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -886,42 +1226,49 @@
       <option name="project" value="LOCAL" />
       <updated>1527527933151</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="- Renamed interfaces to start with I&#10;- No longer send message is returned object is null from handler&#10;- Validator is now object, not static&#10;- Cleaned up validators, length validator is working, limit is broken (gets mad cause casting int to long)&#10;- Created lnegth validator&#10;- Created more test methods in examplebot">
+      <created>1527537444180</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1527537444180</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" weight="0.32928178" />
-      <window_info anchor="right" id="sbt" />
-      <window_info anchor="right" id="Palette&#9;" />
-      <window_info id="Image Layers" />
-      <window_info anchor="right" id="Capture Analysis" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="right" id="Maven Projects" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3005525" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info id="Capture Tool" />
-      <window_info id="Designer" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
-      <window_info anchor="bottom" id="sbt-shell-toolwindow" />
-      <window_info anchor="bottom" id="Build" weight="0.32928178" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32928178" />
-      <window_info id="Learn" show_stripe_button="false" />
-      <window_info anchor="right" id="Gradle" />
+      <window_info anchor="right" id="sbt" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="3" />
+      <window_info id="Image Layers" order="2" />
+      <window_info anchor="right" id="Capture Analysis" order="3" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="right" id="Maven Projects" order="3" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3005525" />
+      <window_info anchor="bottom" id="Version Control" order="7" visible="true" weight="0.32928178" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info id="Capture Tool" order="2" />
+      <window_info id="Designer" order="2" />
+      <window_info anchor="bottom" id="Problems" order="7" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25266525" />
+      <window_info anchor="bottom" id="sbt-shell-toolwindow" order="7" />
+      <window_info id="Learn" order="2" show_stripe_button="false" />
+      <window_info anchor="right" id="Gradle" order="3" visible="true" weight="0.26279318" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" id="Theme Preview" />
+      <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.32154697" />
-      <window_info id="Favorites" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.32928178" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32928178" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Build" order="7" weight="0.32928178" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -934,7 +1281,8 @@
     <MESSAGE value="- Fixed bug in the example voice module&#10;- If user is only user in the specified channel(s) then states so&#10;- Words vary, there is one channel specified, those if multiple&#10;- Actually works XD" />
     <MESSAGE value="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
     <MESSAGE value="- Took JDA object out of sender/parser&#10;- Storing config in Confiler&#10;- Stopped creating MetaModule object multiple times per message, now just on startup&#10;- Made getter/setter for parser and sender so dev can register own parsers and senders&#10;- Added docs&#10;- Made sender and parser an interface instead of abstract class&#10;- Now made default parsers/senders optional through the auto parameter" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Took JDA object out of sender/parser&#10;- Storing config in Confiler&#10;- Stopped creating MetaModule object multiple times per message, now just on startup&#10;- Made getter/setter for parser and sender so dev can register own parsers and senders&#10;- Added docs&#10;- Made sender and parser an interface instead of abstract class&#10;- Now made default parsers/senders optional through the auto parameter" />
+    <MESSAGE value="- Renamed interfaces to start with I&#10;- No longer send message is returned object is null from handler&#10;- Validator is now object, not static&#10;- Cleaned up validators, length validator is working, limit is broken (gets mad cause casting int to long)&#10;- Created lnegth validator&#10;- Created more test methods in examplebot" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Renamed interfaces to start with I&#10;- No longer send message is returned object is null from handler&#10;- Validator is now object, not static&#10;- Cleaned up validators, length validator is working, limit is broken (gets mad cause casting int to long)&#10;- Created lnegth validator&#10;- Created more test methods in examplebot" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -967,48 +1315,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.dv8tion/JDA/3.6.0_367/bee5ee80b23b90b858b96745c9cd6011751c2474/JDA-3.6.0_367-sources.jar!/net/dv8tion/jda/core/requests/RestAction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="334" column="43" selection-start-line="334" selection-start-column="43" selection-end-line="334" selection-end-column="43" />
-          <folding>
-            <element signature="e#13356#13357#0" expanded="true" />
-            <element signature="e#13392#13393#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/EmotesModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-146">
-          <caret line="25" column="25" lean-forward="true" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.dv8tion/JDA/3.6.0_367/bee5ee80b23b90b858b96745c9cd6011751c2474/JDA-3.6.0_367-sources.jar!/net/dv8tion/jda/core/entities/MessageChannel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="182" column="25" selection-start-line="182" selection-start-column="12" selection-end-line="182" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/confiler/Confiler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="27" lean-forward="true" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/Static.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/data/SearchScope.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -1020,9 +1326,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1044,10 +1347,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="14" column="64" selection-start-line="14" selection-start-column="64" selection-end-line="14" selection-end-column="64" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#441#442#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1062,9 +1361,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="232">
           <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1093,9 +1389,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1110,9 +1403,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="6" column="39" selection-start-line="6" selection-start-column="39" selection-end-line="6" selection-end-column="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1120,9 +1410,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1137,9 +1424,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1147,9 +1431,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1164,9 +1445,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1174,11 +1452,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#404#405#0" expanded="true" />
-            <element signature="e#483#484#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1186,9 +1459,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1196,9 +1466,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1206,9 +1473,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1216,56 +1480,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="386">
           <caret line="43" column="30" lean-forward="true" selection-start-line="43" selection-start-column="30" selection-end-line="43" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/BotModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1">
-          <caret line="30" column="17" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="17" />
-          <folding>
-            <element signature="e#1152#1153#0" expanded="true" />
-            <element signature="e#1182#1183#0" expanded="true" />
-            <element signature="e#1323#1324#0" expanded="true" />
-            <element signature="e#1353#1354#0" expanded="true" />
-            <element signature="e#1451#1452#0" expanded="true" />
-            <element signature="e#1480#1481#0" expanded="true" />
-            <element signature="e#1642#1643#0" expanded="true" />
-            <element signature="e#1672#1673#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/NonEmpty.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Match.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/NonEmpty.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Match.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Length.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="16" column="25" lean-forward="true" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1287,9 +1510,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="13" lean-forward="true" selection-start-line="13" selection-end-line="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1297,9 +1517,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1307,9 +1524,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="11">
           <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1317,16 +1531,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="6" column="53" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/CommandlerBot.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="19" lean-forward="true" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1341,51 +1545,27 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
           <caret line="18" column="39" selection-start-line="18" selection-start-column="39" selection-end-line="18" selection-end-column="39" />
-          <folding>
-            <element signature="e#724#725#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/UserModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="35" column="23" selection-start-line="35" selection-start-column="11" selection-end-line="35" selection-end-column="23" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/GuildModule.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
-          <caret line="47" column="5" lean-forward="true" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/ExampleModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="415">
-          <caret line="36" column="30" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1100#1101#0" expanded="true" />
-            <element signature="e#1127#1128#0" expanded="true" />
-            <element signature="e#1367#1368#0" expanded="true" />
-            <element signature="e#1444#1445#0" expanded="true" />
-          </folding>
+          <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/annotations/validation/Limit.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
-          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/validation/Validator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
-          <caret line="49" column="39" lean-forward="true" selection-start-line="49" selection-start-column="39" selection-end-line="49" selection-end-column="39" />
+          <caret line="49" column="39" selection-start-line="49" selection-start-column="39" selection-end-line="49" selection-end-column="39" />
           <folding>
             <element signature="e#669#670#0" expanded="true" />
             <element signature="e#688#689#0" expanded="true" />
@@ -1396,28 +1576,63 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/CommandHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
-          <caret line="24" column="28" lean-forward="true" selection-start-line="24" selection-start-column="28" selection-end-line="24" selection-end-column="28" />
-          <folding>
-            <element signature="e#546#547#0" expanded="true" />
-            <element signature="e#581#582#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/Commandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="122" column="51" selection-start-line="122" selection-start-column="51" selection-end-line="122" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <caret line="24" column="28" selection-start-line="24" selection-start-column="28" selection-end-line="24" selection-end-column="28" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/CommandUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
-          <caret line="60" column="41" lean-forward="true" selection-start-line="60" selection-start-column="41" selection-end-line="60" selection-end-column="41" />
+          <caret line="60" column="41" selection-start-line="60" selection-start-column="41" selection-end-line="60" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/BotModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="30" column="17" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="17" />
+          <folding>
+            <element signature="e#1152#1153#0" expanded="true" />
+            <element signature="e#1182#1183#0" expanded="true" />
+            <element signature="e#1323#1324#0" expanded="true" />
+            <element signature="e#1353#1354#0" expanded="true" />
+            <element signature="e#1451#1452#0" expanded="true" />
+            <element signature="e#1480#1481#0" expanded="true" />
+            <element signature="e#1642#1643#0" expanded="true" />
+            <element signature="e#1672#1673#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/UserModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="35" column="23" selection-start-line="35" selection-start-column="11" selection-end-line="35" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/Commandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1020">
+          <caret line="71" column="8" selection-start-line="71" selection-start-column="8" selection-end-line="71" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/GreetingsModule.java" />
+    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/modules/ExampleModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/example/java/com/elypia/commandlerbot/CommandlerBot.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="17" column="19" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1426,8 +1641,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/elypia/commandler/Dispatcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="107" column="13" lean-forward="true" selection-start-line="107" selection-start-column="13" selection-end-line="107" selection-end-column="13" />
+        <state relative-caret-position="170">
+          <caret line="27" selection-start-line="27" selection-end-line="27" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Alexis/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="33" column="39" selection-start-line="33" selection-start-column="39" selection-end-line="33" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/utils/BotUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="15" selection-start-line="15" selection-end-line="15" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/managers/EventManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="26" column="19" selection-start-line="26" selection-start-column="19" selection-end-line="26" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Alexis/src/main/java/com/elypia/alexis/discord/handlers/impl/ReactionHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="7" lean-forward="true" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1437,9 +1686,81 @@
   </component>
   <component name="masterDetails">
     <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>Alexis</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
       <state key="ProjectJDKs.UI">
         <settings>
           <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Gradle: com.google.code.findbugs:jsr305:3.0.2</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

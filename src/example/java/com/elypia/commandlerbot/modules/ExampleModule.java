@@ -14,8 +14,8 @@ import com.elypia.commandler.annotations.validation.Length;
 public class ExampleModule extends CommandHandler {
 
     @Command(aliases = "spam", help = "Repeat a message multiple times.")
-    @Param(name = "input", help = "The text to repeat.")
-    @Param(name = "times", help = "How many times to send this message.")
+    @Param(name = "input", help = "")
+    @Param(name = "times", help = "")
     public String[] spam(String input, int times) {
         String[] array = new String[times];
 
