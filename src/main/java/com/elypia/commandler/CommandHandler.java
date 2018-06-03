@@ -1,11 +1,8 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.Command;
-import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.metadata.MetaCommand;
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.metadata.MetaModule;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.*;
 
 import java.util.StringJoiner;
 

@@ -3,12 +3,15 @@ package com.elypia.commandler.metadata;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.events.MessageEvent;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
 public class MetaCommand {
 
+    private Class<?> clazz;
     private Method method;
+    private Map<Class<?>, Annotation> annotations;
     private Module module;
     private Command command;
     private List<MetaParam> params;
@@ -22,8 +25,20 @@ public class MetaCommand {
     private MetaCommand(Method method) {
         this.method = method;
         params = new ArrayList<>();
+        annotations = new HashMap<>();
 
-        Class<?> clazz = method.getDeclaringClass();
+
+
+        clazz = method.getDeclaringClass();
+
+        for (Annotation annotation : method.getDeclaredAnnotations())
+            annotations.put(annotation.annotationType(), annotation);
+
+        for (Annotation annotation : method.getDeclaredAnnotations()) {
+            if (!annotations.containsKey(annotation.annotationType()))
+                annotations.put(annotation.annotationType(), annotation);
+        }
+
         module = clazz.getAnnotation(Module.class);
         command = method.getAnnotation(Command.class);
         isStatic = method.isAnnotationPresent(Static.class);
@@ -49,6 +64,10 @@ public class MetaCommand {
 
     public Module getModule() {
         return module;
+    }
+
+    public Map<Class<?>, Annotation> getAnnotations() {
+        return annotations;
     }
 
     public Command getCommand() {

@@ -1,16 +1,11 @@
 package com.elypia.commandler.sending;
 
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.sending.senders.DefaultSender;
-import com.elypia.commandler.sending.senders.EmbedBuilderSender;
-import com.elypia.commandler.sending.senders.MessageBuilderSender;
-import com.elypia.commandler.sending.senders.StringSender;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
+import com.elypia.commandler.sending.senders.*;
+import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Sender {

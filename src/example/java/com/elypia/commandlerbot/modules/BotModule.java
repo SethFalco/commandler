@@ -2,24 +2,16 @@ package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.CommandHandler;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.access.Scope;
+import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.events.MessageEvent;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.entities.*;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-@Module(
-    name = "Bot Commands and Utilities",
-    aliases = {"bot", "robot"},
-    description = "Fundamental commands for the bot itself, primiarly for debugging or to obtain public information."
-)
+@Module(name = "Bot Commands and Utilities", aliases = {"bot", "robot"}, description = "Fundamental commands for the bot itself, primiarly for debugging or to obtain public information.")
 public class BotModule extends CommandHandler {
 
     public static final String BOT_URL = "https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot";
@@ -27,24 +19,18 @@ public class BotModule extends CommandHandler {
     private static final OffsetDateTime BOT_TIME = OffsetDateTime.of(2016, 7, 19, 1, 52, 0, 0, ZoneOffset.ofHours(0));
 
     @Static
-    @Command(aliases = "ping", help = "pong")
+    @Command(aliases = "ping", help = "ping pong!")
     public String ping() {
         return "pong!";
     }
 
     @Static
     @Command(aliases = "pong")
-    @Reaction(alias = "\uD83D\uDD01", help = "Want to keep ponging?")
     public String pong() {
         return "ping!";
     }
 
-    @ReactionCommand(reaction = "\uD83D\uDD01", event = "pong")
-    public String repeatPong() {
-        return pong();
-    }
-
-    @Command(aliases = "say", help = "Repeat after me...")
+    @Command(aliases = "say", help = "Have CommandlerBot say something after you, deleting the message if possible.")
     @Param(name = "message", help = "The message to repeat.")
     public String say(String message) {
         return message;

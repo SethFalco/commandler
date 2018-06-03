@@ -1,4 +1,4 @@
-package com.elypia.commandler.annotations.access;
+package com.elypia.commandler.annotations.validation.command;
 
 import net.dv8tion.jda.core.Permission;
 

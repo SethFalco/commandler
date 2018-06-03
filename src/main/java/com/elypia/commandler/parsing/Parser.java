@@ -10,8 +10,7 @@ import net.dv8tion.jda.core.entities.*;
 
 import java.lang.reflect.Array;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Parser {
 

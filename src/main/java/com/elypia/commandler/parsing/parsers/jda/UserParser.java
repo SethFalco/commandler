@@ -3,12 +3,9 @@ package com.elypia.commandler.parsing.parsers.jda;
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.parsing.IParamParser;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserParser implements IParamParser<User> {
