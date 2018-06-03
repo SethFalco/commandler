@@ -1,16 +1,14 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.confiler.Confiler;
-import com.elypia.commandler.confiler.DefaultConfiler;
+import com.elypia.commandler.confiler.*;
 import com.elypia.commandler.parsing.IParamParser;
 import com.elypia.commandler.sending.IMessageSender;
+import com.elypia.commandler.validation.*;
 import net.dv8tion.jda.core.JDA;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 /**
  * This is the manager class which acts as the link between
@@ -126,6 +124,14 @@ public class Commandler {
 
     public <T> void registerSender(Class<T> clazz, IMessageSender<T> sender) {
         dispatcher.getSender().registerSender(clazz, sender);
+    }
+
+    public <T extends Annotation> void registerValidator(Class<T> clazz, IParamValidator<?, T> validator) {
+        dispatcher.getValidators().registerValidator(clazz, validator);
+    }
+
+    public <T extends Annotation> void registerValidator(Class<T> clazz, ICommandValidator<T> validator) {
+        dispatcher.getValidators().registerValidator(clazz, validator);
     }
 
     public JDA getJDA() {

@@ -1,11 +1,11 @@
-package com.elypia.commandler.validation.validators;
+package com.elypia.commandler.validation.param;
 
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.annotations.validation.Length;
+import com.elypia.commandler.annotations.validation.param.Length;
 import com.elypia.commandler.metadata.MetaParam;
-import com.elypia.commandler.validation.IValidator;
+import com.elypia.commandler.validation.IParamValidator;
 
-public class LengthValidator implements IValidator<String, Length> {
+public class LengthValidator implements IParamValidator<String, Length> {
 
     @Override
     public void validate(String s, Length length, MetaParam param) {

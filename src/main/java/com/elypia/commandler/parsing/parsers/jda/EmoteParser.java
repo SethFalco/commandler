@@ -3,13 +3,9 @@ package com.elypia.commandler.parsing.parsers.jda;
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.parsing.IParamParser;
-import net.dv8tion.jda.core.entities.Emote;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class EmoteParser implements IParamParser<Emote> {
 

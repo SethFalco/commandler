@@ -1,11 +1,11 @@
-package com.elypia.commandler.validation.validators;
+package com.elypia.commandler.validation.param;
 
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.annotations.validation.Limit;
+import com.elypia.commandler.annotations.validation.param.Limit;
 import com.elypia.commandler.metadata.MetaParam;
-import com.elypia.commandler.validation.IValidator;
+import com.elypia.commandler.validation.IParamValidator;
 
-public class LimitValidator implements IValidator<Long, Limit> {
+public class LimitValidator implements IParamValidator<Long, Limit> {
 
     @Override
     public void validate(Long value, Limit limit, MetaParam param) {

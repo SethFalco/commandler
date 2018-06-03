@@ -134,8 +134,6 @@ dependencies {
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.2.0'
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.2.0'
 
-    exampleImplementation 'com.elypia:elypiai:1.0.5'
-
     exampleRuntimeOnly group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
 }
 

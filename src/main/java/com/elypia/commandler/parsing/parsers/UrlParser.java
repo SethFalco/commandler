@@ -4,8 +4,7 @@ import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.parsing.IParamParser;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 
 public class UrlParser implements IParamParser<URL> {
 

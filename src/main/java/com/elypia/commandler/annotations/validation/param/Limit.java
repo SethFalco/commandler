@@ -1,20 +1,24 @@
-package com.elypia.commandler.annotations.validation;
+package com.elypia.commandler.annotations.validation.param;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * Limit the value that a number can be, by default the limits are
+ * what a Java {@link Long} can handle.
+ */
+
 @Target(PARAMETER)
 @Retention(RUNTIME)
-public @interface Length {
+public @interface Limit {
 
     /**
      * @return The minimum value that the parameter can be, inclusive.
      */
 
-    long min() default 0;
+    long min() default Long.MIN_VALUE;
 
     /**
      * @return The maximum value that the parameter can be, inclusive.

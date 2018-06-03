@@ -2,9 +2,7 @@ package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Reaction;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.metadata.MetaCommand;
-import com.elypia.commandler.metadata.MetaModule;
-import com.elypia.commandler.metadata.MetaParam;
+import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.parsing.Parser;
 import com.elypia.commandler.sending.Sender;
 import com.elypia.commandler.validation.Validator;
@@ -12,12 +10,8 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class Dispatcher extends ListenerAdapter {
 
@@ -152,5 +146,9 @@ public class Dispatcher extends ListenerAdapter {
 
     public Sender getSender() {
         return sender;
+    }
+
+    public Validator getValidators() {
+        return validator;
     }
 }

@@ -1,16 +1,9 @@
 package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.CommandHandler;
-import com.elypia.commandler.annotations.Command;
-import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.annotations.Static;
+import com.elypia.commandler.annotations.*;
 
-@Module(
-	name = "Misc. Utilities",
-	aliases = {"util", "utils", "math"},
-	description = "Math commands and fun stuff."
-)
+@Module(name = "Misc. Utilities", aliases = {"util", "utils", "math"}, description = "Math commands and fun stuff.")
 public class UtilModule extends CommandHandler {
 
 	@Static

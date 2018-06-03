@@ -1,27 +1,19 @@
 package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.CommandHandler;
-import com.elypia.commandler.annotations.Command;
-import com.elypia.commandler.annotations.CommandGroup;
-import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.annotations.access.Scope;
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.filter.Search;
+import com.elypia.commandler.annotations.validation.command.Scope;
 import com.elypia.commandler.events.MessageEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.StringJoiner;
+import java.util.*;
 
 import static com.elypia.commandler.data.SearchScope.LOCAL;
 
-@Module(
-	name = "User (Member)",
-	aliases = "user",
-	description = "Get information or stats on global users!"
-)
+@Module(name = "User (Member)", aliases = "user", description = "Get information or stats on global users!")
 public class UserModule extends CommandHandler {
 
 	@CommandGroup("info")
