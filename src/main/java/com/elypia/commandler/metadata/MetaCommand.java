@@ -26,15 +26,12 @@ public class MetaCommand {
         this.method = method;
         params = new ArrayList<>();
         annotations = new HashMap<>();
-
-
-
         clazz = method.getDeclaringClass();
 
         for (Annotation annotation : method.getDeclaredAnnotations())
             annotations.put(annotation.annotationType(), annotation);
 
-        for (Annotation annotation : method.getDeclaredAnnotations()) {
+        for (Annotation annotation : clazz.getDeclaredAnnotations()) {
             if (!annotations.containsKey(annotation.annotationType()))
                 annotations.put(annotation.annotationType(), annotation);
         }
