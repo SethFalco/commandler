@@ -33,6 +33,7 @@ public class Validator {
         if (auto) {
             registerValidator(Length.class, new LengthValidator());
             registerValidator(Limit.class, new LimitValidator());
+            registerValidator(Option.class, new OptionValidator());
 
             registerValidator(Scope.class, new ScopeValidator());
             registerValidator(Permissions.class, new PermissionValidator());

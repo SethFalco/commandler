@@ -2,7 +2,7 @@ package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.CommandHandler;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.validation.param.Length;
+import com.elypia.commandler.annotations.validation.param.*;
 
 @Module(name = "Example Module for Demo", aliases = {"example", "ex"}, description = "This module is made for demonstration and examples.")
 public class ExampleModule extends CommandHandler {
@@ -23,5 +23,11 @@ public class ExampleModule extends CommandHandler {
     @Param(name = "input", help = "Some random text to ensure is the right length.")
     public String length(@Length(min = 0, max = 32) String input) {
         return "Well done, the text was between 0 and 32 characters.";
+    }
+
+    @Command(aliases = "option")
+    @Param(name = "input", help = "A potential option from the list.")
+    public String option(@Option({"user", "bot", "all"}) String accountType) {
+        return "Well done, what you typed was a type of account.";
     }
 }
