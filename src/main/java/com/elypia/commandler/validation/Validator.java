@@ -48,7 +48,7 @@ public class Validator {
     }
 
     public void registerValidator(Class<? extends Annotation> clazz, ICommandValidator validator) {
-        if (paramValidators.keySet().contains(clazz))
+        if (commandValidators.keySet().contains(clazz))
             throw new IllegalArgumentException("Command validator for this type of annotation has already been registered.");
 
         commandValidators.put(clazz, validator);
