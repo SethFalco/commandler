@@ -19,4 +19,9 @@ public class LengthValidator implements IParamValidator<String, Length> {
             throw new IllegalArgumentException(message);
         }
     }
+
+    @Override
+    public String help(Length length) {
+        return String.format("This parameter must be between %,d and %,d characters long.", length.min(), length.max());
+    }
 }

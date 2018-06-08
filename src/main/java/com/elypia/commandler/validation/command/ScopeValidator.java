@@ -11,9 +11,9 @@ public class ScopeValidator implements ICommandValidator<Scope> {
 
     @Override
     public void validate(MessageEvent event, Scope scope) throws IllegalAccessException {
-        List<ChannelType> types = Arrays.asList(scope.value());
+        ChannelType[] types = scope.value();
 
-        if (types.contains(event.getMessageEvent().getChannelType()))
+        if (Arrays.asList(types).contains(event.getMessageEvent().getChannelType()))
             return;
 
         String list = buildList(types);
@@ -21,16 +21,21 @@ public class ScopeValidator implements ICommandValidator<Scope> {
         throw new IllegalAccessException(message);
     }
 
-    private String buildList(List<ChannelType> types) {
-        if (types.size() == 1)
-            return "`" + types.get(0).name() + "`";
+    @Override
+    public String help(Scope annotation) {
+        return "This command can only be performed in the following channels: " + buildList(annotation.value()) + ".";
+    }
+
+    private String buildList(ChannelType... types) {
+        if (types.length == 1)
+            return "`" + types[0].name() + "`";
 
         StringBuilder builder = new StringBuilder();
 
-        for (int i = 0; i < types.size(); i++) {
-            ChannelType type = types.get(i);
+        for (int i = 0; i < types.length; i++) {
+            ChannelType type = types[i];
 
-            if (i != types.size() - 1)
+            if (i != types.length - 1)
                 builder.append("`" + type.name() + "`, ");
             else
                 builder.append("and `" + type.name() + "`");

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+    <title>$name | Help</title>
+    <meta charset = "UTF-8">
+    <link rel = "icon" type = "image/x-icon" href = "$favicon">
+    <meta property = "og:site_name" content = "$name">
+    <meta property = "og:title" content = "$name | Help">
+    <meta property = "og:description" content = "$description">
+    <meta property = "og:image" content = "$avatar">
+</head>
+<body>
+    <div class="vertical-menu">
+        $name
+
+        <ul>
+            #foreach($handler in $handlers)
+                <li>$handler</li>
+            #end
+        </ul>
+    </div>
+</body>

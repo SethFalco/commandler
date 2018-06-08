@@ -102,7 +102,7 @@ public class Dispatcher extends ListenerAdapter {
         Method method = CommandUtils.getByParamCount(event, commands);
 
         if (method == null) {
-            channel.sendMessage("Those parameters don't look right. DX Try help?").queue();
+            channel.sendMessage("You didn't give the correct number of parameters for that command, perhaps try help instead?").queue();
             return;
         }
 

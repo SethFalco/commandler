@@ -51,7 +51,7 @@ public class Commandler {
      */
 
     public Commandler(final JDA jda) {
-        this(jda, new DefaultConfiler());
+        this(jda, "!");
     }
 
     public Commandler(final JDA jda, String prefix) {
@@ -73,7 +73,9 @@ public class Commandler {
         handlers = new ArrayList<>();
 
         dispatcher = new Dispatcher(this);
-        jda.addEventListener(dispatcher);
+
+        if (jda != null)
+            jda.addEventListener(dispatcher);
 
         registerModules(new HelpModule(this));
     }

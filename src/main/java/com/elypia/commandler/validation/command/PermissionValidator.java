@@ -30,6 +30,11 @@ public class PermissionValidator implements ICommandValidator<Permissions> {
         }
     }
 
+    @Override
+    public String help(Permissions annotation) {
+        return "Both the user and bot require the following permissions to do this command: " + buildList(annotation.value()) + ".";
+    }
+
     public String buildList(Permission[] permissions) {
         if (permissions.length == 1)
             return "`" + permissions[0].getName() + "`";

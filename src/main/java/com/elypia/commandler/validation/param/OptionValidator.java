@@ -22,4 +22,9 @@ public class OptionValidator implements IParamValidator<String, Option> {
             throw new IllegalAccessException(message);
         }
     }
+
+    @Override
+    public String help(Option option) {
+        return "Input must be one of the following options: " + String.join(", ", option.value());
+    }
 }

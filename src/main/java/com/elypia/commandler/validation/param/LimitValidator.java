@@ -18,4 +18,9 @@ public class LimitValidator implements IParamValidator<Long, Limit> {
             throw new IllegalArgumentException(message);
         }
     }
+
+    @Override
+    public String help(Limit limit) {
+        return String.format("This parameter must be between the values %,d and %,d.", limit.min(), limit.max());
+    }
 }
