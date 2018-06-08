@@ -3,14 +3,16 @@ package com.elypia.commandler;
 import com.elypia.commandler.annotations.Reaction;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsing.Parser;
 import com.elypia.commandler.sending.Sender;
 import com.elypia.commandler.validation.Validator;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.*;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.lang.reflect.*;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 public class Dispatcher extends ListenerAdapter {
@@ -28,9 +30,32 @@ public class Dispatcher extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent messageEvent) {
+    public void onMessageReceived(MessageReceivedEvent event) {
+        process(event, event.getMessage());
+    }
+
+    @Override
+    public void onMessageUpdate(MessageUpdateEvent event) {
+        Message message = event.getMessage();
+        OffsetDateTime timestamp = message.getCreationTime();
+        OffsetDateTime accepted = OffsetDateTime.now().minusMinutes(1);
+
+        if (timestamp.isBefore(accepted))
+            return;
+
+        event.getChannel().getHistoryAfter(message.getIdLong(), 1).queue(o -> {
+           if (o.isEmpty())
+                process(event, event.getMessage());
+        });
+    }
+
+    public void process(GenericMessageEvent messageEvent, Message msg) {
+        process(messageEvent, msg, msg.getContentRaw());
+    }
+
+    public void process(GenericMessageEvent messageEvent, Message msg, String content) {
         MessageChannel channel = messageEvent.getChannel();
-        MessageEvent event = new MessageEvent(messageEvent, sender, commandler.getConfiler());
+        MessageEvent event = new MessageEvent(messageEvent, msg, content, sender, commandler.getConfiler());
 
         if (!event.isValid())
             return;

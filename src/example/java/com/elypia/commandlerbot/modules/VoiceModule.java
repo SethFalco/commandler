@@ -1,6 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.CommandHandler;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.annotations.validation.command.Scope;
@@ -17,14 +17,14 @@ import static net.dv8tion.jda.core.entities.ChannelType.TEXT;
 public class VoiceModule extends CommandHandler {
 
     @Scope(TEXT)
-    @Command(aliases = {"mention", "at"}, help = "Mention all the users in a voice channel.")
+    @Command(name = "Mention Members", aliases = {"mention", "at"}, help = "Mention all the users in a voice channel.")
     @Param(name = "channel", help = "The channel(s) to mention users from.")
     public String mention(MessageEvent event, @Search(LOCAL) VoiceChannel[] channels) {
         Set<Member> members = new HashSet<>();
         Arrays.stream(channels).map(VoiceChannel::getMembers).forEach(members::addAll);
         Set<User> users = members.stream().map(Member::getUser).filter(o -> !o.isBot()).collect(Collectors.toSet());
 
-         if (users.remove(event.getMessageEvent().getAuthor())) {
+         if (users.remove(event.getMessage().getAuthor())) {
              if (users.size() == 0) {
                  String there = channels.length == 1 ? "there" : "those";
                  return String.format("But... you're the only user in %s? ^-^'", there);

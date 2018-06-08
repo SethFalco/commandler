@@ -19,7 +19,7 @@ public class RoleParser implements IParamParser<Role> {
                 break;
 
             case MUTUAL:
-                User user = event.getMessageEvent().getAuthor();
+                User user = event.getMessage().getAuthor();
                 Collection<Guild> guilds = user.getMutualGuilds();
                 guilds.forEach(g -> roles.addAll(g.getRoles()));
                 break;

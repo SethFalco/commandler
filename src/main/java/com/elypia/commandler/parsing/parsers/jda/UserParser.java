@@ -20,7 +20,7 @@ public class UserParser implements IParamParser<User> {
                 break;
 
             case MUTUAL:
-                User user = event.getMessageEvent().getAuthor();
+                User user = event.getMessage().getAuthor();
                 Collection<Guild> guilds = user.getMutualGuilds();
                 guilds.forEach(g -> users.addAll(g.getMembers().stream().map(Member::getUser).collect(Collectors.toList())));
                 break;
@@ -31,10 +31,15 @@ public class UserParser implements IParamParser<User> {
         }
 
         for (User user : users) {
-            if (user.getId().equals(input) || user.getName().equalsIgnoreCase(input))
+            if (user.getId().equals(input) || user.getName().equalsIgnoreCase(input) || user.getAsMention().equals(input))
+                return user;
+
+            String nickMention = "<@!" + user.getId() + ">";
+
+            if (nickMention.equals(input))
                 return user;
         }
 
-        throw new IllegalArgumentException("Parameter `" + input + "` could not be be linked to a channel.");
+        throw new IllegalArgumentException("Parameter `" + input + "` could not be be linked to a user.");
     }
 }

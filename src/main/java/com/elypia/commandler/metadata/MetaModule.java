@@ -1,6 +1,6 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.CommandHandler;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 
 import java.lang.reflect.Method;

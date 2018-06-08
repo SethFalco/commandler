@@ -2,6 +2,7 @@ package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.confiler.*;
+import com.elypia.commandler.modules.*;
 import com.elypia.commandler.parsing.IParamParser;
 import com.elypia.commandler.sending.IMessageSender;
 import com.elypia.commandler.validation.*;
@@ -73,6 +74,12 @@ public class Commandler {
 
         dispatcher = new Dispatcher(this);
         jda.addEventListener(dispatcher);
+
+        registerModules(new HelpModule(this));
+    }
+
+    public Dispatcher getDispatcher() {
+        return dispatcher;
     }
 
     /**
@@ -115,6 +122,7 @@ public class Commandler {
         }
 
         handler.setJDA(jda);
+        handler.setCommandler(this);
         handlers.add(handler);
     }
 

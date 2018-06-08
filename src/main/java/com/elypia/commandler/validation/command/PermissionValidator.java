@@ -5,15 +5,15 @@ import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.validation.ICommandValidator;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.*;
 
 public class PermissionValidator implements ICommandValidator<Permissions> {
 
     @Override
     public void validate(MessageEvent event, Permissions annotation) throws IllegalAccessException {
-        MessageReceivedEvent e = event.getMessageEvent();
+        GenericMessageEvent e = event.getMessageEvent();
         TextChannel channel = e.getTextChannel();
-        Member member = e.getMember();
+        Member member = event.getMessage().getMember();
         Member self = e.getGuild().getSelfMember();
         Permission[] permissions = annotation.value();
 

@@ -126,7 +126,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.dv8tion:JDA:3.6.0_371'
+    implementation 'net.dv8tion:JDA:3.6.0_374'
 
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.2.0'

@@ -1,6 +1,6 @@
 package com.elypia.commandler.confiler;
 
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.*;
 
 import java.util.regex.Pattern;
 
@@ -28,7 +28,7 @@ public interface Confiler {
      * @return The regex used to match against the message.
      */
 
-    Pattern getCommandRegex(MessageReceivedEvent event);
+    Pattern getCommandRegex(GenericMessageEvent event);
 
     /**
      * Commandler using regular expression to split the parameters up. <br>
@@ -38,17 +38,17 @@ public interface Confiler {
      * @return The regex used to split up all parameters.
      */
 
-    Pattern getParamRegex(MessageReceivedEvent event);
+    Pattern getParamRegex(GenericMessageEvent event);
 
     /**
      * The prefix for this event. This can be set to return a static
      * String. This exists for bots that have a customizable prefix per guild
      * in order to check where the command was performed and obtain the correct
-     * prefix to insert into {@link #getCommandRegex(MessageReceivedEvent)}.
+     * prefix to insert into {@link #getCommandRegex(GenericMessageEvent)}.
      *
      * @param event The message event as provided by JDA.
      * @return The prefix to be used for this particular event.
      */
 
-    String getPrefix(MessageReceivedEvent event);
+    String getPrefix(GenericMessageEvent event);
 }

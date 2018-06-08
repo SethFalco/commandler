@@ -5,7 +5,7 @@ import com.elypia.commandler.confiler.Confiler;
 import com.elypia.commandler.sending.Sender;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.*;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -13,9 +13,12 @@ import java.util.regex.*;
 
 public class MessageEvent {
 
-	private Sender sender;
+	private GenericMessageEvent event;
+	private Message message;
 
-	private MessageReceivedEvent event;
+	private Sender sender;
+	private Method method;
+	private Command annotation;
 
 	private boolean isValid;
 	private String module;
@@ -23,21 +26,11 @@ public class MessageEvent {
 	private String command;
 	private List<Object> params;
 
-	private Method method;
-	private Command annotation;
-
-	private Message reply;
-	private Confiler confiler;
-
-	public MessageEvent(MessageReceivedEvent event, Sender sender, Confiler confiler) {
-		this(event, sender, confiler, event.getMessage().getContentRaw());
-	}
-
-	public MessageEvent(MessageReceivedEvent event, Sender sender, Confiler confiler, String content) {
+	public MessageEvent(GenericMessageEvent event, Message message, String content, Sender sender, Confiler confiler) {
 		this.event = event;
+		this.message = message;
 		this.sender = sender;
 		params = new ArrayList<>();
-		this.confiler = confiler;
 
 		Pattern pattern = confiler.getCommandRegex(event);
 		Matcher matcher = pattern.matcher(content);
@@ -48,7 +41,6 @@ public class MessageEvent {
 			return;
 
 		module = matcher.group("module").toLowerCase();
-
 		submodule = matcher.group("submodule");
 
 		if (submodule != null)
@@ -61,7 +53,6 @@ public class MessageEvent {
 
 		String parameters = matcher.group("params");
 
-		// Due to change.
 		if (parameters != null) {
 			matcher = confiler.getParamRegex(event).matcher(parameters);
 
@@ -89,18 +80,14 @@ public class MessageEvent {
 	}
 
 	public void tryDeleteMessage() {
-		if (canDeleteMessage())
-			event.getMessage().delete().queue();
+		if (event.isFromType(ChannelType.TEXT)) {
+			if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+				message.delete().queue();
+		} else {
+			if (message.getAuthor() == event.getJDA().getSelfUser())
+				message.delete().queue();
+		}
 	}
-
-	public boolean canDeleteMessage() {
-		if (event.getChannel().getType() == ChannelType.TEXT)
-			return event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE);
-
-		return event.getAuthor() == event.getJDA().getSelfUser();
-	}
-
-	// Getters and setters
 
 	public boolean isValid() {
 		return isValid;
@@ -135,11 +122,11 @@ public class MessageEvent {
 		this.annotation = method.getAnnotation(Command.class);
 	}
 
-	public Message getReply() {
-		return reply;
+	public GenericMessageEvent getMessageEvent() {
+		return event;
 	}
 
-	public MessageReceivedEvent getMessageEvent() {
-		return event;
+	public Message getMessage() {
+		return message;
 	}
 }

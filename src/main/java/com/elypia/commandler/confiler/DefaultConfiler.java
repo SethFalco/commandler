@@ -1,6 +1,6 @@
 package com.elypia.commandler.confiler;
 
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.*;
 
 import java.util.regex.Pattern;
 
@@ -20,7 +20,7 @@ public class DefaultConfiler implements Confiler {
     }
 
     @Override
-    public Pattern getCommandRegex(MessageReceivedEvent event) {
+    public Pattern getCommandRegex(GenericMessageEvent event) {
         String id = event.getJDA().getSelfUser().getId();
         String prefix = getPrefix(event);
 
@@ -29,12 +29,12 @@ public class DefaultConfiler implements Confiler {
     }
 
     @Override
-    public Pattern getParamRegex(MessageReceivedEvent event) {
+    public Pattern getParamRegex(GenericMessageEvent event) {
         return PARAM_PATTERN;
     }
 
     @Override
-    public String getPrefix(MessageReceivedEvent event) {
+    public String getPrefix(GenericMessageEvent event) {
         return DEFAULT_PREFIX;
     }
 }

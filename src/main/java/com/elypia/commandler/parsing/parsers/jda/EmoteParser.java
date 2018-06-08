@@ -13,7 +13,7 @@ public class EmoteParser implements IParamParser<Emote> {
     public Emote parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
         final Set<Emote> emotes = new HashSet<>();
 
-        emotes.addAll(event.getMessageEvent().getMessage().getEmotes());
+        emotes.addAll(event.getMessage().getEmotes());
 
         switch (scope) {
             case GLOBAL:
@@ -21,7 +21,7 @@ public class EmoteParser implements IParamParser<Emote> {
                 break;
 
             case MUTUAL:
-                User user = event.getMessageEvent().getAuthor();
+                User user = event.getMessage().getAuthor();
                 Collection<Guild> guilds = user.getMutualGuilds();
                 guilds.forEach(g -> emotes.addAll(g.getEmotes()));
                 break;

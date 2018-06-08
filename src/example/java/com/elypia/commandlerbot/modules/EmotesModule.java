@@ -1,6 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.CommandHandler;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.annotations.validation.command.Scope;
@@ -17,7 +17,7 @@ public class EmotesModule extends CommandHandler {
 
     @Scope(ChannelType.TEXT)
     @CommandGroup("list")
-    @Command(aliases = "list", help = "List all of the custom emotes in this guild.")
+    @Command(name = "List All Emotes", aliases = "list", help = "List all of the custom emotes in this guild.")
     public String listEmotes(MessageEvent event) {
         return listEmotes(event.getMessageEvent().getGuild());
     }
@@ -46,7 +46,7 @@ public class EmotesModule extends CommandHandler {
     }
 
     @Default
-    @Command(aliases = {"get", "post"}, help = "Post an emote in the chat!")
+    @Command(name = "Get Emote", aliases = {"get", "post"}, help = "Post an emote in the chat!")
     @Param(name = "emote", help = "A way to identify the emote you want to post.")
     public EmbedBuilder post(@Search(GLOBAL) Emote emote) {
         EmbedBuilder builder = new EmbedBuilder();

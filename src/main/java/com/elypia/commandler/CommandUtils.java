@@ -2,6 +2,7 @@ package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.modules.CommandHandler;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -39,7 +40,10 @@ public final class CommandUtils {
         }
 
         if (commands.isEmpty()) {
-            event.getParams().add(0, event.getCommand());
+            String cString = event.getCommand();
+
+            if (cString != null)
+                event.getParams().add(0, cString);
 
             for (Method method : methods) {
                 Default def = method.getAnnotation(Default.class);

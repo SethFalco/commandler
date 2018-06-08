@@ -16,6 +16,12 @@ import java.lang.annotation.*;
 public @interface Command {
 
 	/**
+	 * @return The name of the command as it appears in help / documentation.
+	 */
+
+	String name();
+
+	/**
 	 * @return A list of all the alises that allow users
 	 * to perform this command.
 	 */

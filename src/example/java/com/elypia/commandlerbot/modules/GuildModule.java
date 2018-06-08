@@ -1,6 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.CommandHandler;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.annotations.validation.command.Scope;
@@ -15,7 +15,7 @@ import static com.elypia.commandler.data.SearchScope.MUTUAL;
 public class GuildModule extends CommandHandler {
 
     @CommandGroup("info")
-    @Command(aliases = "info", help = "Get information on a guild.")
+    @Command(name = "Guild Info", aliases = "info", help = "Get information on a guild.")
     public EmbedBuilder info(MessageEvent event) {
         return info(event.getMessageEvent().getGuild());
     }

@@ -1,6 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.CommandHandler;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.annotations.validation.command.Scope;
@@ -18,12 +18,12 @@ public class UserModule extends CommandHandler {
 
 	@CommandGroup("info")
 	public void getInfo(MessageEvent event) {
-		getInfo(event, event.getMessageEvent().getAuthor());
+		getInfo(event, event.getMessage().getAuthor());
 	}
 
 	@Scope(ChannelType.TEXT)
 	@CommandGroup("info")
-	@Command(aliases = "info", help = "Get some basic information on the user!")
+	@Command(name = "User Info", aliases = "info", help = "Get some basic information on the user!")
 	@Param(name = "user", help = "The user to display information for.")
 	public EmbedBuilder getInfo(MessageEvent event, @Search(LOCAL) User user) {
 		EmbedBuilder builder = new EmbedBuilder();

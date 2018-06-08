@@ -19,7 +19,7 @@ public class GuildParser implements IParamParser<Guild> {
                 break;
 
             case MUTUAL:
-                User user = event.getMessageEvent().getAuthor();
+                User user = event.getMessage().getAuthor();
                 guilds.addAll(user.getMutualGuilds());
                 break;
 

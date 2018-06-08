@@ -1,6 +1,6 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.CommandHandler;
+import com.elypia.commandler.modules.CommandHandler;
 
 import java.lang.annotation.*;
 
