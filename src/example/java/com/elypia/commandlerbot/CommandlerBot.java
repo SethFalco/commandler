@@ -47,6 +47,6 @@ public class CommandlerBot {
         builder.setFavicon("./assets/favicon.ico");
         builder.setDescription("CommandlerBot is the example bot for Commandler!");
 
-        builder.build(new File("." + File.separator + "public" + File.separator));
+        builder.build(new File("." + File.separator + "pages" + File.separator));
     }
 }
