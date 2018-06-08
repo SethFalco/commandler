@@ -35,7 +35,7 @@ public class HelpModule extends CommandHandler {
         Confiler confiler = commandler.getConfiler();
         String prefix = confiler.getPrefix(event.getMessageEvent());
         String command = prefix + input + " help";
-        commandler.getDispatcher().process(event.getMessageEvent(), event.getMessage(), command);
+        event.trigger(command);
     }
 
     @Command(name = "List all Modules", aliases = "modules", help = "Learn about the various modules and what functionality they bring to Discord.")

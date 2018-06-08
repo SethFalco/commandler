@@ -1,11 +1,11 @@
 package com.elypia.commandler.events;
 
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.confiler.Confiler;
-import com.elypia.commandler.sending.Sender;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -16,7 +16,8 @@ public class MessageEvent {
 	private GenericMessageEvent event;
 	private Message message;
 
-	private Sender sender;
+	private Commandler commandler;
+	private Confiler confiler;
 	private Method method;
 	private Command annotation;
 
@@ -26,10 +27,16 @@ public class MessageEvent {
 	private String command;
 	private List<Object> params;
 
-	public MessageEvent(GenericMessageEvent event, Message message, String content, Sender sender, Confiler confiler) {
+	public MessageEvent(Commandler commandler, GenericMessageEvent event, Message message) {
+		this(commandler, event, message, message.getContentRaw());
+	}
+
+	public MessageEvent(Commandler commandler, GenericMessageEvent event, Message message, String content) {
+		this.commandler = commandler;
 		this.event = event;
 		this.message = message;
-		this.sender = sender;
+
+		confiler = commandler.getConfiler();
 		params = new ArrayList<>();
 
 		Pattern pattern = confiler.getCommandRegex(event);
@@ -76,7 +83,7 @@ public class MessageEvent {
 	}
 
 	public <T extends Object> void reply(T message) {
-		sender.sendAsMessage(this, message, null);
+		commandler.getDispatcher().getSender().sendAsMessage(this, message, null);
 	}
 
 	public void tryDeleteMessage() {
@@ -87,6 +94,10 @@ public class MessageEvent {
 			if (message.getAuthor() == event.getJDA().getSelfUser())
 				message.delete().queue();
 		}
+	}
+
+	public void trigger(String command) {
+		commandler.getDispatcher().process(event, message, command);
 	}
 
 	public boolean isValid() {
