@@ -55,7 +55,7 @@ public class Dispatcher extends ListenerAdapter {
 
     public void process(GenericMessageEvent messageEvent, Message msg, String content) {
         MessageChannel channel = messageEvent.getChannel();
-        MessageEvent event = new MessageEvent(messageEvent, msg, content, sender, commandler.getConfiler());
+        MessageEvent event = new MessageEvent(commandler, messageEvent, msg, content);
 
         if (!event.isValid())
             return;
