@@ -26,7 +26,7 @@ public class Dispatcher extends ListenerAdapter {
         this.commandler = commandler;
         this.parser = new Parser();
         this.sender = new Sender();
-        this.validator = new Validator();
+        this.validator = new Validator(commandler);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class Dispatcher extends ListenerAdapter {
      */
 
     public Object[] parseParameters(MessageEvent event, Method method) throws IllegalArgumentException {
-        MetaCommand meta = MetaCommand.of(method); // Command data
+        MetaCommand meta = MetaCommand.of(commandler, method); // Command data
         List<MetaParam> params = meta.getParams(); // Parameter data
         List<Object> inputs = event.getParams(); // User input parameters
         Object[] objects = new Object[params.size()]; // Parsed parameters to perform command
@@ -173,7 +173,7 @@ public class Dispatcher extends ListenerAdapter {
         return sender;
     }
 
-    public Validator getValidators() {
+    public Validator getValidator() {
         return validator;
     }
 }

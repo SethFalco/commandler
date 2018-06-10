@@ -1,21 +1,72 @@
 <!DOCTYPE html>
-<head>
-    <title>$name | Help</title>
-    <meta charset = "UTF-8">
-    <link rel = "icon" type = "image/x-icon" href = "$favicon">
-    <meta property = "og:site_name" content = "$name">
-    <meta property = "og:title" content = "$name | Help">
-    <meta property = "og:description" content = "$description">
-    <meta property = "og:image" content = "$avatar">
-</head>
-<body>
-    <div class="vertical-menu">
-        $name
-
-        <ul>
-            #foreach($handler in $handlers)
-                <li>$handler</li>
-            #end
-        </ul>
-    </div>
-</body>
+<html>
+    <head>
+        <title>$name | Help</title>
+        <meta charset="UTF-8"/>
+        <link rel="icon" type="image/x-icon" href="$favicon"/>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="reset.css"/>
+        <script src="jquery-3.3.1.min.js"></script>
+        <script src="app.js"></script>
+        <meta property="og:site_name" content="$name"/>
+        <meta property="og:title" content="$name | Help"/>
+        <meta property="og:description" content="$description"/>
+        <meta property="og:image" content="$avatar"/>
+    </head>
+    <body>
+        <main>
+            <nav>
+                <h1 class="bot-name">$name</h1>
+                <ul>
+                    #foreach($module in $modules)
+                        #set($name = $module.getModule().name())
+                        #set($nameNoSpace = $name.replaceAll("\s+", "-"))
+                       <li class="module-list-item" id="$nameNoSpace">$name</li>
+                    #end
+                </ul>
+            </nav>
+            <div class="container">
+                #foreach($module in $modules)
+                    #set($name = $module.getModule().name())
+                    #set($nameNoSpace = $name.replaceAll("\s+", "-"))
+                    <div class="module-info" id="info-$nameNoSpace">
+                        <div class="module-nav">
+                            <ul>
+                                #foreach($command in $module.getCommands())
+                                    #set($cmdName = $command.getCommand().name())
+                                    #set($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
+                                    <li><a href="#$cmdNameNoSpace">$cmdName</a></li>
+                                #end
+                            </ul>
+                        </div>
+                        <h1>$name</h1>
+                        <ul class="module-aliases">
+                            #foreach($alias in $module.getModule().aliases())
+                                <li>$alias</li>
+                            #end
+                        </ul>
+                        <p>$module.getModule().description()</p>
+                        #foreach($command in $module.getCommands())
+                            #set($cmdName = $command.getCommand().name())
+                            #set($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
+                            <div class="command-info">
+                                <div class="command-title">
+                                    <h3 id="$cmdNameNoSpace">$cmdName</h3>
+                                    <ul class="command-validators">
+                                        <!--TO DO-->
+                                    </ul>
+                                </div>
+                                <ul class="command-aliases">
+                                #foreach($alias in $command.getCommand().aliases())
+                                    <li>$alias</li>
+                                #end
+                            </ul>
+                                <p>$command.getCommand().help()</p>
+                            </div>
+                        #end
+                    </div>
+                #end
+            </div>
+        </main>
+    </body>
+</html>

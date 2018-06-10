@@ -1,6 +1,7 @@
 package com.elypia.commandler.pages;
 
 import com.elypia.commandler.Commandler;
+import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.modules.CommandHandler;
 import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
@@ -11,6 +12,7 @@ import java.util.*;
 public class PageBuilder {
 
     private Commandler commandler;
+    private Collection<MetaModule> modules;
     private Collection<CommandHandler> handlers;
 
     private String name;
@@ -23,6 +25,10 @@ public class PageBuilder {
     public PageBuilder(Commandler commandler) {
         this.commandler = Objects.requireNonNull(commandler);
         this.handlers = commandler.getHandlers();
+
+        modules = new ArrayList<>();
+
+        handlers.forEach(handler -> modules.add(handler.getModule()));
     }
 
     public void build(File file) throws IOException {
@@ -31,9 +37,6 @@ public class PageBuilder {
         if (file.exists()) {
             if (!file.isDirectory())
                 throw new IllegalArgumentException("File must be a directory.");
-
-            if (file.list().length != 0)
-                throw new IllegalArgumentException("Directory must be empty.");
         }
 
         Properties properties = new Properties();
@@ -52,8 +55,7 @@ public class PageBuilder {
         context.put("favicon", favicon);
         context.put("prefix", prefix);
         context.put("handlers", handlers);
-
-        String path = null;
+        context.put("modules", modules);
 
         String writePath = file.getAbsolutePath() + File.separator + "index.html";
         File toWrite = new File(writePath);

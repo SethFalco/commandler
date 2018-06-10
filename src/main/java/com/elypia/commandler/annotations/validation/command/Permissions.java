@@ -21,4 +21,6 @@ public @interface Permissions {
      */
 
     Permission[] value();
+
+    boolean userNeedsPermission() default true;
 }

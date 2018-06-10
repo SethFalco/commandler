@@ -22,16 +22,16 @@ public class HelpModule extends CommandHandler {
     }
 
     @Override
-    @Static
+    @Default
+    @CommandGroup("help")
     @Command(name = "Help", aliases = "help")
     public Object help(MessageEvent event) {
         return super.help(event);
     }
 
-    @Default
-    @Command(name = "Single Module Help", aliases = "module")
-    @Param(name = "module", help = "The module you want help with.")
-    public void moduleHelp(MessageEvent event, String input) {
+    @CommandGroup("help")
+    @Param(name = "input", help = "The name of the module you'd like to query for help.")
+    public void help(MessageEvent event, String input) {
         Confiler confiler = commandler.getConfiler();
         String prefix = confiler.getPrefix(event.getMessageEvent());
         String command = prefix + input + " help";

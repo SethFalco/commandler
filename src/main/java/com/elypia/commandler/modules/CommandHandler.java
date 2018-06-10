@@ -23,7 +23,7 @@ public abstract class CommandHandler {
 	protected boolean enabled;
 
 	public CommandHandler() {
-		module = MetaModule.of(this);
+		module = MetaModule.of(commandler, this);
 		test();
 	}
 

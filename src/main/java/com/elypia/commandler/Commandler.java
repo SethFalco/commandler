@@ -124,7 +124,6 @@ public class Commandler {
         }
 
         handler.setJDA(jda);
-        handler.setCommandler(this);
         handlers.add(handler);
     }
 
@@ -137,11 +136,11 @@ public class Commandler {
     }
 
     public <T extends Annotation> void registerValidator(Class<T> clazz, IParamValidator<?, T> validator) {
-        dispatcher.getValidators().registerValidator(clazz, validator);
+        dispatcher.getValidator().registerValidator(clazz, validator);
     }
 
     public <T extends Annotation> void registerValidator(Class<T> clazz, ICommandValidator<T> validator) {
-        dispatcher.getValidators().registerValidator(clazz, validator);
+        dispatcher.getValidator().registerValidator(clazz, validator);
     }
 
     public JDA getJDA() {

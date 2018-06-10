@@ -1,5 +1,6 @@
 package com.elypia.commandler.validation;
 
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.events.MessageEvent;
@@ -19,14 +20,17 @@ import java.util.*;
 
 public class Validator {
 
+    private Commandler commandler;
+
     private Map<Class<? extends Annotation>, IParamValidator> paramValidators;
     private Map<Class<? extends Annotation>, ICommandValidator> commandValidators;
 
-    public Validator() {
-        this(true);
+    public Validator(Commandler commandler) {
+        this(commandler, true);
     }
 
-    public Validator(boolean auto) {
+    public Validator(Commandler commandler, boolean auto) {
+        this.commandler = commandler;
         paramValidators = new HashMap<>();
         commandValidators = new HashMap<>();
 
@@ -56,7 +60,7 @@ public class Validator {
     }
 
     public void validate(MessageEvent event, Method method, Object[] args) throws IllegalArgumentException, IllegalAccessException {
-        MetaCommand command = MetaCommand.of(method);
+        MetaCommand command = MetaCommand.of(commandler, method);
 
         for (Map.Entry<Class<?>, Annotation> entry : command.getAnnotations().entrySet()) {
             ICommandValidator validator = commandValidators.get(entry.getKey());
@@ -80,5 +84,13 @@ public class Validator {
                     validator.validate(args[i].getClass().cast(args[i]), a, parameter);
             }
         }
+    }
+
+    public Map<Class<? extends Annotation>, IParamValidator> getParamValidators() {
+        return paramValidators;
+    }
+
+    public Map<Class<? extends Annotation>, ICommandValidator> getCommandValidators() {
+        return commandValidators;
     }
 }

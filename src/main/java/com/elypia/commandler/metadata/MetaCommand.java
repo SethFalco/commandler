@@ -1,7 +1,9 @@
 package com.elypia.commandler.metadata;
 
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.validation.ICommandValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -9,6 +11,7 @@ import java.util.*;
 
 public class MetaCommand {
 
+    private Commandler commandler;
     private Class<?> clazz;
     private Method method;
     private Map<Class<?>, Annotation> annotations;
@@ -18,11 +21,12 @@ public class MetaCommand {
     private boolean isStatic;
     private boolean isDefault;
 
-    public static MetaCommand of(Method method) {
-        return new MetaCommand(method);
+    public static MetaCommand of(Commandler commandler, Method method) {
+        return new MetaCommand(commandler, method);
     }
 
-    private MetaCommand(Method method) {
+    private MetaCommand(Commandler commandler, Method method) {
+        this.commandler = commandler;
         this.method = method;
         params = new ArrayList<>();
         annotations = new HashMap<>();
@@ -59,12 +63,31 @@ public class MetaCommand {
         }
     }
 
+    public Commandler getCommandler() {
+        return commandler;
+    }
+
     public Module getModule() {
         return module;
     }
 
     public Map<Class<?>, Annotation> getAnnotations() {
         return annotations;
+    }
+
+    public Map<Class<? extends Annotation>, ICommandValidator> getValidators() {
+        Map<Class<? extends Annotation>, ICommandValidator> registeredValidators = commandler.getDispatcher().getValidator().getCommandValidators();
+        Map<Class<? extends Annotation>, ICommandValidator> validators = new HashMap<>();
+
+        annotations.keySet().forEach(clazz -> {
+            registeredValidators.forEach((clazz2, validator)-> {
+                if (clazz.getComponentType() == clazz2.getComponentType())
+                    validators.put(clazz2, validator);
+            });
+        });
+
+        System.out.println(validators.size());
+        return validators;
     }
 
     public Command getCommand() {

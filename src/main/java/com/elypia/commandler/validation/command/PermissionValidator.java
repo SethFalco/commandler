@@ -17,10 +17,12 @@ public class PermissionValidator implements ICommandValidator<Permissions> {
         Member self = e.getGuild().getSelfMember();
         Permission[] permissions = annotation.value();
 
-        if (!member.hasPermission(channel, permissions)) {
-            String list = buildList(permissions);
-            String message = "You must have the permissions: " + list + " to perform this command.";
-            throw new IllegalAccessException(message);
+        if (annotation.userNeedsPermission()) {
+            if (!member.hasPermission(channel, permissions)) {
+                String list = buildList(permissions);
+                String message = "You must have the permissions: " + list + " to perform this command.";
+                throw new IllegalAccessException(message);
+            }
         }
 
         if (!self.hasPermission(channel, permissions)) {
