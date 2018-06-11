@@ -13,8 +13,8 @@ public @interface ReactionCommand {
     String reaction();
 
     /**
-     * @return The type of event this reaction command is applicable for.
+     * @return The name of the command this reaction should occur on.
      */
 
-    String event();
+    String command();
 }

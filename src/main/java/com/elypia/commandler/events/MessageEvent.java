@@ -1,28 +1,86 @@
 package com.elypia.commandler.events;
 
 import com.elypia.commandler.Commandler;
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.confiler.Confiler;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.GenericMessageEvent;
+import net.dv8tion.jda.core.events.message.*;
 
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.*;
 
 public class MessageEvent {
 
+    /**
+     * The {@link MessageReceivedEvent} or {@link MessageUpdateEvent} as received from {@link JDA}.
+     */
+
 	private GenericMessageEvent event;
+
+    /**
+     * The {@link Message} that triggered this command. <br>
+     * The contents of this message it not necessarily the command the message event is parsing.
+     *
+     * @see #trigger(String)
+     */
+
 	private Message message;
 
+    /**
+     * The parent {@link Commandler} instance that spawned this {@link MessageEvent}.
+     */
+
 	private Commandler commandler;
+
+    /**
+     * A reference to the configuration object for our {@link #confiler}.
+     */
+
 	private Confiler confiler;
-	private Method method;
+
+    /**
+     * If the command performed is considered a valid command at all.
+     */
 
 	private boolean isValid;
+
+    /**
+     * The root alias of this command if valid, the root alias refers to
+     * the first segment of a command which may be the alias of a {@link Module}
+     * or {@link Static} {@link Command}. <br>
+     * <br>
+     * <strong>Possible null</strong>: If command is not {@link #isValid() valid}.
+     */
+
 	private String alias;
+
+    /**
+     * The command segment of this command if valid, this refers to which command
+     * in the specified module to perform. <br>
+     * <br>
+     * <strong>Possible null</strong>: <br>
+     * If command is not {@link #isValid() valid}.
+     */
+
 	private String command;
+
+    /**
+     * A list of all parameters associated with this command. This list may contain
+     * both {@link String}s and {@link String[]}s. List parameters (comma seperated) are stored
+     * as an array.
+     */
+
 	private List<Object> params;
+
+    /**
+     * Calls {@link #MessageEvent(Commandler, GenericMessageEvent, Message, String)}
+     * with the content as this the content of this message.
+     *
+     * @param commandler The parent {@link Commandler} instance spawning this event.
+     * @param event The {@link MessageReceivedEvent} or {@link MessageUpdateEvent} as provided by {@link JDA}.
+     * @param message The {@link Message} to attempt to process as a command.
+     */
 
 	public MessageEvent(Commandler commandler, GenericMessageEvent event, Message message) {
 		this(commandler, event, message, message.getContentRaw());
@@ -54,18 +112,17 @@ public class MessageEvent {
 
 			while (matcher.find()) {
 				String quotes = matcher.group("quotes");
-				String args = matcher.group("args");
 
-				if (quotes != null)
-					params.add(quotes);
+				if (quotes != null) {
+                    params.add(quotes);
+                    continue;
+                }
 
-				else if (args != null) {
+                String args = matcher.group("args");
+
+				if (args != null) {
 					String[] array = args.split("\\s*,\\s*");
-
-					if (array.length == 1)
-						params.add(array[0]);
-					else
-						params.add(array);
+					params.add(array.length == 1 ? array[0] : array);
 				}
 			}
 		}
@@ -104,10 +161,6 @@ public class MessageEvent {
 
 	public List<Object> getParams() {
 		return params;
-	}
-
-	public Method getMethod() {
-		return method;
 	}
 
 	public GenericMessageEvent getMessageEvent() {

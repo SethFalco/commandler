@@ -4,22 +4,66 @@ import net.dv8tion.jda.core.events.message.*;
 
 import java.util.regex.Pattern;
 
+/**
+ * If you're configuing Commandler, it's a good idea to extend and {@link Override}
+ * the {@link #getPrefix(GenericMessageEvent)} method here to get you going.
+ */
+
 public class DefaultConfiler implements Confiler {
 
+    /**
+     * The default command regex, this matches the command to see if its
+     * valid and returns the matches as groups.
+     */
+
     private static final String COMMAND_REGEX = "(?i)^(?:\\\\?<@!?%s>\\s{0,2}|\\Q%s\\E)(?<alias>[A-Z]+)(?: (?<command>[^\\s]+))?(?: (?<params>.*))?";
+
+    /**
+     * The default param regex, this matches every argument in the command,
+     * any comma seperated <strong>args</strong> will be split by comma as a list.
+     */
+
     private static final Pattern PARAM_PATTERN = Pattern.compile("(?<quotes>\\b(?<=\")(?:\\\\\"|[^\"])*(?=\"))|(?<args>[^\\s\",]+(?:\\s*,\\s*[^\\s\",]+)*)");
 
     private final String DEFAULT_PREFIX;
 
+    /**
+     * The first time the command regular expression is queried, we take
+     * {@link #COMMAND_REGEX} and insert the bots id and store it here to save
+     * us from populating it per command.
+     */
+
     private String commandRegex;
+
+    /**
+     * Calls {@link #DefaultConfiler(String)} and defaults the bot prefix to <strong>!</strong>
+     *
+     * @see DefaultConfiler(String)
+     */
 
     public DefaultConfiler() {
         this("!");
     }
 
+    /**
+     * Instantiate the Default configuration for Commandler with a different prefix.
+     *
+     * @param prefix The default prefix for the bot.
+     */
+
     public DefaultConfiler(String prefix) {
         DEFAULT_PREFIX = prefix;
     }
+
+    /**
+     * Builds are returns the regular expression {@link Pattern} used
+     * for matching against commands. This allows the user to insert data such as
+     * the body ID or {@link #getPrefix(GenericMessageEvent) prefix} per command if
+     * it may vary depending on the event.
+     *
+     * @param event The message event as provided by JDA.
+     * @return The pattern to match again user input.
+     */
 
     @Override
     public Pattern getCommandRegex(GenericMessageEvent event) {
@@ -31,10 +75,23 @@ public class DefaultConfiler implements Confiler {
         return Pattern.compile(String.format(commandRegex, getPrefix(event)));
     }
 
+    /**
+     * Commandler using regular expression to split the parameters up. <br>
+     * <em>It's discouraged to change this.</em>
+     *
+     * @param event The message event as provided by JDA.
+     * @return The regex used to split up all parameters.
+     */
+
     @Override
     public Pattern getParamRegex(GenericMessageEvent event) {
         return PARAM_PATTERN;
     }
+
+    /**
+     * @param event The message event as provided by JDA.
+     * @return The prefix to be used for this particular event.
+     */
 
     @Override
     public String getPrefix(GenericMessageEvent event) {

@@ -18,11 +18,4 @@ public @interface Param {
 	 */
 
 	String help();
-
-	/**
-	 * If this parameter is sensitive and should be hidden
-	 * as much as possible in the logs, or messages.
-	 */
-
-	boolean secret() default false;
 }

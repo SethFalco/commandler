@@ -8,7 +8,8 @@ import java.util.regex.Pattern;
  * Confiler is the config object for Commandler and allows the developer
  * to customise how it parses commands and parameters, or how to obtain the prefix. <br>
  * <br>
- * @see DefaultConfiler for the default implementation.
+ * @see DefaultConfiler for the default implementation, it is recommend to extend and {@link Override}
+ * the methods from there.
  */
 
 public interface Confiler {
@@ -19,8 +20,7 @@ public interface Confiler {
      * capture groups: <br>
      * <br>
      * <strong>prefix</strong>: the prefix to match <br>
-     * <strong>module</strong>: the module or handler the command is in <br>
-     * <strong>submodule</strong>: the submodule or child module <br>
+     * <strong>alias</strong>: the root alias, this may refer to a module, or static command <br>
      * <strong>command</strong>: the command the user wishes to perform <br>
      * <strong>params</strong>: all parameters for the command, these are collected together
      *
@@ -32,7 +32,6 @@ public interface Confiler {
 
     /**
      * Commandler using regular expression to split the parameters up. <br>
-     * <em>It's discouraged to change this.</em>
      *
      * @param event The message event as provided by JDA.
      * @return The regex used to split up all parameters.

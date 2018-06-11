@@ -6,6 +6,16 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Reactions.class)
 public @interface Reaction {
+
+	/**
+	 * @return The reaction to post after the command has executed as a String.
+	 */
+
 	String alias();
-	String help();
+
+	/**
+	 * @return What will occur when the user performs this reaction on the message.
+	 */
+
+	String help() default "";
 }
