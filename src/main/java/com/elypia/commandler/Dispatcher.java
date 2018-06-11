@@ -43,8 +43,8 @@ public class Dispatcher extends ListenerAdapter {
         if (timestamp.isBefore(accepted))
             return;
 
-        event.getChannel().getHistoryAfter(message.getIdLong(), 1).queue(o -> {
-           if (o.isEmpty())
+        event.getChannel().getHistoryAfter(message.getIdLong(), 1).queue(history -> {
+           if (history.isEmpty())
                 process(event, event.getMessage());
         });
     }
@@ -61,31 +61,34 @@ public class Dispatcher extends ListenerAdapter {
             return;
 
         CommandHandler handler = null;
+        Collection<Method> commands = new ArrayList<>();
 
         for (CommandHandler h : commandler.getHandlers()) {
             MetaModule m = h.getModule();
 
-            if (Arrays.asList(m.getModule().aliases()).contains(event.getModule())) {
+            if (Arrays.asList(m.getModule().aliases()).contains(event.getAlias())) {
                 handler = h;
                 break;
             }
+
+            for (MetaCommand c : m.getCommands()) {
+                if (c.isStatic()) {
+                    if (Arrays.asList(c.getCommand().aliases()).contains(event.getAlias())) {
+                        handler = h;
+                        commands.add(c.getMethod());
+                        break;
+                    }
+                }
+            }
         }
 
-        Collection<Method> commands = new ArrayList<>();
+
 
         if (handler == null) {
             for (CommandHandler h : commandler.getHandlers()) {
                 MetaModule m = h.getModule();
 
-                for (MetaCommand c : m.getCommands()) {
-                    if (c.isStatic()) {
-                        if (Arrays.asList(c.getCommand().aliases()).contains(event.getModule())) {
-                            handler = h;
-                            commands.add(c.getMethod());
-                            break;
-                        }
-                    }
-                }
+
             }
         } else {
             commands = CommandUtils.getCommands(event, handler);
@@ -140,7 +143,7 @@ public class Dispatcher extends ListenerAdapter {
      * @throws IllegalArgumentException If one of the arguments could not be parsed in the required format.
      */
 
-    public Object[] parseParameters(MessageEvent event, Method method) throws IllegalArgumentException {
+    private Object[] parseParameters(MessageEvent event, Method method) throws IllegalArgumentException {
         MetaCommand meta = MetaCommand.of(commandler, method); // Command data
         List<MetaParam> params = meta.getParams(); // Parameter data
         List<Object> inputs = event.getParams(); // User input parameters

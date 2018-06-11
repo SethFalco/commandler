@@ -22,7 +22,9 @@ public abstract class CommandHandler {
 
 	protected boolean enabled;
 
-	public CommandHandler() {
+	public void init(JDA jda, Commandler commandler) {
+		this.jda = jda;
+		this.commandler = commandler;
 		module = MetaModule.of(commandler, this);
 		test();
 	}
@@ -111,16 +113,8 @@ public abstract class CommandHandler {
 		return jda;
 	}
 
-	public void setJDA(JDA jda) {
-		this.jda = jda;
-	}
-
 	public Commandler getCommandler() {
 		return commandler;
-	}
-
-	public void setCommandler(Commandler commandler) {
-		this.commandler = commandler;
 	}
 
 	public MetaModule getModule() {

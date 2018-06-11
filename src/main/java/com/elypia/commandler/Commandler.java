@@ -1,6 +1,5 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.confiler.*;
 import com.elypia.commandler.modules.*;
 import com.elypia.commandler.parsing.IParamParser;
@@ -44,6 +43,14 @@ public class Commandler {
     private Dispatcher dispatcher;
 
     /**
+     * Any root alias, this could be a module alias or an alias to a
+     * static commmand. We need to keep track of a list to ensure a root
+     * alias isn't registered more than once.
+     */
+
+    private Collection<String> rootAlises;
+
+    /**
      * See {@link #Commandler(JDA, Confiler)}
      * Creates a JDACommandler instance with the default prefix as "!".
      *
@@ -71,13 +78,14 @@ public class Commandler {
         this.jda = jda;
         this.confiler = confiler;
         handlers = new ArrayList<>();
+        rootAlises = new ArrayList<>();
 
         dispatcher = new Dispatcher(this);
 
         if (jda != null)
             jda.addEventListener(dispatcher);
 
-        registerModules(new HelpModule(this));
+        registerModule(new HelpModule());
     }
 
     public Dispatcher getDispatcher() {
@@ -104,26 +112,7 @@ public class Commandler {
      */
 
     public void registerModule(CommandHandler handler) {
-        Module module = handler.getClass().getAnnotation(Module.class);
-
-        if (module == null)
-            throw new IllegalArgumentException("CommandHandler doesn't contain Module annotation!");
-
-        Collection<String> aliases = new ArrayList<>();
-
-        for (String alias : module.aliases())
-            aliases.add(alias.toLowerCase());
-
-        for (CommandHandler h : handlers) {
-            Module m = h.getClass().getAnnotation(Module.class);
-
-            Collection<String> existing = Arrays.asList(m.aliases());
-
-            if (!Collections.disjoint(aliases, existing))
-                throw new IllegalArgumentException("CommandHandler contains alias which is already registered.");
-        }
-
-        handler.setJDA(jda);
+        handler.init(jda, this);
         handlers.add(handler);
     }
 
@@ -157,5 +146,9 @@ public class Commandler {
 
     public Collection<CommandHandler> getHandlers() {
         return handlers;
+    }
+
+    public Collection<String> getRootAlises() {
+        return rootAlises;
     }
 }

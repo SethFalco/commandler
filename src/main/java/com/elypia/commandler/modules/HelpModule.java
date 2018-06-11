@@ -1,6 +1,5 @@
 package com.elypia.commandler.modules;
 
-import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.confiler.Confiler;
 import com.elypia.commandler.events.MessageEvent;
@@ -15,12 +14,6 @@ public class HelpModule extends CommandHandler {
     private final static String STATIC = "Static commands are commands that can be performed without specifying the module it belongs too.\nFor example, if a command is `static` one could do: `!ping` instead of `!bot ping`. The `ping` command still belongs to the `bot` module regardless.";
     private final static String DEFAULT = "Default commands are commands modules can default too if we your input after doesn't match the alias of any existing commands in the module.\nFor example, if a command is `default` one could do: `!bot` instead of `!bot info`, we're still executing the `info` command in the `bot` module.";
 
-    private Commandler commandler;
-
-    public HelpModule(Commandler commandler) {
-        this.commandler = commandler;
-    }
-
     @Override
     @Default
     @CommandGroup("help")
@@ -32,9 +25,7 @@ public class HelpModule extends CommandHandler {
     @CommandGroup("help")
     @Param(name = "input", help = "The name of the module you'd like to query for help.")
     public void help(MessageEvent event, String input) {
-        Confiler confiler = commandler.getConfiler();
-        String prefix = confiler.getPrefix(event.getMessageEvent());
-        String command = prefix + input + " help";
+        String command = input + " help";
         event.trigger(command);
     }
 

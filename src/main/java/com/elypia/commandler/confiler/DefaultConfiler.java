@@ -6,10 +6,12 @@ import java.util.regex.Pattern;
 
 public class DefaultConfiler implements Confiler {
 
-    private static final String COMMAND_REGEX = "(?i)^(?:\\?<@!?%s>|\\Q%s\\E)\\s{0,2}(?<module>[A-Z]+)(?:\\.(?<submodule>[A-Z]+))?(?: (?<command>[^\\s]+))?(?: (?<params>.*))?";
+    private static final String COMMAND_REGEX = "(?i)^(?:\\\\?<@!?%s>\\s{0,2}|\\Q%s\\E)(?<alias>[A-Z]+)(?: (?<command>[^\\s]+))?(?: (?<params>.*))?";
     private static final Pattern PARAM_PATTERN = Pattern.compile("(?<quotes>\\b(?<=\")(?:\\\\\"|[^\"])*(?=\"))|(?<args>[^\\s\",]+(?:\\s*,\\s*[^\\s\",]+)*)");
 
     private final String DEFAULT_PREFIX;
+
+    private String commandRegex;
 
     public DefaultConfiler() {
         this("!");
@@ -21,11 +23,12 @@ public class DefaultConfiler implements Confiler {
 
     @Override
     public Pattern getCommandRegex(GenericMessageEvent event) {
-        String id = event.getJDA().getSelfUser().getId();
-        String prefix = getPrefix(event);
+        if (commandRegex == null) {
+            String id = event.getJDA().getSelfUser().getId();
+            commandRegex = String.format(COMMAND_REGEX, id, "%s");
+        }
 
-        String pattern = String.format(COMMAND_REGEX, id, prefix);
-        return Pattern.compile(pattern);
+        return Pattern.compile(String.format(commandRegex, getPrefix(event)));
     }
 
     @Override

@@ -16,5 +16,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Search {
 
+    /**
+     * @return The scope to search for, defaults to {@link SearchScope#GLOBAL}.
+     */
+
     SearchScope value() default SearchScope.GLOBAL;
 }

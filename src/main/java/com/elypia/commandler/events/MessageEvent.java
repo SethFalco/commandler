@@ -1,7 +1,6 @@
 package com.elypia.commandler.events;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.confiler.Confiler;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -19,11 +18,9 @@ public class MessageEvent {
 	private Commandler commandler;
 	private Confiler confiler;
 	private Method method;
-	private Command annotation;
 
 	private boolean isValid;
-	private String module;
-	private String submodule;
+	private String alias;
 	private String command;
 	private List<Object> params;
 
@@ -47,16 +44,8 @@ public class MessageEvent {
 		if (!isValid)
 			return;
 
-		module = matcher.group("module").toLowerCase();
-		submodule = matcher.group("submodule");
-
-		if (submodule != null)
-			submodule = submodule.toLowerCase();
-
+		alias = matcher.group("alias");
 		command = matcher.group("command");
-
-		if (command != null)
-			command = command.toLowerCase();
 
 		String parameters = matcher.group("params");
 
@@ -87,16 +76,17 @@ public class MessageEvent {
 	}
 
 	public void tryDeleteMessage() {
-		if (event.isFromType(ChannelType.TEXT)) {
-			if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
-				message.delete().queue();
-		} else {
-			if (message.getAuthor() == event.getJDA().getSelfUser())
-				message.delete().queue();
-		}
+		if (!event.isFromType(ChannelType.TEXT))
+			return;
+
+		if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+			message.delete().queue();
 	}
 
-	public void trigger(String command) {
+	public void trigger(String trigger) {
+		String command = event.getJDA().getSelfUser().getAsMention();
+		command += trigger;
+
 		commandler.getDispatcher().process(event, message, command);
 	}
 
@@ -104,12 +94,8 @@ public class MessageEvent {
 		return isValid;
 	}
 
-	public String getModule() {
-		return module;
-	}
-
-	public String getSubmodule() {
-		return submodule;
+	public String getAlias() {
+		return alias;
 	}
 
 	public String getCommand() {
@@ -122,15 +108,6 @@ public class MessageEvent {
 
 	public Method getMethod() {
 		return method;
-	}
-
-	public Command getCommandAnnotation() {
-		return annotation;
-	}
-
-	public void setMethod(Method method) {
-		this.method = method;
-		this.annotation = method.getAnnotation(Command.class);
 	}
 
 	public GenericMessageEvent getMessageEvent() {

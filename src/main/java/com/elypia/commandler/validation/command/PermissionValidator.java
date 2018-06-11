@@ -17,7 +17,7 @@ public class PermissionValidator implements ICommandValidator<Permissions> {
         Member self = e.getGuild().getSelfMember();
         Permission[] permissions = annotation.value();
 
-        if (annotation.userNeedsPermission()) {
+        if (annotation.userRequiresPermission()) {
             if (!member.hasPermission(channel, permissions)) {
                 String list = buildList(permissions);
                 String message = "You must have the permissions: " + list + " to perform this command.";

@@ -5,10 +5,9 @@ import net.dv8tion.jda.core.Permission;
 import java.lang.annotation.*;
 
 /**
- * The permissions the user and bot would both require in order to
- * perform the command. This is synced up so if the bot required a permission
- * to delete messages in the channel, the user would require the same permissions
- * in order to trigger the command on the bot to perform the action.
+ * The permissions the bot needs in order to perform the command.
+ * By default the user will also require these permission however this
+ * can be overrideen by setting {@link #userRequiresPermission()} to false.
  */
 
 @Target({ElementType.TYPE, ElementType.METHOD})
@@ -22,5 +21,9 @@ public @interface Permissions {
 
     Permission[] value();
 
-    boolean userNeedsPermission() default true;
+    /**
+     * @return If the user requires the permissions also to perform this command.
+     */
+
+    boolean userRequiresPermission() default true;
 }

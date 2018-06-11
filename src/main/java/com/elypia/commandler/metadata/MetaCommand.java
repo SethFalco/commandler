@@ -75,18 +75,17 @@ public class MetaCommand {
         return annotations;
     }
 
-    public Map<Class<? extends Annotation>, ICommandValidator> getValidators() {
+    public Map<Annotation, ICommandValidator> getValidators() {
         Map<Class<? extends Annotation>, ICommandValidator> registeredValidators = commandler.getDispatcher().getValidator().getCommandValidators();
-        Map<Class<? extends Annotation>, ICommandValidator> validators = new HashMap<>();
+        Map<Annotation, ICommandValidator> validators = new HashMap<>();
 
-        annotations.keySet().forEach(clazz -> {
+        annotations.forEach((clazz, annotation) -> {
             registeredValidators.forEach((clazz2, validator)-> {
-                if (clazz.getComponentType() == clazz2.getComponentType())
-                    validators.put(clazz2, validator);
+                if (clazz == clazz2)
+                    validators.put(annotation, validator);
             });
         });
 
-        System.out.println(validators.size());
         return validators;
     }
 

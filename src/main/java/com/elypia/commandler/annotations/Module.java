@@ -1,7 +1,5 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.modules.CommandHandler;
-
 import java.lang.annotation.*;
 
 @Target(ElementType.TYPE)
@@ -24,18 +22,4 @@ public @interface Module {
 	 */
 
 	String description();
-
-	/**
-	 * Submodules are what come after module in the command. <br>
-	 * The format will be similar to the following: <br>
-	 * <code>&gt;twitch.notify add Rheannon96</code> <br>
-	 * In this case <code>notify</code> is the submodule.
-	 *
-	 * @return A list of modules that are directly associated
-	 * with this module to be put together in help.
-	 */
-
-	Class<? extends CommandHandler>[] submodules() default {
-
-	};
 }

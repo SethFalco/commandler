@@ -53,7 +53,9 @@
                                 <div class="command-title">
                                     <h3 id="$cmdNameNoSpace">$cmdName</h3>
                                     <ul class="command-validators">
-                                        <!--TO DO-->
+                                        #foreach($entry in $command.getValidators())
+                                            <li>$entry.value.help($entry.key)</li>
+                                        #end
                                     </ul>
                                 </div>
                                 <ul class="command-aliases">
