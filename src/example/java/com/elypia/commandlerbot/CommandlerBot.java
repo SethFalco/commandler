@@ -12,7 +12,7 @@ public class CommandlerBot {
 
     public static void main(String[] args) throws LoginException, IOException {
         boolean doc = args.length > 0 && args[0].equalsIgnoreCase("-doc");
-        JDA jda = doc ? new JDABuilder(AccountType.BOT).setToken(args[0]).buildAsync() : null;
+        JDA jda = doc ? null : new JDABuilder(AccountType.BOT).setToken(args[0]).buildAsync();
 
         Commandler commandler = new Commandler(jda, "!");
 
