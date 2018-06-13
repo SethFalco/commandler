@@ -11,13 +11,10 @@ import java.io.*;
 public class CommandlerBot {
 
     public static void main(String[] args) throws LoginException, IOException {
-        boolean doc = isDocPresent(args);
-        JDA jda = null;
+        boolean doc = args.length > 0 && args[0].equalsIgnoreCase("-doc");
+        JDA jda = doc ? new JDABuilder(AccountType.BOT).setToken(args[0]).buildAsync() : null;
 
-        if (!doc)
-            jda = new JDABuilder(AccountType.BOT).setToken(args[0]).buildAsync();
-
-        Commandler commandler = new Commandler(jda);
+        Commandler commandler = new Commandler(jda, "!");
 
         commandler.registerModules(
             new BotModule(),
@@ -29,24 +26,14 @@ public class CommandlerBot {
             new VoiceModule()
         );
 
-        if (doc)
-            generateDocumentation(commandler, new File(args[2]));
-    }
+        if (doc) {
+            PageBuilder builder = new PageBuilder(commandler);
+            builder.setName("CommandlerBot");
+            builder.setAvatar("./assets/alexis.png");
+            builder.setFavicon("./assets/favicon.ico");
+            builder.setDescription("CommandlerBot is the example bot for Commandler!");
 
-    private static boolean isDocPresent(String[] args) {
-        if (args.length > 2)
-            return args[1].equalsIgnoreCase("-doc");
-
-        return false;
-    }
-
-    private static void generateDocumentation(Commandler commandler, File file) throws IOException {
-        PageBuilder builder = new PageBuilder(commandler);
-        builder.setName("CommandlerBot");
-        builder.setAvatar("./assets/alexis.png");
-        builder.setFavicon("./assets/favicon.ico");
-        builder.setDescription("CommandlerBot is the example bot for Commandler!");
-
-        builder.build(new File("." + File.separator + "pages" + File.separator));
+            builder.build(new File("." + File.separator + "pages" + File.separator));
+        }
     }
 }

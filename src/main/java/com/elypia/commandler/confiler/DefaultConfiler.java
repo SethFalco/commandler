@@ -16,7 +16,7 @@ public class DefaultConfiler implements Confiler {
      * valid and returns the matches as groups.
      */
 
-    private static final String COMMAND_REGEX = "(?i)^(?:\\\\?<@!?%s>\\s{0,2}|\\Q%s\\E)(?<alias>[A-Z]+)(?: (?<command>[^\\s]+))?(?: (?<params>.*))?";
+    private static final String COMMAND_REGEX = "(?i)\\A(?:\\\\?<@!?%s>\\s{0,2}|\\Q%s\\E)(?<module>[A-Z\\d]+(?![^A-Z\\d\\s]+))(?:\\s+(?<command>[A-Z\\d]+(?![^A-Z\\d\\s])))?(?:\\s+(?<params>.+))?\\Z";
 
     /**
      * The default param regex, this matches every argument in the command,

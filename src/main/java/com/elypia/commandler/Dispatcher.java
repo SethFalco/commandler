@@ -54,6 +54,9 @@ public class Dispatcher extends ListenerAdapter {
     }
 
     public void process(GenericMessageEvent messageEvent, Message msg, String content) {
+        if (msg.getAuthor().isBot())
+            return;
+
         MessageChannel channel = messageEvent.getChannel();
         MessageEvent event = new MessageEvent(commandler, messageEvent, msg, content);
 
@@ -66,14 +69,14 @@ public class Dispatcher extends ListenerAdapter {
         for (CommandHandler h : commandler.getHandlers()) {
             MetaModule m = h.getModule();
 
-            if (Arrays.asList(m.getModule().aliases()).contains(event.getAlias())) {
+            if (Arrays.asList(m.getModule().aliases()).contains(event.getModule())) {
                 handler = h;
                 break;
             }
 
             for (MetaCommand c : m.getCommands()) {
                 if (c.isStatic()) {
-                    if (Arrays.asList(c.getCommand().aliases()).contains(event.getAlias())) {
+                    if (Arrays.asList(c.getCommand().aliases()).contains(event.getModule())) {
                         handler = h;
                         commands.add(c.getMethod());
                         break;
