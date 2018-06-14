@@ -7,6 +7,11 @@ import java.lang.annotation.*;
 @Inherited
 public @interface Module {
 
+	/**
+	 * @return Name of the module as it should appear at the top
+	 * of the help command. This is not the alias of the module.
+	 */
+
 	String name();
 
 	/**
@@ -21,5 +26,5 @@ public @interface Module {
 	 * the module is for.
 	 */
 
-	String description();
+	String description() default "";
 }

@@ -35,10 +35,8 @@ public class PageBuilder {
     public void build(File file) throws IOException {
         Objects.requireNonNull(file);
 
-        if (file.exists()) {
-            if (!file.isDirectory())
-                throw new IllegalArgumentException("File must be a directory.");
-        }
+        if (file.exists() && !file.isDirectory())
+            throw new IllegalArgumentException("File must be a directory.");
 
         Properties properties = new Properties();
         properties.setProperty(VelocityEngine.RESOURCE_LOADER, "class");
@@ -65,14 +63,6 @@ public class PageBuilder {
         try (FileWriter writer = new FileWriter(toWrite)) {
             template.merge(context, writer);
         }
-    }
-
-    private void initNulls() {
-        if (name == null)
-            name = "Bot";
-
-        if (description == null)
-            description = "A Discord bot.";
     }
 
     public PageBuilder setName(String name) {

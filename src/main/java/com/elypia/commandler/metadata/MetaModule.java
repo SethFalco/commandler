@@ -35,6 +35,13 @@ public class MetaModule {
     private Module module;
 
     /**
+     * Does this module have a description. If the module doesn't specify a
+     * description, it may be hidden from help commands and pages.
+     */
+
+    private boolean isPublic;
+
+    /**
      * A list of collected aliases from this module. This is used to compare
      * any user input too as we convert all aliases to lower case in advance.
      */
@@ -46,6 +53,13 @@ public class MetaModule {
      */
 
     private Collection<MetaCommand> commands;
+
+    /**
+     * A list of aliases that belong to commands under this module. This is used to
+     * verify we never register two identical command aliases under the same module.
+     */
+
+    private Set<String> commandAliases;
 
     /**
      * Create a wrapper object around this {@link CommandHandler} to obtain any
@@ -76,35 +90,45 @@ public class MetaModule {
 
         if (module == null) {
             String name = clazz.getName();
-            String message = String.format("Command handler %s isn't annotated with the Module annotation.", name);
-            throw new MalformedModuleException(message);
+            String format = "Command handler %s isn't annotated with the Module annotation.";
+            throw new MalformedModuleException(String.format(format, name));
         }
-
-        this.commandler = commandler;
-        handler = t;
 
         aliases = new ArrayList<>();
 
         for (String alias : module.aliases())
             aliases.add(alias.toLowerCase());
 
+        if (aliases.stream().distinct().count() != aliases.size()) {
+            String name = module.name();
+            String format = "Module %s (%s) contains multiple aliases which are identical.";
+            throw new RecursiveAliasException(String.format(format, name, clazz.getName()));
+        }
+
+        this.commandler = commandler;
+
         if (!Collections.disjoint(commandler.getRootAlises(), aliases)) {
             String name = module.name();
             String format = "Module %s contains an alias which has already been registered by a previous module or static command.";
-            String message = String.format(format, name);
-            throw new RecursiveAliasException(message);
+            throw new RecursiveAliasException(String.format(format, name));
         }
 
         commandler.getRootAlises().addAll(aliases);
 
-        commands = new ArrayList<>();
-
         Method[] methods = clazz.getDeclaredMethods();
+        commands = new ArrayList<>();
+        commandAliases = new HashSet<>();
 
         for (Method method : methods) {
-            if (method.isAnnotationPresent(Command.class))
-                commands.add(MetaCommand.of(commandler, method));
+            if (method.isAnnotationPresent(Command.class)) {
+                MetaCommand metaCommand = MetaCommand.of(this, method);
+                commandAliases.addAll(metaCommand.getAliases());
+                commands.add(metaCommand);
+            }
         }
+
+        handler = t;
+        isPublic = module.description().equals("");
     }
 
     /**
@@ -132,11 +156,19 @@ public class MetaModule {
         return module;
     }
 
+    public boolean isPublic() {
+        return isPublic;
+    }
+
     public Collection<String> getAliases() {
         return aliases;
     }
 
     public Collection<MetaCommand> getCommands() {
         return commands;
+    }
+
+    public Collection<String> getCommandAliases() {
+        return commandAliases;
     }
 }

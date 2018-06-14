@@ -3,6 +3,8 @@ package com.elypia.commandler.metadata;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.exceptions.RecursiveAliasException;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.validation.ICommandValidator;
 
 import java.lang.annotation.Annotation;
@@ -12,39 +14,41 @@ import java.util.*;
 public class MetaCommand {
 
     private Commandler commandler;
-    private Class<?> clazz;
+    private CommandHandler handler;
+    private Class<? extends CommandHandler> clazz;
+    private MetaModule metaModule;
+    private Command command;
     private Method method;
     private Map<Class<?>, Annotation> annotations;
-    private Module module;
-    private Command command;
-    private List<MetaParam> params;
+    private List<MetaParam> metaParams;
+    private Collection<String> aliases;
     private boolean isStatic;
     private boolean isDefault;
+    private boolean isPublic;
 
-    public static MetaCommand of(Commandler commandler, Method method) {
-        return new MetaCommand(commandler, method);
+    public static MetaCommand of(MetaModule module, Method method) {
+        return new MetaCommand(module, method);
     }
 
-    private MetaCommand(Commandler commandler, Method method) {
-        this.commandler = commandler;
-        this.method = method;
-        params = new ArrayList<>();
-        annotations = new HashMap<>();
-        clazz = method.getDeclaringClass();
+    private MetaCommand(MetaModule metaModule, Method method) {
+        this.metaModule = Objects.requireNonNull(metaModule);
+        this.method = Objects.requireNonNull(method);
 
-        for (Annotation annotation : method.getDeclaredAnnotations())
-            annotations.put(annotation.annotationType(), annotation);
+        clazz = metaModule.getHandlerType();
+        command = method.getAnnotation(Command.class);
+        aliases = new ArrayList<>();
 
-        for (Annotation annotation : clazz.getDeclaredAnnotations()) {
-            if (!annotations.containsKey(annotation.annotationType()))
-                annotations.put(annotation.annotationType(), annotation);
+        for (String alias : command.aliases())
+            aliases.add(alias.toLowerCase());
+
+        if (aliases.stream().distinct().count() != aliases.size()) {
+            String name = command.name();
+            String moduleName = metaModule.getModule().name();
+            String format = "Command %s in module %s (%s) contains multiple aliases which are identical.";
+            throw new RecursiveAliasException(String.format(format, name, moduleName, clazz.getName()));
         }
 
-        module = clazz.getAnnotation(Module.class);
-        command = method.getAnnotation(Command.class);
-        isStatic = method.isAnnotationPresent(Static.class);
-        isDefault = method.isAnnotationPresent(Default.class);
-
+        metaParams = new ArrayList<>();
         Param[] params = method.getAnnotationsByType(Param.class);
         Parameter[] parameters = method.getParameters();
         int offset = 0;
@@ -61,6 +65,23 @@ public class MetaCommand {
             MetaParam meta = MetaParam.of(parameters[i], params[i - offset]);
             this.params.add(meta);
         }
+
+        annotations = new HashMap<>();
+
+        for (Annotation annotation : method.getDeclaredAnnotations())
+            annotations.put(annotation.annotationType(), annotation);
+
+        for (Annotation annotation : clazz.getDeclaredAnnotations()) {
+            if (!annotations.containsKey(annotation.annotationType()))
+                annotations.put(annotation.annotationType(), annotation);
+        }
+
+        isStatic = annotations.remove(Static.class) != null;
+        isDefault = annotations.remove(Default.class) != null;
+
+        commandler = metaModule.getCommandler();
+        handler = metaModule.getHandler();
+        isPublic = command.help().equals("");
     }
 
     public Commandler getCommandler() {
@@ -103,6 +124,10 @@ public class MetaCommand {
 
     public boolean isDefault() {
         return isDefault;
+    }
+
+    public Collection<String> getAliases() {
+        return aliases;
     }
 
     public Method getMethod() {

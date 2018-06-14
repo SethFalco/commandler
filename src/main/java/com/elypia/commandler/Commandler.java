@@ -112,7 +112,9 @@ public class Commandler {
      */
 
     public void registerModule(CommandHandler handler) {
-        handler.init(jda, this);
+        if (!handler.init(jda, this))
+            handler.setEnabled(false);
+
         handlers.add(handler);
     }
 

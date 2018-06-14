@@ -178,7 +178,7 @@ public class MessageEvent {
      * specified instead. <br>
      * <strong>Do not</strong> include the prefix when executing a trigger. <br>
      * Example: <br>
-     * event.trigger("bot help");
+     * <em>event.trigger("bot help");</em>
      *
      * @param trigger The new command to process instead.
      */
@@ -190,9 +190,17 @@ public class MessageEvent {
 		commandler.getDispatcher().process(event, message, command);
 	}
 
+    /**
+     * @return The {@link GenericMessageEvent} that caused this event.
+     */
+
     public GenericMessageEvent getMessageEvent() {
         return event;
     }
+
+    /**
+     * @return The {@link Message} that caused this event.
+     */
 
     public Message getMessage() {
         return message;
@@ -216,6 +224,14 @@ public class MessageEvent {
 		return module;
 	}
 
+    /**
+     * If the user performs a static command, the regular expression should match
+     * however it will not have the components that make up a command grouped correctly.
+     * We use {@link #setModule(String)} to correct the module.
+     *
+     * @param module The module we're setting this command for.
+     */
+
 	public void setModule(String module) {
 	    this.module = module;
     }
@@ -228,9 +244,21 @@ public class MessageEvent {
 		return command;
 	}
 
+    /**
+     * If the user performs a default command, the regular expression should match
+     * however it will not have the components that make up a command grouped correctly.
+     * We use {@link #setCommand(String)} to correct the command.
+     *
+     * @param command The command we're setting this command for.
+     */
+
 	public void setCommand(String command) {
         this.command = command;
     }
+
+    /**
+     * @return Get a list of all parameters.
+     */
 
 	public List<Object> getParams() {
 		return params;

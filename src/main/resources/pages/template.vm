@@ -6,7 +6,6 @@
         <link rel="icon" type="image/x-icon" href="$favicon"/>
         <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="reset.css"/>
-        <script src="jquery-3.3.1.min.js"></script>
         <script src="app.js"></script>
         <meta property="og:site_name" content="$name"/>
         <meta property="og:title" content="$name | Help"/>

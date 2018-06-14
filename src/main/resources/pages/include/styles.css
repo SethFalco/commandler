@@ -1,47 +1,58 @@
-body, html {
-	width: 100%;
-	height: 100%;
+body  {
+	--body-color: #202020;
+  --navbar-color: #282828;
+  --border-color: #3b3b3b;
+  --dropdown-color: #191919;
+	--foreground-color: white;
 
-	background-color: #f0f;
+	background-color: var(--body-color);
+	color: var(--foreground-color);
 }
 
-main {
+.background {
+	width: 100%;
 	height: 100%;
+	position: absolute;
+	opacity: .25;
 }
 
 nav {
 	position: fixed;
-	padding: .5vh .4vw;
-
-	width: 15vw;
+	width: 275px;
 	height: 100%;
 
-	background-color: #0f0;
+	border-right: 5px solid var(--border-color);
+	background-color: var(--navbar-color);
 }
 
-nav > h1.bot-name {
+nav .bot-name {
 	text-align: center;
 	margin: 0;
 }
 
-nav > ul {
+nav ul {
+	margin-top: 10px;
+	padding-left: 10px;
 	list-style: none;
-
 	cursor: pointer;
 }
 
-nav > ul > li:hover {
-	font-size: 1.1em;
+nav ul li {
+	opacity: .75;
 }
 
-div.container {
+nav ul li:hover {
+	opacity: 1;
+}
+
+.container {
 	position: absolute;
 	padding: 1vh 2vw;
 	top: 0;
 	left: 15vw;
 }
 
-div.module-nav {
+.module-nav {
 	position: fixed;
 	padding: .5vh .2vw;
 	max-width: 40vw;
@@ -51,35 +62,39 @@ div.module-nav {
 	background-color: #0ff;
 }
 
-div.module-nav > ul > li {
+.module-nav ul li {
 	display: inline-block;
 }
 
-ul.module-aliases > li {
+.module-aliases li {
 	display: inline-block;
 }
 
-div.command-info {
-	margin-top: 1vh;
-	padding: 1vh 1vw;
-
-	background-color: #ff0;
+.module-info {
+	display: none;
 }
 
-div.command-title > h3, div.command-title > ul {
+.command-info {
+	margin-top: 10px;
+	padding: 10px 10px;
+	border-radius: 10px;
+	border: 2px solid var(--border-color);
+}
+
+.command-title * {
 	display: inline-block;
 }
 
-ul.command-validators {
+.command-validators {
 	vertical-align: top;
 	font-size: .8em;
 }
 
-ul.command-validators > li {
+.command-validators li {
 	display: inline-block;
 	background-color: #f50;
 }
 
-ul.command-aliases > li {
+.command-aliases li {
 	display: inline-block;
 }

@@ -3,12 +3,12 @@ package com.elypia.commandler.parsing;
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.metadata.MetaParam;
+import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.parsing.parsers.*;
 import com.elypia.commandler.parsing.parsers.jda.*;
 import net.dv8tion.jda.core.entities.*;
 
-import java.lang.reflect.Array;
+import java.lang.reflect.*;
 import java.net.URL;
 import java.util.*;
 
@@ -45,6 +45,41 @@ public class Parser {
             throw new IllegalArgumentException("Parser for this type of object has already been registered.");
 
         parsers.put(t, parser);
+    }
+
+    /**
+     * Take the String parameters from the message event and parse them into the required
+     * format the command method required to execute.
+     *
+     * @param event The message event to take parameters from.
+     * @param method The method to imitate the fields of.
+     * @return An Object[] array of all parameters parsed as required for the given method.
+     * @throws IllegalArgumentException If one of the arguments could not be parsed in the required format.
+     */
+
+    public Object[] parseParameters(MessageEvent event, Method method) throws IllegalArgumentException {
+        MetaCommand meta = MetaCommand.of(commandler, method); // Command data
+        List<MetaParam> params = meta.getParams(); // Parameter data
+        List<Object> inputs = event.getParams(); // User input parameters
+        Object[] objects = new Object[params.size()]; // Parsed parameters to perform command
+
+        int offset = 0;
+
+        for (int i = 0; i < params.size(); i++) {
+            MetaParam param = params.get(i);
+            Class<?> type = param.getParameter().getType();
+
+            if (type == MessageEvent.class) {
+                objects[i] = event;
+                offset++;
+                continue;
+            }
+
+            Object input = inputs.get(i - offset);
+            objects[i] = parseParam(event, param, input);
+        }
+
+        return objects;
     }
 
     public Object parseParam(MessageEvent event, MetaParam param, Object object) throws IllegalArgumentException {
