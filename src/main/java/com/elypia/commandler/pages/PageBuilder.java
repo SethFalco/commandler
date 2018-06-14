@@ -5,6 +5,7 @@ import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.modules.CommandHandler;
 import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import java.io.*;
 import java.util.*;
@@ -40,8 +41,8 @@ public class PageBuilder {
         }
 
         Properties properties = new Properties();
-        properties.setProperty("resource.loader", "class");
-        properties.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        properties.setProperty(VelocityEngine.RESOURCE_LOADER, "class");
+        properties.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
 
         VelocityEngine engine = new VelocityEngine(properties);
         engine.init();
