@@ -46,7 +46,7 @@ public class PageBuilder {
         VelocityEngine engine = new VelocityEngine(properties);
         engine.init();
 
-        Template template = engine.getTemplate("template.vm", "utf-8");
+        Template template = engine.getTemplate("pages/template.vm", "utf-8");
 
         VelocityContext context = new VelocityContext();
         context.put("name", name);
