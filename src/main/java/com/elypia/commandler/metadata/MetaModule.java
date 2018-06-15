@@ -46,7 +46,7 @@ public class MetaModule {
      * any user input too as we convert all aliases to lower case in advance.
      */
 
-    private Collection<String> aliases;
+    private Set<String> aliases;
 
     /**
      * A list of {@link MetaCommand} that were created inside the {@link CommandHandler}.
@@ -94,15 +94,14 @@ public class MetaModule {
             throw new MalformedModuleException(String.format(format, name));
         }
 
-        aliases = new ArrayList<>();
+        aliases = new HashSet<>();
 
         for (String alias : module.aliases())
             aliases.add(alias.toLowerCase());
 
-        if (aliases.stream().distinct().count() != aliases.size()) {
-            String name = module.name();
+        if (aliases.size() != module.aliases().length) {
             String format = "Module %s (%s) contains multiple aliases which are identical.";
-            throw new RecursiveAliasException(String.format(format, name, clazz.getName()));
+            System.err.printf(format, module.name(), clazz.getName());
         }
 
         this.commandler = commandler;

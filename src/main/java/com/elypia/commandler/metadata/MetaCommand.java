@@ -21,7 +21,7 @@ public class MetaCommand {
     private Method method;
     private Map<Class<?>, Annotation> annotations;
     private List<MetaParam> metaParams;
-    private Collection<String> aliases;
+    private Set<String> aliases;
     private boolean isStatic;
     private boolean isDefault;
     private boolean isPublic;
@@ -36,16 +36,14 @@ public class MetaCommand {
 
         clazz = metaModule.getHandlerType();
         command = method.getAnnotation(Command.class);
-        aliases = new ArrayList<>();
+        aliases = new HashSet<>();
 
         for (String alias : command.aliases())
             aliases.add(alias.toLowerCase());
 
-        if (aliases.stream().distinct().count() != aliases.size()) {
-            String name = command.name();
-            String moduleName = metaModule.getModule().name();
+        if (aliases.size() != command.aliases().length) {
             String format = "Command %s in module %s (%s) contains multiple aliases which are identical.";
-            throw new RecursiveAliasException(String.format(format, name, moduleName, clazz.getName()));
+            System.err.printf(format, command.name(), metaModule.getModule().name(), clazz.getName());
         }
 
         metaParams = new ArrayList<>();
@@ -54,16 +52,17 @@ public class MetaCommand {
         int offset = 0;
 
         for (int i = 0; i < parameters.length; i++) {
-            if (parameters[i].getType() == MessageEvent.class) {
-                offset++;
+            Parameter parameter = parameters[i];
+            Param param = null;
 
-                MetaParam meta = MetaParam.of(parameters[i], null);
-                this.params.add(meta);
-                continue;
-            }
+            if (parameter.getType() != MessageEvent.class)
+                param = params[i - offset];
 
-            MetaParam meta = MetaParam.of(parameters[i], params[i - offset]);
-            this.params.add(meta);
+            else if (++offset == 2)
+                System.err.printf("Command %s in module %s (%s) contains multiple MessageEvent parameters, there is no benefit to this.", command.name(), metaModule.getModule().name(), clazz.getName());
+
+            MetaParam meta = MetaParam.of(parameter, param);
+            metaParams.add(meta);
         }
 
         annotations = new HashMap<>();
