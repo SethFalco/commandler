@@ -9,7 +9,6 @@ import com.elypia.commandler.validation.command.*;
 import com.elypia.commandler.validation.param.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -39,6 +38,7 @@ public class Validator {
             registerValidator(Limit.class, new LimitValidator());
             registerValidator(Option.class, new OptionValidator());
 
+            registerValidator(NSFW.class, new NSFWValidator());
             registerValidator(Scope.class, new ScopeValidator());
             registerValidator(Permissions.class, new PermissionValidator());
             registerValidator(Elevated.class, new ElevatedValidator());
@@ -59,17 +59,15 @@ public class Validator {
         commandValidators.put(clazz, validator);
     }
 
-    public void validate(MessageEvent event, Method method, Object[] args) throws IllegalArgumentException, IllegalAccessException {
-        MetaCommand command = MetaCommand.of(commandler, method);
-
-        for (Map.Entry<Class<?>, Annotation> entry : command.getAnnotations().entrySet()) {
+    public void validate(MessageEvent event, MetaCommand metaCommand, Object[] args) throws IllegalArgumentException, IllegalAccessException {
+        for (Map.Entry<Class<? extends Annotation>, Annotation> entry : metaCommand.getAnnotations().entrySet()) {
             ICommandValidator validator = commandValidators.get(entry.getKey());
 
             if (validator != null)
                 validator.validate(event, entry.getValue());
         }
 
-        List<MetaParam> params = command.getParams();
+        List<MetaParam> params = metaCommand.getMetaParams();
 
         for (int i = 0; i < params.size(); i++) {
             MetaParam parameter = params.get(i);

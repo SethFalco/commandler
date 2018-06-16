@@ -11,9 +11,8 @@ import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.*;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
 import java.time.OffsetDateTime;
-import java.util.*;
 
 public class Dispatcher extends ListenerAdapter {
 
@@ -57,71 +56,34 @@ public class Dispatcher extends ListenerAdapter {
         if (msg.getAuthor().isBot())
             return;
 
-        MessageChannel channel = messageEvent.getChannel();
         MessageEvent event = new MessageEvent(commandler, messageEvent, msg, content);
 
         if (!event.isValid())
             return;
 
-        CommandHandler handler = null;
-        Collection<Method> commands = new ArrayList<>();
+        MetaCommand metaCommand = getMetaCommand(event);
+        MessageChannel channel = messageEvent.getChannel();
 
-        for (CommandHandler h : commandler.getHandlers()) {
-            MetaModule m = h.getModule();
-
-            if (Arrays.asList(m.getModule().aliases()).contains(event.getModule())) {
-                handler = h;
-                break;
-            }
-
-            for (MetaCommand c : m.getCommands()) {
-                if (c.isStatic()) {
-                    if (Arrays.asList(c.getCommand().aliases()).contains(event.getModule())) {
-                        handler = h;
-                        commands.add(c.getMethod());
-                        break;
-                    }
-                }
-            }
-        }
-
-
-
-        if (handler == null) {
-            for (CommandHandler h : commandler.getHandlers()) {
-                MetaModule m = h.getModule();
-
-
-            }
-        } else {
-            commands = CommandUtils.getCommands(event, handler);
-        }
-
-        if (commands.isEmpty()) {
-            if (handler == null)
-                return;
-
-            channel.sendMessage("Sorry, that command doesn't exist, try help?").queue();
+        if (metaCommand == null) {
+            channel.sendMessage("The command you just tried to perform doesn't exist. Perhaps you should perform the help command?").queue();
             return;
         }
 
-        Method method = CommandUtils.getByParamCount(event, commands);
-
-        if (method == null) {
+        if (event.getParams().size() != metaCommand.getMetaParams().stream().filter(o -> o.getParameter().getType() != MessageEvent.class).count()) {
             channel.sendMessage("You didn't give the correct number of parameters for that command, perhaps try help instead?").queue();
             return;
         }
 
         try {
-            Object[] params = parser.parseParameters(event, method);
-            validator.validate(event, method, params);
+            Object[] params = parser.parseParameters(event, metaCommand);
+            validator.validate(event, metaCommand, params);
 
             try {
-                Object message = method.invoke(handler, params);
+                Object message = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
 
                 if (message != null) {
                     sender.sendAsMessage(event, message, o -> {
-                        Reaction[] reactions = method.getAnnotationsByType(Reaction.class);
+                        Reaction[] reactions = metaCommand.getMethod().getAnnotationsByType(Reaction.class);
 
                         for (Reaction reaction : reactions)
                             o.addReaction(reaction.alias()).queue();
@@ -134,6 +96,46 @@ public class Dispatcher extends ListenerAdapter {
         } catch (IllegalArgumentException | IllegalAccessException ex) {
             channel.sendMessage(ex.getMessage()).queue();
         }
+    }
+
+    private MetaCommand getMetaCommand(MessageEvent event) {
+        for (CommandHandler handler : commandler.getHandlers()) {
+            MetaModule metaModule = handler.getModule();
+            String module = event.getModule();
+            String command = event.getCommand();
+
+            if (metaModule.hasPerformed(module)) {
+                if (command != null) {
+                    for (MetaCommand metaCommand : metaModule.getMetaCommands()) {
+                        if (metaCommand.getAliases().contains(command))
+                            return metaCommand;
+                    }
+
+                    event.getParams().add(0, command);
+                    event.setCommand(metaModule.getDefaultCommand());
+                } else {
+                    event.setCommand(metaModule.getDefaultCommand());
+                }
+
+                return metaModule.getDefaultCommand();
+            }
+
+            for (MetaCommand metaCommand : metaModule.getMetaCommands()) {
+                if (metaCommand.isStatic()) {
+                    if (metaCommand.getAliases().contains(module)) {
+                        event.setModule(handler);
+
+                        if (command != null)
+                            event.getParams().add(0, command);
+
+                        event.setCommand(metaCommand);
+                        return metaCommand;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     public Parser getParser() {

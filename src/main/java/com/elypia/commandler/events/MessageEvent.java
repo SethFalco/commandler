@@ -1,8 +1,10 @@
 package com.elypia.commandler.events;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.confiler.Confiler;
+import com.elypia.commandler.metadata.MetaCommand;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.sending.Sender;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
@@ -236,6 +238,10 @@ public class MessageEvent {
 	    this.module = module;
     }
 
+    public void setModule(CommandHandler handler) {
+		setModule(handler.getModule().getModule().aliases()[0]);
+	}
+
     /**
      * @return Get the command for this event.
      */
@@ -255,6 +261,10 @@ public class MessageEvent {
 	public void setCommand(String command) {
         this.command = command;
     }
+
+	public void setCommand(MetaCommand command) {
+		setCommand(command.getCommand().aliases()[0]);
+	}
 
     /**
      * @return Get a list of all parameters.

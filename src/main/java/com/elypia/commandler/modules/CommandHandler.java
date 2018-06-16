@@ -59,7 +59,7 @@ public abstract class CommandHandler {
 
 		builder.setDescription(description + "\n_ _");
 
-		Iterator<MetaCommand> iter = module.getCommands().iterator();
+		Iterator<MetaCommand> iter = module.getMetaCommands().iterator();
 		boolean globalParams = false;
 
 		while (iter.hasNext()) {
@@ -80,7 +80,7 @@ public abstract class CommandHandler {
 
 				StringJoiner helpJoiner = new StringJoiner("\n");
 
-				Iterator<MetaParam> it = metaCommand.getParams().iterator();
+				Iterator<MetaParam> it = metaCommand.getMetaParams().iterator();
 
 				boolean params = false;
 

@@ -3,7 +3,7 @@ package com.elypia.commandler.metadata;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.exceptions.RecursiveAliasException;
+import com.elypia.commandler.exceptions.MalformedCommandException;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.validation.ICommandValidator;
 
@@ -19,12 +19,12 @@ public class MetaCommand {
     private MetaModule metaModule;
     private Command command;
     private Method method;
-    private Map<Class<?>, Annotation> annotations;
-    private List<MetaParam> metaParams;
+    private Map<Class<? extends Annotation>, Annotation> annotations;
     private Set<String> aliases;
     private boolean isStatic;
     private boolean isDefault;
     private boolean isPublic;
+    private List<MetaParam> metaParams;
 
     public static MetaCommand of(MetaModule module, Method method) {
         return new MetaCommand(module, method);
@@ -49,6 +49,13 @@ public class MetaCommand {
         metaParams = new ArrayList<>();
         Param[] params = method.getAnnotationsByType(Param.class);
         Parameter[] parameters = method.getParameters();
+
+        if (Arrays.stream(parameters).filter(o -> o.getType() != MessageEvent.class).count() != params.length) {
+            String format = "Command %s in module %s (%s) doesn't contain the correct number of @Param annotations.";
+            String message = String.format(format, command.name(), metaModule.getModule().name(), clazz.getName());
+            throw new MalformedCommandException(message);
+        }
+
         int offset = 0;
 
         for (int i = 0; i < parameters.length; i++) {
@@ -65,33 +72,32 @@ public class MetaCommand {
             metaParams.add(meta);
         }
 
-        annotations = new HashMap<>();
+        annotations = parseAnnotations(method, clazz);
 
-        for (Annotation annotation : method.getDeclaredAnnotations())
-            annotations.put(annotation.annotationType(), annotation);
+        commandler = metaModule.getCommandler();
+        handler = metaModule.getHandler();
+        isPublic = !command.help().equals("");
+    }
+
+    private Map<Class<? extends Annotation>, Annotation> parseAnnotations(Method method, Class<? extends CommandHandler> clazz) {
+        Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<>();
+
+        for (Annotation annotation : method.getDeclaredAnnotations()) {
+            Class<? extends Annotation> type = annotation.annotationType();
+
+            if (type == Static.class)
+                isStatic = true;
+            else if (type == Default.class)
+                isDefault = true;
+            else
+                annotations.put(type, annotation);
+        }
 
         for (Annotation annotation : clazz.getDeclaredAnnotations()) {
             if (!annotations.containsKey(annotation.annotationType()))
                 annotations.put(annotation.annotationType(), annotation);
         }
 
-        isStatic = annotations.remove(Static.class) != null;
-        isDefault = annotations.remove(Default.class) != null;
-
-        commandler = metaModule.getCommandler();
-        handler = metaModule.getHandler();
-        isPublic = command.help().equals("");
-    }
-
-    public Commandler getCommandler() {
-        return commandler;
-    }
-
-    public Module getModule() {
-        return module;
-    }
-
-    public Map<Class<?>, Annotation> getAnnotations() {
         return annotations;
     }
 
@@ -99,22 +105,48 @@ public class MetaCommand {
         Map<Class<? extends Annotation>, ICommandValidator> registeredValidators = commandler.getDispatcher().getValidator().getCommandValidators();
         Map<Annotation, ICommandValidator> validators = new HashMap<>();
 
-        annotations.forEach((clazz, annotation) -> {
-            registeredValidators.forEach((clazz2, validator)-> {
-                if (clazz == clazz2)
-                    validators.put(annotation, validator);
-            });
-        });
+        for (Map.Entry<Class<? extends Annotation>, Annotation> entry : annotations.entrySet()) {
+            for (Map.Entry<Class<? extends Annotation>, ICommandValidator> entryII : registeredValidators.entrySet()) {
+                if (entry.getKey() == entryII.getKey()) {
+                    validators.put(entry.getValue(), entryII.getValue());
+                    break;
+                }
+            }
+        }
 
         return validators;
+    }
+
+    public Commandler getCommandler() {
+        return commandler;
+    }
+
+    public CommandHandler getHandler() {
+        return handler;
+    }
+
+    public Class<? extends CommandHandler> getHandlerType() {
+        return clazz;
+    }
+
+    public MetaModule getMetaModule() {
+        return metaModule;
     }
 
     public Command getCommand() {
         return command;
     }
 
-    public List<MetaParam> getParams() {
-        return params;
+    public Method getMethod() {
+        return method;
+    }
+
+    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
+        return annotations;
+    }
+
+    public Set<String> getAliases() {
+        return aliases;
     }
 
     public boolean isStatic() {
@@ -125,11 +157,11 @@ public class MetaCommand {
         return isDefault;
     }
 
-    public Collection<String> getAliases() {
-        return aliases;
+    public boolean isPublic() {
+        return isPublic;
     }
 
-    public Method getMethod() {
-        return method;
+    public List<MetaParam> getMetaParams() {
+        return metaParams;
     }
 }

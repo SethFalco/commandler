@@ -1,15 +1,52 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.validation.command.NSFW;
+import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.modules.CommandHandler;
+import net.dv8tion.jda.core.EmbedBuilder;
+import okhttp3.*;
+import org.json.JSONObject;
 
-@Module(name = "Misc. Utilities", aliases = {"util", "utils", "math"}, description = "Math commands and fun stuff.")
+import java.io.IOException;
+
+@Module(name = "Misc.", aliases = {"util", "utils", "misc", "static"}, description = "Misc. commands that don't fit into another module.")
 public class UtilModule extends CommandHandler {
 
+	private OkHttpClient client;
+	private Request nekoRequest;
+
+	public UtilModule() {
+		client = new OkHttpClient();
+		nekoRequest = new Request.Builder().url("https://nekos.life/api/neko").build();
+	}
+
 	@Static
-	@Command(name = "Letter Count", aliases = "count", help = "Cound the number of characters sent.")
+	@Command(name = "Character Count", aliases = "count", help = "Count the number of characters sent.")
 	@Param(name = "text", help = "The text to count from.")
 	public String count(String input) {
 		return String.format("There are %,d characters in the input text.", input.length());
+	}
+
+	@Static
+	@NSFW
+	@Command(name = "Get Pet Neko", aliases = "neko", help = "Get a pet neko sent to you over Discord.")
+	public void neko(MessageEvent event) {
+		client.newCall(nekoRequest).enqueue(new Callback() {
+
+			@Override
+			public void onResponse(Call call, Response response) throws IOException {
+				JSONObject object = new JSONObject(response.body().string());
+
+				EmbedBuilder builder = new EmbedBuilder();
+				builder.setImage(object.getString("neko"));
+				event.reply(builder);
+			}
+
+			@Override
+			public void onFailure(Call call, IOException e) {
+				event.reply("We're all out of nekos. :C Maybe try again later?");
+			}
+		});
 	}
 }

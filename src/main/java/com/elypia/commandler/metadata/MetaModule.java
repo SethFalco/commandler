@@ -52,7 +52,7 @@ public class MetaModule {
      * A list of {@link MetaCommand} that were created inside the {@link CommandHandler}.
      */
 
-    private Collection<MetaCommand> commands;
+    private Collection<MetaCommand> metaCommands;
 
     /**
      * A list of aliases that belong to commands under this module. This is used to
@@ -85,13 +85,13 @@ public class MetaModule {
      */
 
     private <T extends CommandHandler> MetaModule(Commandler commandler, T t) {
+        handler = t;
         clazz = t.getClass();
         module = clazz.getAnnotation(Module.class);
 
         if (module == null) {
-            String name = clazz.getName();
             String format = "Command handler %s isn't annotated with the Module annotation.";
-            throw new MalformedModuleException(String.format(format, name));
+            throw new MalformedModuleException(String.format(format, clazz.getName()));
         }
 
         aliases = new HashSet<>();
@@ -115,19 +115,28 @@ public class MetaModule {
         commandler.getRootAlises().addAll(aliases);
 
         Method[] methods = clazz.getDeclaredMethods();
-        commands = new ArrayList<>();
+        metaCommands = new ArrayList<>();
         commandAliases = new HashSet<>();
+
+        int defaultCommand = 0;
 
         for (Method method : methods) {
             if (method.isAnnotationPresent(Command.class)) {
                 MetaCommand metaCommand = MetaCommand.of(this, method);
+
+                if (metaCommand.isDefault()) {
+                    if (++defaultCommand == 2) {
+                        String format = "Module %s (%s) contains multiple default commands, modules may only have a single default.";
+                        throw new MalformedModuleException(String.format(format, module.name(), clazz.getName()));
+                    }
+                }
+
                 commandAliases.addAll(metaCommand.getAliases());
-                commands.add(metaCommand);
+                metaCommands.add(metaCommand);
             }
         }
 
-        handler = t;
-        isPublic = module.description().equals("");
+        isPublic = !module.description().equals("");
     }
 
     /**
@@ -137,6 +146,24 @@ public class MetaModule {
 
     public boolean hasPerformed(String input) {
         return aliases.contains(input.toLowerCase());
+    }
+
+    public MetaCommand getDefaultCommand() {
+        for (MetaCommand metaCommand : metaCommands) {
+            if (metaCommand.isDefault())
+                return metaCommand;
+        }
+
+        return null;
+    }
+
+    public MetaCommand getCommand(String input) {
+        for (MetaCommand metaCommand : metaCommands) {
+            if (metaCommand.getAliases().contains(input))
+                return metaCommand;
+        }
+
+        return null;
     }
 
     public Commandler getCommandler() {
@@ -163,8 +190,8 @@ public class MetaModule {
         return aliases;
     }
 
-    public Collection<MetaCommand> getCommands() {
-        return commands;
+    public Collection<MetaCommand> getMetaCommands() {
+        return metaCommands;
     }
 
     public Collection<String> getCommandAliases() {

@@ -52,14 +52,13 @@ public class Parser {
      * format the command method required to execute.
      *
      * @param event The message event to take parameters from.
-     * @param method The method to imitate the fields of.
+     * @param metaCommand The method to imitate the fields of.
      * @return An Object[] array of all parameters parsed as required for the given method.
      * @throws IllegalArgumentException If one of the arguments could not be parsed in the required format.
      */
 
-    public Object[] parseParameters(MessageEvent event, Method method) throws IllegalArgumentException {
-        MetaCommand meta = MetaCommand.of(commandler, method); // Command data
-        List<MetaParam> params = meta.getParams(); // Parameter data
+    public Object[] parseParameters(MessageEvent event, MetaCommand metaCommand) throws IllegalArgumentException {
+        List<MetaParam> params = metaCommand.getMetaParams(); // Parameter data
         List<Object> inputs = event.getParams(); // User input parameters
         Object[] objects = new Object[params.size()]; // Parsed parameters to perform command
 

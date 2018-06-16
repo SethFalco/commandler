@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
         <title>$name | Help</title>
@@ -6,6 +6,7 @@
         <link rel="icon" type="image/x-icon" href="$favicon"/>
         <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="reset.css"/>
+        <link href="https://fonts.googleapis.com/css?family=Lovers+Quarrel|Megrim|Raleway|Wire+One" rel="stylesheet">
         <script src="app.js"></script>
         <meta property="og:site_name" content="$name"/>
         <meta property="og:title" content="$name | Help"/>
@@ -13,59 +14,68 @@
         <meta property="og:image" content="$avatar"/>
     </head>
     <body>
+        <img class="background" src="./resources/Night.png"/>
         <main>
             <nav>
-                <h1 class="bot-name">$name</h1>
+                <h1 class="bot-name">$name Help</h1>
                 <ul>
-                    #foreach($module in $modules)
-                        #set($name = $module.getModule().name())
-                        #set($nameNoSpace = $name.replaceAll("\s+", "-"))
-                       <li class="module-list-item" id="$nameNoSpace">$name</li>
+                    #foreach($metaModule in $metaModules)
+                        #if ($metaModule.isPublic())
+                            #set ($name = $metaModule.getModule().name())
+                            #set ($nameNoSpace = $name.replaceAll("\s+", "-"))
+                            <li class="module-list-item" id="$nameNoSpace">$name</li>
+                        #end
                     #end
                 </ul>
             </nav>
             <div class="container">
-                #foreach($module in $modules)
-                    #set($name = $module.getModule().name())
-                    #set($nameNoSpace = $name.replaceAll("\s+", "-"))
-                    <div class="module-info" id="info-$nameNoSpace">
-                        <div class="module-nav">
-                            <ul>
-                                #foreach($command in $module.getCommands())
-                                    #set($cmdName = $command.getCommand().name())
-                                    #set($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
-                                    <li><a href="#$cmdNameNoSpace">$cmdName</a></li>
-                                #end
-                            </ul>
-                        </div>
-                        <h1>$name</h1>
-                        <ul class="module-aliases">
-                            #foreach($alias in $module.getModule().aliases())
-                                <li>$alias</li>
-                            #end
-                        </ul>
-                        <p>$module.getModule().description()</p>
-                        #foreach($command in $module.getCommands())
-                            #set($cmdName = $command.getCommand().name())
-                            #set($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
-                            <div class="command-info">
-                                <div class="command-title">
-                                    <h3 id="$cmdNameNoSpace">$cmdName</h3>
-                                    <ul class="command-validators">
-                                        #foreach($entry in $command.getValidators())
-                                            <li>$entry.value.help($entry.key)</li>
+                #foreach ($metaModule in $metaModules)
+                    #if ($metaModule.isPublic())
+                        #set ($name = $metaModule.getModule().name())
+                        #set ($nameNoSpace = $name.replaceAll("\s+", "-"))
+                        <div class="module-info" id="info-$nameNoSpace">
+                            <div class="module-nav">
+                                <ul>
+                                    #foreach ($metaCommand in $metaModule.getMetaCommands())
+                                        #if ($metaCommand.isPublic())
+                                            #set ($cmdName = $metaCommand.getCommand().name())
+                                            #set ($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
+                                            <li><a href="#$cmdNameNoSpace">$cmdName</a></li>
                                         #end
-                                    </ul>
-                                </div>
-                                <ul class="command-aliases">
-                                #foreach($alias in $command.getCommand().aliases())
+                                    #end
+                                </ul>
+                            </div>
+                            <h1>$name</h1>
+                            <ul class="module-aliases">
+                                #foreach ($alias in $metaModule.getModule().aliases())
                                     <li>$alias</li>
                                 #end
                             </ul>
-                                <p>$command.getCommand().help()</p>
-                            </div>
-                        #end
-                    </div>
+                            <p>$metaModule.getModule().description()</p>
+                            #foreach ($metaCommand in $metaModule.getMetaCommands())
+                                #if ($metaCommand.isPublic())
+                                    #set ($cmdName = $metaCommand.getCommand().name())
+                                    #set ($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
+                                    <div class="command-info">
+                                        <div class="command-title">
+                                            <h3 id="$cmdNameNoSpace">$cmdName</h3>
+                                            <ul class="command-validators">
+                                                #foreach($entry in $metaCommand.getValidators().entrySet())
+                                                    <li>$entry.key.annotationType().getSimpleName()</li>
+                                                #end
+                                            </ul>
+                                        </div>
+                                        <ul class="command-aliases">
+                                            #foreach($alias in $metaCommand.getCommand().aliases())
+                                                <li>$alias</li>
+                                            #end
+                                        </ul>
+                                        <p>$metaCommand.getCommand().help()</p>
+                                    </div>
+                                #end
+                            #end
+                        </div>
+                    #end
                 #end
             </div>
         </main>

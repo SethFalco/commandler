@@ -1,17 +1,11 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.param.*;
+import com.elypia.commandler.modules.CommandHandler;
 
-@Module(name = "Example Module for Demo", aliases = {"example", "ex"}, description = "This module is made for demonstration and examples.")
+@Module(name = "Example Module for Dev Demo", aliases = {"example", "ex"})
 public class ExampleModule extends CommandHandler {
-
-    @Override
-    public boolean test() {
-        enabled = true;
-        return true;
-    }
 
     @Command(name = "Spam the Chat", aliases = "spam", help = "Repeat a message multiple times.")
     @Param(name = "input", help = "The text to repeat.")
@@ -26,8 +20,8 @@ public class ExampleModule extends CommandHandler {
     }
 
     @Command(name = "Validate Length of Input", aliases = "length")
-    @Param(name = "input", help = "Some random text to ensure is the right length.")
-    public String length(@Length(min = 0, max = 32) String input) {
+    @Param(name = "input", help = "Some random text to ensure  it's the right length.")
+    public String length(@Length(max = 32) String input) {
         return "Well done, the text was between 0 and 32 characters.";
     }
 
@@ -35,12 +29,5 @@ public class ExampleModule extends CommandHandler {
     @Param(name = "input", help = "A potential option from the list.")
     public String option(@Option({"user", "bot", "all"}) String accountType) {
         return "Well done, what you typed was a type of account.";
-    }
-
-    @Static
-    @Command(name = "Validate Static Command Parameters", aliases = "staticparams", help = "Testing if static commands work with parameters.")
-    @Param(name = "param", help = "A param to send in chat... kinda like say.")
-    public String staticWithParams(String message) {
-        return message;
     }
 }

@@ -17,15 +17,15 @@ public class HelpModule extends CommandHandler {
     @Override
     @Default
     @CommandGroup("help")
-    @Command(name = "Help", aliases = "help")
+    @Command(name = "Help", aliases = {"help", "halp", "helpme"})
     public Object help(MessageEvent event) {
         return super.help(event);
     }
 
     @CommandGroup("help")
-    @Param(name = "input", help = "The name of the module you'd like to query for help.")
-    public void help(MessageEvent event, String input) {
-        String command = input + " help";
+    @Param(name = "module", help = "The name of the module you'd like to query for help.")
+    public void help(MessageEvent event, String module) {
+        String command = module + " help";
         event.trigger(command);
     }
 
@@ -79,12 +79,12 @@ public class HelpModule extends CommandHandler {
         return builder;
     }
 
-    @Command(name = "Explain Static Commands", aliases = "static", help = "Learn what a `static` command does and how to use them.")
+    @Command(name = "Explain Static Commands", aliases = "static", help = "Learn what a Static command does and how to use them.")
     public String staticHelp() {
         return STATIC;
     }
 
-    @Command(name = "Example Default Commands", aliases = "default", help = "Learn what a `default` command does and how to use them.")
+    @Command(name = "Example Default Commands", aliases = "default", help = "Learn what a Default command does and how to use them.")
     public String defaultHelp() {
         return DEFAULT;
     }

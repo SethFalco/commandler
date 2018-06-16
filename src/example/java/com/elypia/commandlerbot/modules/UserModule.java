@@ -13,9 +13,10 @@ import java.util.*;
 
 import static com.elypia.commandler.data.SearchScope.LOCAL;
 
-@Module(name = "User (Member)", aliases = "user", description = "Get information or stats on global users!")
+@Module(name = "Users", aliases = {"user", "users", "member", "members"}, description = "Get information, associations or stats on users!")
 public class UserModule extends CommandHandler {
 
+	@Default
 	@CommandGroup("info")
 	public void getInfo(MessageEvent event) {
 		getInfo(event, event.getMessage().getAuthor());
@@ -23,7 +24,7 @@ public class UserModule extends CommandHandler {
 
 	@Scope(ChannelType.TEXT)
 	@CommandGroup("info")
-	@Command(name = "User Info", aliases = "info", help = "Get some basic information on the user!")
+	@Command(name = "User Info", aliases = {"info", "information"}, help = "Obtain information on a user!")
 	@Param(name = "user", help = "The user to display information for.")
 	public EmbedBuilder getInfo(MessageEvent event, @Search(LOCAL) User user) {
 		EmbedBuilder builder = new EmbedBuilder();

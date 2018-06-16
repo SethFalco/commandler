@@ -1,8 +1,8 @@
 body  {
 	--body-color: #202020;
-    --navbar-color: #282828;
-    --border-color: #3b3b3b;
-    --dropdown-color: #191919;
+  --navbar-color: #282828;
+  --border-color: #3b3b3b;
+  --dropdown-color: #191919;
 	--foreground-color: white;
 
 	background-color: var(--body-color);

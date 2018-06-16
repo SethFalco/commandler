@@ -1,11 +1,13 @@
 package com.elypia.commandler.pages;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.metadata.MetaModule;
 import com.elypia.commandler.modules.CommandHandler;
 import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.util.*;
@@ -54,14 +56,21 @@ public class PageBuilder {
         context.put("favicon", favicon);
         context.put("prefix", prefix);
         context.put("handlers", handlers);
-        context.put("modules", modules);
+        context.put("metaModules", modules);
 
         String writePath = file.getAbsolutePath() + File.separator + "index.html";
         File toWrite = new File(writePath);
         file.mkdirs();
 
-        try (FileWriter writer = new FileWriter(toWrite)) {
+        String html = null;
+        try (StringWriter writer = new StringWriter()) {
             template.merge(context, writer);
+            html = writer.toString();
+        }
+
+        try (FileWriter writer = new FileWriter(toWrite)) {
+            Document document = Jsoup.parse(html);
+            writer.write(document.html());
         }
     }
 
