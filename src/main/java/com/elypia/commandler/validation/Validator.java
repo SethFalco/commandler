@@ -60,12 +60,8 @@ public class Validator {
     }
 
     public void validate(MessageEvent event, MetaCommand metaCommand, Object[] args) throws IllegalArgumentException, IllegalAccessException {
-        for (Map.Entry<Class<? extends Annotation>, Annotation> entry : metaCommand.getAnnotations().entrySet()) {
-            ICommandValidator validator = commandValidators.get(entry.getKey());
-
-            if (validator != null)
-                validator.validate(event, entry.getValue());
-        }
+        for (Map.Entry<MetaValidator, ICommandValidator> entry : metaCommand.getValidators().entrySet())
+            entry.getValue().validate(event, entry.getKey().getAnnotation());
 
         List<MetaParam> params = metaCommand.getMetaParams();
 

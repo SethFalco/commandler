@@ -2,10 +2,12 @@ package com.elypia.commandler.modules;
 
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.validation.command.Scope;
 import com.elypia.commandler.confiler.Confiler;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.*;
 import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.entities.ChannelType;
 
 import java.util.*;
 
@@ -33,6 +35,7 @@ public abstract class CommandHandler {
 		return true;
 	}
 
+	@Scope({ChannelType.TEXT, ChannelType.PRIVATE})
 	@Command(name = "Help", aliases = "help")
 	public Object help(MessageEvent event) {
 		Confiler confiler = commandler.getConfiler();

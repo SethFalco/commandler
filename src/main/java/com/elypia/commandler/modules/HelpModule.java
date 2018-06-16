@@ -46,6 +46,10 @@ public class HelpModule extends CommandHandler {
         while (it.hasNext()) {
             CommandHandler handler = it.next();
             MetaModule meta = handler.getModule();
+
+            if (!meta.isPublic())
+                continue;
+
             Module module = meta.getModule();
             String name = module.name();
             String[] aliases = module.aliases();

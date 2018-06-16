@@ -1,22 +1,21 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.annotations.validation.command.Scope;
 import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.modules.CommandHandler;
 import net.dv8tion.jda.core.entities.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.elypia.commandler.data.SearchScope.LOCAL;
-import static net.dv8tion.jda.core.entities.ChannelType.TEXT;
 
+@Scope(ChannelType.TEXT)
 @Module(name = "Guild Voice Channel", aliases = {"voice", "vc"}, description = "Convenience commands for voice channels.")
 public class VoiceModule extends CommandHandler {
 
-    @Scope(TEXT)
     @Command(name = "Mention Members", aliases = {"mention", "at"}, help = "Mention all the users in a voice channel.")
     @Param(name = "channel", help = "The channel(s) to mention users from.")
     public String mention(MessageEvent event, @Search(LOCAL) VoiceChannel[] channels) {
