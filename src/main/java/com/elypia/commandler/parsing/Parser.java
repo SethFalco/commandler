@@ -49,7 +49,7 @@ public class Parser {
 
     /**
      * Take the String parameters from the message event and parse them into the required
-     * format the command method required to execute.
+     * format the commands method required to execute.
      *
      * @param event The message event to take parameters from.
      * @param metaCommand The method to imitate the fields of.
@@ -60,7 +60,7 @@ public class Parser {
     public Object[] parseParameters(MessageEvent event, MetaCommand metaCommand) throws IllegalArgumentException {
         List<MetaParam> params = metaCommand.getMetaParams(); // Parameter data
         List<Object> inputs = event.getParams(); // User input parameters
-        Object[] objects = new Object[params.size()]; // Parsed parameters to perform command
+        Object[] objects = new Object[params.size()]; // Parsed parameters to perform commands
 
         int offset = 0;
 

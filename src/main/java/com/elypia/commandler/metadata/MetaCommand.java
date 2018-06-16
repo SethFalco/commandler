@@ -20,6 +20,7 @@ public class MetaCommand {
     private Command command;
     private Method method;
     private Map<Class<? extends Annotation>, Annotation> annotations;
+    private Collection<MetaCommandValidator> validators;
     private Set<String> aliases;
     private boolean isStatic;
     private boolean isDefault;
@@ -72,6 +73,7 @@ public class MetaCommand {
             metaParams.add(meta);
         }
 
+        validators = new ArrayList<>();
         annotations = parseAnnotations(method, clazz);
 
         commandler = metaModule.getCommandler();
@@ -85,7 +87,9 @@ public class MetaCommand {
         for (Annotation annotation : method.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
 
-            if (type == Static.class)
+            if (type.isAnnotationPresent(Validator.class))
+                validators.add(MetaCommandValidator.of(this, annotation));
+            else if (type == Static.class)
                 isStatic = true;
             else if (type == Default.class)
                 isDefault = true;
@@ -99,22 +103,6 @@ public class MetaCommand {
         }
 
         return annotations;
-    }
-
-    public Map<Annotation, ICommandValidator> getValidators() {
-        Map<Class<? extends Annotation>, ICommandValidator> registeredValidators = commandler.getDispatcher().getValidator().getCommandValidators();
-        Map<Annotation, ICommandValidator> validators = new HashMap<>();
-
-        for (Map.Entry<Class<? extends Annotation>, Annotation> entry : annotations.entrySet()) {
-            for (Map.Entry<Class<? extends Annotation>, ICommandValidator> entryII : registeredValidators.entrySet()) {
-                if (entry.getKey() == entryII.getKey()) {
-                    validators.put(entry.getValue(), entryII.getValue());
-                    break;
-                }
-            }
-        }
-
-        return validators;
     }
 
     public Commandler getCommandler() {
@@ -143,6 +131,19 @@ public class MetaCommand {
 
     public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
         return annotations;
+    }
+
+    public Map<MetaCommandValidator, ICommandValidator> getValidators() {
+        Map<MetaCommandValidator, ICommandValidator> validatorMap = new HashMap<>();
+
+        commandler.getDispatcher().getValidator().getCommandValidators().forEach((type, validator) -> {
+            validators.forEach(metaCommandValidator -> {
+                if (metaCommandValidator.getAnnotationType() == type)
+                    validatorMap.put(metaCommandValidator, validator);
+            });
+        });
+
+        return validatorMap;
     }
 
     public Set<String> getAliases() {

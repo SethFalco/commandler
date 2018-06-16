@@ -16,11 +16,11 @@ public class ElevatedValidator implements ICommandValidator<Elevated> {
         Member member = event.getMessage().getMember();
 
         if (!member.hasPermission(channel, Permission.MANAGE_SERVER))
-            throw new IllegalAccessException("You must have the `Manage Server` permission to perform this command.");
+            throw new IllegalAccessException("You must have the `Manage Server` permission to perform this commands.");
     }
 
     @Override
     public String help(Elevated annotation) {
-        return "This command requires the user have the Manage Server permission to perform this command.";
+        return "This commands requires the user have the Manage Server permission to perform this commands.";
     }
 }

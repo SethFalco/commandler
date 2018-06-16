@@ -3,7 +3,7 @@ package com.elypia.commandler.annotations;
 import java.lang.annotation.*;
 
 /**
- * A static command is a command which belongs to a module but
+ * A static commands is a commands which belongs to a module but
  * can also be used without specifying the module what so ever.
  */
 

@@ -56,7 +56,7 @@ public class MetaModule {
 
     /**
      * A list of aliases that belong to commands under this module. This is used to
-     * verify we never register two identical command aliases under the same module.
+     * verify we never register two identical commands aliases under the same module.
      */
 
     private Set<String> commandAliases;
@@ -69,7 +69,7 @@ public class MetaModule {
      * @param commandler The parent this {@link CommandHandler} is registered to.
      * @param t The {@link CommandHandler} to obtain information from.
      * @param <T> An instance of the {@link CommandHandler} class.
-     * @return A wrapper object around the command handler and it's commands.
+     * @return A wrapper object around the commands handler and it's commands.
      */
 
     public static <T extends CommandHandler> MetaModule of(Commandler commandler, T t) {
@@ -108,7 +108,7 @@ public class MetaModule {
 
         if (!Collections.disjoint(commandler.getRootAlises(), aliases)) {
             String name = module.name();
-            String format = "Module %s contains an alias which has already been registered by a previous module or static command.";
+            String format = "Module %s contains an alias which has already been registered by a previous module or static commands.";
             throw new RecursiveAliasException(String.format(format, name));
         }
 

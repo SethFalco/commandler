@@ -12,9 +12,9 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
- * Vaidates annotations associated with command paremeters to ensure
+ * Vaidates annotations associated with commands paremeters to ensure
  * they are within the bounds that is specified relative to the user
- * performing the command.
+ * performing the commands.
  */
 
 public class Validator {

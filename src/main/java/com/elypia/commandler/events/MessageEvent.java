@@ -24,8 +24,8 @@ public class MessageEvent {
 	private GenericMessageEvent event;
 
     /**
-     * The {@link Message} that triggered this command. <br>
-     * The contents of this message it not necessarily the command the message event is parsing.
+     * The {@link Message} that triggered this commands. <br>
+     * The contents of this message it not necessarily the commands the message event is parsing.
      *
      * @see #trigger(String)
      */
@@ -45,30 +45,30 @@ public class MessageEvent {
 	private Confiler confiler;
 
     /**
-     * If the command performed is considered a valid command at all.
+     * If the commands performed is considered a valid commands at all.
      */
 
 	private boolean isValid;
 
     /**
-     * The root alias refers to the first segment of a command which may be the alias of a {@link Module} <br>
-     * <strong>Possible null</strong>: If command is not {@link #isValid() valid}.
+     * The root alias refers to the first segment of a commands which may be the alias of a {@link Module} <br>
+     * <strong>Possible null</strong>: If commands is not {@link #isValid() valid}.
      */
 
 	private String module;
 
     /**
-     * The command segment of this command if valid, this refers to which command
+     * The commands segment of this commands if valid, this refers to which commands
      * in the specified module to perform. <br>
      * <br>
      * <strong>Possible null</strong>: <br>
-     * If command is not {@link #isValid() valid}.
+     * If commands is not {@link #isValid() valid}.
      */
 
 	private String command;
 
     /**
-     * A list of all parameters associated with this command. This list may contain
+     * A list of all parameters associated with this commands. This list may contain
      * both {@link String}s and {@link String[]}s. List parameters (comma seperated) are stored
      * as an array.
      */
@@ -81,7 +81,7 @@ public class MessageEvent {
      *
      * @param commandler The parent {@link Commandler} instance spawning this event.
      * @param event The {@link MessageReceivedEvent} or {@link MessageUpdateEvent} as provided by {@link JDA}.
-     * @param message The {@link Message} to attempt to process as a command.
+     * @param message The {@link Message} to attempt to process as a commands.
      */
 
 	public MessageEvent(Commandler commandler, GenericMessageEvent event, Message message) {
@@ -94,8 +94,8 @@ public class MessageEvent {
      *
      * @param commandler The parent {@link Commandler} instance spawning this event.
      * @param event The {@link MessageReceivedEvent} or {@link MessageUpdateEvent} as provided by {@link JDA}.
-     * @param message The {@link Message} to attempt to process as a command.
-     * @param content The command itself, this may be different from the contents of the message sent.
+     * @param message The {@link Message} to attempt to process as a commands.
+     * @param content The commands itself, this may be different from the contents of the message sent.
      */
 
 	public MessageEvent(Commandler commandler, GenericMessageEvent event, Message message, String content) {
@@ -115,7 +115,7 @@ public class MessageEvent {
 			return;
 
 		module = matcher.group("module");
-		command = matcher.group("command");
+		command = matcher.group("commands");
 
 		String parameters = matcher.group("params");
 
@@ -175,14 +175,14 @@ public class MessageEvent {
 	}
 
     /**
-     * Trigger another command which branches from this command. The new command
-     * will use the same {@link GenericGuildEvent} and {@link Message} but with the command
+     * Trigger another commands which branches from this commands. The new commands
+     * will use the same {@link GenericGuildEvent} and {@link Message} but with the commands
      * specified instead. <br>
      * <strong>Do not</strong> include the prefix when executing a trigger. <br>
      * Example: <br>
      * <em>event.trigger("bot help");</em>
      *
-     * @param trigger The new command to process instead.
+     * @param trigger The new commands to process instead.
      */
 
 	public void trigger(String trigger) {
@@ -209,7 +209,7 @@ public class MessageEvent {
     }
 
     /**
-     * @return If message sent actually fits the command format as
+     * @return If message sent actually fits the commands format as
      * dictated in {@link Confiler#getCommandRegex(GenericMessageEvent)}.
      */
 
@@ -218,7 +218,7 @@ public class MessageEvent {
 	}
 
     /**
-     * @return Get the module of a command, this is normally the first thing
+     * @return Get the module of a commands, this is normally the first thing
      * after the prefix.
      */
 
@@ -227,11 +227,11 @@ public class MessageEvent {
 	}
 
     /**
-     * If the user performs a static command, the regular expression should match
-     * however it will not have the components that make up a command grouped correctly.
+     * If the user performs a static commands, the regular expression should match
+     * however it will not have the components that make up a commands grouped correctly.
      * We use {@link #setModule(String)} to correct the module.
      *
-     * @param module The module we're setting this command for.
+     * @param module The module we're setting this commands for.
      */
 
 	public void setModule(String module) {
@@ -243,7 +243,7 @@ public class MessageEvent {
 	}
 
     /**
-     * @return Get the command for this event.
+     * @return Get the commands for this event.
      */
 
 	public String getCommand() {
@@ -251,11 +251,11 @@ public class MessageEvent {
 	}
 
     /**
-     * If the user performs a default command, the regular expression should match
-     * however it will not have the components that make up a command grouped correctly.
-     * We use {@link #setCommand(String)} to correct the command.
+     * If the user performs a default commands, the regular expression should match
+     * however it will not have the components that make up a commands grouped correctly.
+     * We use {@link #setCommand(String)} to correct the commands.
      *
-     * @param command The command we're setting this command for.
+     * @param command The commands we're setting this commands for.
      */
 
 	public void setCommand(String command) {

@@ -9,7 +9,7 @@ public @interface Module {
 
 	/**
 	 * @return Name of the module as it should appear at the top
-	 * of the help command. This is not the alias of the module.
+	 * of the help commands. This is not the alias of the module.
 	 */
 
 	String name();

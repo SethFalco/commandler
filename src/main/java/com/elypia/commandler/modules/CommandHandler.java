@@ -110,7 +110,7 @@ public abstract class CommandHandler {
 		}
 
 		String includeGlobal = globalParams ? " {params}" : "";
-		builder.setFooter("Try \"" + prefix + annotation.aliases()[0] + " {command}" + includeGlobal + "\" to perform commands!", null);
+		builder.setFooter("Try \"" + prefix + annotation.aliases()[0] + " {commands}" + includeGlobal + "\" to perform commands!", null);
 
 		return builder;
 	}

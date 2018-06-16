@@ -11,8 +11,8 @@ import java.util.*;
 @Module(name = "Help", aliases = "help", description = "Get help and information on the bot and it's core features.")
 public class HelpModule extends CommandHandler {
 
-    private final static String STATIC = "Static commands are commands that can be performed without specifying the module it belongs too.\nFor example, if a command is `static` one could do: `!ping` instead of `!bot ping`. The `ping` command still belongs to the `bot` module regardless.";
-    private final static String DEFAULT = "Default commands are commands modules can default too if we your input after doesn't match the alias of any existing commands in the module.\nFor example, if a command is `default` one could do: `!bot` instead of `!bot info`, we're still executing the `info` command in the `bot` module.";
+    private final static String STATIC = "Static commands are commands that can be performed without specifying the module it belongs too.\nFor example, if a commands is `static` one could do: `!ping` instead of `!bot ping`. The `ping` commands still belongs to the `bot` module regardless.";
+    private final static String DEFAULT = "Default commands are commands modules can default too if we your input after doesn't match the alias of any existing commands in the module.\nFor example, if a commands is `default` one could do: `!bot` instead of `!bot info`, we're still executing the `info` commands in the `bot` module.";
 
     @Override
     @Default
@@ -79,12 +79,12 @@ public class HelpModule extends CommandHandler {
         return builder;
     }
 
-    @Command(name = "Explain Static Commands", aliases = "static", help = "Learn what a Static command does and how to use them.")
+    @Command(name = "Explain Static Commands", aliases = "static", help = "Learn what a Static commands does and how to use them.")
     public String staticHelp() {
         return STATIC;
     }
 
-    @Command(name = "Example Default Commands", aliases = "default", help = "Learn what a Default command does and how to use them.")
+    @Command(name = "Example Default Commands", aliases = "default", help = "Learn what a Default commands does and how to use them.")
     public String defaultHelp() {
         return DEFAULT;
     }

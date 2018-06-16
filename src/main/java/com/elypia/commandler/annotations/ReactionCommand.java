@@ -7,13 +7,13 @@ import java.lang.annotation.*;
 public @interface ReactionCommand {
 
     /**
-     * @return The reaction alias that triggers this command.
+     * @return The reaction alias that triggers this commands.
      */
 
     String reaction();
 
     /**
-     * @return The name of the command this reaction should occur on.
+     * @return The name of the commands this reaction should occur on.
      */
 
     String command();

@@ -20,7 +20,7 @@ public class PermissionValidator implements ICommandValidator<Permissions> {
         if (annotation.userRequiresPermission()) {
             if (!member.hasPermission(channel, permissions)) {
                 String list = buildList(permissions);
-                String message = "You must have the permissions: " + list + " to perform this command.";
+                String message = "You must have the permissions: " + list + " to perform this commands.";
                 throw new IllegalAccessException(message);
             }
         }
@@ -34,7 +34,7 @@ public class PermissionValidator implements ICommandValidator<Permissions> {
 
     @Override
     public String help(Permissions annotation) {
-        return "Both the user and bot require the following permissions to do this command: " + buildList(annotation.value()) + ".";
+        return "Both the user and bot require the following permissions to do this commands: " + buildList(annotation.value()) + ".";
     }
 
     public String buildList(Permission[] permissions) {

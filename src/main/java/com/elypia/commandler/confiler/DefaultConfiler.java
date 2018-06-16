@@ -12,14 +12,14 @@ import java.util.regex.Pattern;
 public class DefaultConfiler implements Confiler {
 
     /**
-     * The default command regex, this matches the command to see if its
+     * The default commands regex, this matches the commands to see if its
      * valid and returns the matches as groups.
      */
 
-    private static final String COMMAND_REGEX = "(?i)\\A(?:\\\\?<@!?%s>\\s{0,2}|\\Q%s\\E)(?<module>[A-Z\\d]+(?![^A-Z\\d\\s]+))(?:\\s+(?<command>[A-Z\\d]+(?![^A-Z\\d\\s])))?(?:\\s+(?<params>.+))?\\Z";
+    private static final String COMMAND_REGEX = "(?i)\\A(?:\\\\?<@!?%s>\\s{0,2}|\\Q%s\\E)(?<module>[A-Z\\d]+(?![^A-Z\\d\\s]+))(?:\\s+(?<commands>[A-Z\\d]+(?![^A-Z\\d\\s])))?(?:\\s+(?<params>.+))?\\Z";
 
     /**
-     * The default param regex, this matches every argument in the command,
+     * The default params regex, this matches every argument in the commands,
      * any comma seperated <strong>args</strong> will be split by comma as a list.
      */
 
@@ -28,9 +28,9 @@ public class DefaultConfiler implements Confiler {
     private final String DEFAULT_PREFIX;
 
     /**
-     * The first time the command regular expression is queried, we take
+     * The first time the commands regular expression is queried, we take
      * {@link #COMMAND_REGEX} and insert the bots id and store it here to save
-     * us from populating it per command.
+     * us from populating it per commands.
      */
 
     private String commandRegex;
@@ -58,7 +58,7 @@ public class DefaultConfiler implements Confiler {
     /**
      * Builds are returns the regular expression {@link Pattern} used
      * for matching against commands. This allows the user to insert data such as
-     * the body ID or {@link #getPrefix(GenericMessageEvent) prefix} per command if
+     * the body ID or {@link #getPrefix(GenericMessageEvent) prefix} per commands if
      * it may vary depending on the event.
      *
      * @param event The message event as provided by JDA.

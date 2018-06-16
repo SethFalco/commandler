@@ -16,11 +16,11 @@ public class NSFWValidator implements ICommandValidator<NSFW> {
             return;
 
         if (!e.getTextChannel().isNSFW())
-            throw new IllegalAccessException("This command can only be performed in NSFW channels.");
+            throw new IllegalAccessException("This commands can only be performed in NSFW channels.");
     }
 
     @Override
     public String help(NSFW annotation) {
-        return "This command can only be done in PMs or NSFW channels.";
+        return "This commands can only be done in PMs or NSFW channels.";
     }
 }

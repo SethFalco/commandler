@@ -23,7 +23,7 @@ public class ScopeValidator implements ICommandValidator<Scope> {
 
     @Override
     public String help(Scope annotation) {
-        return "This command can only be performed in the following channels: " + buildList(annotation.value()) + ".";
+        return "This commands can only be performed in the following channels: " + buildList(annotation.value()) + ".";
     }
 
     private String buildList(ChannelType... types) {

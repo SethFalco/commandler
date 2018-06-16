@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 public @interface Reaction {
 
 	/**
-	 * @return The reaction to post after the command has executed as a String.
+	 * @return The reaction to post after the commands has executed as a String.
 	 */
 
 	String alias();

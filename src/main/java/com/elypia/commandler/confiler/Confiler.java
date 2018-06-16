@@ -16,13 +16,13 @@ public interface Confiler {
 
     /**
      * Commandler uses regular expression to validate and split up the message
-     * into it's various components. A command <strong>should</strong> have the following
+     * into it's various components. A commands <strong>should</strong> have the following
      * capture groups: <br>
      * <br>
      * <strong>prefix</strong>: the prefix to match <br>
-     * <strong>alias</strong>: the root alias, this may refer to a module, or static command <br>
-     * <strong>command</strong>: the command the user wishes to perform <br>
-     * <strong>params</strong>: all parameters for the command, these are collected together
+     * <strong>alias</strong>: the root alias, this may refer to a module, or static commands <br>
+     * <strong>commands</strong>: the commands the user wishes to perform <br>
+     * <strong>params</strong>: all parameters for the commands, these are collected together
      *
      * @param event The message event as provided by JDA.
      * @return The regex used to match against the message.
@@ -42,7 +42,7 @@ public interface Confiler {
     /**
      * The prefix for this event. This can be set to return a static
      * String. This exists for bots that have a customizable prefix per guild
-     * in order to check where the command was performed and obtain the correct
+     * in order to check where the commands was performed and obtain the correct
      * prefix to insert into {@link #getCommandRegex(GenericMessageEvent)}.
      *
      * @param event The message event as provided by JDA.

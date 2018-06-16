@@ -35,7 +35,7 @@ public class Commandler {
     private final Confiler confiler;
 
     /**
-     * All registered modules / command handlers with this JDACommandler.
+     * All registered modules / commands handlers with this JDACommandler.
      */
 
     private Collection<CommandHandler> handlers;
@@ -71,7 +71,7 @@ public class Commandler {
      * per event is registered.
      *
      * @param jda The JDA instance to register the {@link Dispatcher}.
-     * @param confiler The <strong>default</strong> prefix for command handling.
+     * @param confiler The <strong>default</strong> prefix for commands handling.
      */
 
     public Commandler(final JDA jda, Confiler confiler) {
@@ -108,7 +108,7 @@ public class Commandler {
      * Register a module with JDACommandler in order
      * to execute commands in the module.
      *
-     * @param handler The command handler / module to register.
+     * @param handler The commands handler / module to register.
      */
 
     public void registerModule(CommandHandler handler) {

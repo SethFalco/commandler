@@ -61,7 +61,10 @@
                                             <h3 id="$cmdNameNoSpace">$cmdName</h3>
                                             <ul class="command-validators">
                                                 #foreach($entry in $metaCommand.getValidators().entrySet())
-                                                    <li>$entry.key.annotationType().getSimpleName()</li>
+                                                    <li class="tooltip">
+                                                        <span class="tooltiptext">$entry.value.help($entry.key.getAnnotation())</span>
+                                                        <img src="$entry.key.getValidatorAnnotation().value()" alt="$entry.key.getAnnotationType().getSimpleName()" height="24" width="24"/>
+                                                    </li>
                                                 #end
                                             </ul>
                                         </div>

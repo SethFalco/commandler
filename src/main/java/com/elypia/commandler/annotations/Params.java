@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * Allows the {@link Param} annotiation to be repeatable
- * so we can specify multiple parameters per command.
+ * so we can specify multiple parameters per commands.
  */
 
 @Target(ElementType.METHOD)

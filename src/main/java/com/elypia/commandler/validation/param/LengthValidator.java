@@ -5,6 +5,8 @@ import com.elypia.commandler.annotations.validation.param.Length;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.validation.IParamValidator;
 
+import java.io.File;
+
 public class LengthValidator implements IParamValidator<String, Length> {
 
     @Override

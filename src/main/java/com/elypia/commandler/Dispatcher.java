@@ -65,12 +65,12 @@ public class Dispatcher extends ListenerAdapter {
         MessageChannel channel = messageEvent.getChannel();
 
         if (metaCommand == null) {
-            channel.sendMessage("The command you just tried to perform doesn't exist. Perhaps you should perform the help command?").queue();
+            channel.sendMessage("The commands you just tried to perform doesn't exist. Perhaps you should perform the help commands?").queue();
             return;
         }
 
         if (event.getParams().size() != metaCommand.getMetaParams().stream().filter(o -> o.getParameter().getType() != MessageEvent.class).count()) {
-            channel.sendMessage("You didn't give the correct number of parameters for that command, perhaps try help instead?").queue();
+            channel.sendMessage("You didn't give the correct number of parameters for that commands, perhaps try help instead?").queue();
             return;
         }
 

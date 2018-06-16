@@ -16,7 +16,7 @@ public final class CommandUtils {
      * Eg <strong>&gt;ud define jenni</strong>: will collect all <strong>define</strong> commands. <br>
      * Note: This will return an empty list if there are no commands matching this request.
      *
-     * @param event The MessageEvent which contains the module and command.
+     * @param event The MessageEvent which contains the module and commands.
      * @param handler The module which the MessageEvent references.
      * @return A collection of commands relevent to this event.
      */
@@ -74,7 +74,7 @@ public final class CommandUtils {
      * Goes through the {@link CommandHandler} and retrieves all
      * methods with the {@link Command} or {@link CommandGroup} annotation.
      *
-     * @param handler The handler due the command.
+     * @param handler The handler due the commands.
      * @return A collection of methods this handler has which execute commands.
      */
 
@@ -94,15 +94,15 @@ public final class CommandUtils {
     }
 
     /**
-     * Filter a set of command methods by the number of arguments that they have
+     * Filter a set of commands methods by the number of arguments that they have
      * compared to the parameters provided in the MessageEvent. <br>
      * Example: <strong>&gt;ud define jenni false</strong><br>
-     * We want the command method with only two arguments to accomodate this command.
-     * Note: Will return null if no command matches the same number of arguments.
+     * We want the commands method with only two arguments to accomodate this commands.
+     * Note: Will return null if no commands matches the same number of arguments.
      *
-     * @param event The relevent event containing the module, command and parameters.
-     * @param methods A list of command events.
-     * @return The method required to execute this command.
+     * @param event The relevent event containing the module, commands and parameters.
+     * @param methods A list of commands events.
+     * @return The method required to execute this commands.
      */
 
     public static Method getByParamCount(MessageEvent event, Collection<Method> methods) {
