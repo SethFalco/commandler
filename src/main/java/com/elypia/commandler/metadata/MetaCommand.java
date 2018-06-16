@@ -20,7 +20,7 @@ public class MetaCommand {
     private Command command;
     private Method method;
     private Map<Class<? extends Annotation>, Annotation> annotations;
-    private Collection<MetaCommandValidator> validators;
+    private Collection<MetaValidator> validators;
     private Set<String> aliases;
     private boolean isStatic;
     private boolean isDefault;
@@ -88,7 +88,7 @@ public class MetaCommand {
             Class<? extends Annotation> type = annotation.annotationType();
 
             if (type.isAnnotationPresent(Validator.class))
-                validators.add(MetaCommandValidator.of(this, annotation));
+                validators.add(MetaValidator.of(this, annotation));
             else if (type == Static.class)
                 isStatic = true;
             else if (type == Default.class)
@@ -133,8 +133,8 @@ public class MetaCommand {
         return annotations;
     }
 
-    public Map<MetaCommandValidator, ICommandValidator> getValidators() {
-        Map<MetaCommandValidator, ICommandValidator> validatorMap = new HashMap<>();
+    public Map<MetaValidator, ICommandValidator> getValidators() {
+        Map<MetaValidator, ICommandValidator> validatorMap = new HashMap<>();
 
         commandler.getDispatcher().getValidator().getCommandValidators().forEach((type, validator) -> {
             validators.forEach(metaCommandValidator -> {

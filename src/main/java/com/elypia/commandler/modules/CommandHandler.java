@@ -22,17 +22,6 @@ public abstract class CommandHandler {
 
 	protected boolean enabled;
 
-	/**
-	 * Should the bot continue executing {@link #test()} or should it
-	 * give up on this module for the session.
-	 */
-
-	protected boolean tryAgain;
-
-	public CommandHandler() {
-		tryAgain = true;
-	}
-
 	public boolean init(JDA jda, Commandler commandler) {
 		this.jda = jda;
 		this.commandler = commandler;
@@ -121,14 +110,6 @@ public abstract class CommandHandler {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-	}
-
-	public boolean shouldTryAgain() {
-		return tryAgain;
-	}
-
-	public void setTryAgain(boolean tryAgain) {
-		this.tryAgain = tryAgain;
 	}
 
 	public JDA getJDA() {

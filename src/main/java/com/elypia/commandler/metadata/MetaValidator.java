@@ -5,18 +5,18 @@ import com.elypia.commandler.annotations.Validator;
 
 import java.lang.annotation.Annotation;
 
-public class MetaCommandValidator {
+public class MetaValidator {
 
     private Commandler commandler;
     private Annotation annotation;
     private Validator validatorAnnotation;
     private Class<? extends Annotation> clazz;
 
-    public static MetaCommandValidator of(MetaCommand metaCommand, Annotation annotation) {
-        return new MetaCommandValidator(metaCommand, annotation);
+    public static MetaValidator of(MetaCommand metaCommand, Annotation annotation) {
+        return new MetaValidator(metaCommand, annotation);
     }
 
-    private MetaCommandValidator(MetaCommand metaCommand, Annotation annotation) {
+    private MetaValidator(MetaCommand metaCommand, Annotation annotation) {
         this.annotation = annotation;
         clazz = annotation.annotationType();
         validatorAnnotation = clazz.getAnnotation(Validator.class);

@@ -6,7 +6,7 @@ import com.elypia.commandler.parsing.IParamParser;
 
 public class BooleanParser implements IParamParser<Boolean> {
 
-    private static final String[] BOOLEAN = {
+    private static final String[] TRUE = {
         "true",
         "yes",
         "1",
@@ -15,13 +15,28 @@ public class BooleanParser implements IParamParser<Boolean> {
         "<:greentick:396521773245530123>" // Probably rarely used if ever
     };
 
+    private static final String[] FALSE = {
+        "false",
+        "no",
+        "n",
+        "0",
+        "❌",
+        "<:tickNo:315009174163685377>",
+        "<:redtick:396521773207912468>"
+    };
+
     @Override
     public Boolean parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
-        for (String bool : BOOLEAN) {
+        for (String bool : TRUE) {
             if (bool.equalsIgnoreCase(input))
                 return true;
         }
 
-        return false;
+        for (String bool : FALSE) {
+            if (bool.equalsIgnoreCase(input))
+                return true;
+        }
+
+        throw new IllegalArgumentException("Input '" + input + "'can't be parsed as a boolean (true / false) value.");
     }
 }
