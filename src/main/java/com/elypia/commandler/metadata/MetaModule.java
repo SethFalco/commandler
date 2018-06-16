@@ -114,7 +114,7 @@ public class MetaModule {
 
         commandler.getRootAlises().addAll(aliases);
 
-        Method[] methods = clazz.getDeclaredMethods();
+        Method[] methods = clazz.getMethods();
         metaCommands = new ArrayList<>();
         commandAliases = new HashSet<>();
 

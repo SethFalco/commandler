@@ -101,6 +101,7 @@ public class Dispatcher extends ListenerAdapter {
     private MetaCommand getMetaCommand(MessageEvent event) {
         for (CommandHandler handler : commandler.getHandlers()) {
             MetaModule metaModule = handler.getModule();
+            MetaCommand defaultCommand = metaModule.getDefaultCommand();
             String module = event.getModule();
             String command = event.getCommand();
 
@@ -111,10 +112,13 @@ public class Dispatcher extends ListenerAdapter {
                             return metaCommand;
                     }
 
-                    event.getParams().add(0, command);
-                    event.setCommand(metaModule.getDefaultCommand());
+                    if (defaultCommand != null) {
+                        event.getParams().add(0, command);
+                        event.setCommand(metaModule.getDefaultCommand());
+                    }
                 } else {
-                    event.setCommand(metaModule.getDefaultCommand());
+                    if (defaultCommand != null)
+                        event.setCommand(metaModule.getDefaultCommand());
                 }
 
                 return metaModule.getDefaultCommand();
