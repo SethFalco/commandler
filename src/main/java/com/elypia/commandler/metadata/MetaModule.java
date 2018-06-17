@@ -155,6 +155,10 @@ public class MetaModule {
 
         int defaultCommand = 0;
 
+        methods = Arrays.stream(methods).filter(method -> {
+            return method.isAnnotationPresent(Command.class) || method.isAnnotationPresent(Overload.class);
+        }).toArray(Method[]::new);
+
         for (Method method : methods) {
             if (method.isAnnotationPresent(Command.class)) {
                 MetaCommand metaCommand = MetaCommand.of(this, method);
@@ -168,6 +172,28 @@ public class MetaModule {
 
                 commandAliases.addAll(metaCommand.getAliases());
                 metaCommands.add(metaCommand);
+            }
+        }
+
+        for (Method method : methods) {
+            Overload overload = method.getAnnotation(Overload.class);
+
+            if (overload != null && !method.isAnnotationPresent(Command.class)) {
+                for (MetaCommand metaCommand : metaCommands) {
+                    Overload publicOverload = metaCommand.getMethod().getAnnotation(Overload.class);
+
+                    if (publicOverload != null && publicOverload.value().equalsIgnoreCase(overload.value())) {
+                        MetaCommand metaOverload = MetaCommand.of(metaCommand, this, method);
+                        metaCommand.registerOverload(metaOverload);
+
+                        if (metaOverload.isDefault()) {
+                            if (++defaultCommand == 2) {
+                                String format = "Module %s (%s) contains multiple default commands, modules may only have a single default.";
+                                throw new MalformedModuleException(String.format(format, module.name(), clazz.getName()));
+                            }
+                        }
+                    }
+                }
             }
         }
     }

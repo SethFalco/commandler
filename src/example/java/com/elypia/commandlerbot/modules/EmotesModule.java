@@ -16,14 +16,14 @@ import static com.elypia.commandler.data.SearchScope.*;
 public class EmotesModule extends CommandHandler {
 
     @Scope(ChannelType.TEXT)
-    @CommandGroup("list")
+    @Overload("list")
     @Command(name = "List Emotes", aliases = "list", help = "List all of the custom emotes in the guild.")
     public String listEmotes(MessageEvent event) {
         return listEmotes(event.getMessageEvent().getGuild());
     }
 
     @Scope(ChannelType.PRIVATE)
-    @CommandGroup("list")
+    @Overload("list")
     @Param(name = "guild", help = "The guild to obtain emotes from.")
     public String listEmotes(@Search(MUTUAL) Guild guild) {
         List<Emote> emotes = guild.getEmotes();

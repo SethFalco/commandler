@@ -69,12 +69,16 @@ public class Validator {
         }
     }
 
-    public boolean validate(MessageEvent event, MetaCommand metaCommand, Object[] args) {
+    public boolean validateCommand(MessageEvent event, MetaCommand metaCommand) {
         for (Map.Entry<MetaValidator, ICommandValidator> entry : metaCommand.getValidators().entrySet()) {
             if (!entry.getValue().validate(event, entry.getKey().getAnnotation()))
                 return false;
         }
 
+        return true;
+    }
+
+    public boolean validateParams(MessageEvent event, MetaCommand metaCommand, Object[] args) {
         List<MetaParam> metaParams = metaCommand.getMetaParams();
 
         for (int i = 0; i < metaParams.size(); i++) {

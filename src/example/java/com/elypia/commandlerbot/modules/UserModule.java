@@ -16,14 +16,14 @@ import static com.elypia.commandler.data.SearchScope.LOCAL;
 @Module(name = "Users", aliases = {"user", "users", "member", "members"}, description = "Get information, associations or stats on users!")
 public class UserModule extends CommandHandler {
 
-	@Default
-	@CommandGroup("info")
-	public void getInfo(MessageEvent event) {
-		getInfo(event, event.getMessage().getAuthor());
+	@Overload("info")
+	public EmbedBuilder getInfo(MessageEvent event) {
+		return getInfo(event, event.getMessage().getAuthor());
 	}
 
 	@Scope(ChannelType.TEXT)
-	@CommandGroup("info")
+	@Default
+	@Overload("info")
 	@Command(name = "User Info", aliases = {"info", "information"}, help = "Obtain information on a user!")
 	@Param(name = "user", help = "The user to display information for.")
 	public EmbedBuilder getInfo(MessageEvent event, @Search(LOCAL) User user) {
@@ -31,9 +31,10 @@ public class UserModule extends CommandHandler {
 		String avatar = user.getEffectiveAvatarUrl();
 		DateTimeFormatter format = DateTimeFormatter.ISO_LOCAL_DATE;
 		Guild guild = event.getMessageEvent().getGuild();
-		Member member = guild.getMember(user);
 
-		if (member != null) {
+		if (guild != null) {
+			Member member = guild.getMember(user);
+
 			builder.setAuthor(member.getEffectiveName());
 			builder.addField("Online Status", member.getOnlineStatus().toString(), true);
 			builder.addField("Status", member.getGame().getName(), true);

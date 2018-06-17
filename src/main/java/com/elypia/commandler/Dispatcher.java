@@ -102,6 +102,7 @@ public class Dispatcher extends ListenerAdapter {
      * If it's a bot, ignore the event. <br>
      * If the event is invalid, ignore the event. <br>
      * Parse the module and command, this may invalidate the event. <br>
+     * Validate the command, not the parameters, this may invalidate the command. <br>
      * Parse all parameters from Strings to the required types, this may invalidate the event. <br>
      * Validate all parameters according to any annotations, this may invalidate the event. <br>
      * Send the result in chat if it's not null, if the result is null, assume the user used {@link MessageEvent#reply(Object)}}.
@@ -120,9 +121,13 @@ public class Dispatcher extends ListenerAdapter {
             return;
 
         MetaCommand metaCommand = event.getMetaCommand();
+
+        if (!validator.validateCommand(event, metaCommand))
+            return;
+
         Object[] params = parser.parseParameters(event, metaCommand);
 
-        if (params == null || !validator.validate(event, metaCommand, params))
+        if (params == null || !validator.validateParams(event, metaCommand, params))
             return;
 
         try {
@@ -206,8 +211,16 @@ public class Dispatcher extends ListenerAdapter {
             if (metaCommand != null) {
                 event.setMetaCommand(metaCommand);
 
-                if (event.getParams().size() != metaCommand.getInputRequired())
+                if (event.getParams().size() != metaCommand.getInputRequired()) {
+                    for (MetaCommand metaOverload : metaCommand.getOverloads()) {
+                        if (event.getParams().size() == metaOverload.getInputRequired()) {
+                            event.setMetaCommand(metaOverload);
+                            return true;
+                        }
+                    }
+
                     return event.invalidate("You specified a valid command however the number of parameters you provided didn't match with what I was expecting.");
+                }
 
                 return true;
             }
@@ -221,8 +234,16 @@ public class Dispatcher extends ListenerAdapter {
         if (command != null)
             event.getParams().add(0, command);
 
-        if (event.getParams().size() != defaultCommand.getInputRequired())
+        if (event.getParams().size() != defaultCommand.getInputRequired()) {
+            for (MetaCommand metaOverload : defaultCommand.getOverloads()) {
+                if (event.getParams().size() == metaOverload.getInputRequired()) {
+                    event.setMetaCommand(metaOverload);
+                    return true;
+                }
+            }
+
             return event.invalidate("It seems the command you attemped to do doesn't exist, maybe you should try the help command instead?");
+        }
 
         event.setMetaCommand(defaultCommand);
         return true;

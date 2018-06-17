@@ -51,6 +51,7 @@ public class BotModule extends CommandHandler {
         return builder;
     }
 
+    @Static
     @Scope(ChannelType.TEXT)
     @Command(name = "Bot Invites", aliases = "invites", help = "A list of invite links for all bots in the current guild.")
     public EmbedBuilder invites(MessageEvent event) {

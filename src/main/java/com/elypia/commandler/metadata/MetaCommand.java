@@ -104,6 +104,8 @@ public class MetaCommand {
 
     private int inputRequired;
 
+    private Collection<MetaCommand> overloads;
+
     /**
      * Create a wrapper around this the command for the convinience of accessing
      * information around it.
@@ -114,18 +116,27 @@ public class MetaCommand {
      */
 
     protected static MetaCommand of(MetaModule module, Method method) {
-        return new MetaCommand(module, method);
+        return new MetaCommand(null, module, method);
     }
 
-    private MetaCommand(MetaModule metaModule, Method method) {
+    protected static MetaCommand of(MetaCommand metaCommand, MetaModule module, Method method) {
+        return new MetaCommand(metaCommand, module, method);
+    }
+
+    private MetaCommand(MetaCommand metaCommand, MetaModule metaModule, Method method) {
         this.metaModule = Objects.requireNonNull(metaModule);
         this.method = Objects.requireNonNull(method);
         commandler = metaModule.getCommandler();
 
         clazz = metaModule.getHandlerType();
-        command = method.getAnnotation(Command.class);
 
-        parseAliases();
+        if (metaCommand == null) {
+            command = method.getAnnotation(Command.class);
+            parseAliases();
+        } else {
+            command = metaCommand.getCommand();
+        }
+
         parseParameters();
         parseAnnotations();
 
@@ -141,6 +152,7 @@ public class MetaCommand {
 
         handler = metaModule.getHandler();
         isPublic = !command.help().equals("");
+        overloads = new ArrayList<>();
     }
 
     /**
@@ -266,6 +278,10 @@ public class MetaCommand {
         return validatorMap;
     }
 
+    public void registerOverload(MetaCommand metaCommand) {
+        overloads.add(metaCommand);
+    }
+
     public Commandler getCommandler() {
         return commandler;
     }
@@ -312,5 +328,9 @@ public class MetaCommand {
 
     public int getInputRequired() {
         return inputRequired;
+    }
+
+    public Collection<MetaCommand> getOverloads() {
+        return overloads;
     }
 }

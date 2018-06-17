@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommandGroup {
+public @interface Overload {
 
     /**
      * During a default commands, it will default to the primary

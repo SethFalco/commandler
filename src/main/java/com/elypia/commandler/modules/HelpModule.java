@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 
 import java.util.*;
 
-@Module(name = "Help", aliases = "help", description = "Get help and information on the bot and it's core features.")
+@Module(name = "Help", aliases = "help")
 public class HelpModule extends CommandHandler {
 
     private final static String STATIC = "Static commands are commands that can be performed without specifying the module it belongs too.\nFor example, if a commands is `static` one could do: `!ping` instead of `!bot ping`. The `ping` commands still belongs to the `bot` module regardless.";
@@ -16,13 +16,13 @@ public class HelpModule extends CommandHandler {
 
     @Override
     @Default
-    @CommandGroup("help")
+    @Overload("help")
     @Command(name = "Help", aliases = {"help", "halp", "helpme"})
     public Object help(MessageEvent event) {
         return super.help(event);
     }
 
-    @CommandGroup("help")
+    @Overload("help")
     @Param(name = "module", help = "The name of the module you'd like to query for help.")
     public void help(MessageEvent event, String module) {
         String command = module + " help";

@@ -14,14 +14,14 @@ import net.dv8tion.jda.core.entities.*;
 public class GuildModule extends CommandHandler {
 
     @Default
-    @CommandGroup("info")
+    @Overload("info")
     @Command(name = "Guild Info", aliases = {"info", "information", "wiki"}, help = "Obtain information on the guild.")
     public EmbedBuilder info(MessageEvent event) {
         return info(event.getMessageEvent().getGuild());
     }
 
     @Scope(ChannelType.PRIVATE)
-    @CommandGroup("info")
+    @Overload("info")
     @Param(name = "guild", help = "The guild to obtain information for.")
     public EmbedBuilder info(@Search(SearchScope.MUTUAL) Guild guild) {
         EmbedBuilder builder = new EmbedBuilder();
