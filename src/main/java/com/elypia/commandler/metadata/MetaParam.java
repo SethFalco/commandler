@@ -10,7 +10,7 @@ public class MetaParam {
     private Parameter parameter;
     private Param annotation;
 
-    public static MetaParam of(Parameter parameter, Param annotation) {
+    protected static MetaParam of(Parameter parameter, Param annotation) {
         return new MetaParam(parameter, annotation);
     }
 

@@ -9,16 +9,20 @@ import okhttp3.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Module(name = "Misc.", aliases = {"util", "utils", "misc", "static"}, description = "Misc. commands that don't fit into another module.")
 public class UtilModule extends CommandHandler {
 
 	private OkHttpClient client;
 	private Request nekoRequest;
+	private List<String> nekoCache;
 
 	public UtilModule() {
 		client = new OkHttpClient();
 		nekoRequest = new Request.Builder().url("https://nekos.life/api/neko").build();
+		nekoCache = new ArrayList<>();
 	}
 
 	@Static
@@ -39,13 +43,24 @@ public class UtilModule extends CommandHandler {
 				JSONObject object = new JSONObject(response.body().string());
 
 				EmbedBuilder builder = new EmbedBuilder();
-				builder.setImage(object.getString("neko"));
+				String image = object.getString("neko");
+				builder.setImage(image);
 				event.reply(builder);
+
+				if (!nekoCache.contains(image))
+					nekoCache.add(image);
 			}
 
 			@Override
 			public void onFailure(Call call, IOException e) {
-				event.reply("We're all out of nekos. :C Maybe try again later?");
+				if (nekoCache.size() == 0) {
+					event.reply("We're all out of nekos. :C Maybe try again later?");
+					return;
+				}
+
+				EmbedBuilder builder = new EmbedBuilder();
+				builder.setImage(nekoCache.get(ThreadLocalRandom.current().nextInt(nekoCache.size())));
+				event.reply(builder);
 			}
 		});
 	}

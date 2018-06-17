@@ -85,6 +85,7 @@ public class MetaModule {
      */
 
     private <T extends CommandHandler> MetaModule(Commandler commandler, T t) {
+        this.commandler = commandler;
         handler = t;
         clazz = t.getClass();
         module = clazz.getAnnotation(Module.class);
@@ -94,25 +95,7 @@ public class MetaModule {
             throw new MalformedModuleException(String.format(format, clazz.getName()));
         }
 
-        aliases = new HashSet<>();
-
-        for (String alias : module.aliases())
-            aliases.add(alias.toLowerCase());
-
-        if (aliases.size() != module.aliases().length) {
-            String format = "Module %s (%s) contains multiple aliases which are identical.";
-            System.err.printf(format, module.name(), clazz.getName());
-        }
-
-        this.commandler = commandler;
-
-        if (!Collections.disjoint(commandler.getRootAlises(), aliases)) {
-            String name = module.name();
-            String format = "Module %s contains an alias which has already been registered by a previous module or static commands.";
-            throw new RecursiveAliasException(String.format(format, name));
-        }
-
-        commandler.getRootAlises().addAll(aliases);
+        parseAliases();
 
         Method[] methods = clazz.getMethods();
         metaCommands = new ArrayList<>();
@@ -137,6 +120,41 @@ public class MetaModule {
         }
 
         isPublic = !module.description().equals("");
+    }
+
+    /**
+     * Parse aliases from this module, this creates a list of aliases.
+     * All aliases on the module are converted to lower case and added to this.
+     * If find duplicates, we continue filter them however warn the user as this
+     * shouldn't be the case. <br>
+     * Should an alias be registered that was already registed by another module,
+     * we throw an exception as this is considered a malformed command.
+     * If everything checks out alright, we add all the aliases to the list
+     * of {@link Commandler#rootAlises root aliases} and reserve these so other
+     * modules of static commands can't try consume them.
+     *
+     * @throws RecursiveAliasException If this module has an alias which was already registered by
+     * another module or static command.
+     */
+
+    private void parseAliases() {
+        aliases = new HashSet<>();
+
+        for (String alias : module.aliases())
+            aliases.add(alias.toLowerCase());
+
+        if (aliases.size() != module.aliases().length) {
+            String format = "Module %s (%s) contains multiple aliases which are identical.";
+            System.err.printf(format, module.name(), clazz.getName());
+        }
+
+        if (!Collections.disjoint(commandler.getRootAlises(), aliases)) {
+            String name = module.name();
+            String format = "Module %s contains an alias which has already been registered by a previous module or static commands.";
+            throw new RecursiveAliasException(String.format(format, name));
+        }
+
+        commandler.getRootAlises().addAll(aliases);
     }
 
     /**

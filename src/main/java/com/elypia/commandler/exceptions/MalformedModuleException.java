@@ -1,5 +1,10 @@
 package com.elypia.commandler.exceptions;
 
+/**
+ * This will occur when Commandler finds a problem with how one of the
+ * Modules (Command Handlers) were formed.
+ */
+
 public class MalformedModuleException extends RuntimeException {
 
     public MalformedModuleException() {

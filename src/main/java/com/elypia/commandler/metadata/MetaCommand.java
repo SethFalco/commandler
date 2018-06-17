@@ -13,21 +13,101 @@ import java.util.*;
 
 public class MetaCommand {
 
+    /**
+     * The parent {@link Commandler} instance that spawned this object.
+     */
+
     private Commandler commandler;
+
+    /**
+     * The {@link Module} {@link CommandHandler (Command Handler)} this command
+     * belongs to.
+     */
+
     private CommandHandler handler;
+
+    /**
+     * The type of class the parent {@link #handler Command Handler} belongs to.
+     */
+
     private Class<? extends CommandHandler> clazz;
+
+    /**
+     * The {@link MetaModule meta data} of the parent {@link #handler}
+     * that spawned this {@link MetaCommand}.
+     */
+
     private MetaModule metaModule;
+
+    /**
+     * The {@link Command} annotation associated with this command. <br>
+     * This is what defines a method as a command in a Command Handler.
+     */
+
     private Command command;
+
+    /**
+     * The method this is pulling metadata from.
+     */
+
     private Method method;
-    private Map<Class<? extends Annotation>, Annotation> annotations;
-    private Collection<MetaValidator> validators;
+
+    /**
+     * A list of all validators associated with this command.
+     * A validator is dictated by whether the annotation itself
+     * has the {@link Validator} annotation.
+     */
+
+    private Map<Class<? extends Annotation>, MetaValidator> validators;
+
+    /**
+     * A list of unique aliases for this command. If the command
+     * had duplicate aliases, they are filtered out.
+     */
+
     private Set<String> aliases;
+
+    /**
+     * Is this a {@link Static} command. <br>
+     * Static commands can be performed without specifying the
+     * module it belongs too, despite this it still belongs to the module.
+     */
+
     private boolean isStatic;
+
+    /**
+     * Is this a {@link Default} command. <br>
+     * Default commands are what we assume if the user didn't specify a command
+     * or the next input after the module name doesn't fit the name requirement
+     * or alias of any commands in the alias.
+     */
+
     private boolean isDefault;
+
+    /**
+     * Should this command be displayed in help documentation when a user queries
+     * it. <br>
+     * If no help is specified on a command, it is considered a private command.
+     */
+
     private boolean isPublic;
+
+    /**
+     * A list of any {@link MetaParam params} this command required to execute.
+     */
+
     private List<MetaParam> metaParams;
 
-    public static MetaCommand of(MetaModule module, Method method) {
+    /**
+     * Create a wrapper around this the command for the convinience of accessing
+     * information around it.
+     *
+     * @param module The parent module that this command belongs to.
+     * @param method The method this command executes.
+     * @return A wrapper around this command.
+     */
+
+    protected static MetaCommand of(MetaModule module, Method method) {
         return new MetaCommand(module, method);
     }
 
@@ -37,6 +117,25 @@ public class MetaCommand {
 
         clazz = metaModule.getHandlerType();
         command = method.getAnnotation(Command.class);
+
+        parseAliases();
+        parseParameters();
+        parseAnnotations();
+
+        commandler = metaModule.getCommandler();
+        handler = metaModule.getHandler();
+        isPublic = !command.help().equals("");
+    }
+
+    /**
+     * Parses the aliases from the module, converts them all to lower case
+     * and stores them an a list in this class to save us from converting the aliases
+     * to lower case everytime we want to compare them. <br>
+     * Prints a warning should a command have multiple identical aliases; duplicates
+     * are filtered out.
+     */
+
+    private void parseAliases() {
         aliases = new HashSet<>();
 
         for (String alias : command.aliases())
@@ -46,7 +145,52 @@ public class MetaCommand {
             String format = "Command %s in module %s (%s) contains multiple aliases which are identical.";
             System.err.printf(format, command.name(), metaModule.getModule().name(), clazz.getName());
         }
+    }
 
+    /**
+     * Parses the annotations on this command or the parent module if appropriate.
+     * Is the annotation is a validator, adds it to the internal list of validators.
+     * This is determined by if the annotation has the {@link Validator} annotation. <br>
+     * If the annotation is {@link Static} that sets this as a static command. <br>
+     * If the annotation is {@link Default} that sets this as a default command. <br>
+     *
+     * Once the command is iterated, we search through any annotations on the {@link CommandHandler}
+     * to see if there are any default validation for commands in this module if not
+     * specified at the command already.
+     */
+
+    private void parseAnnotations() {
+        validators = new HashMap<>();
+
+        for (Annotation annotation : method.getDeclaredAnnotations()) {
+            Class<? extends Annotation> type = annotation.annotationType();
+
+            if (type.isAnnotationPresent(Validator.class))
+                validators.put(type, MetaValidator.of(this, annotation));
+            else if (type == Static.class)
+                isStatic = true;
+            else if (type == Default.class)
+                isDefault = true;
+        }
+
+        for (Annotation annotation : clazz.getDeclaredAnnotations()) {
+            Class<? extends Annotation> type = annotation.annotationType();
+
+            if (!validators.containsKey(type) && type.isAnnotationPresent(Validator.class))
+                validators.put(type, MetaValidator.of(this, annotation));
+        }
+    }
+
+    /**
+     * Parses all parameters of the command method and any {@link Param} annotations
+     * to ensure they sync up and match according to the standards Commandler expects. <br>
+     * This may print warning messages if a single method askes for {@link MessageEvent} multiple
+     * times as there are <strong>no</strong> benefit to require this parameter more than once.
+     *
+     * @throws MalformedCommandException If there isn't a param annotation for every parameter in the method.
+     */
+
+    private void parseParameters() {
         metaParams = new ArrayList<>();
         Param[] params = method.getAnnotationsByType(Param.class);
         Parameter[] parameters = method.getParameters();
@@ -72,37 +216,27 @@ public class MetaCommand {
             MetaParam meta = MetaParam.of(parameter, param);
             metaParams.add(meta);
         }
-
-        validators = new ArrayList<>();
-        annotations = parseAnnotations(method, clazz);
-
-        commandler = metaModule.getCommandler();
-        handler = metaModule.getHandler();
-        isPublic = !command.help().equals("");
     }
 
-    private Map<Class<? extends Annotation>, Annotation> parseAnnotations(Method method, Class<? extends CommandHandler> clazz) {
-        Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<>();
+    /**
+     * This will only return any validators that may have been registered at the time
+     * this method is called, even if the @ValidatorAnnotation is found, a pairing
+     * {@link ICommandValidator} must be registred via {@link Commandler#registerValidator(Class, ICommandValidator)}.
+     *
+     * @return A list of validators associated with this {@link Command}.
+     */
 
-        for (Annotation annotation : method.getDeclaredAnnotations()) {
-            Class<? extends Annotation> type = annotation.annotationType();
+    public Map<MetaValidator, ICommandValidator> getValidators() {
+        Map<MetaValidator, ICommandValidator> validatorMap = new HashMap<>();
 
-            if (type.isAnnotationPresent(Validator.class))
-                validators.add(MetaValidator.of(this, annotation));
-            else if (type == Static.class)
-                isStatic = true;
-            else if (type == Default.class)
-                isDefault = true;
-            else
-                annotations.put(type, annotation);
-        }
+        commandler.getDispatcher().getValidator().getCommandValidators().forEach((type, validator) -> {
+            validators.forEach((typeII, metaCommandValidator) -> {
+                if (type == typeII)
+                    validatorMap.put(metaCommandValidator, validator);
+            });
+        });
 
-        for (Annotation annotation : clazz.getDeclaredAnnotations()) {
-            if (!annotations.containsKey(annotation.annotationType()))
-                annotations.put(annotation.annotationType(), annotation);
-        }
-
-        return annotations;
+        return validatorMap;
     }
 
     public Commandler getCommandler() {
@@ -127,23 +261,6 @@ public class MetaCommand {
 
     public Method getMethod() {
         return method;
-    }
-
-    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
-        return annotations;
-    }
-
-    public Map<MetaValidator, ICommandValidator> getValidators() {
-        Map<MetaValidator, ICommandValidator> validatorMap = new HashMap<>();
-
-        commandler.getDispatcher().getValidator().getCommandValidators().forEach((type, validator) -> {
-            validators.forEach(metaCommandValidator -> {
-                if (metaCommandValidator.getAnnotationType() == type)
-                    validatorMap.put(metaCommandValidator, validator);
-            });
-        });
-
-        return validatorMap;
     }
 
     public Set<String> getAliases() {

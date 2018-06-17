@@ -4,6 +4,7 @@ import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.exceptions.MalformedValidatorException;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.validation.command.*;
 import com.elypia.commandler.validation.param.*;
@@ -21,8 +22,9 @@ public class Validator {
 
     private Commandler commandler;
 
-    private Map<Class<? extends Annotation>, IParamValidator> paramValidators;
     private Map<Class<? extends Annotation>, ICommandValidator> commandValidators;
+    private Map<Class<? extends Annotation>, IParamValidator> paramValidators;
+
 
     public Validator(Commandler commandler) {
         this(commandler, true);
@@ -30,33 +32,40 @@ public class Validator {
 
     public Validator(Commandler commandler, boolean auto) {
         this.commandler = commandler;
-        paramValidators = new HashMap<>();
         commandValidators = new HashMap<>();
+        paramValidators = new HashMap<>();
 
         if (auto) {
+            registerValidator(Elevated.class, new ElevatedValidator());
+            registerValidator(NSFW.class, new NSFWValidator());
+            registerValidator(Permissions.class, new PermissionValidator());
+            registerValidator(Scope.class, new ScopeValidator());
+
             registerValidator(Length.class, new LengthValidator());
             registerValidator(Limit.class, new LimitValidator());
             registerValidator(Option.class, new OptionValidator());
-
-            registerValidator(NSFW.class, new NSFWValidator());
-            registerValidator(Scope.class, new ScopeValidator());
-            registerValidator(Permissions.class, new PermissionValidator());
-            registerValidator(Elevated.class, new ElevatedValidator());
         }
     }
 
     public void registerValidator(Class<? extends Annotation> clazz, IParamValidator validator) {
-        if (paramValidators.keySet().contains(clazz))
-            throw new IllegalArgumentException("Parameter validator for this type of annotation has already been registered.");
+        registerValidator(clazz);
 
-        paramValidators.put(clazz, validator);
+        if (paramValidators.put(clazz, validator) != null)
+            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.", clazz.getName());
     }
 
     public void registerValidator(Class<? extends Annotation> clazz, ICommandValidator validator) {
-        if (commandValidators.keySet().contains(clazz))
-            throw new IllegalArgumentException("Command validator for this type of annotation has already been registered.");
+        registerValidator(clazz);
 
-        commandValidators.put(clazz, validator);
+        if (commandValidators.put(clazz, validator) != null)
+            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.", clazz.getName());
+    }
+
+    private void registerValidator(Class<? extends Annotation> clazz) {
+        if (!clazz.isAnnotationPresent(com.elypia.commandler.annotations.Validator.class)) {
+            String message = String.format("Annotation for %s doesn't have the Validator annotation.", clazz.getName());
+            throw new MalformedValidatorException(message);
+        }
     }
 
     public void validate(MessageEvent event, MetaCommand metaCommand, Object[] args) throws IllegalArgumentException, IllegalAccessException {

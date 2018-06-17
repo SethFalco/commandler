@@ -12,7 +12,7 @@ public class MetaValidator {
     private Validator validatorAnnotation;
     private Class<? extends Annotation> clazz;
 
-    public static MetaValidator of(MetaCommand metaCommand, Annotation annotation) {
+    protected static MetaValidator of(MetaCommand metaCommand, Annotation annotation) {
         return new MetaValidator(metaCommand, annotation);
     }
 
