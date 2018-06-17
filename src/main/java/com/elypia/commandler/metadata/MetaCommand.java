@@ -55,7 +55,7 @@ public class MetaCommand {
     /**
      * A list of all validators associated with this command.
      * A validator is dictated by whether the annotation itself
-     * has the {@link Validator} annotation.
+     * has the {@link Validation} annotation.
      */
 
     private Map<Class<? extends Annotation>, MetaValidator> validators;
@@ -150,7 +150,7 @@ public class MetaCommand {
     /**
      * Parses the annotations on this command or the parent module if appropriate.
      * Is the annotation is a validator, adds it to the internal list of validators.
-     * This is determined by if the annotation has the {@link Validator} annotation. <br>
+     * This is determined by if the annotation has the {@link Validation} annotation. <br>
      * If the annotation is {@link Static} that sets this as a static command. <br>
      * If the annotation is {@link Default} that sets this as a default command. <br>
      *
@@ -165,7 +165,7 @@ public class MetaCommand {
         for (Annotation annotation : method.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
 
-            if (type.isAnnotationPresent(Validator.class))
+            if (type.isAnnotationPresent(Validation.class))
                 validators.put(type, MetaValidator.of(this, annotation));
             else if (type == Static.class)
                 isStatic = true;
@@ -176,7 +176,7 @@ public class MetaCommand {
         for (Annotation annotation : clazz.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
 
-            if (!validators.containsKey(type) && type.isAnnotationPresent(Validator.class))
+            if (!validators.containsKey(type) && type.isAnnotationPresent(Validation.class))
                 validators.put(type, MetaValidator.of(this, annotation));
         }
     }

@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation.param;
 
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.annotations.validation.param.*;
+import com.elypia.commandler.annotations.validation.param.Option;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.validation.IParamValidator;
 

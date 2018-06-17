@@ -1,6 +1,6 @@
 package com.elypia.commandler.annotations.validation.command;
 
-import com.elypia.commandler.annotations.Validator;
+import com.elypia.commandler.annotations.Validation;
 import net.dv8tion.jda.core.entities.ChannelType;
 
 import java.lang.annotation.*;
@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Validator("./resources/commands/scope.svg")
+@Validation("./resources/commands/scope.svg")
 public @interface Scope {
 
     /**

@@ -1,7 +1,7 @@
 package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.annotations.Validator;
+import com.elypia.commandler.annotations.Validation;
 
 import java.lang.annotation.Annotation;
 
@@ -9,7 +9,7 @@ public class MetaValidator {
 
     private Commandler commandler;
     private Annotation annotation;
-    private Validator validatorAnnotation;
+    private Validation validatorAnnotation;
     private Class<? extends Annotation> clazz;
 
     protected static MetaValidator of(MetaCommand metaCommand, Annotation annotation) {
@@ -19,7 +19,7 @@ public class MetaValidator {
     private MetaValidator(MetaCommand metaCommand, Annotation annotation) {
         this.annotation = annotation;
         clazz = annotation.annotationType();
-        validatorAnnotation = clazz.getAnnotation(Validator.class);
+        validatorAnnotation = clazz.getAnnotation(Validation.class);
 
         commandler = metaCommand.getCommandler();
     }
@@ -32,7 +32,7 @@ public class MetaValidator {
         return annotation;
     }
 
-    public Validator getValidatorAnnotation() {
+    public Validation getValidatorAnnotation() {
         return validatorAnnotation;
     }
 

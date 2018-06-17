@@ -5,7 +5,7 @@ import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.validation.ICommandValidator;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 public class ElevatedValidator implements ICommandValidator<Elevated> {
 

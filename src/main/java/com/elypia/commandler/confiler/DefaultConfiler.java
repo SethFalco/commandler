@@ -1,6 +1,6 @@
 package com.elypia.commandler.confiler;
 
-import net.dv8tion.jda.core.events.message.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.regex.Pattern;
 

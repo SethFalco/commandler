@@ -1,6 +1,6 @@
 package com.elypia.commandler.annotations.validation.command;
 
-import com.elypia.commandler.annotations.Validator;
+import com.elypia.commandler.annotations.Validation;
 import net.dv8tion.jda.core.Permission;
 
 import java.lang.annotation.*;
@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Validator("./resources/commands/elevated.svg")
+@Validation("./resources/commands/elevated.svg")
 public @interface Elevated {
 
 }

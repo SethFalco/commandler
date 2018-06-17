@@ -1,6 +1,6 @@
 package com.elypia.commandler.annotations.validation.param;
 
-import com.elypia.commandler.annotations.Validator;
+import com.elypia.commandler.annotations.Validation;
 
 import java.lang.annotation.*;
 
@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target(PARAMETER)
 @Retention(RUNTIME)
-@Validator("./resources/params/length.svg")
+@Validation("./resources/params/length.svg")
 public @interface Length {
 
     /**

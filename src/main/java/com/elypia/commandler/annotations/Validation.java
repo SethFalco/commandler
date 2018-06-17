@@ -4,12 +4,12 @@ import java.lang.annotation.*;
 
 /**
  * All validators for Commandler should be annotated with the
- * {@link Validator} annotation so Commandler knows it is a validator.
+ * {@link Validation} annotation so Commandler knows it is a validator.
  */
 
 @Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Validator {
+public @interface Validation {
 
     /**
      * @return The path to the icon that represents this validator.

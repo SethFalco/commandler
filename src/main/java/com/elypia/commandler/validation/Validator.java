@@ -1,6 +1,7 @@
 package com.elypia.commandler.validation;
 
 import com.elypia.commandler.Commandler;
+import com.elypia.commandler.annotations.Validation;
 import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.events.MessageEvent;
@@ -62,7 +63,7 @@ public class Validator {
     }
 
     private void registerValidator(Class<? extends Annotation> clazz) {
-        if (!clazz.isAnnotationPresent(com.elypia.commandler.annotations.Validator.class)) {
+        if (!clazz.isAnnotationPresent(Validation.class)) {
             String message = String.format("Annotation for %s doesn't have the Validator annotation.", clazz.getName());
             throw new MalformedValidatorException(message);
         }

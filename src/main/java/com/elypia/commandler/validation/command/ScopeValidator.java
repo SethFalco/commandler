@@ -5,7 +5,7 @@ import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.validation.ICommandValidator;
 import net.dv8tion.jda.core.entities.ChannelType;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class ScopeValidator implements ICommandValidator<Scope> {
 

@@ -8,7 +8,7 @@ import com.elypia.commandler.parsing.parsers.*;
 import com.elypia.commandler.parsing.parsers.jda.*;
 import net.dv8tion.jda.core.entities.*;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
 

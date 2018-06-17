@@ -59,8 +59,6 @@ public abstract class CommandHandler {
 
 			Command command = metaCommand.getCommand();
 
-
-
 			if (!command.help().isEmpty()) {
 				String[] aliases = command.aliases();
 				StringJoiner stringJoiner = new StringJoiner(", ");
