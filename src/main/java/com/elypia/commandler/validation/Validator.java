@@ -69,25 +69,26 @@ public class Validator {
         }
     }
 
-    public void validate(MessageEvent event, MetaCommand metaCommand, Object[] args) throws IllegalArgumentException, IllegalAccessException {
-        for (Map.Entry<MetaValidator, ICommandValidator> entry : metaCommand.getValidators().entrySet())
-            entry.getValue().validate(event, entry.getKey().getAnnotation());
+    public boolean validate(MessageEvent event, MetaCommand metaCommand, Object[] args) {
+        for (Map.Entry<MetaValidator, ICommandValidator> entry : metaCommand.getValidators().entrySet()) {
+            if (!entry.getValue().validate(event, entry.getKey().getAnnotation()))
+                return false;
+        }
 
-        List<MetaParam> params = metaCommand.getMetaParams();
+        List<MetaParam> metaParams = metaCommand.getMetaParams();
 
-        for (int i = 0; i < params.size(); i++) {
-            MetaParam parameter = params.get(i);
-            Annotation[] annotations = parameter.getAnnotations();
+        for (int i = 0; i < metaParams.size(); i++) {
+            MetaParam metaParam = metaParams.get(i);
+            Map<MetaValidator, IParamValidator> validators = metaParam.getValidators();
 
-            for (int ii = 0; ii < annotations.length; ii++) {
-                Annotation a = annotations[ii];
-                Class<?> clazz = a.annotationType();
-                IParamValidator validator = paramValidators.get(clazz);
-
-                if (validator != null)
-                    validator.validate(args[i].getClass().cast(args[i]), a, parameter);
+            for (Map.Entry<MetaValidator, IParamValidator> entry : validators.entrySet()) {
+                Object arg = args[i];
+                if (!entry.getValue().validate(event, arg.getClass().cast(arg), entry.getKey().getAnnotation(), metaParam))
+                    return false;
             }
         }
+
+        return true;
     }
 
     public Map<Class<? extends Annotation>, IParamValidator> getParamValidators() {

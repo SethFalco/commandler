@@ -2,6 +2,7 @@ package com.elypia.commandler.validation.param;
 
 import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.annotations.validation.param.Option;
+import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.validation.IParamValidator;
 
@@ -10,8 +11,8 @@ import java.util.*;
 public class OptionValidator implements IParamValidator<String, Option> {
 
     @Override
-    public void validate(String string, Option option, MetaParam param) throws IllegalAccessException {
-        Param p = param.getParams();
+    public boolean validate(MessageEvent event,  String string, Option option, MetaParam param) {
+        Param p = param.getParamAnnotation();
         Collection<String> strings = Arrays.asList(option.value());
 
         if (!strings.contains(string)) {
@@ -19,8 +20,10 @@ public class OptionValidator implements IParamValidator<String, Option> {
             String help = "`" + p.name() + ": " + p.help() + "`";
             String list = String.join(", ", strings);
             String message = String.format(format, p.name(), list, help);
-            throw new IllegalAccessException(message);
+            return event.invalidate(message);
         }
+
+        return true;
     }
 
     @Override

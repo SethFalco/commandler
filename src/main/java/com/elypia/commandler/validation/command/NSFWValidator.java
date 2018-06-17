@@ -9,14 +9,13 @@ import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 public class NSFWValidator implements ICommandValidator<NSFW> {
 
     @Override
-    public void validate(MessageEvent event, NSFW annotation) throws IllegalAccessException {
+    public boolean validate(MessageEvent event, NSFW annotation) {
         GenericMessageEvent e = event.getMessageEvent();
 
-        if (!e.isFromType(ChannelType.TEXT))
-            return;
+        if (e.isFromType(ChannelType.TEXT) && !e.getTextChannel().isNSFW())
+            return event.invalidate(help(annotation));
 
-        if (!e.getTextChannel().isNSFW())
-            throw new IllegalAccessException("This commands can only be performed in NSFW channels.");
+        return true;
     }
 
     @Override

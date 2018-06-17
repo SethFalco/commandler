@@ -26,7 +26,7 @@ public class BooleanParser implements IParamParser<Boolean> {
     };
 
     @Override
-    public Boolean parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public Boolean parse(MessageEvent event, SearchScope scope, String input) {
         for (String bool : TRUE) {
             if (bool.equalsIgnoreCase(input))
                 return true;
@@ -37,6 +37,7 @@ public class BooleanParser implements IParamParser<Boolean> {
                 return true;
         }
 
-        throw new IllegalArgumentException("Input '" + input + "'can't be parsed as a boolean (true / false) value.");
+        event.invalidate("Input '" + input + "'can't be parsed as a boolean (true / false) value.");
+        return null;
     }
 }

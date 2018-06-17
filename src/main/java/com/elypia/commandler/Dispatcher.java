@@ -1,6 +1,5 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.Reaction;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.modules.CommandHandler;
@@ -61,85 +60,135 @@ public class Dispatcher extends ListenerAdapter {
         if (!event.isValid())
             return;
 
-        MetaCommand metaCommand = getMetaCommand(event);
-        MessageChannel channel = messageEvent.getChannel();
+        MessageChannel channel = event.getMessageEvent().getChannel();
 
-        if (metaCommand == null) {
-            channel.sendMessage("The commands you just tried to perform doesn't exist. Perhaps you should perform the help commands?").queue();
+        if (!parseCommand(event)) {
+            onInvalidatedEvent(event);
             return;
         }
 
-        if (event.getParams().size() != metaCommand.getMetaParams().stream().filter(o -> o.getParameter().getType() != MessageEvent.class).count()) {
-            channel.sendMessage("You didn't give the correct number of parameters for that commands, perhaps try help instead?").queue();
+        MetaCommand metaCommand = event.getMetaCommand();
+
+        Object[] params = parser.parseParameters(event, metaCommand);
+
+        if (!event.isValid()) {
+            onInvalidatedEvent(event);
+            return;
+        }
+
+        if (validator.validate(event, metaCommand, params)) {
+            onInvalidatedEvent(event);
             return;
         }
 
         try {
-            Object[] params = parser.parseParameters(event, metaCommand);
-            validator.validate(event, metaCommand, params);
+            Object message = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
 
-            try {
-                Object message = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
-
-                if (message != null) {
-                    sender.sendAsMessage(event, message, o -> {
-                        Reaction[] reactions = metaCommand.getMethod().getAnnotationsByType(Reaction.class);
-
-                        for (Reaction reaction : reactions)
-                            o.addReaction(reaction.alias()).queue();
-                    });
-                }
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                ex.printStackTrace();
-                channel.sendMessage("Sorry! Something went wrong and I was unable to perform that commands.").queue();
-            }
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
-            channel.sendMessage(ex.getMessage()).queue();
+            if (message != null)
+                sender.sendAsMessage(event, message);
+        } catch (IllegalAccessException | InvocationTargetException ex) {
+            channel.sendMessage("Sorry! Something went wrong and I was unable to perform that commands.").queue();
+            ex.printStackTrace();
         }
     }
 
-    private MetaCommand getMetaCommand(MessageEvent event) {
+    private void onInvalidatedEvent(MessageEvent event) {
+        String error = event.getErrorMessage();
+
+        if (error != null)
+            event.getMessageEvent().getChannel().sendMessage(error).queue();
+    }
+
+    /**
+     * If the command follows valid syntax, actually parse it to find out
+     * what module and command was performed.
+     *
+     * @param event The message event that the user triggered.
+     * @return If the command is still valid.
+     */
+
+    private boolean parseCommand(MessageEvent event) {
+        return getMetaModule(event);
+    }
+
+    /**
+     * Obtain the module the user intended, if no module can be found
+     * fail silently as the user may not have intended to use out bot at all.
+     * If a module is found, go to find the command as the next step via
+     * {@link #getMetaCommand(MetaModule, MessageEvent)}. <br>
+     * These are stored using the {@link MessageEvent} setter methods.
+     *
+     * @param event The message event that the user triggered.
+     * @return If the command is still valid.
+     */
+
+    private boolean getMetaModule(MessageEvent event) {
+        String module = event.getModule();
+        String command = event.getCommand();
+
         for (CommandHandler handler : commandler.getHandlers()) {
             MetaModule metaModule = handler.getModule();
-            MetaCommand defaultCommand = metaModule.getDefaultCommand();
-            String module = event.getModule();
-            String command = event.getCommand();
 
             if (metaModule.hasPerformed(module)) {
-                if (command != null) {
-                    for (MetaCommand metaCommand : metaModule.getMetaCommands()) {
-                        if (metaCommand.getAliases().contains(command))
-                            return metaCommand;
-                    }
-
-                    if (defaultCommand != null) {
-                        event.getParams().add(0, command);
-                        event.setCommand(metaModule.getDefaultCommand());
-                    }
-                } else {
-                    if (defaultCommand != null)
-                        event.setCommand(metaModule.getDefaultCommand());
-                }
-
-                return metaModule.getDefaultCommand();
+                event.setMetaModule(metaModule);
+                return getMetaCommand(metaModule, event);
             }
 
-            for (MetaCommand metaCommand : metaModule.getMetaCommands()) {
-                if (metaCommand.isStatic()) {
-                    if (metaCommand.getAliases().contains(module)) {
-                        event.setModule(handler);
+            for (MetaCommand metaCommand : metaModule.getStaticCommands()) {
+                if (metaCommand.hasPerformed(module)) {
+                    if (command != null)
+                        event.getParams().add(0, command);
 
-                        if (command != null)
-                            event.getParams().add(0, command);
+                    event.setMetaModule(metaModule);
+                    event.setMetaCommand(metaCommand);
 
-                        event.setCommand(metaCommand);
-                        return metaCommand;
-                    }
+                    if (event.getParams().size() != metaCommand.getInputRequired())
+                        return event.invalidate("The parameters you provided doesn't match up with the paramaters this command required.");
+
+                    return true;
                 }
             }
         }
 
-        return null;
+        return event.invalidate(null);
+    }
+
+    /**
+     * Obtain the command the user intended.
+     *
+     * @param event The message event that the user triggered.
+     * @return If the command is still valid.
+     */
+
+    private boolean getMetaCommand(MetaModule metaModule, MessageEvent event) {
+        String command = event.getCommand();
+
+        if (command != null) {
+            MetaCommand metaCommand = metaModule.getCommand(command);
+
+            if (metaCommand != null) {
+                event.setMetaCommand(metaCommand);
+
+                if (event.getParams().size() != metaCommand.getInputRequired())
+                    return event.invalidate("You specified a valid command however the number of parameters you provided didn't match with what I was expecting.");
+
+                return true;
+            }
+        }
+
+        MetaCommand defaultCommand = metaModule.getDefaultCommand();
+
+        if (defaultCommand == null)
+            return event.invalidate("You've specified a module without a valid command, however there is no default command associated with this module.");
+
+        if (command != null)
+            event.getParams().add(0, command);
+
+        if (event.getParams().size() != defaultCommand.getInputRequired())
+            return event.invalidate("It seems the command you attemped to do doesn't exist, maybe you should try the help command instead?");
+
+        event.setMetaCommand(defaultCommand);
+        return true;
     }
 
     public Parser getParser() {

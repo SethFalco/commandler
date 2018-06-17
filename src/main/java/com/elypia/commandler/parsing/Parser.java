@@ -17,34 +17,26 @@ public class Parser {
     protected Map<Class<?>, IParamParser> parsers;
 
     public Parser() {
-        this(true);
-    }
-
-    public Parser(boolean auto) {
         parsers = new HashMap<>();
 
-        if (auto) {
-            registerParser(boolean.class, new BooleanParser());
-            registerParser(double.class, new DoubleParser());
-            registerParser(int.class, new IntParser());
-            registerParser(long.class, new LongParser());
-            registerParser(String.class, new StringParser());
-            registerParser(URL.class, new UrlParser());
+        registerParser(boolean.class, new BooleanParser());
+        registerParser(double.class, new DoubleParser());
+        registerParser(int.class, new IntParser());
+        registerParser(long.class, new LongParser());
+        registerParser(String.class, new StringParser());
+        registerParser(URL.class, new UrlParser());
 
-            registerParser(Emote.class, new EmoteParser());
-            registerParser(Guild.class, new GuildParser());
-            registerParser(Role.class, new RoleParser());
-            registerParser(TextChannel.class, new TextChannelParser());
-            registerParser(User.class, new UserParser());
-            registerParser(VoiceChannel.class, new VoiceChannelParser());
-        }
+        registerParser(Emote.class, new EmoteParser());
+        registerParser(Guild.class, new GuildParser());
+        registerParser(Role.class, new RoleParser());
+        registerParser(TextChannel.class, new TextChannelParser());
+        registerParser(User.class, new UserParser());
+        registerParser(VoiceChannel.class, new VoiceChannelParser());
     }
 
     public <T> void registerParser(Class<T> t, IParamParser<T> parser) {
-        if (parsers.keySet().contains(t))
-            throw new IllegalArgumentException("Parser for this type of object has already been registered.");
-
-        parsers.put(t, parser);
+        if (parsers.put(t, parser) != null)
+            System.err.printf("The parser for %s has been replaced.", t.getName());
     }
 
     /**
@@ -58,23 +50,27 @@ public class Parser {
      */
 
     public Object[] parseParameters(MessageEvent event, MetaCommand metaCommand) throws IllegalArgumentException {
-        List<MetaParam> params = metaCommand.getMetaParams(); // Parameter data
+        List<MetaParam> metaParams = metaCommand.getMetaParams(); // Parameter data
         List<Object> inputs = event.getParams(); // User input parameters
-        Object[] objects = new Object[params.size()]; // Parsed parameters to perform commands
+        Object[] objects = new Object[metaParams.size()]; // Parsed parameters to perform commands
 
         int offset = 0;
 
-        for (int i = 0; i < params.size(); i++) {
-            MetaParam param = params.get(i);
-            Class<?> type = param.getParameter().getType();
+        for (int i = 0; i < metaParams.size(); i++) {
+            MetaParam param = metaParams.get(i);
 
-            if (type == MessageEvent.class) {
+            if (!param.isInput()) {
                 objects[i] = event;
                 offset++;
                 continue;
             }
 
             Object input = inputs.get(i - offset);
+            Object object = parseParam(event, param, input);
+
+            if (object == null)
+                return null;
+
             objects[i] = parseParam(event, param, input);
         }
 
@@ -84,7 +80,7 @@ public class Parser {
     public Object parseParam(MessageEvent event, MetaParam param, Object object) throws IllegalArgumentException {
         Class<?> clazz = param.getParameter().getType(); // Class of type required
         boolean array = clazz.isArray(); // Is type required an array
-        SearchScope scope = null; // The search scope if applicable
+        SearchScope scope; // The search scope if applicable
 
         Search search = param.getParameter().getAnnotation(Search.class);
 

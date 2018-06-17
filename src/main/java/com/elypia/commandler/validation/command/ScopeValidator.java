@@ -10,15 +10,15 @@ import java.util.Arrays;
 public class ScopeValidator implements ICommandValidator<Scope> {
 
     @Override
-    public void validate(MessageEvent event, Scope scope) throws IllegalAccessException {
+    public boolean validate(MessageEvent event, Scope scope) {
         ChannelType[] types = scope.value();
 
         if (Arrays.asList(types).contains(event.getMessageEvent().getChannelType()))
-            return;
+            return true;
 
         String list = buildList(types);
         String message = "This commands can only be performed in " + list + " channels.";
-        throw new IllegalAccessException(message);
+        return event.invalidate(message);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ScopeValidator implements ICommandValidator<Scope> {
 
     private String buildList(ChannelType... types) {
         if (types.length == 1)
-            return "`" + types[0].name() + "`";
+            return "`" + getFriendlyName(types[0]) + "`";
 
         StringBuilder builder = new StringBuilder();
 
@@ -36,11 +36,21 @@ public class ScopeValidator implements ICommandValidator<Scope> {
             ChannelType type = types[i];
 
             if (i != types.length - 1)
-                builder.append("`" + type.name() + "`, ");
+                builder.append("`" + getFriendlyName(type) + "`, ");
             else
-                builder.append("and `" + type.name() + "`");
+                builder.append("and `" + getFriendlyName(type) + "`");
         }
 
         return builder.toString();
+    }
+
+    private String getFriendlyName(ChannelType type) {
+        switch (type) {
+            case TEXT: return "Guild Text Channels";
+            case PRIVATE: return "Private Messages";
+            case GROUP: return "Group Chat";
+            case VOICE: return "Voice Channels";
+            default: return type.name();
+        }
     }
 }

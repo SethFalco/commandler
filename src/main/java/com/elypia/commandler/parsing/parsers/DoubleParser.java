@@ -7,11 +7,12 @@ import com.elypia.commandler.parsing.IParamParser;
 public class DoubleParser implements IParamParser<Double> {
 
     @Override
-    public Double parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public Double parse(MessageEvent event, SearchScope scope, String input) {
         try {
             return Double.parseDouble(input);
         } catch (NumberFormatException ex){
-            throw new IllegalArgumentException("Parameter `" + input + "` is not a number.");
+            event.invalidate("Parameter `" + input + "` is not a number.");
+            return null;
         }
     }
 }

@@ -10,7 +10,7 @@ import java.util.*;
 public class VoiceChannelParser implements IParamParser<VoiceChannel> {
 
     @Override
-    public VoiceChannel parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public VoiceChannel parse(MessageEvent event, SearchScope scope, String input) {
         final Collection<VoiceChannel> channels = new ArrayList<>();
 
         switch (scope) {
@@ -34,6 +34,7 @@ public class VoiceChannelParser implements IParamParser<VoiceChannel> {
                 return channel;
         }
 
-        throw new IllegalArgumentException("Parameter `" + input + "` could not be be linked to a channel.");
+        event.invalidate("Parameter `" + input + "` could not be be linked to a channel.");
+        return null;
     }
 }

@@ -7,6 +7,7 @@ import com.elypia.commandler.modules.CommandHandler;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MetaModule {
 
@@ -96,28 +97,7 @@ public class MetaModule {
         }
 
         parseAliases();
-
-        Method[] methods = clazz.getMethods();
-        metaCommands = new ArrayList<>();
-        commandAliases = new HashSet<>();
-
-        int defaultCommand = 0;
-
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(Command.class)) {
-                MetaCommand metaCommand = MetaCommand.of(this, method);
-
-                if (metaCommand.isDefault()) {
-                    if (++defaultCommand == 2) {
-                        String format = "Module %s (%s) contains multiple default commands, modules may only have a single default.";
-                        throw new MalformedModuleException(String.format(format, module.name(), clazz.getName()));
-                    }
-                }
-
-                commandAliases.addAll(metaCommand.getAliases());
-                metaCommands.add(metaCommand);
-            }
-        }
+        parseMethods();
 
         isPublic = !module.description().equals("");
     }
@@ -150,11 +130,46 @@ public class MetaModule {
 
         if (!Collections.disjoint(commandler.getRootAlises(), aliases)) {
             String name = module.name();
-            String format = "Module %s contains an alias which has already been registered by a previous module or static commands.";
+            String format = "Module %s contains an alias which has already been registered by a previous module or static command.";
             throw new RecursiveAliasException(String.format(format, name));
         }
 
         commandler.getRootAlises().addAll(aliases);
+    }
+
+    /**
+     * Parses the methods in this Module and creates {@link MetaCommand} instances
+     * out of methods with the {@link Command} annotation. <br>
+     * This method ensures only one command in this module is a {@link Default default} command
+     * if any, and validates all the underlying Commands that are created before adding their aliases
+     * to the global list and utlimatly adding the command as valid. <br>
+     * <strong>If <em>ANY</em> commands are invalid, the entire module will fail.</strong>
+     *
+     * @throws MalformedModuleException When module specified more than one command with the {@link Default} annotation.
+     */
+
+    private void parseMethods() {
+        Method[] methods = clazz.getMethods();
+        metaCommands = new ArrayList<>();
+        commandAliases = new HashSet<>();
+
+        int defaultCommand = 0;
+
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(Command.class)) {
+                MetaCommand metaCommand = MetaCommand.of(this, method);
+
+                if (metaCommand.isDefault()) {
+                    if (++defaultCommand == 2) {
+                        String format = "Module %s (%s) contains multiple default commands, modules may only have a single default.";
+                        throw new MalformedModuleException(String.format(format, module.name(), clazz.getName()));
+                    }
+                }
+
+                commandAliases.addAll(metaCommand.getAliases());
+                metaCommands.add(metaCommand);
+            }
+        }
     }
 
     /**
@@ -164,6 +179,14 @@ public class MetaModule {
 
     public boolean hasPerformed(String input) {
         return aliases.contains(input.toLowerCase());
+    }
+
+    /**
+     * @return A list of all {@link Static} commands in the module.
+     */
+
+    public Collection<MetaCommand> getStaticCommands() {
+        return metaCommands.stream().filter(MetaCommand::isStatic).collect(Collectors.toList());
     }
 
     public MetaCommand getDefaultCommand() {

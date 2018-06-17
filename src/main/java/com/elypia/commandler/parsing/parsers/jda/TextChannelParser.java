@@ -10,7 +10,7 @@ import java.util.*;
 public class TextChannelParser implements IParamParser<TextChannel> {
 
     @Override
-    public TextChannel parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public TextChannel parse(MessageEvent event, SearchScope scope, String input) {
         final Collection<TextChannel> channels = new ArrayList<>();
 
         switch (scope) {
@@ -34,6 +34,7 @@ public class TextChannelParser implements IParamParser<TextChannel> {
                 return channel;
         }
 
-        throw new IllegalArgumentException("Parameter `" + input + "` could not be be linked to a channel.");
+        event.invalidate("Parameter `" + input + "` could not be be linked to a channel.");
+        return null;
     }
 }

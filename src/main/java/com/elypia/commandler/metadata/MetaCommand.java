@@ -3,7 +3,7 @@ package com.elypia.commandler.metadata;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.events.MessageEvent;
-import com.elypia.commandler.exceptions.MalformedCommandException;
+import com.elypia.commandler.exceptions.*;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.validation.ICommandValidator;
 
@@ -99,6 +99,12 @@ public class MetaCommand {
     private List<MetaParam> metaParams;
 
     /**
+     * The amount of input required to perform this command.
+     */
+
+    private int inputRequired;
+
+    /**
      * Create a wrapper around this the command for the convinience of accessing
      * information around it.
      *
@@ -114,6 +120,7 @@ public class MetaCommand {
     private MetaCommand(MetaModule metaModule, Method method) {
         this.metaModule = Objects.requireNonNull(metaModule);
         this.method = Objects.requireNonNull(method);
+        commandler = metaModule.getCommandler();
 
         clazz = metaModule.getHandlerType();
         command = method.getAnnotation(Command.class);
@@ -122,7 +129,16 @@ public class MetaCommand {
         parseParameters();
         parseAnnotations();
 
-        commandler = metaModule.getCommandler();
+        if (isStatic) {
+            if (!Collections.disjoint(commandler.getRootAlises(), aliases)) {
+                String format = "Command %s in module %s (%s) contains a static alias which has already been registered by a previous module or static command.";
+                String message = String.format(format, command.name(), metaModule.getModule().name(), clazz.getName());
+                throw new RecursiveAliasException(message);
+            }
+
+            commandler.getRootAlises().addAll(aliases);
+        }
+
         handler = metaModule.getHandler();
         isPublic = !command.help().equals("");
     }
@@ -166,7 +182,7 @@ public class MetaCommand {
             Class<? extends Annotation> type = annotation.annotationType();
 
             if (type.isAnnotationPresent(Validation.class))
-                validators.put(type, MetaValidator.of(this, annotation));
+                validators.put(type, MetaValidator.of(annotation));
             else if (type == Static.class)
                 isStatic = true;
             else if (type == Default.class)
@@ -177,7 +193,7 @@ public class MetaCommand {
             Class<? extends Annotation> type = annotation.annotationType();
 
             if (!validators.containsKey(type) && type.isAnnotationPresent(Validation.class))
-                validators.put(type, MetaValidator.of(this, annotation));
+                validators.put(type, MetaValidator.of(annotation));
         }
     }
 
@@ -213,9 +229,20 @@ public class MetaCommand {
             else if (++offset == 2)
                 System.err.printf("Command %s in module %s (%s) contains multiple MessageEvent parameters, there is no benefit to this.", command.name(), metaModule.getModule().name(), clazz.getName());
 
-            MetaParam meta = MetaParam.of(parameter, param);
+            MetaParam meta = MetaParam.of(this, parameter, param);
             metaParams.add(meta);
         }
+
+        inputRequired = (int)metaParams.stream().filter(MetaParam::isInput).count();
+    }
+
+    /**
+     * @param input The input module by the user.
+     * @return If this command contains an entry of that command.
+     */
+
+    public boolean hasPerformed(String input) {
+        return aliases.contains(input.toLowerCase());
     }
 
     /**
@@ -281,5 +308,9 @@ public class MetaCommand {
 
     public List<MetaParam> getMetaParams() {
         return metaParams;
+    }
+
+    public int getInputRequired() {
+        return inputRequired;
     }
 }

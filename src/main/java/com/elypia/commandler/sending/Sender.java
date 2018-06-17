@@ -13,25 +13,21 @@ public class Sender {
     protected Map<Class<?>, IMessageSender> senders;
 
     public Sender() {
-        this(true);
-    }
-
-    public Sender(boolean auto) {
         senders = new HashMap<>();
 
-        if (auto) {
-            registerSender(Message.class, new DefaultSender());
-            registerSender(EmbedBuilder.class, new EmbedBuilderSender());
-            registerSender(MessageBuilder.class, new MessageBuilderSender());
-            registerSender(String.class, new StringSender());
-        }
+        registerSender(Message.class, new DefaultSender());
+        registerSender(EmbedBuilder.class, new EmbedBuilderSender());
+        registerSender(MessageBuilder.class, new MessageBuilderSender());
+        registerSender(String.class, new StringSender());
     }
 
     public <T> void registerSender(Class<T> t, IMessageSender<T> parser) {
-        if (senders.keySet().contains(t))
-            throw new IllegalArgumentException("Sender for this type of object has already been registered.");
+        if (senders.put(t, parser) != null)
+            System.err.printf("Replaced existing %s with the new sender.", t.getName());
+    }
 
-        senders.put(t, parser);
+    public void sendAsMessage(MessageEvent event, Object object) {
+        sendAsMessage(event, object, null);
     }
 
     public void sendAsMessage(MessageEvent event, Object object, Consumer<Message> success) throws IllegalArgumentException {

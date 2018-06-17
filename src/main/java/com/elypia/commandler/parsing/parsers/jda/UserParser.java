@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class UserParser implements IParamParser<User> {
 
     @Override
-    public User parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public User parse(MessageEvent event, SearchScope scope, String input) {
         final Collection<User> users = new ArrayList<>();
 
         switch (scope) {
@@ -40,6 +40,7 @@ public class UserParser implements IParamParser<User> {
                 return user;
         }
 
-        throw new IllegalArgumentException("Parameter `" + input + "` could not be be linked to a user.");
+        event.invalidate("Parameter `" + input + "` could not be be linked to a user.");
+        return null;
     }
 }

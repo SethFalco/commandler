@@ -10,7 +10,7 @@ import java.util.*;
 public class EmoteParser implements IParamParser<Emote> {
 
     @Override
-    public Emote parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public Emote parse(MessageEvent event, SearchScope scope, String input) {
         final Set<Emote> emotes = new HashSet<>();
 
         emotes.addAll(event.getMessage().getEmotes());
@@ -36,7 +36,8 @@ public class EmoteParser implements IParamParser<Emote> {
                 return emote;
         }
 
-        throw new IllegalArgumentException("Parameter `" + input + "` could not be be linked to an emote.");
+        event.invalidate("Parameter `" + input + "` could not be be linked to an emote.");
+        return null;
     }
 
     public boolean compare(String input, Emote emote) {

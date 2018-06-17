@@ -76,7 +76,7 @@ public abstract class CommandHandler {
 
 				while (it.hasNext()) {
 					MetaParam metaParam = it.next();
-					Param param = metaParam.getParams();
+					Param param = metaParam.getParamAnnotation();
 
 					if (param != null) {
 						if (!params) {

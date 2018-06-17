@@ -3,8 +3,7 @@ package com.elypia.commandler.events;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.confiler.Confiler;
-import com.elypia.commandler.metadata.MetaCommand;
-import com.elypia.commandler.modules.CommandHandler;
+import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.sending.Sender;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
@@ -57,6 +56,12 @@ public class MessageEvent {
 
 	private String module;
 
+	/**
+	 * The module associated with this command if the module is valid.
+	 */
+
+	private MetaModule metaModule;
+
     /**
      * The commands segment of this commands if valid, this refers to which commands
      * in the specified module to perform. <br>
@@ -67,6 +72,12 @@ public class MessageEvent {
 
 	private String command;
 
+	/**
+	 * The command associated with this command if the command is valid.
+	 */
+
+	private MetaCommand metaCommand;
+
     /**
      * A list of all parameters associated with this commands. This list may contain
      * both {@link String}s and {@link String[]}s. List parameters (comma seperated) are stored
@@ -74,6 +85,12 @@ public class MessageEvent {
      */
 
 	private List<Object> params;
+
+	/**
+	 * Should an error occur what so ever
+	 */
+
+	private String errorMessage;
 
     /**
      * Calls {@link #MessageEvent(Commandler, GenericMessageEvent, Message, String)}
@@ -192,6 +209,23 @@ public class MessageEvent {
 		commandler.getDispatcher().process(event, message, command);
 	}
 
+	/**
+	 * If an error occurs during the command, if for whatever reason
+	 * the syntax is valid but the command event can't be performed,
+	 * invalidate the command with the reason why we can't perform it.
+	 * If the value is null, fail silently and don't send a message.
+	 *
+	 * @param reason The message to post as to why we aren't going to perform the command.
+	 * @return The new state of {@link #isValid}; this should <strong>always</strong> be <em>false</em>.
+	 */
+
+	public boolean invalidate(String reason) {
+		isValid = false;
+		errorMessage = reason;
+
+		return isValid;
+	}
+
     /**
      * @return The {@link GenericMessageEvent} that caused this event.
      */
@@ -226,20 +260,13 @@ public class MessageEvent {
 		return module;
 	}
 
-    /**
-     * If the user performs a static commands, the regular expression should match
-     * however it will not have the components that make up a commands grouped correctly.
-     * We use {@link #setModule(String)} to correct the module.
-     *
-     * @param module The module we're setting this commands for.
-     */
+	public void setMetaModule(MetaModule metaModule) {
+		this.metaModule = metaModule;
+		module = metaModule.getModule().aliases()[0];
+	}
 
-	public void setModule(String module) {
-	    this.module = module;
-    }
-
-    public void setModule(CommandHandler handler) {
-		setModule(handler.getModule().getModule().aliases()[0]);
+	public MetaModule getMetaModule() {
+		return metaModule;
 	}
 
     /**
@@ -250,20 +277,13 @@ public class MessageEvent {
 		return command;
 	}
 
-    /**
-     * If the user performs a default commands, the regular expression should match
-     * however it will not have the components that make up a commands grouped correctly.
-     * We use {@link #setCommand(String)} to correct the commands.
-     *
-     * @param command The commands we're setting this commands for.
-     */
+	public MetaCommand getMetaCommand() {
+		return metaCommand;
+	}
 
-	public void setCommand(String command) {
-        this.command = command;
-    }
-
-	public void setCommand(MetaCommand command) {
-		setCommand(command.getCommand().aliases()[0]);
+	public void setMetaCommand(MetaCommand metaCommand) {
+		this.metaCommand = metaCommand;
+		command = metaCommand.getCommand().aliases()[0];
 	}
 
     /**
@@ -272,5 +292,17 @@ public class MessageEvent {
 
 	public List<Object> getParams() {
 		return params;
+	}
+
+	/**
+	 * This will only return a non-null value if during
+	 * command processing {@link #invalidate(String)} was called
+	 * and a reason was provided.
+	 *
+	 * @return The reason the command wen't wrong if this should be public.
+	 */
+
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 }

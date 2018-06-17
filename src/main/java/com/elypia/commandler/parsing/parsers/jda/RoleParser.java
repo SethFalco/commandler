@@ -10,7 +10,7 @@ import java.util.*;
 public class RoleParser implements IParamParser<Role> {
 
     @Override
-    public Role parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public Role parse(MessageEvent event, SearchScope scope, String input) {
         final Collection<Role> roles = new ArrayList<>();
 
         switch (scope) {
@@ -33,6 +33,7 @@ public class RoleParser implements IParamParser<Role> {
                 return role;
         }
 
-        throw new IllegalArgumentException("Parameter `" + input + "` could not be be linked to a role.");
+        event.invalidate("Parameter `" + input + "` could not be be linked to a role.");
+        return null;
     }
 }
