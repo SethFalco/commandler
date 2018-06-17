@@ -31,7 +31,7 @@ public class CommandlerBot {
 
     public static void main(String[] args) throws LoginException {
         JDA jda = new JDABuilder(AccountType.BOT).setToken(args[0]).buildAsync();
-        Commandler commandler = new Commandler(jda);
+        Commandler commandler = new Commandler(jda, "!");
 
         commandler.registerModules(new ExampleModule());
     }

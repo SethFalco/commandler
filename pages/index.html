@@ -1,0 +1,304 @@
+<!doctype html>
+<html>
+ <head> 
+  <title>CommandlerBot | Help</title> 
+  <meta charset="UTF-8"> 
+  <link rel="icon" type="image/x-icon" href="./assets/favicon.ico"> 
+  <link rel="stylesheet" href="styles.css"> 
+  <link rel="stylesheet" href="reset.css"> 
+  <link href="https://fonts.googleapis.com/css?family=Lovers+Quarrel|Megrim|Raleway|Wire+One" rel="stylesheet"> 
+  <script src="app.js"></script> 
+  <meta property="og:site_name" content="CommandlerBot"> 
+  <meta property="og:title" content="CommandlerBot | Help"> 
+  <meta property="og:description" content="CommandlerBot is the example bot for Commandler!"> 
+  <meta property="og:image" content="./assets/alexis.png"> 
+ </head> 
+ <body> 
+  <img class="background" src="./resources/Night.png"> 
+  <main> 
+   <nav> 
+    <h1 class="bot-name">CommandlerBot Help</h1> 
+    <ul> 
+     <li class="module-list-item" id="Help">Help</li> 
+     <li class="module-list-item" id="Bot-Utilities">Bot Utilities</li> 
+     <li class="module-list-item" id="Guild-Emoticons">Guild Emoticons</li> 
+     <li class="module-list-item" id="Guild">Guild</li> 
+     <li class="module-list-item" id="Users">Users</li> 
+     <li class="module-list-item" id="Misc.">Misc.</li> 
+     <li class="module-list-item" id="Guild-Voice-Channel">Guild Voice Channel</li> 
+    </ul> 
+   </nav> 
+   <div class="container"> 
+    <div class="module-info" id="info-Help"> 
+     <div class="module-nav"> 
+      <ul> 
+       <li><a href="#List-all-Modules">List all Modules</a></li> 
+       <li><a href="#Explain-Static-Commands">Explain Static Commands</a></li> 
+       <li><a href="#Example-Default-Commands">Example Default Commands</a></li> 
+      </ul> 
+     </div> 
+     <h1>Help</h1> 
+     <ul class="module-aliases"> 
+      <li>help</li> 
+     </ul> 
+     <p>Get help and information on the bot and it's core features.</p> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="List-all-Modules">List all Modules</h3> 
+       <ul class="command-validators"> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>modules</li> 
+      </ul> 
+      <p>Learn about the various modules and what functionality they bring to Discord.</p> 
+     </div> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Explain-Static-Commands">Explain Static Commands</h3> 
+       <ul class="command-validators"> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>static</li> 
+      </ul> 
+      <p>Learn what a Static commands does and how to use them.</p> 
+     </div> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Example-Default-Commands">Example Default Commands</h3> 
+       <ul class="command-validators"> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>default</li> 
+      </ul> 
+      <p>Learn what a Default commands does and how to use them.</p> 
+     </div> 
+    </div> 
+    <div class="module-info" id="info-Bot-Utilities"> 
+     <div class="module-nav"> 
+      <ul> 
+       <li><a href="#Ping!">Ping!</a></li> 
+       <li><a href="#Bot-Invites">Bot Invites</a></li> 
+       <li><a href="#Say">Say</a></li> 
+       <li><a href="#Bot-Info">Bot Info</a></li> 
+      </ul> 
+     </div> 
+     <h1>Bot Utilities</h1> 
+     <ul class="module-aliases"> 
+      <li>bot</li> 
+      <li>robot</li> 
+      <li>botto</li> 
+     </ul> 
+     <p>Obtain information on the bot itself or it's developers, or perform general bot functionality.</p> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Ping!">Ping!</h3> 
+       <ul class="command-validators"> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>ping</li> 
+      </ul> 
+      <p>Ping the bot to make sure it's still alive and responding!</p> 
+     </div> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Bot-Invites">Bot Invites</h3> 
+       <ul class="command-validators"> 
+        <li class="tooltip"> <span class="tooltiptext">This commands can only be performed in the following channels: `TEXT`.</span> <img src="./resources/commands/scope.svg" alt="Scope" height="24" width="24"> </li> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>invites</li> 
+      </ul> 
+      <p>A list of invite links for all bots in the current guild.</p> 
+     </div> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Say">Say</h3> 
+       <ul class="command-validators"> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>say</li> 
+      </ul> 
+      <p>Have Commandler say something after you, deleting the message if possible.</p> 
+     </div> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Bot-Info">Bot Info</h3> 
+       <ul class="command-validators"> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>info</li> 
+      </ul> 
+      <p>Get information on the bot and it's developers.</p> 
+     </div> 
+    </div> 
+    <div class="module-info" id="info-Guild-Emoticons"> 
+     <div class="module-nav"> 
+      <ul> 
+       <li><a href="#List-Emotes">List Emotes</a></li> 
+       <li><a href="#Get-Emote">Get Emote</a></li> 
+      </ul> 
+     </div> 
+     <h1>Guild Emoticons</h1> 
+     <ul class="module-aliases"> 
+      <li>emote</li> 
+      <li>emoji</li> 
+      <li>emoticon</li> 
+      <li>emotes</li> 
+     </ul> 
+     <p>Interact with guild custom emotes, even in other guilds.</p> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="List-Emotes">List Emotes</h3> 
+       <ul class="command-validators"> 
+        <li class="tooltip"> <span class="tooltiptext">This commands can only be performed in the following channels: `TEXT`.</span> <img src="./resources/commands/scope.svg" alt="Scope" height="24" width="24"> </li> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>list</li> 
+      </ul> 
+      <p>List all of the custom emotes in the guild.</p> 
+     </div> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Get-Emote">Get Emote</h3> 
+       <ul class="command-validators"> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>get</li> 
+       <li>post</li> 
+      </ul> 
+      <p>Post an emote in the chat!</p> 
+     </div> 
+    </div> 
+    <div class="module-info" id="info-Guild"> 
+     <div class="module-nav"> 
+      <ul> 
+       <li><a href="#Guild-Info">Guild Info</a></li> 
+      </ul> 
+     </div> 
+     <h1>Guild</h1> 
+     <ul class="module-aliases"> 
+      <li>guild</li> 
+      <li>server</li> 
+     </ul> 
+     <p>Commands that retrieve information or perform them to a specified guild.</p> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Guild-Info">Guild Info</h3> 
+       <ul class="command-validators"> 
+        <li class="tooltip"> <span class="tooltiptext">This commands can only be performed in the following channels: `TEXT`.</span> <img src="./resources/commands/scope.svg" alt="Scope" height="24" width="24"> </li> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>info</li> 
+       <li>information</li> 
+       <li>wiki</li> 
+      </ul> 
+      <p>Obtain information on the guild.</p> 
+     </div> 
+    </div> 
+    <div class="module-info" id="info-Users"> 
+     <div class="module-nav"> 
+      <ul> 
+       <li><a href="#User-Info">User Info</a></li> 
+      </ul> 
+     </div> 
+     <h1>Users</h1> 
+     <ul class="module-aliases"> 
+      <li>user</li> 
+      <li>users</li> 
+      <li>member</li> 
+      <li>members</li> 
+     </ul> 
+     <p>Get information, associations or stats on users!</p> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="User-Info">User Info</h3> 
+       <ul class="command-validators"> 
+        <li class="tooltip"> <span class="tooltiptext">This commands can only be performed in the following channels: `TEXT`.</span> <img src="./resources/commands/scope.svg" alt="Scope" height="24" width="24"> </li> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>info</li> 
+       <li>information</li> 
+      </ul> 
+      <p>Obtain information on a user!</p> 
+     </div> 
+    </div> 
+    <div class="module-info" id="info-Misc."> 
+     <div class="module-nav"> 
+      <ul> 
+       <li><a href="#Character-Count">Character Count</a></li> 
+       <li><a href="#Get-Pet-Neko">Get Pet Neko</a></li> 
+      </ul> 
+     </div> 
+     <h1>Misc.</h1> 
+     <ul class="module-aliases"> 
+      <li>util</li> 
+      <li>utils</li> 
+      <li>misc</li> 
+      <li>static</li> 
+     </ul> 
+     <p>Misc. commands that don't fit into another module.</p> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Character-Count">Character Count</h3> 
+       <ul class="command-validators"> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>count</li> 
+      </ul> 
+      <p>Count the number of characters sent.</p> 
+     </div> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Get-Pet-Neko">Get Pet Neko</h3> 
+       <ul class="command-validators"> 
+        <li class="tooltip"> <span class="tooltiptext">This commands can only be done in PMs or NSFW channels.</span> <img src="./resources/commands/nsfw.svg" alt="NSFW" height="24" width="24"> </li> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>neko</li> 
+      </ul> 
+      <p>Get a pet neko sent to you over Discord.</p> 
+     </div> 
+    </div> 
+    <div class="module-info" id="info-Guild-Voice-Channel"> 
+     <div class="module-nav"> 
+      <ul> 
+       <li><a href="#Mention-Members">Mention Members</a></li> 
+      </ul> 
+     </div> 
+     <h1>Guild Voice Channel</h1> 
+     <ul class="module-aliases"> 
+      <li>voice</li> 
+      <li>vc</li> 
+     </ul> 
+     <p>Convenience commands for voice channels.</p> 
+     <div class="command-info"> 
+      <div class="command-title"> 
+       <h3 id="Mention-Members">Mention Members</h3> 
+       <ul class="command-validators"> 
+        <li class="tooltip"> <span class="tooltiptext">This commands can only be performed in the following channels: `TEXT`.</span> <img src="./resources/commands/scope.svg" alt="Scope" height="24" width="24"> </li> 
+       </ul> 
+      </div> 
+      <ul class="command-aliases"> 
+       <li>mention</li> 
+       <li>at</li> 
+      </ul> 
+      <p>Mention all the users in a voice channel.</p> 
+     </div> 
+    </div> 
+   </div> 
+  </main>  
+ </body>
+</html>
