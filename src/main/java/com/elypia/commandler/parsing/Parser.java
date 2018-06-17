@@ -77,7 +77,7 @@ public class Parser {
         return objects;
     }
 
-    public Object parseParam(MessageEvent event, MetaParam param, Object object) throws IllegalArgumentException {
+    private Object parseParam(MessageEvent event, MetaParam param, Object object) throws IllegalArgumentException {
         Class<?> clazz = param.getParameter().getType(); // Class of type required
         boolean array = clazz.isArray(); // Is type required an array
         SearchScope scope; // The search scope if applicable

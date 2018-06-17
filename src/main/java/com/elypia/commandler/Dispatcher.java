@@ -6,6 +6,7 @@ import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsing.Parser;
 import com.elypia.commandler.sending.Sender;
 import com.elypia.commandler.validation.Validator;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.*;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -15,10 +16,45 @@ import java.time.OffsetDateTime;
 
 public class Dispatcher extends ListenerAdapter {
 
+    /**
+     * The {@link Commandler} instance which is what gives access to all
+     * registers to add modules, parsers, senders, and validators.
+     */
+
     private final Commandler commandler;
+
+    /**
+     * Parser is the registry that allows you to define how objects are
+     * intepretted from the raw string provided in chat.
+     */
+
     private final Parser parser;
+
+    /**
+     * Sender is the register that allows you to define how objects are
+     * sent. This allows Commandler to know how certain return types
+     * need to be processed in order to send in chat.
+     */
+
     private final Sender sender;
+
+    /**
+     * Validator is a registery that allows you to define custom annotations
+     * and mark them above methods or parameters in order to perform validation.
+     * This is useful to ensure a unifed approach is done and to reduce code
+     * required to make commands.
+     */
+
     private final Validator validator;
+
+    /**
+     * The Dispatcher is what recieved JDA events and where Commandler begins
+     * to parse events and determine the module / command combo and execute the method. <br>
+     * Note: This will only perform events registered to Commandler and not other
+     * {@link ListenerAdapter}s that may be associated with {@link JDA}.
+     *
+     * @param commandler The parent Commandler instance.
+     */
 
     public Dispatcher(final Commandler commandler) {
         this.commandler = commandler;
@@ -47,9 +83,32 @@ public class Dispatcher extends ListenerAdapter {
         });
     }
 
+    /**
+     * Begin processing the event when it occurs. This is the same as calling
+     * {@link #process(GenericMessageEvent, Message, String)} with the default content
+     * as the {@link Message} content.
+     *
+     * @param messageEvent The generic message event that occured.
+     * @param msg The message that triggered the event.
+     */
+
     public void process(GenericMessageEvent messageEvent, Message msg) {
         process(messageEvent, msg, msg.getContentRaw());
     }
+
+    /**
+     * Begin processing the event when it occurs. There are multiple steps to
+     * processing the event. <br>
+     * If it's a bot, ignore the event. <br>
+     * If the event is invalid, ignore the event. <br>
+     * Parse the module and command, this may invalidate the event. <br>
+     * Parse all parameters from Strings to the required types, this may invalidate the event. <br>
+     * Validate all parameters according to any annotations, this may invalidate the event. <br>
+     * Send the result in chat if it's not null, if the result is null, assume the user used {@link MessageEvent#reply(Object)}}.
+     *
+     * @param messageEvent The generic message event that occured.
+     * @param msg The message that triggered the event.
+     */
 
     public void process(GenericMessageEvent messageEvent, Message msg, String content) {
         if (msg.getAuthor().isBot())
@@ -57,29 +116,14 @@ public class Dispatcher extends ListenerAdapter {
 
         MessageEvent event = new MessageEvent(commandler, messageEvent, msg, content);
 
-        if (!event.isValid())
+        if (!event.isValid() || !parseCommand(event))
             return;
-
-        MessageChannel channel = event.getMessageEvent().getChannel();
-
-        if (!parseCommand(event)) {
-            onInvalidatedEvent(event);
-            return;
-        }
 
         MetaCommand metaCommand = event.getMetaCommand();
-
         Object[] params = parser.parseParameters(event, metaCommand);
 
-        if (!event.isValid()) {
-            onInvalidatedEvent(event);
+        if (params == null || !validator.validate(event, metaCommand, params))
             return;
-        }
-
-        if (validator.validate(event, metaCommand, params)) {
-            onInvalidatedEvent(event);
-            return;
-        }
 
         try {
             Object message = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
@@ -87,16 +131,9 @@ public class Dispatcher extends ListenerAdapter {
             if (message != null)
                 sender.sendAsMessage(event, message);
         } catch (IllegalAccessException | InvocationTargetException ex) {
-            channel.sendMessage("Sorry! Something went wrong and I was unable to perform that commands.").queue();
+            sender.sendAsMessage(event, "Sorry! Something went wrong and I was unable to perform that commands.");
             ex.printStackTrace();
         }
-    }
-
-    private void onInvalidatedEvent(MessageEvent event) {
-        String error = event.getErrorMessage();
-
-        if (error != null)
-            event.getMessageEvent().getChannel().sendMessage(error).queue();
     }
 
     /**

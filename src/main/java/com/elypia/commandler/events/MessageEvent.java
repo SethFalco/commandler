@@ -213,7 +213,9 @@ public class MessageEvent {
 	 * If an error occurs during the command, if for whatever reason
 	 * the syntax is valid but the command event can't be performed,
 	 * invalidate the command with the reason why we can't perform it.
-	 * If the value is null, fail silently and don't send a message.
+	 * If the value is null, fail silently and don't send a message. <br>
+	 * The reason for this is sent in the channel the command was performed in
+	 * if not null.
 	 *
 	 * @param reason The message to post as to why we aren't going to perform the command.
 	 * @return The new state of {@link #isValid}; this should <strong>always</strong> be <em>false</em>.
@@ -222,6 +224,9 @@ public class MessageEvent {
 	public boolean invalidate(String reason) {
 		isValid = false;
 		errorMessage = reason;
+
+		if (reason != null)
+			event.getChannel().sendMessage(reason).queue();
 
 		return isValid;
 	}
