@@ -52,14 +52,14 @@ public class Validator {
         registerValidator(clazz);
 
         if (paramValidators.put(clazz, validator) != null)
-            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.", clazz.getName());
+            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.\n", clazz.getName());
     }
 
     public void registerValidator(Class<? extends Annotation> clazz, ICommandValidator validator) {
         registerValidator(clazz);
 
         if (commandValidators.put(clazz, validator) != null)
-            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.", clazz.getName());
+            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.\n", clazz.getName());
     }
 
     private void registerValidator(Class<? extends Annotation> clazz) {

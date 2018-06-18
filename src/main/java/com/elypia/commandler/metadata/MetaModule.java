@@ -124,7 +124,7 @@ public class MetaModule {
             aliases.add(alias.toLowerCase());
 
         if (aliases.size() != module.aliases().length) {
-            String format = "Module %s (%s) contains multiple aliases which are identical.";
+            String format = "Module %s (%s) contains multiple aliases which are identical.\n";
             System.err.printf(format, module.name(), clazz.getName());
         }
 

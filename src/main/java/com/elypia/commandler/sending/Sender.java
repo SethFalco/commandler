@@ -23,7 +23,7 @@ public class Sender {
 
     public <T> void registerSender(Class<T> t, IMessageSender<T> parser) {
         if (senders.put(t, parser) != null)
-            System.err.printf("Replaced existing %s with the new sender.", t.getName());
+            System.err.printf("Replaced existing %s with the new sender.\n", t.getName());
     }
 
     public void sendAsMessage(MessageEvent event, Object object) {

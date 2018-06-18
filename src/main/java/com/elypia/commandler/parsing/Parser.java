@@ -36,7 +36,7 @@ public class Parser {
 
     public <T> void registerParser(Class<T> t, IParamParser<T> parser) {
         if (parsers.put(t, parser) != null)
-            System.err.printf("The parser for %s has been replaced.", t.getName());
+            System.err.printf("The parser for %s has been replaced.\n", t.getName());
     }
 
     /**
