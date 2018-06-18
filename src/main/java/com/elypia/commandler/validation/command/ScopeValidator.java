@@ -5,37 +5,52 @@ import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.validation.ICommandValidator;
 import net.dv8tion.jda.core.entities.ChannelType;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class ScopeValidator implements ICommandValidator<Scope> {
 
     @Override
-    public void validate(MessageEvent event, Scope scope) throws IllegalAccessException {
-        List<ChannelType> types = Arrays.asList(scope.value());
+    public boolean validate(MessageEvent event, Scope scope) {
+        ChannelType[] types = scope.value();
 
-        if (types.contains(event.getMessageEvent().getChannelType()))
-            return;
+        if (Arrays.asList(types).contains(event.getMessageEvent().getChannelType()))
+            return true;
 
         String list = buildList(types);
         String message = "This commands can only be performed in " + list + " channels.";
-        throw new IllegalAccessException(message);
+        return event.invalidate(message);
     }
 
-    private String buildList(List<ChannelType> types) {
-        if (types.size() == 1)
-            return "`" + types.get(0).name() + "`";
+    @Override
+    public String help(Scope annotation) {
+        return "This commands can only be performed in the following channels: " + buildList(annotation.value()) + ".";
+    }
+
+    private String buildList(ChannelType... types) {
+        if (types.length == 1)
+            return "`" + getFriendlyName(types[0]) + "`";
 
         StringBuilder builder = new StringBuilder();
 
-        for (int i = 0; i < types.size(); i++) {
-            ChannelType type = types.get(i);
+        for (int i = 0; i < types.length; i++) {
+            ChannelType type = types[i];
 
-            if (i != types.size() - 1)
-                builder.append("`" + type.name() + "`, ");
+            if (i != types.length - 1)
+                builder.append("`" + getFriendlyName(type) + "`, ");
             else
-                builder.append("and `" + type.name() + "`");
+                builder.append("and `" + getFriendlyName(type) + "`");
         }
 
         return builder.toString();
+    }
+
+    private String getFriendlyName(ChannelType type) {
+        switch (type) {
+            case TEXT: return "Guild Text Channels";
+            case PRIVATE: return "Private Messages";
+            case GROUP: return "Group Chat";
+            case VOICE: return "Voice Channels";
+            default: return type.name();
+        }
     }
 }

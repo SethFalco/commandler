@@ -10,10 +10,10 @@ import java.util.*;
 public class EmoteParser implements IParamParser<Emote> {
 
     @Override
-    public Emote parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public Emote parse(MessageEvent event, SearchScope scope, String input) {
         final Set<Emote> emotes = new HashSet<>();
 
-        emotes.addAll(event.getMessageEvent().getMessage().getEmotes());
+        emotes.addAll(event.getMessage().getEmotes());
 
         switch (scope) {
             case GLOBAL:
@@ -21,7 +21,7 @@ public class EmoteParser implements IParamParser<Emote> {
                 break;
 
             case MUTUAL:
-                User user = event.getMessageEvent().getAuthor();
+                User user = event.getMessage().getAuthor();
                 Collection<Guild> guilds = user.getMutualGuilds();
                 guilds.forEach(g -> emotes.addAll(g.getEmotes()));
                 break;
@@ -36,7 +36,8 @@ public class EmoteParser implements IParamParser<Emote> {
                 return emote;
         }
 
-        throw new IllegalArgumentException("Parameter `" + input + "` could not be be linked to an emote.");
+        event.invalidate("Parameter `" + input + "` could not be be linked to an emote.");
+        return null;
     }
 
     public boolean compare(String input, Emote emote) {

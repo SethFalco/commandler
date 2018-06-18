@@ -31,11 +31,9 @@ public class CommandlerBot {
 
     public static void main(String[] args) throws LoginException {
         JDA jda = new JDABuilder(AccountType.BOT).setToken(args[0]).buildAsync();
-        Commandler commandler = new Commandler(jda);
+        Commandler commandler = new Commandler(jda, "!");
 
-        commandler.registerModules(
-            new ExampleModule()
-        );
+        commandler.registerModules(new ExampleModule());
     }
 }
 ```
@@ -44,11 +42,7 @@ Now that your application launches and the bot can login, create a module. By de
 `{prefix}{module} {command} {params...}`  
 This can be changed by specifying a `Confiler` (config) object by calling `new Commandler(JDA, Confiler);`.
 ```java
-@Module(
-    name = "Example Module for Demo",
-    aliases = {"example", "ex"},
-    description = "This module is made for demonstration and examples."
-)
+@Module(name = "Example Module for Demo", aliases = {"example", "ex"}, description = "This module is made for demonstration and examples.")
 public class ExampleModule extends CommandHandler {
 
     @Static

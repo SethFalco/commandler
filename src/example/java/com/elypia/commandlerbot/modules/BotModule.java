@@ -1,6 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.CommandHandler;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.events.MessageEvent;
@@ -11,7 +11,7 @@ import java.time.*;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-@Module(name = "Bot Commands and Utilities", aliases = {"bot", "robot"}, description = "Fundamental commands for the bot itself, primiarly for debugging or to obtain public information.")
+@Module(name = "Bot Utilities", aliases = {"bot", "robot", "botto"}, description = "Obtain information on the bot itself or it's developers, or perform general bot functionality.")
 public class BotModule extends CommandHandler {
 
     public static final String BOT_URL = "https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot";
@@ -19,25 +19,27 @@ public class BotModule extends CommandHandler {
     private static final OffsetDateTime BOT_TIME = OffsetDateTime.of(2016, 7, 19, 1, 52, 0, 0, ZoneOffset.ofHours(0));
 
     @Static
-    @Command(aliases = "ping", help = "ping pong!")
+    @Command(name = "Ping!", aliases = "ping", help = "Ping the bot to make sure it's still alive and responding!")
     public String ping() {
         return "pong!";
     }
 
     @Static
-    @Command(aliases = "pong")
+    @Command(name = "Pong!", aliases = "pong")
     public String pong() {
         return "ping!";
     }
 
-    @Command(aliases = "say", help = "Have CommandlerBot say something after you, deleting the message if possible.")
+    @Static
+    @Command(name = "Say", aliases = "say", help = "Have Commandler say something after you, deleting the message if possible.")
     @Param(name = "message", help = "The message to repeat.")
-    public String say(String message) {
+    public String say(MessageEvent event, String message) {
+        event.tryDeleteMessage();
         return message;
     }
 
     @Default
-    @Command(aliases = "info", help = "Get information on the bot and it's development.")
+    @Command(name = "Bot Info", aliases = "info", help = "Get information on the bot and it's developers.")
     public EmbedBuilder info() {
         User user = jda.getSelfUser();
         EmbedBuilder builder = new EmbedBuilder();
@@ -49,8 +51,9 @@ public class BotModule extends CommandHandler {
         return builder;
     }
 
+    @Static
     @Scope(ChannelType.TEXT)
-    @Command(aliases = "invites", help = "A list of invite links for all bots in the current guild.")
+    @Command(name = "Bot Invites", aliases = "invites", help = "A list of invite links for all bots in the current guild.")
     public EmbedBuilder invites(MessageEvent event) {
         Guild guild = event.getMessageEvent().getGuild();
         Collection<Member> bots = guild.getMembers();

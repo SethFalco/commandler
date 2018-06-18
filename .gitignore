@@ -1,0 +1,15 @@
+# Private / Sensitive
+.log
+
+# Gradle
+.gradle
+build/
+
+# IntelliJ
+workspace.xml
+tasks.xml
+out/
+
+# Output Files
+.class
+

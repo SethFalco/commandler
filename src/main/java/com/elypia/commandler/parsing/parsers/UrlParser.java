@@ -9,11 +9,12 @@ import java.net.*;
 public class UrlParser implements IParamParser<URL> {
 
     @Override
-    public URL parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public URL parse(MessageEvent event, SearchScope scope, String input) {
         try {
             return new URL(input);
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Parameter `" + input + "` is not a valid URL.");
+            event.invalidate("Parameter `" + input + "` is not a valid URL.");
+            return null;
         }
     }
 }

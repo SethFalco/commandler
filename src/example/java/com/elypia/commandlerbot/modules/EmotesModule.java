@@ -1,6 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.CommandHandler;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.annotations.validation.command.Scope;
@@ -12,25 +12,25 @@ import java.util.List;
 
 import static com.elypia.commandler.data.SearchScope.*;
 
-@Module(name = "Guild Emoticons", aliases = {"emote", "emoji", "emoticon", "emotes"}, description = "Display a list of guild emoticons or obtain images.")
+@Module(name = "Guild Emoticons", aliases = {"emote", "emoji", "emoticon", "emotes"}, description = "Interact with guild custom emotes, even in other guilds.")
 public class EmotesModule extends CommandHandler {
 
     @Scope(ChannelType.TEXT)
-    @CommandGroup("list")
-    @Command(aliases = "list", help = "List all of the custom emotes in this guild.")
+    @Overload("list")
+    @Command(name = "List Emotes", aliases = "list", help = "List all of the custom emotes in the guild.")
     public String listEmotes(MessageEvent event) {
         return listEmotes(event.getMessageEvent().getGuild());
     }
 
     @Scope(ChannelType.PRIVATE)
-    @CommandGroup("list")
-    @Param(name = "guild", help = "The guild to get emotes from.")
+    @Overload("list")
+    @Param(name = "guild", help = "The guild to obtain emotes from.")
     public String listEmotes(@Search(MUTUAL) Guild guild) {
         List<Emote> emotes = guild.getEmotes();
         int count = emotes.size();
 
         if (count == 0)
-            return "You don't actually have any emotes though... ^-^'";
+            return guild.getName() + " don't actually have any emotes though... ^-^'";
 
         int length = (int)(Math.sqrt(count) + 1) * 2;
 
@@ -46,8 +46,8 @@ public class EmotesModule extends CommandHandler {
     }
 
     @Default
-    @Command(aliases = {"get", "post"}, help = "Post an emote in the chat!")
-    @Param(name = "emote", help = "A way to identify the emote you want to post.")
+    @Command(name = "Get Emote", aliases = {"get", "post"}, help = "Post an emote in the chat!")
+    @Param(name = "emote", help = "Name or ID of the emote you want to post.")
     public EmbedBuilder post(@Search(GLOBAL) Emote emote) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setImage(emote.getImageUrl());

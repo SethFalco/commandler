@@ -5,32 +5,41 @@ import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.validation.ICommandValidator;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 public class PermissionValidator implements ICommandValidator<Permissions> {
 
     @Override
-    public void validate(MessageEvent event, Permissions annotation) throws IllegalAccessException {
-        MessageReceivedEvent e = event.getMessageEvent();
+    public boolean validate(MessageEvent event, Permissions annotation) {
+        GenericMessageEvent e = event.getMessageEvent();
         TextChannel channel = e.getTextChannel();
-        Member member = e.getMember();
+        Member member = event.getMessage().getMember();
         Member self = e.getGuild().getSelfMember();
         Permission[] permissions = annotation.value();
 
-        if (!member.hasPermission(channel, permissions)) {
-            String list = buildList(permissions);
-            String message = "You must have the permissions: " + list + " to perform this command.";
-            throw new IllegalAccessException(message);
+        if (annotation.userRequiresPermission()) {
+            if (!member.hasPermission(channel, permissions)) {
+                String list = buildList(permissions);
+                String message = "You must have the permissions: " + list + " to perform this commands.";
+                return event.invalidate(message);
+            }
         }
 
         if (!self.hasPermission(channel, permissions)) {
             String list = buildList(permissions);
             String message = "I need the permissions: " + list + " to be able to do what you just asked. :c";
-            throw new IllegalAccessException(message);
+            return event.invalidate(message);
         }
+
+        return true;
     }
 
-    public String buildList(Permission[] permissions) {
+    @Override
+    public String help(Permissions annotation) {
+        return "Both the user and bot require the following permissions to do this commands: " + buildList(annotation.value()) + ".";
+    }
+
+    private String buildList(Permission[] permissions) {
         if (permissions.length == 1)
             return "`" + permissions[0].getName() + "`";
 

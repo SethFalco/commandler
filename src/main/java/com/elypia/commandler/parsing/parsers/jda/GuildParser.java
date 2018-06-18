@@ -10,7 +10,7 @@ import java.util.*;
 public class GuildParser implements IParamParser<Guild> {
 
     @Override
-    public Guild parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public Guild parse(MessageEvent event, SearchScope scope, String input) {
         final Collection<Guild> guilds = new ArrayList<>();
 
         switch (scope) {
@@ -19,7 +19,7 @@ public class GuildParser implements IParamParser<Guild> {
                 break;
 
             case MUTUAL:
-                User user = event.getMessageEvent().getAuthor();
+                User user = event.getMessage().getAuthor();
                 guilds.addAll(user.getMutualGuilds());
                 break;
 
@@ -33,6 +33,7 @@ public class GuildParser implements IParamParser<Guild> {
                 return g;
         }
 
-        throw new IllegalArgumentException("Parameter `" + input + "` could not be be linked to a guild.");
+        event.invalidate("Parameter `" + input + "` could not be be linked to a guild.");
+        return null;
     }
 }

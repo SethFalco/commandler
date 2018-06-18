@@ -7,7 +7,7 @@ import com.elypia.commandler.parsing.IParamParser;
 public class StringParser implements IParamParser<String> {
 
     @Override
-    public String parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public String parse(MessageEvent event, SearchScope scope, String input) {
         return input;
     }
 }

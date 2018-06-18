@@ -8,8 +8,8 @@ plugins {
 }
 
 String projectName = 'Commandler'
-String projectVersion = '1.0.5'
-String projectDescription = "Commandler is an command framework designed for Discord bots with JDA."
+String projectVersion = '1.1.0'
+String projectDescription = "Commandler is an commands framework designed for Discord bots with JDA."
 String projectGit = 'https://gitlab.com/Elypia/Commandler.git'
 
 sourceSets {
@@ -126,7 +126,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.dv8tion:JDA:3.6.0_369'
+    implementation 'net.dv8tion:JDA:3.6.0_376'
+    implementation group: 'org.apache.velocity', name: 'velocity', version: '1.7'
+    implementation 'org.jsoup:jsoup:1.11.3'
 
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.2.0'
@@ -134,7 +136,7 @@ dependencies {
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.2.0'
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.2.0'
 
-    exampleRuntimeOnly group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
+    exampleRuntimeOnly group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
 }
 
 test {

@@ -1,7 +1,7 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.confiler.*;
+import com.elypia.commandler.modules.*;
 import com.elypia.commandler.parsing.IParamParser;
 import com.elypia.commandler.sending.IMessageSender;
 import com.elypia.commandler.validation.*;
@@ -35,12 +35,20 @@ public class Commandler {
     private final Confiler confiler;
 
     /**
-     * All registered modules / command handlers with this JDACommandler.
+     * All registered modules / commands handlers with this JDACommandler.
      */
 
     private Collection<CommandHandler> handlers;
 
     private Dispatcher dispatcher;
+
+    /**
+     * Any root alias, this could be a module alias or an alias to a
+     * static commmand. We need to keep track of a list to ensure a root
+     * alias isn't registered more than once.
+     */
+
+    private Collection<String> rootAlises;
 
     /**
      * See {@link #Commandler(JDA, Confiler)}
@@ -50,7 +58,7 @@ public class Commandler {
      */
 
     public Commandler(final JDA jda) {
-        this(jda, new DefaultConfiler());
+        this(jda, "!");
     }
 
     public Commandler(final JDA jda, String prefix) {
@@ -63,16 +71,25 @@ public class Commandler {
      * per event is registered.
      *
      * @param jda The JDA instance to register the {@link Dispatcher}.
-     * @param confiler The <strong>default</strong> prefix for command handling.
+     * @param confiler The <strong>default</strong> prefix for commands handling.
      */
 
     public Commandler(final JDA jda, Confiler confiler) {
         this.jda = jda;
         this.confiler = confiler;
         handlers = new ArrayList<>();
+        rootAlises = new ArrayList<>();
 
         dispatcher = new Dispatcher(this);
-        jda.addEventListener(dispatcher);
+
+        if (jda != null)
+            jda.addEventListener(dispatcher);
+
+        registerModule(new HelpModule());
+    }
+
+    public Dispatcher getDispatcher() {
+        return dispatcher;
     }
 
     /**
@@ -91,30 +108,11 @@ public class Commandler {
      * Register a module with JDACommandler in order
      * to execute commands in the module.
      *
-     * @param handler The command handler / module to register.
+     * @param handler The commands handler / module to register.
      */
 
     public void registerModule(CommandHandler handler) {
-        Module module = handler.getClass().getAnnotation(Module.class);
-
-        if (module == null)
-            throw new IllegalArgumentException("CommandHandler doesn't contain Module annotation!");
-
-        Collection<String> aliases = new ArrayList<>();
-
-        for (String alias : module.aliases())
-            aliases.add(alias.toLowerCase());
-
-        for (CommandHandler h : handlers) {
-            Module m = h.getClass().getAnnotation(Module.class);
-
-            Collection<String> existing = Arrays.asList(m.aliases());
-
-            if (!Collections.disjoint(aliases, existing))
-                throw new IllegalArgumentException("CommandHandler contains alias which is already registered.");
-        }
-
-        handler.setJDA(jda);
+        handler.setEnabled(handler.init(jda, this));
         handlers.add(handler);
     }
 
@@ -127,11 +125,11 @@ public class Commandler {
     }
 
     public <T extends Annotation> void registerValidator(Class<T> clazz, IParamValidator<?, T> validator) {
-        dispatcher.getValidators().registerValidator(clazz, validator);
+        dispatcher.getValidator().registerValidator(clazz, validator);
     }
 
     public <T extends Annotation> void registerValidator(Class<T> clazz, ICommandValidator<T> validator) {
-        dispatcher.getValidators().registerValidator(clazz, validator);
+        dispatcher.getValidator().registerValidator(clazz, validator);
     }
 
     public JDA getJDA() {
@@ -148,5 +146,9 @@ public class Commandler {
 
     public Collection<CommandHandler> getHandlers() {
         return handlers;
+    }
+
+    public Collection<String> getRootAlises() {
+        return rootAlises;
     }
 }

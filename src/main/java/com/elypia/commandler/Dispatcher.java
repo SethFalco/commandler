@@ -1,143 +1,252 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.Reaction;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsing.Parser;
 import com.elypia.commandler.sending.Sender;
 import com.elypia.commandler.validation.Validator;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.*;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.InvocationTargetException;
+import java.time.OffsetDateTime;
 
 public class Dispatcher extends ListenerAdapter {
 
+    /**
+     * The {@link Commandler} instance which is what gives access to all
+     * registers to add modules, parsers, senders, and validators.
+     */
+
     private final Commandler commandler;
+
+    /**
+     * Parser is the registry that allows you to define how objects are
+     * intepretted from the raw string provided in chat.
+     */
+
     private final Parser parser;
+
+    /**
+     * Sender is the register that allows you to define how objects are
+     * sent. This allows Commandler to know how certain return types
+     * need to be processed in order to send in chat.
+     */
+
     private final Sender sender;
+
+    /**
+     * Validator is a registery that allows you to define custom annotations
+     * and mark them above methods or parameters in order to perform validation.
+     * This is useful to ensure a unifed approach is done and to reduce code
+     * required to make commands.
+     */
+
     private final Validator validator;
+
+    /**
+     * The Dispatcher is what recieved JDA events and where Commandler begins
+     * to parse events and determine the module / command combo and execute the method. <br>
+     * Note: This will only perform events registered to Commandler and not other
+     * {@link ListenerAdapter}s that may be associated with {@link JDA}.
+     *
+     * @param commandler The parent Commandler instance.
+     */
 
     public Dispatcher(final Commandler commandler) {
         this.commandler = commandler;
         this.parser = new Parser();
         this.sender = new Sender();
-        this.validator = new Validator();
+        this.validator = new Validator(commandler);
     }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent messageEvent) {
-        MessageChannel channel = messageEvent.getChannel();
-        MessageEvent event = new MessageEvent(messageEvent, sender, commandler.getConfiler());
+    public void onMessageReceived(MessageReceivedEvent event) {
+        process(event, event.getMessage());
+    }
 
-        if (!event.isValid())
+    @Override
+    public void onMessageUpdate(MessageUpdateEvent event) {
+        Message message = event.getMessage();
+        OffsetDateTime timestamp = message.getCreationTime();
+        OffsetDateTime accepted = OffsetDateTime.now().minusMinutes(1);
+
+        if (timestamp.isBefore(accepted))
             return;
 
-        CommandHandler handler = null;
+        event.getChannel().getHistoryAfter(message.getIdLong(), 1).queue(history -> {
+           if (history.isEmpty())
+                process(event, event.getMessage());
+        });
+    }
 
-        for (CommandHandler h : commandler.getHandlers()) {
-            MetaModule m = h.getModule();
+    /**
+     * Begin processing the event when it occurs. This is the same as calling
+     * {@link #process(GenericMessageEvent, Message, String)} with the default content
+     * as the {@link Message} content.
+     *
+     * @param messageEvent The generic message event that occured.
+     * @param msg The message that triggered the event.
+     */
 
-            if (Arrays.asList(m.getModule().aliases()).contains(event.getModule())) {
-                handler = h;
-                break;
-            }
-        }
+    public void process(GenericMessageEvent messageEvent, Message msg) {
+        process(messageEvent, msg, msg.getContentRaw());
+    }
 
-        Collection<Method> commands = new ArrayList<>();
+    /**
+     * Begin processing the event when it occurs. There are multiple steps to
+     * processing the event. <br>
+     * If it's a bot, ignore the event. <br>
+     * If the event is invalid, ignore the event. <br>
+     * Parse the module and command, this may invalidate the event. <br>
+     * Validate the command, not the parameters, this may invalidate the command. <br>
+     * Parse all parameters from Strings to the required types, this may invalidate the event. <br>
+     * Validate all parameters according to any annotations, this may invalidate the event. <br>
+     * Send the result in chat if it's not null, if the result is null, assume the user used {@link MessageEvent#reply(Object)}}.
+     *
+     * @param messageEvent The generic message event that occured.
+     * @param msg The message that triggered the event.
+     */
 
-        if (handler == null) {
-            for (CommandHandler h : commandler.getHandlers()) {
-                MetaModule m = h.getModule();
-
-                for (MetaCommand c : m.getCommands()) {
-                    if (c.isStatic()) {
-                        if (Arrays.asList(c.getCommand().aliases()).contains(event.getModule())) {
-                            handler = h;
-                            commands.add(c.getMethod());
-                            break;
-                        }
-                    }
-                }
-            }
-        } else {
-            commands = CommandUtils.getCommands(event, handler);
-        }
-
-        if (commands.isEmpty()) {
-            if (handler == null)
-                return;
-
-            channel.sendMessage("Sorry, that command doesn't exist, try help?").queue();
+    public void process(GenericMessageEvent messageEvent, Message msg, String content) {
+        if (msg.getAuthor().isBot())
             return;
-        }
 
-        Method method = CommandUtils.getByParamCount(event, commands);
+        MessageEvent event = new MessageEvent(commandler, messageEvent, msg, content);
 
-        if (method == null) {
-            channel.sendMessage("Those parameters don't look right. DX Try help?").queue();
+        if (!event.isValid() || !parseCommand(event))
             return;
-        }
+
+        MetaCommand metaCommand = event.getMetaCommand();
+
+        if (!validator.validateCommand(event, metaCommand))
+            return;
+
+        Object[] params = parser.parseParameters(event, metaCommand);
+
+        if (params == null || !validator.validateParams(event, metaCommand, params))
+            return;
 
         try {
-            Object[] params = parseParameters(event, method);
-            validator.validate(event, method, params);
+            Object message = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
 
-            try {
-                Object message = method.invoke(handler, params);
-
-                if (message != null) {
-                    sender.sendAsMessage(event, message, o -> {
-                        Reaction[] reactions = method.getAnnotationsByType(Reaction.class);
-
-                        for (Reaction reaction : reactions)
-                            o.addReaction(reaction.alias()).queue();
-                    });
-                }
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                ex.printStackTrace();
-                channel.sendMessage("Sorry! Something went wrong and I was unable to perform that commands.").queue();
-            }
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
-            channel.sendMessage(ex.getMessage()).queue();
+            if (message != null)
+                sender.sendAsMessage(event, message);
+        } catch (IllegalAccessException | InvocationTargetException ex) {
+            sender.sendAsMessage(event, "Sorry! Something went wrong and I was unable to perform that commands.");
+            ex.printStackTrace();
         }
     }
 
     /**
-     * Take the String parameters from the message event and parse them into the required
-     * format the command method required to execute.
+     * If the command follows valid syntax, actually parse it to find out
+     * what module and command was performed.
      *
-     * @param event The message event to take parameters from.
-     * @param method The method to imitate the fields of.
-     * @return An Object[] array of all parameters parsed as required for the given method.
-     * @throws IllegalArgumentException If one of the arguments could not be parsed in the required format.
+     * @param event The message event that the user triggered.
+     * @return If the command is still valid.
      */
 
-    public Object[] parseParameters(MessageEvent event, Method method) throws IllegalArgumentException {
-        MetaCommand meta = MetaCommand.of(method); // Command data
-        List<MetaParam> params = meta.getParams(); // Parameter data
-        List<Object> inputs = event.getParams(); // User input parameters
-        Object[] objects = new Object[params.size()]; // Parsed parameters to perform command
+    private boolean parseCommand(MessageEvent event) {
+        return getMetaModule(event);
+    }
 
-        int offset = 0;
+    /**
+     * Obtain the module the user intended, if no module can be found
+     * fail silently as the user may not have intended to use out bot at all.
+     * If a module is found, go to find the command as the next step via
+     * {@link #getMetaCommand(MetaModule, MessageEvent)}. <br>
+     * These are stored using the {@link MessageEvent} setter methods.
+     *
+     * @param event The message event that the user triggered.
+     * @return If the command is still valid.
+     */
 
-        for (int i = 0; i < params.size(); i++) {
-            MetaParam param = params.get(i);
-            Class<?> type = param.getParameter().getType();
+    private boolean getMetaModule(MessageEvent event) {
+        String module = event.getModule();
+        String command = event.getCommand();
 
-            if (type == MessageEvent.class) {
-                objects[i] = event;
-                offset++;
-                continue;
+        for (CommandHandler handler : commandler.getHandlers()) {
+            MetaModule metaModule = handler.getModule();
+
+            if (metaModule.hasPerformed(module)) {
+                event.setMetaModule(metaModule);
+                return getMetaCommand(metaModule, event);
             }
 
-            Object input = inputs.get(i - offset);
-            objects[i] = parser.parseParam(event, param, input);
+            for (MetaCommand metaCommand : metaModule.getStaticCommands()) {
+                if (metaCommand.hasPerformed(module)) {
+                    if (command != null)
+                        event.getParams().add(0, command);
+
+                    event.setMetaModule(metaModule);
+                    event.setMetaCommand(metaCommand);
+
+                    if (event.getParams().size() != metaCommand.getInputRequired())
+                        return event.invalidate("The parameters you provided doesn't match up with the paramaters this command required.");
+
+                    return true;
+                }
+            }
         }
 
-        return objects;
+        return event.invalidate(null);
+    }
+
+    /**
+     * Obtain the command the user intended.
+     *
+     * @param event The message event that the user triggered.
+     * @return If the command is still valid.
+     */
+
+    private boolean getMetaCommand(MetaModule metaModule, MessageEvent event) {
+        String command = event.getCommand();
+
+        if (command != null) {
+            MetaCommand metaCommand = metaModule.getCommand(command);
+
+            if (metaCommand != null) {
+                event.setMetaCommand(metaCommand);
+
+                if (event.getParams().size() != metaCommand.getInputRequired()) {
+                    for (MetaCommand metaOverload : metaCommand.getOverloads()) {
+                        if (event.getParams().size() == metaOverload.getInputRequired()) {
+                            event.setMetaCommand(metaOverload);
+                            return true;
+                        }
+                    }
+
+                    return event.invalidate("You specified a valid command however the number of parameters you provided didn't match with what I was expecting.");
+                }
+
+                return true;
+            }
+        }
+
+        MetaCommand defaultCommand = metaModule.getDefaultCommand();
+
+        if (defaultCommand == null)
+            return event.invalidate("You've specified a module without a valid command, however there is no default command associated with this module.");
+
+        if (command != null)
+            event.getParams().add(0, command);
+
+        if (event.getParams().size() != defaultCommand.getInputRequired()) {
+            for (MetaCommand metaOverload : defaultCommand.getOverloads()) {
+                if (event.getParams().size() == metaOverload.getInputRequired()) {
+                    event.setMetaCommand(metaOverload);
+                    return true;
+                }
+            }
+
+            return event.invalidate("It seems the command you attemped to do doesn't exist, maybe you should try the help command instead?");
+        }
+
+        event.setMetaCommand(defaultCommand);
+        return true;
     }
 
     public Parser getParser() {
@@ -148,7 +257,7 @@ public class Dispatcher extends ListenerAdapter {
         return sender;
     }
 
-    public Validator getValidators() {
+    public Validator getValidator() {
         return validator;
     }
 }

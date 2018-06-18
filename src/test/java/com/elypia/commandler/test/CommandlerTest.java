@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class CommandlerTest {
 
     @Test
-    public void tempTest() throws Exception {
+    public void test() throws Exception {
 
     }
 }

@@ -7,11 +7,12 @@ import com.elypia.commandler.parsing.IParamParser;
 public class LongParser implements IParamParser<Long> {
 
     @Override
-    public Long parse(MessageEvent event, SearchScope scope, String input) throws IllegalArgumentException {
+    public Long parse(MessageEvent event, SearchScope scope, String input) {
         try {
             return Long.parseLong(input);
         } catch (NumberFormatException ex){
-            throw new IllegalArgumentException("Parameter `" + input + "` is not a number.");
+            event.invalidate("Parameter `" + input + "` is not a number.");
+            return null;
         }
     }
 }

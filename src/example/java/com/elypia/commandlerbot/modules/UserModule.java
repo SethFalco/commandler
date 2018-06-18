@@ -1,6 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.CommandHandler;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.annotations.validation.command.Scope;
@@ -13,26 +13,28 @@ import java.util.*;
 
 import static com.elypia.commandler.data.SearchScope.LOCAL;
 
-@Module(name = "User (Member)", aliases = "user", description = "Get information or stats on global users!")
+@Module(name = "Users", aliases = {"user", "users", "member", "members"}, description = "Get information, associations or stats on users!")
 public class UserModule extends CommandHandler {
 
-	@CommandGroup("info")
-	public void getInfo(MessageEvent event) {
-		getInfo(event, event.getMessageEvent().getAuthor());
+	@Overload("info")
+	public EmbedBuilder getInfo(MessageEvent event) {
+		return getInfo(event, event.getMessage().getAuthor());
 	}
 
 	@Scope(ChannelType.TEXT)
-	@CommandGroup("info")
-	@Command(aliases = "info", help = "Get some basic information on the user!")
+	@Default
+	@Overload("info")
+	@Command(name = "User Info", aliases = {"info", "information"}, help = "Obtain information on a user!")
 	@Param(name = "user", help = "The user to display information for.")
 	public EmbedBuilder getInfo(MessageEvent event, @Search(LOCAL) User user) {
 		EmbedBuilder builder = new EmbedBuilder();
 		String avatar = user.getEffectiveAvatarUrl();
 		DateTimeFormatter format = DateTimeFormatter.ISO_LOCAL_DATE;
 		Guild guild = event.getMessageEvent().getGuild();
-		Member member = guild.getMember(user);
 
-		if (member != null) {
+		if (guild != null) {
+			Member member = guild.getMember(user);
+
 			builder.setAuthor(member.getEffectiveName());
 			builder.addField("Online Status", member.getOnlineStatus().toString(), true);
 			builder.addField("Status", member.getGame().getName(), true);

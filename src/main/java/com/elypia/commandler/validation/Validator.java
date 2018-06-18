@@ -1,84 +1,105 @@
 package com.elypia.commandler.validation;
 
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.annotations.Validation;
 import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.exceptions.MalformedValidatorException;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.validation.command.*;
 import com.elypia.commandler.validation.param.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * Vaidates annotations associated with command paremeters to ensure
+ * Vaidates annotations associated with commands paremeters to ensure
  * they are within the bounds that is specified relative to the user
- * performing the command.
+ * performing the commands.
  */
 
 public class Validator {
 
-    private Map<Class<? extends Annotation>, IParamValidator> paramValidators;
-    private Map<Class<? extends Annotation>, ICommandValidator> commandValidators;
+    private Commandler commandler;
 
-    public Validator() {
-        this(true);
+    private Map<Class<? extends Annotation>, ICommandValidator> commandValidators;
+    private Map<Class<? extends Annotation>, IParamValidator> paramValidators;
+
+
+    public Validator(Commandler commandler) {
+        this(commandler, true);
     }
 
-    public Validator(boolean auto) {
-        paramValidators = new HashMap<>();
+    public Validator(Commandler commandler, boolean auto) {
+        this.commandler = commandler;
         commandValidators = new HashMap<>();
+        paramValidators = new HashMap<>();
 
         if (auto) {
+            registerValidator(Elevated.class, new ElevatedValidator());
+            registerValidator(NSFW.class, new NSFWValidator());
+            registerValidator(Permissions.class, new PermissionValidator());
+            registerValidator(Scope.class, new ScopeValidator());
+
             registerValidator(Length.class, new LengthValidator());
             registerValidator(Limit.class, new LimitValidator());
             registerValidator(Option.class, new OptionValidator());
-
-            registerValidator(Scope.class, new ScopeValidator());
-            registerValidator(Permissions.class, new PermissionValidator());
-            registerValidator(Elevated.class, new ElevatedValidator());
         }
     }
 
     public void registerValidator(Class<? extends Annotation> clazz, IParamValidator validator) {
-        if (paramValidators.keySet().contains(clazz))
-            throw new IllegalArgumentException("Parameter validator for this type of annotation has already been registered.");
+        registerValidator(clazz);
 
-        paramValidators.put(clazz, validator);
+        if (paramValidators.put(clazz, validator) != null)
+            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.", clazz.getName());
     }
 
     public void registerValidator(Class<? extends Annotation> clazz, ICommandValidator validator) {
-        if (commandValidators.keySet().contains(clazz))
-            throw new IllegalArgumentException("Command validator for this type of annotation has already been registered.");
+        registerValidator(clazz);
 
-        commandValidators.put(clazz, validator);
+        if (commandValidators.put(clazz, validator) != null)
+            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.", clazz.getName());
     }
 
-    public void validate(MessageEvent event, Method method, Object[] args) throws IllegalArgumentException, IllegalAccessException {
-        MetaCommand command = MetaCommand.of(method);
+    private void registerValidator(Class<? extends Annotation> clazz) {
+        if (!clazz.isAnnotationPresent(Validation.class)) {
+            String message = String.format("Annotation for %s doesn't have the Validator annotation.", clazz.getName());
+            throw new MalformedValidatorException(message);
+        }
+    }
 
-        for (Map.Entry<Class<?>, Annotation> entry : command.getAnnotations().entrySet()) {
-            ICommandValidator validator = commandValidators.get(entry.getKey());
-
-            if (validator != null)
-                validator.validate(event, entry.getValue());
+    public boolean validateCommand(MessageEvent event, MetaCommand metaCommand) {
+        for (Map.Entry<MetaValidator, ICommandValidator> entry : metaCommand.getValidators().entrySet()) {
+            if (!entry.getValue().validate(event, entry.getKey().getAnnotation()))
+                return false;
         }
 
-        List<MetaParam> params = command.getParams();
+        return true;
+    }
 
-        for (int i = 0; i < params.size(); i++) {
-            MetaParam parameter = params.get(i);
-            Annotation[] annotations = parameter.getAnnotations();
+    public boolean validateParams(MessageEvent event, MetaCommand metaCommand, Object[] args) {
+        List<MetaParam> metaParams = metaCommand.getMetaParams();
 
-            for (int ii = 0; ii < annotations.length; ii++) {
-                Annotation a = annotations[ii];
-                Class<?> clazz = a.annotationType();
-                IParamValidator validator = paramValidators.get(clazz);
+        for (int i = 0; i < metaParams.size(); i++) {
+            MetaParam metaParam = metaParams.get(i);
+            Map<MetaValidator, IParamValidator> validators = metaParam.getValidators();
 
-                if (validator != null)
-                    validator.validate(args[i].getClass().cast(args[i]), a, parameter);
+            for (Map.Entry<MetaValidator, IParamValidator> entry : validators.entrySet()) {
+                Object arg = args[i];
+                if (!entry.getValue().validate(event, arg.getClass().cast(arg), entry.getKey().getAnnotation(), metaParam))
+                    return false;
             }
         }
+
+        return true;
+    }
+
+    public Map<Class<? extends Annotation>, IParamValidator> getParamValidators() {
+        return paramValidators;
+    }
+
+    public Map<Class<? extends Annotation>, ICommandValidator> getCommandValidators() {
+        return commandValidators;
     }
 }

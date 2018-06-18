@@ -1,5 +1,6 @@
 package com.elypia.commandler.annotations.validation.command;
 
+import com.elypia.commandler.annotations.Validation;
 import net.dv8tion.jda.core.entities.ChannelType;
 
 import java.lang.annotation.*;
@@ -12,11 +13,12 @@ import java.lang.annotation.*;
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Validation("./resources/commands/scope.svg")
 public @interface Scope {
 
     /**
      * @return The types of channels it will be possible to perform
-     * this command in.
+     * this commands in.
      */
 
     ChannelType[] value();

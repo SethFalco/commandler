@@ -4,8 +4,8 @@ import java.lang.annotation.*;
 
 /**
  * The Command annotiation is used to supply metadata
- * to a command. This can be aliases, or the help string to
- * let people know how to use this command.
+ * to a commands. This can be aliases, or the help string to
+ * let people know how to use this commands.
  *
  * All static data will be stored in an annotation, reserving the
  * method body for what it's meant for, functionality and dynamic data.
@@ -16,15 +16,21 @@ import java.lang.annotation.*;
 public @interface Command {
 
 	/**
+	 * @return The name of the commands as it appears in help / documentation.
+	 */
+
+	String name();
+
+	/**
 	 * @return A list of all the alises that allow users
-	 * to perform this command.
+	 * to perform this commands.
 	 */
 
 	String[] aliases();
 
 	/**
 	 * @return A help string to advise the user of what
-	 * this command does.
+	 * this commands does.
 	 *
 	 * If the help String is {@link String#isEmpty() empty} then
 	 * it will be hidden from the help docs.
