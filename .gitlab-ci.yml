@@ -30,7 +30,7 @@ bintray:
   only:
     - master
   stage: deploy
-  script: gradle bintray
+  script: gradle bintrayPublish
   cache:
     key: $CI_PROJECT_ID
     policy: pull
