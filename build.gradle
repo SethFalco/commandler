@@ -8,7 +8,7 @@ plugins {
 }
 
 String projectName = 'Commandler'
-String projectVersion = '1.1.0'
+String projectVersion = '1.1.1'
 String projectDescription = "Commandler is an commands framework designed for Discord bots with JDA."
 String projectGit = 'https://gitlab.com/Elypia/Commandler.git'
 
