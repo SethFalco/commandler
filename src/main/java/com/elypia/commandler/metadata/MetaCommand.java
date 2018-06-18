@@ -170,7 +170,7 @@ public class MetaCommand {
             aliases.add(alias.toLowerCase());
 
         if (aliases.size() != command.aliases().length) {
-            String format = "Command %s in module %s (%s) contains multiple aliases which are identical.";
+            String format = "Command %s in module %s (%s) contains multiple aliases which are identical.\n";
             System.err.printf(format, command.name(), metaModule.getModule().name(), clazz.getName());
         }
     }
@@ -239,7 +239,7 @@ public class MetaCommand {
                 param = params[i - offset];
 
             else if (++offset == 2)
-                System.err.printf("Command %s in module %s (%s) contains multiple MessageEvent parameters, there is no benefit to this.", command.name(), metaModule.getModule().name(), clazz.getName());
+                System.err.printf("Command %s in module %s (%s) contains multiple MessageEvent parameters, there is no benefit to this.\n", command.name(), metaModule.getModule().name(), clazz.getName());
 
             MetaParam meta = MetaParam.of(this, parameter, param);
             metaParams.add(meta);
