@@ -14,10 +14,12 @@
         <meta property="og:image" content="$avatar"/>
     </head>
     <body>
-        <img class="background" src="./resources/Night.png"/>
         <main>
             <nav>
-                <h1 class="bot-name">$name Help</h1>
+                <div class="bot-title">
+                    <img src="./resources/alexis.png" alt="Bot profile picture."/>
+                    <h1 class="bot-name">$name</h1>
+                </div>
                 <ul>
                     #foreach($metaModule in $metaModules)
                         #if ($metaModule.isPublic())
@@ -34,17 +36,6 @@
                         #set ($name = $metaModule.getModule().name())
                         #set ($nameNoSpace = $name.replaceAll("\s+", "-"))
                         <div class="module-info" id="info-$nameNoSpace">
-                            <div class="module-nav">
-                                <ul>
-                                    #foreach ($metaCommand in $metaModule.getMetaCommands())
-                                        #if ($metaCommand.isPublic())
-                                            #set ($cmdName = $metaCommand.getCommand().name())
-                                            #set ($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
-                                            <li><a href="#$cmdNameNoSpace">$cmdName</a></li>
-                                        #end
-                                    #end
-                                </ul>
-                            </div>
                             <h1>$name</h1>
                             <ul class="module-aliases">
                                 #foreach ($alias in $metaModule.getModule().aliases())

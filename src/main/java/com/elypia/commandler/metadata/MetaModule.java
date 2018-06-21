@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MetaModule {
+public class MetaModule implements Comparable<MetaModule> {
 
     /**
      * Parent {@link Commandler} object this {@link MetaModule} is registered too.
@@ -53,7 +53,7 @@ public class MetaModule {
      * A list of {@link MetaCommand} that were created inside the {@link CommandHandler}.
      */
 
-    private Collection<MetaCommand> metaCommands;
+    private List<MetaCommand> metaCommands;
 
     /**
      * A list of aliases that belong to commands under this module. This is used to
@@ -99,7 +99,7 @@ public class MetaModule {
         parseAliases();
         parseMethods();
 
-        isPublic = !module.description().equals("");
+        isPublic = !module.hidden();
     }
 
     /**
@@ -196,6 +196,8 @@ public class MetaModule {
                 }
             }
         }
+
+        Collections.sort(metaCommands);
     }
 
     /**
@@ -207,11 +209,15 @@ public class MetaModule {
         return aliases.contains(input.toLowerCase());
     }
 
+    public List<MetaCommand> getPublicCommands() {
+        return metaCommands.stream().filter(MetaCommand::isPublic).collect(Collectors.toList());
+    }
+
     /**
      * @return A list of all {@link Static} commands in the module.
      */
 
-    public Collection<MetaCommand> getStaticCommands() {
+    public List<MetaCommand> getStaticCommands() {
         return metaCommands.stream().filter(MetaCommand::isStatic).collect(Collectors.toList());
     }
 
@@ -263,5 +269,10 @@ public class MetaModule {
 
     public Collection<String> getCommandAliases() {
         return commandAliases;
+    }
+
+    @Override
+    public int compareTo(MetaModule o) {
+        return module.name().compareToIgnoreCase(o.module.name());
     }
 }

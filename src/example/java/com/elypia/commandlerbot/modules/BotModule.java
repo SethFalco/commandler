@@ -11,12 +11,18 @@ import java.time.*;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Elevated
 @Module(name = "Bot Utilities", aliases = {"bot", "robot", "botto"}, description = "Obtain information on the bot itself or it's developers, or perform general bot functionality.")
 public class BotModule extends CommandHandler {
 
     public static final String BOT_URL = "https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot";
 
     private static final OffsetDateTime BOT_TIME = OffsetDateTime.of(2016, 7, 19, 1, 52, 0, 0, ZoneOffset.ofHours(0));
+
+    @Override
+    public boolean test() {
+        return false;
+    }
 
     @Static
     @Command(name = "Ping!", aliases = "ping", help = "Ping the bot to make sure it's still alive and responding!")

@@ -1,10 +1,12 @@
 package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.validation.command.Elevated;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.modules.CommandHandler;
 
-@Module(name = "Example Module for Dev Demo", aliases = {"example", "ex"})
+@Elevated
+@Module(name = "Example Module for Dev Demo", aliases = {"example", "ex"}, description = "Example module to demonstarte functionality.", hidden = true)
 public class ExampleModule extends CommandHandler {
 
     @Command(name = "Spam the Chat", aliases = "spam", help = "Repeat a message multiple times.")

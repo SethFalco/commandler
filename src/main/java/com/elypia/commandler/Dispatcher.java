@@ -130,6 +130,11 @@ public class Dispatcher extends ListenerAdapter {
         if (params == null || !validator.validateParams(event, metaCommand, params))
             return;
 
+        if (!event.getCommand().equalsIgnoreCase("help") && !event.getMetaModule().getHandler().isEnabled()) {
+            event.invalidate("I apologise, this module is disabled due to live issues.");
+            return;
+        }
+
         try {
             Object message = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
 

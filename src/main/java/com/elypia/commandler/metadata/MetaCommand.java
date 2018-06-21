@@ -10,8 +10,9 @@ import com.elypia.commandler.validation.ICommandValidator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class MetaCommand {
+public class MetaCommand implements Comparable<MetaCommand> {
 
     /**
      * The parent {@link Commandler} instance that spawned this object.
@@ -91,6 +92,8 @@ public class MetaCommand {
      */
 
     private boolean isPublic;
+
+    private boolean ignoresGlobal;
 
     /**
      * A list of any {@link MetaParam params} this command required to execute.
@@ -199,13 +202,17 @@ public class MetaCommand {
                 isStatic = true;
             else if (type == Default.class)
                 isDefault = true;
+            else if (type == IgnoreGlobal.class)
+                ignoresGlobal = true;
         }
 
-        for (Annotation annotation : clazz.getDeclaredAnnotations()) {
-            Class<? extends Annotation> type = annotation.annotationType();
+        if (!ignoresGlobal) {
+            for (Annotation annotation : clazz.getDeclaredAnnotations()) {
+                Class<? extends Annotation> type = annotation.annotationType();
 
-            if (!validators.containsKey(type) && type.isAnnotationPresent(Validation.class))
-                validators.put(type, MetaValidator.of(annotation));
+                if (!validators.containsKey(type) && type.isAnnotationPresent(Validation.class))
+                    validators.put(type, MetaValidator.of(annotation));
+            }
         }
     }
 
@@ -326,11 +333,20 @@ public class MetaCommand {
         return metaParams;
     }
 
+    public List<MetaParam> getInputParams() {
+        return metaParams.stream().filter(MetaParam::isInput).collect(Collectors.toList());
+    }
+
     public int getInputRequired() {
         return inputRequired;
     }
 
     public Collection<MetaCommand> getOverloads() {
         return overloads;
+    }
+
+    @Override
+    public int compareTo(MetaCommand o) {
+        return command.name().compareToIgnoreCase(o.command.name());
     }
 }

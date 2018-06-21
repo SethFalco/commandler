@@ -7,12 +7,17 @@ import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PageBuilder {
+
+    private static final String INCLUDE_PATH = "/pages/include";
+
+    private Properties velocityProperties;
 
     private Commandler commandler;
     private Collection<MetaModule> modules;
@@ -28,27 +33,25 @@ public class PageBuilder {
     public PageBuilder(Commandler commandler) {
         this.commandler = Objects.requireNonNull(commandler);
         this.handlers = commandler.getHandlers();
+        modules = handlers.stream().map(CommandHandler::getModule).collect(Collectors.toList());
 
-        modules = new ArrayList<>();
-
-        handlers.forEach(handler -> modules.add(handler.getModule()));
+        velocityProperties = new Properties();
+        velocityProperties.setProperty(VelocityEngine.RESOURCE_LOADER, "class");
+        velocityProperties.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
     }
 
-    public void build(File file) throws IOException {
-        Objects.requireNonNull(file);
+    public void build(String path) throws IOException {
+        Objects.requireNonNull(path);
+
+        File file = new File(path);
 
         if (file.exists() && !file.isDirectory())
-            throw new IllegalArgumentException("File must be a directory.");
+            throw new IllegalArgumentException("Path must be a directory.");
 
-        Properties properties = new Properties();
-        properties.setProperty(VelocityEngine.RESOURCE_LOADER, "class");
-        properties.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
-
-        VelocityEngine engine = new VelocityEngine(properties);
+        VelocityEngine engine = new VelocityEngine(velocityProperties);
         engine.init();
 
         Template template = engine.getTemplate("pages/template.vm", "utf-8");
-
         VelocityContext context = new VelocityContext();
         context.put("name", name);
         context.put("description", description);
@@ -62,15 +65,36 @@ public class PageBuilder {
         File toWrite = new File(writePath);
         file.mkdirs();
 
-        String html = null;
-        try (StringWriter writer = new StringWriter()) {
-            template.merge(context, writer);
-            html = writer.toString();
+        try (StringWriter stringWriter = new StringWriter(); FileWriter fileWriter = new FileWriter(toWrite)) {
+            template.merge(context, stringWriter);
+            fileWriter.write(Jsoup.parse(stringWriter.toString()).html());
         }
 
-        try (FileWriter writer = new FileWriter(toWrite)) {
-            Document document = Jsoup.parse(html);
-            writer.write(document.html());
+        // This is pretty crappy but not sure how else to do it. :thinking:
+        copyFile(path,
+            "/app.js",
+            "/reset.css",
+            "/styles.css",
+            "/resources/commands/elevated.svg",
+            "/resources/commands/nsfw.svg",
+            "/resources/commands/permissions.svg",
+            "/resources/commands/scope.svg",
+            "/resources/params/length.svg",
+            "/resources/params/limit.svg",
+            "/resources/params/option.svg"
+        );
+    }
+
+    private void copyFile(String base, String... paths) {
+        for (String path : paths) {
+            File file = new File(base + path);
+            file.mkdirs();
+
+            try (InputStream inputStream = this.getClass().getResourceAsStream(INCLUDE_PATH + path)) {
+                Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
