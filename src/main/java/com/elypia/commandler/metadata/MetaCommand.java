@@ -93,6 +93,8 @@ public class MetaCommand implements Comparable<MetaCommand> {
 
     private boolean isPublic;
 
+    private boolean ignoresGlobal;
+
     /**
      * A list of any {@link MetaParam params} this command required to execute.
      */
@@ -200,13 +202,17 @@ public class MetaCommand implements Comparable<MetaCommand> {
                 isStatic = true;
             else if (type == Default.class)
                 isDefault = true;
+            else if (type == IgnoreGlobal.class)
+                ignoresGlobal = true;
         }
 
-        for (Annotation annotation : clazz.getDeclaredAnnotations()) {
-            Class<? extends Annotation> type = annotation.annotationType();
+        if (!ignoresGlobal) {
+            for (Annotation annotation : clazz.getDeclaredAnnotations()) {
+                Class<? extends Annotation> type = annotation.annotationType();
 
-            if (!validators.containsKey(type) && type.isAnnotationPresent(Validation.class))
-                validators.put(type, MetaValidator.of(annotation));
+                if (!validators.containsKey(type) && type.isAnnotationPresent(Validation.class))
+                    validators.put(type, MetaValidator.of(annotation));
+            }
         }
     }
 

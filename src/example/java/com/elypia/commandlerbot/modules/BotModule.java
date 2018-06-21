@@ -11,6 +11,7 @@ import java.time.*;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Elevated
 @Module(name = "Bot Utilities", aliases = {"bot", "robot", "botto"}, description = "Obtain information on the bot itself or it's developers, or perform general bot functionality.")
 public class BotModule extends CommandHandler {
 
