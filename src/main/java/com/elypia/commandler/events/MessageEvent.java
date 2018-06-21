@@ -137,22 +137,24 @@ public class MessageEvent {
 		String parameters = matcher.group("params");
 
 		if (parameters != null) {
+			Pattern splitPattern = confiler.getSplitRegex(event);
 			matcher = confiler.getParamRegex(event).matcher(parameters);
 
 			while (matcher.find()) {
-				String quotes = matcher.group("quotes");
+				String group = matcher.group();
+				Matcher splitMatcher = splitPattern.matcher(group);
+				List<String> input = new ArrayList<>();
 
-				if (quotes != null) {
-                    params.add(quotes);
-                    continue;
-                }
+				while (splitMatcher.find()) {
+					String quote = splitMatcher.group("quote");
 
-                String args = matcher.group("args");
-
-				if (args != null) {
-					String[] array = args.split("\\s*,\\s*");
-					params.add(array.length == 1 ? array[0] : array);
+					if (quote != null)
+						input.add(quote);
+					else
+						input.add(splitMatcher.group("word"));
 				}
+
+				params.add(input.size() == 1 ? input.get(0) : input.toArray(new String[0]));
 			}
 		}
 	}
