@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class PageBuilder {
 
-    private static final String INCLUDE_PATH = "/pages/include";
+    private static final String INCLUDE_PATH = "/pages/include/";
 
     private Properties velocityProperties;
 
@@ -70,31 +70,30 @@ public class PageBuilder {
             fileWriter.write(Jsoup.parse(stringWriter.toString()).html());
         }
 
-        // This is pretty crappy but not sure how else to do it. :thinking:
-        copyFile(path,
-            "/app.js",
-            "/reset.css",
-            "/styles.css",
-            "/resources/commands/elevated.svg",
-            "/resources/commands/nsfw.svg",
-            "/resources/commands/permissions.svg",
-            "/resources/commands/scope.svg",
-            "/resources/params/length.svg",
-            "/resources/params/limit.svg",
-            "/resources/params/option.svg"
-        );
+        copyFiles("./pages", ".");
     }
 
-    private void copyFile(String base, String... paths) {
-        for (String path : paths) {
-            File file = new File(base + path);
-            file.mkdirs();
+    private void copyFiles(String output, String path) {
+        File file = new File(output + "/" + path);
+        file.mkdirs();
 
-            try (InputStream inputStream = this.getClass().getResourceAsStream(INCLUDE_PATH + path)) {
-                Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
+        try (InputStream inputStream = this.getClass().getResourceAsStream(INCLUDE_PATH + path)) {
+            if (inputStream != null) {
+                if (path.matches(".+\\..+")) {
+                    Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } else {
+                    StringBuilder builder = new StringBuilder();
+
+                    int c;
+                    while ((c = inputStream.read()) != -1)
+                        builder.append((char)c);
+
+                    for (String string : builder.toString().split("\\s*\n\\s*"))
+                        copyFiles(output, path + "/" + string);
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
