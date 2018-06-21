@@ -10,8 +10,9 @@ import com.elypia.commandler.validation.ICommandValidator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class MetaCommand {
+public class MetaCommand implements Comparable<MetaCommand> {
 
     /**
      * The parent {@link Commandler} instance that spawned this object.
@@ -326,11 +327,20 @@ public class MetaCommand {
         return metaParams;
     }
 
+    public List<MetaParam> getInputParams() {
+        return metaParams.stream().filter(MetaParam::isInput).collect(Collectors.toList());
+    }
+
     public int getInputRequired() {
         return inputRequired;
     }
 
     public Collection<MetaCommand> getOverloads() {
         return overloads;
+    }
+
+    @Override
+    public int compareTo(MetaCommand o) {
+        return command.name().compareToIgnoreCase(o.command.name());
     }
 }

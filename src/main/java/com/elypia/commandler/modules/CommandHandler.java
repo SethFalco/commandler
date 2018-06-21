@@ -11,11 +11,12 @@ import net.dv8tion.jda.core.entities.ChannelType;
 
 import java.util.*;
 
-public abstract class CommandHandler {
+public abstract class CommandHandler implements Comparable<CommandHandler> {
 
 	protected JDA jda;
 
 	protected Commandler commandler;
+	protected Confiler confiler;
 	protected MetaModule module;
 
 	/**
@@ -27,6 +28,7 @@ public abstract class CommandHandler {
 	public boolean init(JDA jda, Commandler commandler) {
 		this.jda = jda;
 		this.commandler = commandler;
+		confiler = commandler.getConfiler();
 		module = MetaModule.of(commandler, this);
 		return test();
 	}
@@ -38,79 +40,60 @@ public abstract class CommandHandler {
 	@Scope({ChannelType.TEXT, ChannelType.PRIVATE})
 	@Command(name = "Help", aliases = "help")
 	public Object help(MessageEvent event) {
-		Confiler confiler = commandler.getConfiler();
-		String prefix = confiler.getPrefix(event.getMessageEvent());
-		Module annotation = module.getModule();
 		EmbedBuilder builder = new EmbedBuilder();
 
+		Module annotation = module.getModule();
 		builder.setTitle(annotation.name());
-		String description = annotation.description();
 
 		if (!enabled)
-			description += "\n```diff\n- This module is currently disabled due to live issues. -```";
+			builder.setDescription(annotation.description() + "\n**```diff\n- Disabled due to live issues! -\n```\n**");
+		else
+			builder.setDescription(annotation.description() + "\n_ _");
 
-		builder.setDescription(description + "\n_ _");
+		Iterator<MetaCommand> metaCommandIt = module.getPublicCommands().iterator();
+		boolean moduleHasParams = false;
 
-		Iterator<MetaCommand> iter = module.getMetaCommands().iterator();
-		boolean globalParams = false;
+		while (metaCommandIt.hasNext()) {
+			MetaCommand metaCommand = metaCommandIt.next();
 
-		while (iter.hasNext()) {
-			MetaCommand metaCommand = iter.next();
+			if (metaCommand.isPublic()) {
+				Command command = metaCommand.getCommand();
+				StringJoiner aliasJoiner = new StringJoiner(", ");
 
-			Command command = metaCommand.getCommand();
+				for (String string : command.aliases())
+					aliasJoiner.add("`" + string + "`");
 
-			if (!command.help().isEmpty()) {
-				String[] aliases = command.aliases();
-				StringJoiner stringJoiner = new StringJoiner(", ");
+				String value = "**Aliases: **" + aliasJoiner.toString() + "\n" + command.help();
+				List<MetaParam> metaParams = metaCommand.getInputParams();
 
-				for (String string : aliases)
-					stringJoiner.add("`" + string + "`");
+				if (!metaParams.isEmpty()) {
+					StringJoiner helpJoiner = new StringJoiner("\n");
+					moduleHasParams = true;
+					value += "\n";
 
-				String value = "**Aliases: **" + stringJoiner.toString() + "\n" + command.help();
-
-				StringJoiner helpJoiner = new StringJoiner("\n");
-
-				Iterator<MetaParam> it = metaCommand.getMetaParams().iterator();
-
-				boolean params = false;
-
-				while (it.hasNext()) {
-					MetaParam metaParam = it.next();
-					Param param = metaParam.getParamAnnotation();
-
-					if (param != null) {
-						if (!params) {
-							globalParams = true;
-							params = true;
-							value += "\n";
+					metaParams.forEach(metaParam -> {
+						if (metaParam.isInput()) {
+							Param param = metaParam.getParamAnnotation();
+							helpJoiner.add("`" + param.name() + "`: " + param.help());
 						}
+					});
 
-						String text = "`" + param.name() + "`: " + param.help();
-						helpJoiner.add(text);
-					}
+					value += helpJoiner.toString();
 				}
 
-				value += helpJoiner.toString();
-
-				if (iter.hasNext())
+				if (metaCommandIt.hasNext())
 					value += "\n_ _";
 
 				builder.addField(command.name(), value, false);
 			}
 		}
 
-		String includeGlobal = globalParams ? " {params}" : "";
-		builder.setFooter("Try \"" + prefix + annotation.aliases()[0] + " {commands}" + includeGlobal + "\" to perform commands!", null);
+		String params = moduleHasParams ? " {params}" : "";
+		String prefix = confiler.getPrefix(event.getMessageEvent());
+		String format = "Try \"%s%s {command} %s\" to perform commands!";
+		builder.setFooter(String.format(format, prefix, annotation.aliases()[0], params), null);
 
 		return builder;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	public JDA getJDA() {
@@ -121,7 +104,24 @@ public abstract class CommandHandler {
 		return commandler;
 	}
 
+	public Confiler getConfiler() {
+		return confiler;
+	}
+
 	public MetaModule getModule() {
 		return module;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	@Override
+	public int compareTo(CommandHandler o) {
+		return module.compareTo(o.module);
 	}
 }

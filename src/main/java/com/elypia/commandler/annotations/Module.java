@@ -26,5 +26,7 @@ public @interface Module {
 	 * the module is for.
 	 */
 
-	String description() default "";
+	String description();
+
+	boolean hidden() default false;
 }

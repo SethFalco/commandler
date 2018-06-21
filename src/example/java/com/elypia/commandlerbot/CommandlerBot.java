@@ -29,11 +29,11 @@ public class CommandlerBot {
         if (doc) {
             PageBuilder builder = new PageBuilder(commandler);
             builder.setName("CommandlerBot");
-            builder.setAvatar("./assets/alexis.png");
-            builder.setFavicon("./assets/favicon.ico");
+            builder.setAvatar("./resources/alexis.png");
+            builder.setFavicon("./resources/favicon.ico");
             builder.setDescription("CommandlerBot is the example bot for Commandler!");
 
-            builder.build(new File("." + File.separator + "pages" + File.separator));
+            builder.build(String.format(".%spages%<s", File.separator));
         }
     }
 }

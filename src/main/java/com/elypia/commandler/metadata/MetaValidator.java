@@ -7,8 +7,8 @@ import java.lang.annotation.Annotation;
 public class MetaValidator {
 
     private Annotation annotation;
-    private Validation validatorAnnotation;
     private Class<? extends Annotation> clazz;
+    private Validation validatorAnnotation;
 
     protected static MetaValidator of(Annotation annotation) {
         return new MetaValidator(annotation);

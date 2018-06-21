@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 
 import java.util.*;
 
-@Module(name = "Help", aliases = "help")
+@Module(name = "Help", aliases = "help", description = "Get help on the basics on using this bot.", hidden = true)
 public class HelpModule extends CommandHandler {
 
     private final static String STATIC = "Static commands are commands that can be performed without specifying the module it belongs too.\nFor example, if a commands is `static` one could do: `!ping` instead of `!bot ping`. The `ping` commands still belongs to the `bot` module regardless.";

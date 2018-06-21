@@ -38,7 +38,7 @@ public class Commandler {
      * All registered modules / commands handlers with this JDACommandler.
      */
 
-    private Collection<CommandHandler> handlers;
+    private List<CommandHandler> handlers;
 
     private Dispatcher dispatcher;
 
@@ -114,6 +114,8 @@ public class Commandler {
     public void registerModule(CommandHandler handler) {
         handler.setEnabled(handler.init(jda, this));
         handlers.add(handler);
+
+        Collections.sort(handlers);
     }
 
     public <T> void registerParser(Class<T> clazz, IParamParser<T> parser) {
