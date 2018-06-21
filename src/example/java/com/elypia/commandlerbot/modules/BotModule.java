@@ -19,11 +19,6 @@ public class BotModule extends CommandHandler {
 
     private static final OffsetDateTime BOT_TIME = OffsetDateTime.of(2016, 7, 19, 1, 52, 0, 0, ZoneOffset.ofHours(0));
 
-    @Override
-    public boolean test() {
-        return false;
-    }
-
     @Static
     @Command(name = "Ping!", aliases = "ping", help = "Ping the bot to make sure it's still alive and responding!")
     public String ping() {

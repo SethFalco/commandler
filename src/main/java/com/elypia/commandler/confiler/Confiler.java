@@ -39,6 +39,8 @@ public interface Confiler {
 
     Pattern getParamRegex(GenericMessageEvent event);
 
+    Pattern getSplitRegex(GenericMessageEvent event);
+
     /**
      * The prefix for this event. This can be set to return a static
      * String. This exists for bots that have a customizable prefix per guild

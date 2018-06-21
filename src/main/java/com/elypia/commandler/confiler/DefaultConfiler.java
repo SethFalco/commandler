@@ -23,7 +23,9 @@ public class DefaultConfiler implements Confiler {
      * any comma seperated <strong>args</strong> will be split by comma as a list.
      */
 
-    private static final Pattern PARAM_PATTERN = Pattern.compile("(?<quotes>\\b(?<=\")(?:\\\\\"|[^\"])*(?=\"))|(?<args>[^\\s\",]+(?:\\s*,\\s*[^\\s\",]+)*)");
+    private static final Pattern PARAM_PATTERN = Pattern.compile("(?:(?:\"(?:\\\\\"|[^\"])*\"|[^\\s,]+)(?:\\s*,\\s*)?)+");
+
+    private static final Pattern SPLIT_PATTERN = Pattern.compile("\"(?<quote>(?:\\\\\"|[^\"])*)\"|(?<word>[^\\s,]+)");
 
     private final String DEFAULT_PREFIX;
 
@@ -86,6 +88,10 @@ public class DefaultConfiler implements Confiler {
     @Override
     public Pattern getParamRegex(GenericMessageEvent event) {
         return PARAM_PATTERN;
+    }
+
+    public Pattern getSplitRegex(GenericMessageEvent event) {
+        return SPLIT_PATTERN;
     }
 
     /**
