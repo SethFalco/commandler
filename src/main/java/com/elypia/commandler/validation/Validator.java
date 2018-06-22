@@ -41,6 +41,7 @@ public class Validator {
             registerValidator(NSFW.class, new NSFWValidator());
             registerValidator(Permissions.class, new PermissionValidator());
             registerValidator(Scope.class, new ScopeValidator());
+            registerValidator(Secret.class, new SecretValidator());
 
             registerValidator(Length.class, new LengthValidator());
             registerValidator(Limit.class, new LimitValidator());
