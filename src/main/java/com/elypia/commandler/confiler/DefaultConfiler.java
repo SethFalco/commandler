@@ -1,5 +1,6 @@
 package com.elypia.commandler.confiler;
 
+import com.elypia.commandler.events.MessageEvent;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.regex.Pattern;
@@ -102,5 +103,10 @@ public class DefaultConfiler implements Confiler {
     @Override
     public String getPrefix(GenericMessageEvent event) {
         return DEFAULT_PREFIX;
+    }
+
+    @Override
+    public String getHelpUrl(MessageEvent event) {
+        return null;
     }
 }

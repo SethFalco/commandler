@@ -35,13 +35,13 @@ public abstract class CommandHandler implements Comparable<CommandHandler> {
 		return true;
 	}
 
-	@IgnoreGlobal // Don't associate any GlobalValidation with this command
+	@IgnoreGlobal
 	@Command(name = "Help", aliases = "help")
 	public Object help(MessageEvent event) {
 		EmbedBuilder builder = new EmbedBuilder();
 
 		Module annotation = module.getModule();
-		builder.setTitle(annotation.name());
+		builder.setTitle(annotation.name(), confiler.getHelpUrl(event));
 
 		if (!enabled)
 			builder.setDescription(annotation.description() + "\n**```diff\n- Disabled due to live issues! -\n```\n**");
@@ -67,7 +67,7 @@ public abstract class CommandHandler implements Comparable<CommandHandler> {
 				if (!metaParams.isEmpty()) {
 					StringJoiner helpJoiner = new StringJoiner("\n");
 					moduleHasParams = true;
-					value += "\n";
+					value += "\n**Parameters:**\n";
 
 					metaParams.forEach(metaParam -> {
 						if (metaParam.isInput()) {
