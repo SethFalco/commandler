@@ -1,7 +1,7 @@
 package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.validation.command.Elevated;
+import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.modules.CommandHandler;
 
@@ -31,5 +31,12 @@ public class ExampleModule extends CommandHandler {
     @Param(name = "input", help = "A potential option from the list.")
     public String option(@Option({"user", "bot", "all"}) String accountType) {
         return "Well done, what you typed was a type of account.";
+    }
+
+    @Secret
+    @Command(name = "Tell me Password Pl0x", aliases = {"password", "pw"}, help = "Please tell me your password.")
+    @Param(name = "password", help = "The password to your Discord account. :kappa:")
+    public String password(String password) {
+        return "Thank you!";
     }
 }
