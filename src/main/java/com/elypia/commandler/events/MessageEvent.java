@@ -126,14 +126,7 @@ public class MessageEvent {
 			return;
 
 		module = matcher.group("module");
-
-		if (module != null)
-			module = module.toLowerCase();
-
 		command = matcher.group("commands");
-
-		if (command != null)
-			command = command.toLowerCase();
 
 		String parameters = matcher.group("params");
 
@@ -259,7 +252,7 @@ public class MessageEvent {
 	}
 
     /**
-     * @return Get the module of a commands, this is normally the first thing
+     * @return Get the module of a command, this is normally the first thing
      * after the prefix.
      */
 

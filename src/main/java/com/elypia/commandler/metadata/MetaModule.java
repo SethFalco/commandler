@@ -231,6 +231,8 @@ public class MetaModule implements Comparable<MetaModule> {
     }
 
     public MetaCommand getCommand(String input) {
+        input = input.toLowerCase();
+
         for (MetaCommand metaCommand : metaCommands) {
             if (metaCommand.getAliases().contains(input))
                 return metaCommand;
