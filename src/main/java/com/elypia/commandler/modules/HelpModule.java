@@ -1,7 +1,6 @@
 package com.elypia.commandler.modules;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.confiler.Confiler;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.MetaModule;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -31,12 +30,11 @@ public class HelpModule extends CommandHandler {
 
     @Command(name = "List all Modules", aliases = "modules", help = "Learn about the various modules and what functionality they bring to Discord.")
     public EmbedBuilder modules(MessageEvent event) {
-        Confiler confiler = commandler.getConfiler();
         String prefix = confiler.getPrefix(event.getMessageEvent());
         Collection<CommandHandler> handlers = commandler.getHandlers();
         EmbedBuilder builder = new EmbedBuilder();
 
-        builder.setTitle("Help and other useful information!");
+        builder.setTitle("Help and other useful information!", confiler.getHelpUrl(event));
         builder.setDescription("The prefix in this channel is: `" + prefix + "`");
 
         boolean disabled = false;

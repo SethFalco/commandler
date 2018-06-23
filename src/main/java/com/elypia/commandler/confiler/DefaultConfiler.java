@@ -1,5 +1,6 @@
 package com.elypia.commandler.confiler;
 
+import com.elypia.commandler.events.MessageEvent;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.regex.Pattern;
@@ -16,7 +17,7 @@ public class DefaultConfiler implements Confiler {
      * valid and returns the matches as groups.
      */
 
-    private static final String COMMAND_REGEX = "(?i)\\A(?:\\\\?<@!?%s>\\s{0,2}|\\Q%s\\E)(?<module>[A-Z\\d]+(?![^A-Z\\d\\s]+))(?:\\s+(?<commands>[A-Z\\d]+(?![^A-Z\\d\\s])))?(?:\\s+(?<params>(?:.|\\s)+))?\\Z";
+    private static final String COMMAND_REGEX = "(?i)\\A(?:\\\\?<@!?\\s>\\s{0,2}|\\Q\\s\\E)(?<module>[A-Z\\d]+)(?:\\s+(?<commands>[A-Z\\d]+))?(?:\\s+(?<params>.+))?\\Z";
 
     /**
      * The default params regex, this matches every argument in the commands,
@@ -102,5 +103,10 @@ public class DefaultConfiler implements Confiler {
     @Override
     public String getPrefix(GenericMessageEvent event) {
         return DEFAULT_PREFIX;
+    }
+
+    @Override
+    public String getHelpUrl(MessageEvent event) {
+        return null;
     }
 }

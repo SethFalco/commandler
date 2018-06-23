@@ -1,5 +1,6 @@
 package com.elypia.commandler.confiler;
 
+import com.elypia.commandler.events.MessageEvent;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.regex.Pattern;
@@ -52,4 +53,6 @@ public interface Confiler {
      */
 
     String getPrefix(GenericMessageEvent event);
+
+    String getHelpUrl(MessageEvent event);
 }

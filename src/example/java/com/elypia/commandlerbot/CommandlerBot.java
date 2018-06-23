@@ -14,7 +14,7 @@ public class CommandlerBot {
         boolean doc = args.length > 0 && args[0].equalsIgnoreCase("-doc");
         JDA jda = doc ? null : new JDABuilder(AccountType.BOT).setToken(args[0]).buildAsync();
 
-        Commandler commandler = new Commandler(jda, "!");
+        Commandler commandler = new Commandler(jda, new CommandlerConfiler());
 
         commandler.registerModules(
             new BotModule(),

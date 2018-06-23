@@ -50,9 +50,9 @@ public class Parser {
      */
 
     public Object[] parseParameters(MessageEvent event, MetaCommand metaCommand) throws IllegalArgumentException {
-        List<MetaParam> metaParams = metaCommand.getMetaParams(); // Parameter data
-        List<Object> inputs = event.getParams(); // User input parameters
-        Object[] objects = new Object[metaParams.size()]; // Parsed parameters to perform commands
+        List<MetaParam> metaParams = metaCommand.getMetaParams();
+        List<Object> inputs = event.getParams();
+        Object[] objects = new Object[metaParams.size()];
 
         int offset = 0;
 

@@ -12,7 +12,7 @@ public class ExampleModule extends CommandHandler {
     @Command(name = "Spam the Chat", aliases = "spam", help = "Repeat a message multiple times.")
     @Param(name = "input", help = "The text to repeat.")
     @Param(name = "times", help = "The number of times to repeat this message.")
-    public String[] spam(String input, int times) {
+    public String[] spam(@Everyone String input, int times) {
         String[] array = new String[times];
 
         for (int i = 0; i < times; i++)

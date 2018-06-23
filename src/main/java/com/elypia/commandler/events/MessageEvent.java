@@ -86,12 +86,6 @@ public class MessageEvent {
 
 	private List<Object> params;
 
-	/**
-	 * Should an error occur what so ever
-	 */
-
-	private String errorMessage;
-
     /**
      * Calls {@link #MessageEvent(Commandler, GenericMessageEvent, Message, String)}
      * with the content as this the content of this message.
@@ -225,7 +219,6 @@ public class MessageEvent {
 
 	public boolean invalidate(String reason) {
 		isValid = false;
-		errorMessage = reason;
 
 		if (reason != null)
 			event.getChannel().sendMessage(reason).queue();
@@ -299,17 +292,5 @@ public class MessageEvent {
 
 	public List<Object> getParams() {
 		return params;
-	}
-
-	/**
-	 * This will only return a non-null value if during
-	 * command processing {@link #invalidate(String)} was called
-	 * and a reason was provided.
-	 *
-	 * @return The reason the command wen't wrong if this should be public.
-	 */
-
-	public String getErrorMessage() {
-		return errorMessage;
 	}
 }

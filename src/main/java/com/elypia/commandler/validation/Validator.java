@@ -28,25 +28,20 @@ public class Validator {
 
 
     public Validator(Commandler commandler) {
-        this(commandler, true);
-    }
-
-    public Validator(Commandler commandler, boolean auto) {
         this.commandler = commandler;
         commandValidators = new HashMap<>();
         paramValidators = new HashMap<>();
 
-        if (auto) {
-            registerValidator(Elevated.class, new ElevatedValidator());
-            registerValidator(NSFW.class, new NSFWValidator());
-            registerValidator(Permissions.class, new PermissionValidator());
-            registerValidator(Scope.class, new ScopeValidator());
-            registerValidator(Secret.class, new SecretValidator());
+        registerValidator(Elevated.class, new ElevatedValidator());
+        registerValidator(NSFW.class, new NSFWValidator());
+        registerValidator(Permissions.class, new PermissionValidator());
+        registerValidator(Scope.class, new ScopeValidator());
+        registerValidator(Secret.class, new SecretValidator());
 
-            registerValidator(Length.class, new LengthValidator());
-            registerValidator(Limit.class, new LimitValidator());
-            registerValidator(Option.class, new OptionValidator());
-        }
+        registerValidator(Everyone.class, new EveryoneValidator());
+        registerValidator(Length.class, new LengthValidator());
+        registerValidator(Limit.class, new LimitValidator());
+        registerValidator(Option.class, new OptionValidator());
     }
 
     public void registerValidator(Class<? extends Annotation> clazz, IParamValidator validator) {

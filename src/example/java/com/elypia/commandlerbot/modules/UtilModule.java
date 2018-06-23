@@ -34,7 +34,7 @@ public class UtilModule extends CommandHandler {
 
 	@Static
 	@NSFW
-	@Command(name = "Get Pet Neko", aliases = "neko", help = "Get a pet neko sent to you over Discord.")
+	@Command(name = "Pet Neko", aliases = "neko", help = "Get a pet neko sent to you over Discord.")
 	public void neko(MessageEvent event) {
 		client.newCall(nekoRequest).enqueue(new Callback() {
 
