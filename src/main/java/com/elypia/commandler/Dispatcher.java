@@ -117,7 +117,7 @@ public class Dispatcher extends ListenerAdapter {
 
         MessageEvent event = new MessageEvent(commandler, messageEvent, msg, content);
 
-        if (!event.isValid() || !parseCommand(event))
+        if (!event.isValid() || !commandler.getRootAlises().contains(event.getModule().toLowerCase()) || !parseCommand(event))
             return;
 
         MetaCommand metaCommand = event.getMetaCommand();
