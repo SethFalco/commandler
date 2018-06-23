@@ -4,16 +4,13 @@ import com.elypia.commandler.annotations.Validation;
 
 import java.lang.annotation.*;
 
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 /**
  * Limit the value that a number can be, by default the limits are
  * what a Java {@link Long} can handle.
  */
 
-@Target(PARAMETER)
-@Retention(RUNTIME)
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
 @Validation("./resources/params/limit.svg")
 public @interface Limit {
 

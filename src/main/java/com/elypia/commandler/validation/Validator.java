@@ -39,22 +39,24 @@ public class Validator {
         registerValidator(Secret.class, new SecretValidator());
 
         registerValidator(Everyone.class, new EveryoneValidator());
-        registerValidator(Length.class, new LengthValidator());
         registerValidator(Limit.class, new LimitValidator());
+        registerValidator(Length.class, new LengthValidator());
+        registerValidator(Period.class, new DurationValidator());
         registerValidator(Option.class, new OptionValidator());
-    }
-
-    public void registerValidator(Class<? extends Annotation> clazz, IParamValidator validator) {
-        registerValidator(clazz);
-
-        if (paramValidators.put(clazz, validator) != null)
-            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.\n", clazz.getName());
     }
 
     public void registerValidator(Class<? extends Annotation> clazz, ICommandValidator validator) {
         registerValidator(clazz);
 
         if (commandValidators.put(clazz, validator) != null)
+            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.\n", clazz.getName());
+    }
+
+
+    public void registerValidator(Class<? extends Annotation> clazz, IParamValidator validator) {
+        registerValidator(clazz);
+
+        if (paramValidators.put(clazz, validator) != null)
             System.err.printf("The previous %s validator has been overwritten for the new implementation provided.\n", clazz.getName());
     }
 

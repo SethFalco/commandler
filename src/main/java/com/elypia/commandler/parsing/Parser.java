@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.entities.*;
 
 import java.lang.reflect.Array;
 import java.net.URL;
+import java.time.*;
 import java.util.*;
 
 public class Parser {
@@ -22,6 +23,7 @@ public class Parser {
         registerParser(boolean.class, new BooleanParser());
         registerParser(double.class, new DoubleParser());
         registerParser(int.class, new IntParser());
+        registerParser(Duration.class, new DurationParser());
         registerParser(long.class, new LongParser());
         registerParser(String.class, new StringParser());
         registerParser(URL.class, new UrlParser());
@@ -95,8 +97,10 @@ public class Parser {
 
             return objects;
         } else {
-            if (array)
-                throw new IllegalArgumentException("Parameter `" + String.join(", ", object + "` can't be a list."));
+            if (object.getClass().isArray()) {
+                event.invalidate("Parameter `" + param.getParamAnnotation().name() + "` can't be a list.");
+                return null;
+            }
 
             String input = (String)object;
 
