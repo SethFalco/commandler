@@ -4,6 +4,9 @@ import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.modules.CommandHandler;
+import com.elypia.commandler.parsing.parsers.DurationParser;
+
+import java.time.Duration;
 
 @Elevated
 @Module(name = "Example Module for Dev Demo", aliases = {"example", "ex"}, description = "Example module to demonstarte functionality.", hidden = true)
@@ -27,9 +30,16 @@ public class ExampleModule extends CommandHandler {
         return "Well done, the text was between 0 and 32 characters.";
     }
 
+    @Command(name = "Reminders", aliases = "reminder", help = "Set a reminder to trigger. (Exception it won't remind you.) <3")
+    @Param(name = "text", help = "Should we perform this once or repeat it, specify with \"in\" or \"every\".")
+    @Param(name = "time", help = "When to remind you!")
+    public String length(@Option({"every", "in"}) String text, @Period(min = 3600) Duration time) {
+        return "Thanks! I will remind you of nothing in this channel " + text + " " + DurationParser.forDisplay(time) + ".";
+    }
+
     @Command(name = "Validate Input is an Option", aliases = "option")
-    @Param(name = "input", help = "A potential option from the list.")
-    public String option(@Option({"user", "bot", "all"}) String accountType) {
+    @Param(name = "type", help = "A potential option from the list.")
+    public String option(@Option({"user", "bot", "all"}) String type) {
         return "Well done, what you typed was a type of account.";
     }
 

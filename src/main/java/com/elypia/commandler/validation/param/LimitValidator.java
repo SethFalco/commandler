@@ -1,29 +1,31 @@
 package com.elypia.commandler.validation.param;
 
-import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.annotations.validation.param.Limit;
+import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.events.MessageEvent;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.validation.IParamValidator;
 
-public class LimitValidator implements IParamValidator<Long, Limit> {
+public class LimitValidator implements IParamValidator<Number, Limit> {
 
     @Override
-    public boolean validate(MessageEvent event, Long value, Limit limit, MetaParam param) {
-        Param p = param.getParamAnnotation();
-
-        if (value < limit.min() || value > limit.max()) {
-            String format = "Sorry, the paramter `%s` must be between %,d and %,d!\n\nThe documentation states:\n%s";
-            String help = "`" + p.name() + ": " + p.help() + "`";
-            String message = String.format(format, p.name(), limit.min(), limit.max(), help);
-            return event.invalidate(message);
-        }
+    public boolean validate(MessageEvent event, Number value, Limit limit, MetaParam param) {
+        if (value.intValue() < limit.min() || value.intValue() > limit.max())
+            return event.invalidate(buildMessage("The parameter `" + param.getParamAnnotation().name(), limit));
 
         return true;
     }
 
     @Override
     public String help(Limit limit) {
-        return String.format("This parameter must be between the values %,d and %,d.", limit.min(), limit.max());
+        return buildMessage("This parameter", limit);
+    }
+
+    private String buildMessage(String item, Limit limit) {
+        if (limit.min() == Long.MIN_VALUE && limit.max() != Long.MAX_VALUE)
+            return String.format("%s must have a value less than %,d!", item, limit.max());
+        else if (limit.min() != Long.MIN_VALUE && limit.max() == Long.MAX_VALUE)
+            return String.format("%s must have a value greater than %,d!", item, limit.min());
+        else
+            return String.format("%s must have a value between %,d and %,d!", item, limit.min(), limit.max());
     }
 }

@@ -4,15 +4,12 @@ import com.elypia.commandler.annotations.Validation;
 
 import java.lang.annotation.*;
 
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 /**
  * Limit a String parameter to a certain set of values.
  */
 
-@Target(PARAMETER)
-@Retention(RUNTIME)
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
 @Validation("./resources/params/option.svg")
 public @interface Option {
 

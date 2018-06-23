@@ -7,6 +7,8 @@ import java.lang.annotation.*;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Validation
-public @interface Everyone {
+public @interface Period {
 
+    long min() default 0;
+    long max() default Long.MAX_VALUE;
 }
