@@ -11,10 +11,17 @@ public class ElevatedValidator implements ICommandValidator<Elevated> {
 
     @Override
     public boolean validate(MessageEvent event, Elevated annotation) {
+        User user = event.getMessage().getAuthor();
+
+        for (long id : event.getConfiler().getDevelopers()) {
+            if (id == user.getIdLong())
+                return true;
+        }
+
         GenericMessageEvent e = event.getMessageEvent();
-        TextChannel channel = e.getTextChannel();
 
         if (e.isFromType(ChannelType.TEXT)) {
+            TextChannel channel = e.getTextChannel();
             Member member = event.getMessage().getMember();
 
             if (!member.hasPermission(channel, Permission.MANAGE_SERVER))

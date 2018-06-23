@@ -242,6 +242,14 @@ public class MessageEvent {
         return message;
     }
 
+    public Commandler getCommandler() {
+    	return commandler;
+	}
+
+	public Confiler getConfiler() {
+    	return confiler;
+	}
+
     /**
      * @return If message sent actually fits the commands format as
      * dictated in {@link Confiler#getCommandRegex(GenericMessageEvent)}.
