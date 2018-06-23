@@ -126,7 +126,14 @@ public class MessageEvent {
 			return;
 
 		module = matcher.group("module");
+
+		if (module != null)
+			module = module.toLowerCase();
+
 		command = matcher.group("commands");
+
+		if (command != null)
+			command = command.toLowerCase();
 
 		String parameters = matcher.group("params");
 
