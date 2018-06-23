@@ -1,5 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
+import com.elypia.commandler.annotations.validation.param.Everyone;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.command.*;
@@ -11,7 +12,6 @@ import java.time.*;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-@Elevated
 @Module(name = "Bot Utilities", aliases = {"bot", "robot", "botto"}, description = "Obtain information on the bot itself or it's developers, or perform general bot functionality.")
 public class BotModule extends CommandHandler {
 
@@ -34,7 +34,7 @@ public class BotModule extends CommandHandler {
     @Static
     @Command(name = "Say", aliases = "say", help = "Have Commandler say something after you, deleting the message if possible.")
     @Param(name = "message", help = "The message to repeat.")
-    public String say(MessageEvent event, String message) {
+    public String say(MessageEvent event, @Everyone String message) {
         event.tryDeleteMessage();
         return message;
     }
