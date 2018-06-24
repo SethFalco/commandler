@@ -2,11 +2,10 @@ package com.elypia.commandler.test;
 
 import org.junit.jupiter.api.Test;
 
-
-public class CommandlerTest {
+public class ParserTest {
 
     @Test
-    public void test() throws Exception {
+    public void parseString() {
 
     }
 }

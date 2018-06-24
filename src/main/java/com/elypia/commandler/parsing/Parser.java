@@ -81,21 +81,12 @@ public class Parser {
 
     private Object parseParam(MessageEvent event, MetaParam param, Object object) throws IllegalArgumentException {
         Class<?> clazz = param.getParameter().getType();
-        boolean array = clazz.isArray();
-        SearchScope scope;
-
         Search search = param.getParameter().getAnnotation(Search.class);
-
-        scope = search != null ? search.value() : SearchScope.GLOBAL;
+        SearchScope scope = search != null ? search.value() : SearchScope.GLOBAL;
 
         if (clazz.isArray()) {
             String[] input = object.getClass().isArray() ? (String[])object : new String[] {(String)object};
-            Object[] objects = (Object[])Array.newInstance(clazz.getComponentType(), input.length);
-
-            for (int i = 0; i < input.length; i++)
-                objects[i] = parsers.get(clazz.getComponentType()).parse(event, scope, input[i]);
-
-            return objects;
+            return parseParam(clazz.getComponentType(), event, scope, input);
         } else {
             if (object.getClass().isArray()) {
                 event.invalidate("Parameter `" + param.getParamAnnotation().name() + "` can't be a list.");
@@ -106,5 +97,14 @@ public class Parser {
 
             return parsers.get(clazz).parse(event, scope, input);
         }
+    }
+
+    private <T> Object parseParam(Class<T> clazz, MessageEvent event, SearchScope search, String[] input) {
+        int[] objects = (int[])Array.newInstance(clazz, input.length);
+
+        for (int i = 0; i < input.length; i++)
+            objects[i] = (int)parsers.get(clazz).parse(event, search, input[i]);
+
+        return objects;
     }
 }

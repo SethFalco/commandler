@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 public class Sender {
 
-    protected Map<Class<?>, IMessageSender> senders;
+    private Map<Class<?>, IMessageSender> senders;
 
     public Sender() {
         senders = new HashMap<>();
@@ -30,24 +30,24 @@ public class Sender {
         sendAsMessage(event, object, null);
     }
 
-    public void sendAsMessage(MessageEvent event, Object object, Consumer<Message> success) throws IllegalArgumentException {
+    public void sendAsMessage(MessageEvent event, Object object, Consumer<Message> success) {
         Class<?> clazz = object.getClass();
-        IMessageSender sender;
+        boolean isArray = clazz.isArray();
+        Class<?> component = isArray ? clazz.getComponentType() : clazz;
+        boolean defaultString = false;
+        IMessageSender sender = senders.get(component);
+        Object[] array = isArray ? (Object[])object : new Object[] {object};
 
-        if (clazz.isArray()) {
-            Class<?> type = clazz.getComponentType();
-            sender = senders.get(type);
+        if (sender == null) {
+            sender = senders.get(String.class);
+            defaultString = true;
+        }
 
-            if (sender == null)
-                sender = senders.get(String.class);
-
-            Object[] array = (Object[])object;
-
-            for (int i = 0; i < array.length; i++)
-                sender.send(event, type.cast(array[i])).queue(success);
-        } else {
-            sender = senders.get(clazz);
-            sender.send(event, object).queue(success);
+        for (Object o : array) {
+            if (defaultString)
+                sender.send(event, o.toString()).queue(success);
+            else
+                sender.send(event, o).queue(success);
         }
     }
 }
