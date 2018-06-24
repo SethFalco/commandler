@@ -34,7 +34,7 @@ public class BooleanParser implements IParamParser<Boolean> {
 
         for (String bool : FALSE) {
             if (bool.equalsIgnoreCase(input))
-                return true;
+                return false;
         }
 
         event.invalidate("Input '" + input + "'can't be parsed as a boolean (true / false) value.");
