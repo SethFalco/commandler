@@ -9,6 +9,7 @@ public class BooleanParser implements IParamParser<Boolean> {
     private static final String[] TRUE = {
         "true",
         "yes",
+        "y",
         "1",
         "✔",
         "<:tickYes:315009125694177281>", // Added these here anyways
