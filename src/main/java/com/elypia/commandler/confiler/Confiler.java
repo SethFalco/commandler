@@ -54,5 +54,7 @@ public interface Confiler {
 
     String getPrefix(GenericMessageEvent event);
 
+    long[] getDevelopers();
+
     String getHelpUrl(MessageEvent event);
 }

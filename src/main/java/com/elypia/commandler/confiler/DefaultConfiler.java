@@ -106,6 +106,11 @@ public class DefaultConfiler implements Confiler {
     }
 
     @Override
+    public long[] getDevelopers() {
+        return new long[0];
+    }
+
+    @Override
     public String getHelpUrl(MessageEvent event) {
         return null;
     }

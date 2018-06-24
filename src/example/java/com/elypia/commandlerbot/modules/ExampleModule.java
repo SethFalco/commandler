@@ -1,14 +1,14 @@
 package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.validation.command.*;
+import com.elypia.commandler.annotations.validation.command.Secret;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsing.parsers.DurationParser;
 
 import java.time.Duration;
+import java.util.stream.IntStream;
 
-@Elevated
 @Module(name = "Example Module for Dev Demo", aliases = {"example", "ex"}, description = "Example module to demonstarte functionality.", hidden = true)
 public class ExampleModule extends CommandHandler {
 
@@ -48,5 +48,11 @@ public class ExampleModule extends CommandHandler {
     @Param(name = "password", help = "The password to your Discord account. :kappa:")
     public String password(String password) {
         return "Thank you!";
+    }
+
+    @Command(name = "List Parameters", aliases = "total", help = "Sum up all values provided.")
+    @Param(name = "numbers", help = "A comma seperated list of all the numbers you want.")
+    public int sum(int[] numbers) {
+        return IntStream.of(numbers).sum();
     }
 }

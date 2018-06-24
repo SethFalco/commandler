@@ -9,6 +9,7 @@ public class BooleanParser implements IParamParser<Boolean> {
     private static final String[] TRUE = {
         "true",
         "yes",
+        "y",
         "1",
         "✔",
         "<:tickYes:315009125694177281>", // Added these here anyways
@@ -34,7 +35,7 @@ public class BooleanParser implements IParamParser<Boolean> {
 
         for (String bool : FALSE) {
             if (bool.equalsIgnoreCase(input))
-                return true;
+                return false;
         }
 
         event.invalidate("Input '" + input + "'can't be parsed as a boolean (true / false) value.");
