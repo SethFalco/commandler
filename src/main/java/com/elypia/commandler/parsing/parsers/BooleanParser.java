@@ -1,7 +1,7 @@
 package com.elypia.commandler.parsing.parsers;
 
 import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.parsing.IParamParser;
 
 public class BooleanParser implements IParamParser<Boolean> {
@@ -27,7 +27,7 @@ public class BooleanParser implements IParamParser<Boolean> {
     };
 
     @Override
-    public Boolean parse(MessageEvent event, SearchScope scope, String input) {
+    public Boolean parse(CommandEvent event, SearchScope scope, String input) {
         for (String bool : TRUE) {
             if (bool.equalsIgnoreCase(input))
                 return true;

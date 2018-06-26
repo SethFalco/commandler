@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation.command;
 
 import com.elypia.commandler.annotations.validation.command.Elevated;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.validation.ICommandValidator;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 public class ElevatedValidator implements ICommandValidator<Elevated> {
 
     @Override
-    public boolean validate(MessageEvent event, Elevated annotation) {
+    public boolean validate(CommandEvent event, Elevated annotation) {
         User user = event.getMessage().getAuthor();
 
         for (long id : event.getConfiler().getDevelopers()) {

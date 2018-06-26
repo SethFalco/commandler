@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation.param;
 
 import com.elypia.commandler.annotations.validation.param.Option;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.validation.IParamValidator;
 
@@ -10,7 +10,7 @@ import java.util.*;
 public class OptionValidator implements IParamValidator<String, Option> {
 
     @Override
-    public boolean validate(MessageEvent event,  String string, Option option, MetaParam param) {
+    public boolean validate(CommandEvent event, String string, Option option, MetaParam param) {
         String[] options = option.value();
 
         if (!Arrays.asList(options).contains(string)) {

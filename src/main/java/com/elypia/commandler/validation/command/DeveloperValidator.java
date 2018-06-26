@@ -1,14 +1,14 @@
 package com.elypia.commandler.validation.command;
 
 import com.elypia.commandler.annotations.validation.command.Developer;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.validation.ICommandValidator;
 import net.dv8tion.jda.core.entities.User;
 
 public class DeveloperValidator implements ICommandValidator<Developer> {
 
     @Override
-    public boolean validate(MessageEvent event, Developer annotation) {
+    public boolean validate(CommandEvent event, Developer annotation) {
         User user = event.getMessage().getAuthor();
 
         for (long id : event.getConfiler().getDevelopers()) {

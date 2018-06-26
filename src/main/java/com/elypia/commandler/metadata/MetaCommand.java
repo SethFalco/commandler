@@ -1,65 +1,23 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.Utils;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.annotations.validation.*;
+import com.elypia.commandler.events.*;
 import com.elypia.commandler.exceptions.*;
 import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.validation.ICommandValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class MetaCommand implements Comparable<MetaCommand> {
-
-    /**
-     * The parent {@link Commandler} instance that spawned this object.
-     */
-
-    private Commandler commandler;
+public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaCommand> {
 
     /**
-     * The {@link Module} {@link CommandHandler (Command Handler)} this command
-     * belongs to.
+     * This is the ID of the command as managed used internally by Commandler.
      */
 
-    private CommandHandler handler;
-
-    /**
-     * The type of class the parent {@link #handler Command Handler} belongs to.
-     */
-
-    private Class<? extends CommandHandler> clazz;
-
-    /**
-     * The {@link MetaModule meta data} of the parent {@link #handler}
-     * that spawned this {@link MetaCommand}.
-     */
-
-    private MetaModule metaModule;
-
-    /**
-     * The {@link Command} annotation associated with this command. <br>
-     * This is what defines a method as a command in a Command Handler.
-     */
-
-    private Command command;
-
-    /**
-     * The method this is pulling metadata from.
-     */
-
-    private Method method;
-
-    /**
-     * A list of all validators associated with this command.
-     * A validator is dictated by whether the annotation itself
-     * has the {@link Validation} annotation.
-     */
-
-    private Map<Class<? extends Annotation>, MetaValidator> validators;
+    private int id;
 
     /**
      * A list of unique aliases for this command. If the command
@@ -67,6 +25,14 @@ public class MetaCommand implements Comparable<MetaCommand> {
      */
 
     private Set<String> aliases;
+
+    /**
+     * A list of overloads that are children of this command.
+     * These are alternative methods of doing this command, and adopt
+     * meta data from here.
+     */
+
+    private List<MetaOverload> overloads;
 
     /**
      * Is this a {@link Static} command. <br>
@@ -93,21 +59,12 @@ public class MetaCommand implements Comparable<MetaCommand> {
 
     private boolean isPublic;
 
+    /**
+     * If this command completely disregards any annotations that were annotated
+     * at the module level.
+     */
+
     private boolean ignoresGlobal;
-
-    /**
-     * A list of any {@link MetaParam params} this command required to execute.
-     */
-
-    private List<MetaParam> metaParams;
-
-    /**
-     * The amount of input required to perform this command.
-     */
-
-    private int inputRequired;
-
-    private Collection<MetaCommand> overloads;
 
     /**
      * Create a wrapper around this the command for the convinience of accessing
@@ -119,41 +76,27 @@ public class MetaCommand implements Comparable<MetaCommand> {
      */
 
     protected static MetaCommand of(MetaModule module, Method method) {
-        return new MetaCommand(null, module, method);
+        return new MetaCommand(module, method);
     }
 
-    protected static MetaCommand of(MetaCommand metaCommand, MetaModule module, Method method) {
-        return new MetaCommand(metaCommand, module, method);
-    }
+    private MetaCommand(MetaModule metaModule, Method method) {
+        super(metaModule, method);
+        command = method.getAnnotation(Command.class);
+        id = command.id();
 
-    private MetaCommand(MetaCommand metaCommand, MetaModule metaModule, Method method) {
-        this.metaModule = Objects.requireNonNull(metaModule);
-        this.method = Objects.requireNonNull(method);
-        commandler = metaModule.getCommandler();
+        parseAliases();
 
-        clazz = metaModule.getHandlerType();
-
-        if (metaCommand == null) {
-            command = method.getAnnotation(Command.class);
-            parseAliases();
-        } else {
-            command = metaCommand.getCommand();
+        if (id != -1) {
+            commandler.getCommands().put(id, this);
+            parseOverloads();
         }
-
-        parseParameters();
-        parseAnnotations();
-
         if (isStatic) {
-            if (!Collections.disjoint(commandler.getRootAlises(), aliases)) {
-                String format = "Command %s in module %s (%s) contains a static alias which has already been registered by a previous module or static command.";
-                String message = String.format(format, command.name(), metaModule.getModule().name(), clazz.getName());
-                throw new RecursiveAliasException(message);
-            }
+            if (!Collections.disjoint(commandler.getRootAlises(), aliases))
+                throw new RecursiveAliasException(String.format("Command %s in module %s (%s) contains a static alias which has already been registered by a previous module or static command.", command.name(), metaModule.getModule().name(), metaModule.getHandlerType().getName()));
 
             commandler.getRootAlises().addAll(aliases);
         }
 
-        handler = metaModule.getHandler();
         isPublic = !command.help().equals("");
         overloads = new ArrayList<>();
     }
@@ -172,10 +115,8 @@ public class MetaCommand implements Comparable<MetaCommand> {
         for (String alias : command.aliases())
             aliases.add(alias.toLowerCase());
 
-        if (aliases.size() != command.aliases().length) {
-            String format = "Command %s in module %s (%s) contains multiple aliases which are identical.\n";
-            System.err.printf(format, command.name(), metaModule.getModule().name(), clazz.getName());
-        }
+        if (aliases.size() != command.aliases().length)
+            Utils.log("Command %s in module %s (%s) contains multiple aliases which are identical.", command.name(), metaModule.getModule().name(), clazz.getName());
     }
 
     /**
@@ -190,14 +131,15 @@ public class MetaCommand implements Comparable<MetaCommand> {
      * specified at the command already.
      */
 
-    private void parseAnnotations() {
-        validators = new HashMap<>();
+    @Override
+    protected void parseAnnotations() {
+        validationAnnotations = new HashMap<>();
 
         for (Annotation annotation : method.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
 
             if (type.isAnnotationPresent(Validation.class))
-                validators.put(type, MetaValidator.of(annotation));
+                validationAnnotations.put(type, annotation);
             else if (type == Static.class)
                 isStatic = true;
             else if (type == Default.class)
@@ -207,11 +149,11 @@ public class MetaCommand implements Comparable<MetaCommand> {
         }
 
         if (!ignoresGlobal) {
-            for (Annotation annotation : clazz.getDeclaredAnnotations()) {
+            for (Annotation annotation : metaModule.getHandlerType().getDeclaredAnnotations()) {
                 Class<? extends Annotation> type = annotation.annotationType();
 
-                if (!validators.containsKey(type) && type.isAnnotationPresent(Validation.class))
-                    validators.put(type, MetaValidator.of(annotation));
+                if (validationAnnotations.containsKey(type) && type.isAnnotationPresent(Validation.class))
+                    validationAnnotations.put(type, annotation);
             }
         }
     }
@@ -219,22 +161,22 @@ public class MetaCommand implements Comparable<MetaCommand> {
     /**
      * Parses all parameters of the command method and any {@link Param} annotations
      * to ensure they sync up and match according to the standards Commandler expects. <br>
-     * This may print warning messages if a single method askes for {@link MessageEvent} multiple
+     * This may print warning messages if a single method askes for {@link CommandEvent} multiple
      * times as there are <strong>no</strong> benefit to require this parameter more than once.
      *
      * @throws MalformedCommandException If there isn't a param annotation for every parameter in the method.
      */
 
-    private void parseParameters() {
+    @Override
+    protected void parseParams() {
         metaParams = new ArrayList<>();
+
         Param[] params = method.getAnnotationsByType(Param.class);
         Parameter[] parameters = method.getParameters();
+        inputRequired = (int)Arrays.stream(parameters).filter(o -> o.getType() != CommandEvent.class).count();
 
-        if (Arrays.stream(parameters).filter(o -> o.getType() != MessageEvent.class).count() != params.length) {
-            String format = "Command %s in module %s (%s) doesn't contain the correct number of @Param annotations.";
-            String message = String.format(format, command.name(), metaModule.getModule().name(), clazz.getName());
-            throw new MalformedCommandException(message);
-        }
+        if (inputRequired != params.length)
+            throw new MalformedCommandException(String.format("Command %s in module %s (%s) doesn't contain the correct number of @Param annotations.", command.name(), metaModule.getModule().name(), clazz.getName()));
 
         int offset = 0;
 
@@ -242,17 +184,25 @@ public class MetaCommand implements Comparable<MetaCommand> {
             Parameter parameter = parameters[i];
             Param param = null;
 
-            if (parameter.getType() != MessageEvent.class)
+            if (parameter.getType() != CommandEvent.class)
                 param = params[i - offset];
-
             else if (++offset == 2)
-                System.err.printf("Command %s in module %s (%s) contains multiple MessageEvent parameters, there is no benefit to this.\n", command.name(), metaModule.getModule().name(), clazz.getName());
+                Utils.log("Command %s in module %s (%s) contains multiple MessageEvent parameters, there is no benefit to this.", command.name(), metaModule.getModule().name(), clazz.getName());
 
-            MetaParam meta = MetaParam.of(this, parameter, param);
+            MetaParam meta = MetaParam.of(this, param, parameter);
             metaParams.add(meta);
         }
+    }
 
-        inputRequired = (int)metaParams.stream().filter(MetaParam::isInput).count();
+    private void parseOverloads() {
+        for (Method method : metaModule.getClass().getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Overload.class)) {
+                Overload overload = method.getAnnotation(Overload.class);
+
+                if (id == overload.value())
+                    overloads.add(new MetaOverload(this, method, overload));
+            }
+        }
     }
 
     /**
@@ -264,53 +214,8 @@ public class MetaCommand implements Comparable<MetaCommand> {
         return aliases.contains(input.toLowerCase());
     }
 
-    /**
-     * This will only return any validators that may have been registered at the time
-     * this method is called, even if the @ValidatorAnnotation is found, a pairing
-     * {@link ICommandValidator} must be registred via {@link Commandler#registerValidator(Class, ICommandValidator)}.
-     *
-     * @return A list of validators associated with this {@link Command}.
-     */
-
-    public Map<MetaValidator, ICommandValidator> getValidators() {
-        Map<MetaValidator, ICommandValidator> validatorMap = new HashMap<>();
-
-        commandler.getDispatcher().getValidator().getCommandValidators().forEach((type, validator) -> {
-            validators.forEach((typeII, metaCommandValidator) -> {
-                if (type == typeII)
-                    validatorMap.put(metaCommandValidator, validator);
-            });
-        });
-
-        return validatorMap;
-    }
-
-    public void registerOverload(MetaCommand metaCommand) {
-        overloads.add(metaCommand);
-    }
-
-    public Commandler getCommandler() {
-        return commandler;
-    }
-
-    public CommandHandler getHandler() {
-        return handler;
-    }
-
-    public Class<? extends CommandHandler> getHandlerType() {
-        return clazz;
-    }
-
-    public MetaModule getMetaModule() {
-        return metaModule;
-    }
-
-    public Command getCommand() {
-        return command;
-    }
-
-    public Method getMethod() {
-        return method;
+    public List<MetaOverload> getOverloads() {
+        return overloads;
     }
 
     public Set<String> getAliases() {
@@ -327,22 +232,6 @@ public class MetaCommand implements Comparable<MetaCommand> {
 
     public boolean isPublic() {
         return isPublic;
-    }
-
-    public List<MetaParam> getMetaParams() {
-        return metaParams;
-    }
-
-    public List<MetaParam> getInputParams() {
-        return metaParams.stream().filter(MetaParam::isInput).collect(Collectors.toList());
-    }
-
-    public int getInputRequired() {
-        return inputRequired;
-    }
-
-    public Collection<MetaCommand> getOverloads() {
-        return overloads;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.elypia.commandler.confiler;
 
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.confiler.reactions.IReactionController;
+import com.elypia.commandler.events.CommandEvent;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.regex.Pattern;
@@ -56,5 +57,7 @@ public interface Confiler {
 
     long[] getDevelopers();
 
-    String getHelpUrl(MessageEvent event);
+    String getHelpUrl(CommandEvent event);
+
+    IReactionController getReactionController();
 }

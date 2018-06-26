@@ -1,6 +1,7 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.confiler.*;
+import com.elypia.commandler.metadata.MetaCommand;
 import com.elypia.commandler.modules.*;
 import com.elypia.commandler.parsing.IParamParser;
 import com.elypia.commandler.sending.IMessageSender;
@@ -25,7 +26,7 @@ public class Commandler {
      * registered via {@link #registerModule(CommandHandler)}.
      */
 
-    private final JDA jda;
+    private JDA jda;
 
     /**
      * This is the <strong>default</strong> prefix for your bot.
@@ -35,12 +36,17 @@ public class Commandler {
     private final Confiler confiler;
 
     /**
+     * The event handler registered to JDA to recieved events for Commandler
+     * to handle.
+     */
+
+    private Dispatcher dispatcher;
+
+    /**
      * All registered modules / commands handlers with this JDACommandler.
      */
 
     private List<CommandHandler> handlers;
-
-    private Dispatcher dispatcher;
 
     /**
      * Any root alias, this could be a module alias or an alias to a
@@ -51,45 +57,41 @@ public class Commandler {
     private Collection<String> rootAlises;
 
     /**
-     * See {@link #Commandler(JDA, Confiler)}
-     * Creates a JDACommandler instance with the default prefix as "!".
-     *
-     * @param jda The JDA instance to register the {@link Dispatcher}.
+     * A global map of all commands with reference to an ID.
+     * This is used for reaction handling as they are stored by ID so
+     * it is faster to obtain the command by ID rather than search for it
+     * though iterating {@link #handlers}.
      */
 
-    public Commandler(final JDA jda) {
-        this(jda, "!");
+    private Map<Integer, MetaCommand> commands;
+
+
+    public Commandler(String prefix) {
+        this(prefix, null);
     }
 
-    public Commandler(final JDA jda, String prefix) {
-        this(jda, new DefaultConfiler(prefix));
+    public Commandler(String prefix, String helpUrl) {
+        this(new DefaultConfiler(prefix, helpUrl));
     }
 
     /**
-     * Creates an instance of the JDACommandler with the provided JDA and prefix.
-     * This prefix is used as a default prefix if no method to obtain the prefix
-     * per event is registered.
+     * Creates an instance of the Commandler with the provided Confiler.
+     * This could be the {@link DefaultConfiler} or a class made using the
+     * {@link Confiler} interface. The Confiler is essentially some basic settings
+     * and functions for the bot to use, such as how to get the prefix if for example
+     * you want a custom prefix per guild.
      *
-     * @param jda The JDA instance to register the {@link Dispatcher}.
-     * @param confiler The <strong>default</strong> prefix for commands handling.
+     * @param confiler The configuration for Commandler.
      */
 
-    public Commandler(final JDA jda, Confiler confiler) {
-        this.jda = jda;
+    public Commandler(Confiler confiler) {
         this.confiler = confiler;
+        dispatcher = new Dispatcher(this);
         handlers = new ArrayList<>();
         rootAlises = new ArrayList<>();
-
-        dispatcher = new Dispatcher(this);
-
-        if (jda != null)
-            jda.addEventListener(dispatcher);
+        commands = new HashMap<>();
 
         registerModule(new HelpModule());
-    }
-
-    public Dispatcher getDispatcher() {
-        return dispatcher;
     }
 
     /**
@@ -105,18 +107,30 @@ public class Commandler {
     }
 
     /**
-     * Register a module with JDACommandler in order
+     * Register a module with Commandler in order
      * to execute commands in the module.
      *
      * @param handler The commands handler / module to register.
      */
 
     public void registerModule(CommandHandler handler) {
-        handler.setEnabled(handler.init(jda, this));
+        boolean enabled = handler.init(jda, this);
+
+        handler.setEnabled(enabled);
         handlers.add(handler);
 
         Collections.sort(handlers);
     }
+
+    /**
+     * You can register custom parsers, this allows Commandler to know
+     * how to parse certain objects as method parameters for you.
+     *
+     * @param clazz The type of class this parser will parse.
+     * @param parser The parser which implements {@link IParamParser}, this has the method
+     * which will interpret the String as our class object, else invalidate the command.
+     * @param <T> The type of class this parses.
+     */
 
     public <T> void registerParser(Class<T> clazz, IParamParser<T> parser) {
         dispatcher.getParser().registerParser(clazz, parser);
@@ -139,8 +153,20 @@ public class Commandler {
     }
 
     /**
-     * @return The default / global prefix.
+     * Set the JDA instance this initialised Commandler instance should
+     * register too.
+     *
+     * @param jda The client object for your bot.
      */
+
+    public void setJDA(JDA jda) {
+        this.jda = Objects.requireNonNull(jda);
+        jda.addEventListener(dispatcher);
+    }
+
+    public Dispatcher getDispatcher() {
+        return dispatcher;
+    }
 
     public Confiler getConfiler() {
         return confiler;
@@ -152,5 +178,9 @@ public class Commandler {
 
     public Collection<String> getRootAlises() {
         return rootAlises;
+    }
+
+    public Map<Integer, MetaCommand> getCommands() {
+        return commands;
     }
 }

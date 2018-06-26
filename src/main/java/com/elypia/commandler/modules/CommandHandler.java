@@ -2,8 +2,9 @@ package com.elypia.commandler.modules;
 
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.validation.IgnoreGlobal;
 import com.elypia.commandler.confiler.Confiler;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.metadata.*;
 import net.dv8tion.jda.core.*;
 
@@ -37,7 +38,7 @@ public abstract class CommandHandler implements Comparable<CommandHandler> {
 
 	@IgnoreGlobal
 	@Command(name = "Help", aliases = "help")
-	public Object help(MessageEvent event) {
+	public Object help(CommandEvent event) {
 		EmbedBuilder builder = new EmbedBuilder();
 
 		Module annotation = module.getModule();

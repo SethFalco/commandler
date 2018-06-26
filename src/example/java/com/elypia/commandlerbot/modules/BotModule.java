@@ -1,23 +1,39 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.annotations.validation.param.Everyone;
-import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.validation.command.*;
-import com.elypia.commandler.events.MessageEvent;
-import net.dv8tion.jda.core.*;
-import net.dv8tion.jda.core.entities.*;
+import com.elypia.commandler.annotations.validation.param.Everyone;
+import com.elypia.commandler.events.*;
+import com.elypia.commandler.exceptions.MalformedCommandException;
+import com.elypia.commandler.modules.CommandHandler;
+import net.dv8tion.jda.core.EmbedBuilder;
 
-import java.time.*;
-import java.util.Collection;
-import java.util.stream.Collectors;
-
-@Module(name = "Bot Utilities", aliases = {"bot", "robot", "botto"}, description = "Obtain information on the bot itself or it's developers, or perform general bot functionality.")
+@Module(name = "Bot", aliases = {"bot", "robot"}, description = "Get info on the bot itself and it's development!")
 public class BotModule extends CommandHandler {
 
-    public static final String BOT_URL = "https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot";
+    /**
+     * This is the {@link Default} command for the module, and can be executed
+     * in two ways: <br>
+     * <strong>!bot info</strong> and <strong>!bot</strong> <br>
+     * Each module can only have up to one default command.
+     */
 
-    private static final OffsetDateTime BOT_TIME = OffsetDateTime.of(2016, 7, 19, 1, 52, 0, 0, ZoneOffset.ofHours(0));
+    @Default
+    @Command(name = "Bot Info", aliases = "info", help = "Get information on the bot and it's developers.")
+    public EmbedBuilder info() {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.addField("Developer", "Seth", true);
+        builder.addField("Artist", "Téa", true);
+
+        return builder;
+    }
+
+    /**
+     * This is a static command, this means the command can be executed without
+     * specifying the module name. In this case in can be performed in two ways: <br>
+     * <strong>!bot ping</strong> and <strong>!ping</strong>
+     * Modules can have many static commands, however you can not have multiple
+     * static commands with the same alias.
+     */
 
     @Static
     @Command(name = "Ping!", aliases = "ping", help = "Ping the bot to make sure it's still alive and responding!")
@@ -25,47 +41,54 @@ public class BotModule extends CommandHandler {
         return "pong!";
     }
 
+    /**
+     * This command is hidden from help messages as no {@link Command#help()} is specified. <br>
+     * Other than this, it can be used like any other commands, it's merely hidden.
+     */
+
     @Static
     @Command(name = "Pong!", aliases = "pong")
     public String pong() {
         return "ping!";
     }
 
+    /**
+     * This command takes parameters, parameters are parsed internally by
+     * Commandler so there is no need to pass Object or String arrays around. <br>
+     * Any parameters of the method become parameters the user must specify to perform the command
+     * with the exception of anything which is an instance of {@link AbstractEvent}. <br>
+     * For example, in this case, this command takes one parameter from the user which is
+     * <code>String message</code>. <br>
+     * The {@link CommandEvent} parameter is an instance of {@link AbstractEvent} and is optional,
+     * but useful if you need access to the origin event data. <br>
+     * <br>
+     * The {@link Everyone} annotation is used as in line validation, Everyone is a provided
+     * annotation which will ensure if the user doesn't have the everyone permission, they aren't
+     * using @everyone or @here in the parameter. <br>
+     * (Else in this case they could bypass their lack of permission by making the bot say it for them.) <br>
+     *
+     * Specifying an {@link Param} annotation for input parameters is required else you'll get a
+     * {@link MalformedCommandException} and Commandler won't register your module, this is used to build
+     * the help commands and website.
+     */
+
     @Static
-    @Command(name = "Say", aliases = "say", help = "Have Commandler say something after you, deleting the message if possible.")
+    @Command(id = 3, name = "Say", aliases = "say", help = "I'll say what you want; deleting your message if possible.")
     @Param(name = "message", help = "The message to repeat.")
-    public String say(MessageEvent event, @Everyone String message) {
+    @Emoji(emotes = "\uD83D\uDD01", help = "Make the bot create a new line and append the same text.")
+    @Emoji(emotes = "❌", help = "Reset this to a single say.")
+    public String say(CommandEvent event, @Everyone String message) {
         event.tryDeleteMessage();
         return message;
     }
 
-    @Default
-    @Command(name = "Bot Info", aliases = "info", help = "Get information on the bot and it's developers.")
-    public EmbedBuilder info() {
-        User user = jda.getSelfUser();
-        EmbedBuilder builder = new EmbedBuilder();
-
-        builder.setAuthor(user.getName());
-        builder.addField("Developer", "Seth", true);
-        builder.addField("Artist", "Téa", true);
-
-        return builder;
+    @Reaction(id = 3, emotes = "\uD83D\uDD01")
+    public void sayReaction(ReactionEvent event) {
+        event.appendMessage(event.getReactionRecord().getParam("message").get(0));
     }
 
-    @Static
-    @Scope(ChannelType.TEXT)
-    @Command(name = "Bot Invites", aliases = "invites", help = "A list of invite links for all bots in the current guild.")
-    public EmbedBuilder invites(MessageEvent event) {
-        Guild guild = event.getMessageEvent().getGuild();
-        Collection<Member> bots = guild.getMembers();
-
-        Collection<User> users = bots.stream().map(Member::getUser).filter(User::isBot).filter(o -> {
-            return o.getCreationTime().isAfter(BOT_TIME);
-        }).collect(Collectors.toList());
-
-        EmbedBuilder builder = new EmbedBuilder();
-        users.forEach(o -> builder.addField(o.getName(), "[Invite link!](" + String.format(BOT_URL, o.getIdLong()) + ")", true));
-
-        return builder;
+    @Reaction(id = 3, emotes = "❌")
+    public String resetReaction(ReactionEvent event) {
+        return event.getReactionRecord().getParam("message").get(0);
     }
 }

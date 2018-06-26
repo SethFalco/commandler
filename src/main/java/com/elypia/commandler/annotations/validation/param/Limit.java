@@ -1,6 +1,6 @@
 package com.elypia.commandler.annotations.validation.param;
 
-import com.elypia.commandler.annotations.Validation;
+import com.elypia.commandler.annotations.validation.Validation;
 
 import java.lang.annotation.*;
 

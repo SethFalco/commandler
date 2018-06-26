@@ -2,7 +2,7 @@ package com.elypia.commandler.parsing;
 
 import com.elypia.commandler.annotations.filter.Search;
 import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.parsing.parsers.*;
 import com.elypia.commandler.parsing.parsers.jda.*;
@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.entities.*;
 
 import java.lang.reflect.Array;
 import java.net.URL;
-import java.time.*;
+import java.time.Duration;
 import java.util.*;
 
 public class Parser {
@@ -51,9 +51,9 @@ public class Parser {
      * @throws IllegalArgumentException If one of the arguments could not be parsed in the required format.
      */
 
-    public Object[] parseParameters(MessageEvent event, MetaCommand metaCommand) throws IllegalArgumentException {
+    public Object[] parseParameters(CommandEvent event, AbstractMetaCommand metaCommand) throws IllegalArgumentException {
         List<MetaParam> metaParams = metaCommand.getMetaParams();
-        List<Object> inputs = event.getParams();
+        List<List<String>> inputs = event.getParams();
         Object[] objects = new Object[metaParams.size()];
 
         int offset = 0;
@@ -67,7 +67,7 @@ public class Parser {
                 continue;
             }
 
-            Object input = inputs.get(i - offset);
+            List<String> input = inputs.get(i - offset);
             Object object = parseParam(event, param, input);
 
             if (object == null)
@@ -79,32 +79,25 @@ public class Parser {
         return objects;
     }
 
-    private Object parseParam(MessageEvent event, MetaParam param, Object object) throws IllegalArgumentException {
+    private Object parseParam(CommandEvent event, MetaParam param, List<String> items) throws IllegalArgumentException {
         Class<?> clazz = param.getParameter().getType();
         Search search = param.getParameter().getAnnotation(Search.class);
         SearchScope scope = search != null ? search.value() : SearchScope.GLOBAL;
 
         if (clazz.isArray()) {
-            String[] input = object.getClass().isArray() ? (String[])object : new String[] {(String)object};
-            return parseParam(clazz.getComponentType(), event, scope, input);
+            Object[] objects = (Object[])Array.newInstance(clazz, items.size());
+
+            for (int i = 0; i < items.size(); i++)
+                objects[i] = parsers.get(clazz).parse(event, scope, items.get(0));
+
+            return objects;
         } else {
-            if (object.getClass().isArray()) {
+            if (items.size() > 1) {
                 event.invalidate("Parameter `" + param.getParamAnnotation().name() + "` can't be a list.");
                 return null;
             }
 
-            String input = (String)object;
-
-            return parsers.get(clazz).parse(event, scope, input);
+            return parsers.get(clazz).parse(event, scope, items.get(0));
         }
-    }
-
-    private <T> Object parseParam(Class<T> clazz, MessageEvent event, SearchScope search, String[] input) {
-        int[] objects = (int[])Array.newInstance(clazz, input.length);
-
-        for (int i = 0; i < input.length; i++)
-            objects[i] = (int)parsers.get(clazz).parse(event, search, input[i]);
-
-        return objects;
     }
 }

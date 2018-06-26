@@ -1,6 +1,6 @@
 package com.elypia.commandler.exceptions;
 
-import com.elypia.commandler.annotations.Validation;
+import com.elypia.commandler.annotations.validation.Validation;
 
 /**
  * This will occur if you try to register a command or parameter validator

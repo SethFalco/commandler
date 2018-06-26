@@ -14,13 +14,33 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Overload {
 
+    String PARAM_DEFAULT = "";
+
     /**
-     * During a default commands, it will default to the primary
-     * commands of the CommandGroup. (The one that specifies the @Command
-     * metadata in the first place.)
-     *
-     * @return The identifier for the CommandGroup.
+     * Before you can use this you must ensure the command you are overloading
+     * specified the {@link Command#id()} value. That is the unique reference to the
+     * command and how Commandler knows what command this is overloading.
      */
 
-    String value();
+    int value();
+
+    /**
+     * This dictates which parameters are copied from the parent {@link Command}
+     * and in what order. If {@link #PARAM_DEFAULT} (defalt) is specified, then
+     * it copies all parent params in the same order, and appends any new ones
+     * in the overload, otherwise you can specify a String[] specifying a list
+     * of params in the order the overload required them.
+     */
+
+    String[] params() default PARAM_DEFAULT;
+
+    /**
+     * This dictates which validators are copied from the parent {@link Command}.
+     * This copies each validator by class. <br>
+     * If an empty array is passed, no validators are copied. <br>
+     * If {@link Overload} is passed (default), all validators are copied
+     * unless otherwise overridden by the overloading method.
+     */
+
+    Class<? extends Annotation>[] validation() default Overload.class;
 }

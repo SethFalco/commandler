@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation.command;
 
 import com.elypia.commandler.annotations.validation.command.Scope;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.validation.ICommandValidator;
 import net.dv8tion.jda.core.entities.ChannelType;
 
@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class ScopeValidator implements ICommandValidator<Scope> {
 
     @Override
-    public boolean validate(MessageEvent event, Scope scope) {
+    public boolean validate(CommandEvent event, Scope scope) {
         ChannelType[] types = scope.value();
 
         if (Arrays.asList(types).contains(event.getMessageEvent().getChannelType()))

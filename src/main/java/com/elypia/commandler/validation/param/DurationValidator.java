@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation.param;
 
-import com.elypia.commandler.annotations.validation.param.*;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.annotations.validation.param.Period;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.parsing.parsers.DurationParser;
 import com.elypia.commandler.validation.IParamValidator;
@@ -11,7 +11,7 @@ import java.time.Duration;
 public class DurationValidator implements IParamValidator<Duration, Period> {
 
     @Override
-    public boolean validate(MessageEvent event, Duration duration, Period period, MetaParam param) {
+    public boolean validate(CommandEvent event, Duration duration, Period period, MetaParam param) {
         long seconds = duration.getSeconds();
 
         if (seconds < period.min() || seconds> period.max())
