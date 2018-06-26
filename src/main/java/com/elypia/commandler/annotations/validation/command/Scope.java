@@ -1,6 +1,6 @@
 package com.elypia.commandler.annotations.validation.command;
 
-import com.elypia.commandler.annotations.Validation;
+import com.elypia.commandler.annotations.validation.Validation;
 import net.dv8tion.jda.core.entities.ChannelType;
 
 import java.lang.annotation.*;

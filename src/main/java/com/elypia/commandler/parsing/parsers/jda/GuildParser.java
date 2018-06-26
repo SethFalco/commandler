@@ -1,7 +1,7 @@
 package com.elypia.commandler.parsing.parsers.jda;
 
 import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.parsing.IParamParser;
 import net.dv8tion.jda.core.entities.*;
 
@@ -10,7 +10,7 @@ import java.util.*;
 public class GuildParser implements IParamParser<Guild> {
 
     @Override
-    public Guild parse(MessageEvent event, SearchScope scope, String input) {
+    public Guild parse(CommandEvent event, SearchScope scope, String input) {
         final Collection<Guild> guilds = new ArrayList<>();
 
         switch (scope) {

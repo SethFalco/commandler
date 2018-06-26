@@ -16,6 +16,15 @@ import java.lang.annotation.*;
 public @interface Command {
 
 	/**
+	 * @return the internal id used to manage this command, this must
+	 * be used to specify associated methods with this command, for example
+	 * {@link Overload}, if the ID is -1 (default) Commandler assumes there are
+	 * no associations.
+	 */
+
+	int id() default -1;
+
+	/**
 	 * @return The name of the commands as it appears in help / documentation.
 	 */
 

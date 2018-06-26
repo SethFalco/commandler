@@ -1,7 +1,7 @@
 package com.elypia.commandler.parsing.parsers;
 
 import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.parsing.IParamParser;
 
 import java.time.Duration;
@@ -15,7 +15,7 @@ public class DurationParser implements IParamParser<Duration> {
     private Pattern splitPattern = Pattern.compile("(?i)(?<time>\\d+)\\s*(?<unit>[A-Z]+)");
 
     @Override
-    public Duration parse(MessageEvent event, SearchScope scope, String input) {
+    public Duration parse(CommandEvent event, SearchScope scope, String input) {
         if (matchPattern.matcher(input).matches()) {
             Duration duration = Duration.ZERO;
             Matcher split = splitPattern.matcher(input);

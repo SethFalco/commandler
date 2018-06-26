@@ -1,6 +1,8 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.confiler.Confiler;
+import com.elypia.commandler.confiler.reactions.*;
+import com.elypia.commandler.events.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsing.Parser;
@@ -9,10 +11,12 @@ import com.elypia.commandler.validation.Validator;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.*;
+import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.*;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 
 public class Dispatcher extends ListenerAdapter {
 
@@ -22,6 +26,8 @@ public class Dispatcher extends ListenerAdapter {
      */
 
     private final Commandler commandler;
+
+    private final Confiler confiler;
 
     /**
      * Parser is the registry that allows you to define how objects are
@@ -58,14 +64,50 @@ public class Dispatcher extends ListenerAdapter {
 
     public Dispatcher(final Commandler commandler) {
         this.commandler = commandler;
+        this.confiler = commandler.getConfiler();
         this.parser = new Parser();
-        this.sender = new Sender();
+        this.sender = new Sender(commandler);
         this.validator = new Validator(commandler);
     }
 
     @Override
+    public void onMessageReactionAdd(MessageReactionAddEvent event) {
+        User user = event.getUser();
+
+        if (user == event.getJDA().getSelfUser())
+            return;
+
+        IReactionController controller = confiler.getReactionController();
+        ReactionRecord record = controller.getReactionRecord(event.getMessageIdLong());
+
+        if (record == null)
+            return;
+
+        if (user.isBot()) {
+            event.getReaction().removeReaction(user).queue();
+            return;
+        }
+
+        event.getReaction().getUsers().queue(users -> {
+            if (users.size() != 100 && users.contains(user)) {
+                ReactionEvent reactionEvent = new ReactionEvent(commandler, event, record);
+                MetaCommand metaCommand = commandler.getCommands().get(record.getCommandId());
+                Method method = metaCommand.getReactionEvent(record.getCommandId());
+
+                try {
+                    method.invoke(metaCommand.getHandler(), reactionEvent);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        process(event, event.getMessage());
+        processCommand(event, event.getMessage());
     }
 
     @Override
@@ -79,21 +121,21 @@ public class Dispatcher extends ListenerAdapter {
 
         event.getChannel().getHistoryAfter(message.getIdLong(), 1).queue(history -> {
            if (history.isEmpty())
-                process(event, event.getMessage());
+               processCommand(event, event.getMessage());
         });
     }
 
     /**
      * Begin processing the event when it occurs. This is the same as calling
-     * {@link #process(GenericMessageEvent, Message, String)} with the default content
+     * {@link #processCommand(GenericMessageEvent, Message, String)} with the default content
      * as the {@link Message} content.
      *
      * @param messageEvent The generic message event that occured.
      * @param msg The message that triggered the event.
      */
 
-    public void process(GenericMessageEvent messageEvent, Message msg) {
-        process(messageEvent, msg, msg.getContentRaw());
+    public void processCommand(GenericMessageEvent messageEvent, Message msg) {
+        processCommand(messageEvent, msg, msg.getContentRaw());
     }
 
     /**
@@ -105,22 +147,22 @@ public class Dispatcher extends ListenerAdapter {
      * Validate the command, not the parameters, this may invalidate the command. <br>
      * Parse all parameters from Strings to the required types, this may invalidate the event. <br>
      * Validate all parameters according to any annotations, this may invalidate the event. <br>
-     * Send the result in chat if it's not null, if the result is null, assume the user used {@link MessageEvent#reply(Object)}}.
+     * Send the result in chat if it's not null, if the result is null, assume the user used {@link CommandEvent#reply(Object)}}.
      *
      * @param messageEvent The generic message event that occured.
      * @param msg The message that triggered the event.
      */
 
-    public void process(GenericMessageEvent messageEvent, Message msg, String content) {
+    public void processCommand(GenericMessageEvent messageEvent, Message msg, String content) {
         if (msg.getAuthor().isBot())
             return;
 
-        MessageEvent event = new MessageEvent(commandler, messageEvent, msg, content);
+        CommandEvent event = new CommandEvent(commandler, messageEvent, msg, content);
 
         if (!event.isValid() || !commandler.getRootAlises().contains(event.getModule().toLowerCase()) || !parseCommand(event))
             return;
 
-        MetaCommand metaCommand = event.getMetaCommand();
+        AbstractMetaCommand metaCommand = event.getMetaCommand();
 
         if (!validator.validateCommand(event, metaCommand))
             return;
@@ -154,7 +196,7 @@ public class Dispatcher extends ListenerAdapter {
      * @return If the command is still valid.
      */
 
-    private boolean parseCommand(MessageEvent event) {
+    private boolean parseCommand(CommandEvent event) {
         return getMetaModule(event);
     }
 
@@ -162,14 +204,14 @@ public class Dispatcher extends ListenerAdapter {
      * Obtain the module the user intended, if no module can be found
      * fail silently as the user may not have intended to use out bot at all.
      * If a module is found, go to find the command as the next step via
-     * {@link #getMetaCommand(MetaModule, MessageEvent)}. <br>
-     * These are stored using the {@link MessageEvent} setter methods.
+     * {@link #getMetaCommand(MetaModule, CommandEvent)}. <br>
+     * These are stored using the {@link CommandEvent} setter methods.
      *
      * @param event The message event that the user triggered.
      * @return If the command is still valid.
      */
 
-    private boolean getMetaModule(MessageEvent event) {
+    private boolean getMetaModule(CommandEvent event) {
         String module = event.getModule();
         String command = event.getCommand();
 
@@ -184,7 +226,7 @@ public class Dispatcher extends ListenerAdapter {
             for (MetaCommand metaCommand : metaModule.getStaticCommands()) {
                 if (metaCommand.hasPerformed(module)) {
                     if (command != null)
-                        event.getParams().add(0, command);
+                        event.getParams().add(0, Collections.singletonList(command));
 
                     event.setMetaModule(metaModule);
                     event.setMetaCommand(metaCommand);
@@ -207,7 +249,7 @@ public class Dispatcher extends ListenerAdapter {
      * @return If the command is still valid.
      */
 
-    private boolean getMetaCommand(MetaModule metaModule, MessageEvent event) {
+    private boolean getMetaCommand(MetaModule metaModule, CommandEvent event) {
         String command = event.getCommand();
 
         if (command != null) {
@@ -217,7 +259,7 @@ public class Dispatcher extends ListenerAdapter {
                 event.setMetaCommand(metaCommand);
 
                 if (event.getParams().size() != metaCommand.getInputRequired()) {
-                    for (MetaCommand metaOverload : metaCommand.getOverloads()) {
+                    for (MetaOverload metaOverload : metaCommand.getOverloads()) {
                         if (event.getParams().size() == metaOverload.getInputRequired()) {
                             event.setMetaCommand(metaOverload);
                             return true;
@@ -237,10 +279,10 @@ public class Dispatcher extends ListenerAdapter {
             return event.invalidate("You've specified a module without a valid command, however there is no default command associated with this module.");
 
         if (command != null)
-            event.getParams().add(0, command);
+            event.getParams().add(0, Collections.singletonList(command));
 
         if (event.getParams().size() != defaultCommand.getInputRequired()) {
-            for (MetaCommand metaOverload : defaultCommand.getOverloads()) {
+            for (MetaOverload metaOverload : defaultCommand.getOverloads()) {
                 if (event.getParams().size() == metaOverload.getInputRequired()) {
                     event.setMetaCommand(metaOverload);
                     return true;

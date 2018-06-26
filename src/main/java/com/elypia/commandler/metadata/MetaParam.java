@@ -1,8 +1,11 @@
 package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.annotations.Param;
+import com.elypia.commandler.annotations.validation.Validation;
+import com.elypia.commandler.events.CommandEvent;
+import com.elypia.commandler.exceptions.MalformedCommandException;
+import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.validation.IParamValidator;
 
 import java.lang.annotation.Annotation;
@@ -17,21 +20,13 @@ public class MetaParam {
 
     private Commandler commandler;
 
-    /**
-     * The parent Module / CommandHandler that spawned this MetaParam.
-     */
+    private AbstractMetaCommand abstractMetaCommand;
 
-    private MetaModule metaModule;
-
-    /**
-     * The MetaCommand this MetaParameter belongs to.
-     */
-
-    private MetaCommand metaCommand;
+    private Class<? extends CommandHandler> clazz;
 
     /**
      * The method paramater this is for. This could be any object including
-     * {@link MessageEvent}.
+     * {@link CommandEvent}.
      */
 
     private Parameter parameter;
@@ -39,7 +34,7 @@ public class MetaParam {
     /**
      * The param annotation associated with this {@link #parameter} which gives us more
      * information to generate things like the help command. <br>
-     * Note: This <strong>WILL</strong> be null if the {@link #parameter} is {@link MessageEvent}.
+     * Note: This <strong>WILL</strong> be null if the {@link #parameter} is {@link CommandEvent}.
      */
 
     private Param paramAnnotation;
@@ -52,35 +47,31 @@ public class MetaParam {
 
     private boolean isInput;
 
-    /**
-     * A map containing all validation annotations associated with this parameter.
-     */
-
-    private Map<Class<? extends Annotation>, MetaValidator> validators;
+    Map<MetaValidator, IParamValidator> validators;
 
     /**
      * Wrap around this parameter for convinience functions.
      *
-     * @param metaCommand The wrapper object around the method this parameter belongs to.
+     * @param abstractMetaCommand The wrapper object around the module that contains this parameter.
      * @param parameter The standard paramater as in the method.
      * @param annotation The paramater annotation decorated on the command.
      * @return A wrapper object around this paramater to obtain information around it.
      */
 
-    protected static MetaParam of(MetaCommand metaCommand, Parameter parameter, Param annotation) {
-        return new MetaParam(metaCommand, parameter, annotation);
+    protected static MetaParam of(AbstractMetaCommand abstractMetaCommand, Param annotation, Parameter parameter) {
+        return new MetaParam(abstractMetaCommand, annotation, parameter);
     }
 
-    private MetaParam(MetaCommand metaCommand, Parameter parameter, Param annotation) {
-        this.parameter = parameter;
+    private MetaParam(AbstractMetaCommand abstractMetaCommand, Param annotation, Parameter parameter) {
+        this.abstractMetaCommand = Objects.requireNonNull(abstractMetaCommand);
+        this.parameter = Objects.requireNonNull(parameter);
         this.paramAnnotation = annotation;
-        commandler = metaCommand.getCommandler();
-        metaModule = metaCommand.getMetaModule();
-        this.metaCommand = metaCommand;
+
+        clazz = abstractMetaCommand.getHandlerType();
+        commandler = abstractMetaCommand.getCommandler();
+        isInput = parameter.getType() != CommandEvent.class;
 
         parseAnnotations();
-
-        isInput = parameter.getType() != MessageEvent.class;
     }
 
     /**
@@ -94,46 +85,31 @@ public class MetaParam {
         for (Annotation annotation : parameter.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
 
-            if (type.isAnnotationPresent(Validation.class))
-                validators.put(type, MetaValidator.of(annotation));
+            if (type.isAnnotationPresent(Validation.class)) {
+                IParamValidator validator = commandler.getDispatcher().getValidator().getParamValidators().get(type);
+
+                if (validator == null)
+                    throw new MalformedCommandException(String.format("Command %s in module %s (%s) has a parameter with the %s annotation, but a validator of this type is not registered.", abstractMetaCommand.getCommand().name(), abstractMetaCommand.getMetaModule().getModule().name(), clazz.getName(), annotation.annotationType().getName()));
+
+                validators.put(MetaValidator.of(annotation), validator);
+            }
         }
-    }
-
-    /**
-     * This will only return any validators that may have been registered at the time
-     * this method is called, even if the @Validation Annotation is found, a pairing
-     * {@link IParamValidator} must be registered via {@link Commandler#registerValidator(Class, IParamValidator)}.
-     *
-     * @return A list of validators associated with this {@link Param}.
-     */
-
-    public Map<MetaValidator, IParamValidator> getValidators() {
-        Map<MetaValidator, IParamValidator> validatorMap = new HashMap<>();
-
-        commandler.getDispatcher().getValidator().getParamValidators().forEach((type, validator) -> {
-            validators.forEach((typeII, metaCommandValidator) -> {
-                if (type == typeII)
-                    validatorMap.put(metaCommandValidator, validator);
-            });
-        });
-
-        return validatorMap;
     }
 
     public Commandler getCommandler() {
         return commandler;
     }
 
-    public MetaModule getMetaModule() {
-        return metaModule;
-    }
-
-    public MetaCommand getMetaCommand() {
-        return metaCommand;
+    public AbstractMetaCommand getAbstractMetaCommand() {
+        return abstractMetaCommand;
     }
 
     public Parameter getParameter() {
         return parameter;
+    }
+
+    public Map<MetaValidator, IParamValidator> getValidators() {
+        return validators;
     }
 
     public Param getParamAnnotation() {

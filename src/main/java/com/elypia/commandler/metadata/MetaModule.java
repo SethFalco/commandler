@@ -1,6 +1,6 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.exceptions.*;
 import com.elypia.commandler.modules.CommandHandler;
@@ -56,11 +56,11 @@ public class MetaModule implements Comparable<MetaModule> {
     private List<MetaCommand> metaCommands;
 
     /**
-     * A list of aliases that belong to commands under this module. This is used to
-     * verify we never register two identical commands aliases under the same module.
+     * The {@link Default} command for this module. This value
+     * can be null if no default command is specified.
      */
 
-    private Set<String> commandAliases;
+    private MetaCommand defaultCommand;
 
     /**
      * Create a wrapper object around this {@link CommandHandler} to obtain any
@@ -86,15 +86,13 @@ public class MetaModule implements Comparable<MetaModule> {
      */
 
     private <T extends CommandHandler> MetaModule(Commandler commandler, T t) {
-        this.commandler = commandler;
-        handler = t;
+        this.commandler = Objects.requireNonNull(commandler);
+        handler = Objects.requireNonNull(t);
         clazz = t.getClass();
         module = clazz.getAnnotation(Module.class);
 
-        if (module == null) {
-            String format = "Command handler %s isn't annotated with the Module annotation.";
-            throw new MalformedModuleException(String.format(format, clazz.getName()));
-        }
+        if (module == null)
+            throw new MalformedModuleException(String.format("Command handler %s isn't annotated with the Module annotation.", clazz.getName()));
 
         parseAliases();
         parseMethods();
@@ -123,18 +121,13 @@ public class MetaModule implements Comparable<MetaModule> {
         for (String alias : module.aliases())
             aliases.add(alias.toLowerCase());
 
-        if (aliases.size() != module.aliases().length) {
-            String format = "Module %s (%s) contains multiple aliases which are identical.\n";
-            System.err.printf(format, module.name(), clazz.getName());
-        }
+        if (aliases.size() != module.aliases().length)
+            Utils.log("Module %s (%s) contains multiple aliases which are identical.", module.name(), clazz.getName());
 
-        if (!Collections.disjoint(commandler.getRootAlises(), aliases)) {
-            String name = module.name();
-            String format = "Module %s contains an alias which has already been registered by a previous module or static command.";
-            throw new RecursiveAliasException(String.format(format, name));
-        }
-
-        commandler.getRootAlises().addAll(aliases);
+        if (Collections.disjoint(commandler.getRootAlises(), aliases))
+            commandler.getRootAlises().addAll(aliases);
+        else
+            throw new RecursiveAliasException(String.format("Module %s contains an alias which has already been registered by a previous module or static command.", module.name()));
     }
 
     /**
@@ -149,52 +142,31 @@ public class MetaModule implements Comparable<MetaModule> {
      */
 
     private void parseMethods() {
-        Method[] methods = clazz.getMethods();
         metaCommands = new ArrayList<>();
-        commandAliases = new HashSet<>();
 
-        int defaultCommand = 0;
+        Set<String> commandAliases = new HashSet<>();
+        int defaultCommands = 0;
 
-        methods = Arrays.stream(methods).filter(method -> {
-            return method.isAnnotationPresent(Command.class) || method.isAnnotationPresent(Overload.class);
-        }).toArray(Method[]::new);
+        Method[] methods = clazz.getMethods();
+        methods = Arrays.stream(methods).filter(m -> m.isAnnotationPresent(Command.class)).toArray(Method[]::new);
 
         for (Method method : methods) {
-            if (method.isAnnotationPresent(Command.class)) {
-                MetaCommand metaCommand = MetaCommand.of(this, method);
+            MetaCommand metaCommand = MetaCommand.of(this, method);
 
-                if (metaCommand.isDefault()) {
-                    if (++defaultCommand == 2) {
-                        String format = "Module %s (%s) contains multiple default commands, modules may only have a single default.";
-                        throw new MalformedModuleException(String.format(format, module.name(), clazz.getName()));
-                    }
-                }
+            if (metaCommand.isDefault()) {
+                if (++defaultCommands == 2)
+                    throw new MalformedModuleException(String.format("Module %s (%s) contains multiple default commands, modules may only have a single default.", module.name(), clazz.getName()));
+            }
 
+            if (Collections.disjoint(commandAliases, metaCommand.getAliases()))
                 commandAliases.addAll(metaCommand.getAliases());
-                metaCommands.add(metaCommand);
-            }
-        }
+            else
+                throw new RecursiveAliasException(String.format("Command %s in module %s (%s) contains an alias which has already been registered by a previous command in this module.", metaCommand.getCommand().name(), module.name(), clazz.getName()));
 
-        for (Method method : methods) {
-            Overload overload = method.getAnnotation(Overload.class);
+            metaCommands.add(metaCommand);
 
-            if (overload != null && !method.isAnnotationPresent(Command.class)) {
-                for (MetaCommand metaCommand : metaCommands) {
-                    Overload publicOverload = metaCommand.getMethod().getAnnotation(Overload.class);
-
-                    if (publicOverload != null && publicOverload.value().equalsIgnoreCase(overload.value())) {
-                        MetaCommand metaOverload = MetaCommand.of(metaCommand, this, method);
-                        metaCommand.registerOverload(metaOverload);
-
-                        if (metaOverload.isDefault()) {
-                            if (++defaultCommand == 2) {
-                                String format = "Module %s (%s) contains multiple default commands, modules may only have a single default.";
-                                throw new MalformedModuleException(String.format(format, module.name(), clazz.getName()));
-                            }
-                        }
-                    }
-                }
-            }
+            if (metaCommand.isDefault())
+                defaultCommand = metaCommand;
         }
 
         Collections.sort(metaCommands);
@@ -219,15 +191,6 @@ public class MetaModule implements Comparable<MetaModule> {
 
     public List<MetaCommand> getStaticCommands() {
         return metaCommands.stream().filter(MetaCommand::isStatic).collect(Collectors.toList());
-    }
-
-    public MetaCommand getDefaultCommand() {
-        for (MetaCommand metaCommand : metaCommands) {
-            if (metaCommand.isDefault())
-                return metaCommand;
-        }
-
-        return null;
     }
 
     public MetaCommand getCommand(String input) {
@@ -269,8 +232,8 @@ public class MetaModule implements Comparable<MetaModule> {
         return metaCommands;
     }
 
-    public Collection<String> getCommandAliases() {
-        return commandAliases;
+    public MetaCommand getDefaultCommand() {
+        return defaultCommand;
     }
 
     @Override

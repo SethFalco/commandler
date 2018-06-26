@@ -10,30 +10,26 @@ import java.io.*;
 
 public class CommandlerBot {
 
+    private static final String PREFIX = "!";
+    private static final String HELP_URL = "https://commandler.elypia.com/commandler/";
+
     public static void main(String[] args) throws LoginException, IOException {
-        boolean doc = args.length > 0 && args[0].equalsIgnoreCase("-doc");
-        JDA jda = doc ? null : new JDABuilder(AccountType.BOT).setToken(args[0]).buildAsync();
+        Commandler commandler = new Commandler(PREFIX, HELP_URL);
+        commandler.registerModules(new BotModule(), new ExampleModule());
 
-        Commandler commandler = new Commandler(jda, new CommandlerConfiler());
+        if (args.length > 0 && args[0].equalsIgnoreCase("-doc"))
+            buildDocs(commandler);
+        else // In this example we're passing the token via program arguments.
+            commandler.setJDA(new JDABuilder(AccountType.BOT).setToken(args[0]).buildAsync());
+    }
 
-        commandler.registerModules(
-            new BotModule(),
-            new EmotesModule(),
-            new ExampleModule(),
-            new GuildModule(),
-            new UserModule(),
-            new UtilModule(),
-            new VoiceModule()
-        );
+    private static void buildDocs(Commandler commandler) throws IOException {
+        PageBuilder builder = new PageBuilder(commandler);
+        builder.setName("CommandlerBot");
+        builder.setAvatar("./resources/alexis.png");
+        builder.setFavicon("./resources/favicon.ico");
+        builder.setDescription("CommandlerBot is the example bot for Commandler!");
 
-        if (doc) {
-            PageBuilder builder = new PageBuilder(commandler);
-            builder.setName("CommandlerBot");
-            builder.setAvatar("./resources/alexis.png");
-            builder.setFavicon("./resources/favicon.ico");
-            builder.setDescription("CommandlerBot is the example bot for Commandler!");
-
-            builder.build(String.format(".%spages%<s", File.separator));
-        }
+        builder.build(String.format(".%spages%<s", File.separator)); // ./pages/
     }
 }

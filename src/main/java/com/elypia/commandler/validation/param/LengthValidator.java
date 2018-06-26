@@ -1,14 +1,14 @@
 package com.elypia.commandler.validation.param;
 
 import com.elypia.commandler.annotations.validation.param.Length;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.validation.IParamValidator;
 
 public class LengthValidator implements IParamValidator<String, Length> {
 
     @Override
-    public boolean validate(MessageEvent event, String s, Length length, MetaParam param) {
+    public boolean validate(CommandEvent event, String s, Length length, MetaParam param) {
         int l = s.length();
 
         if (l < length.min() || l > length.max())

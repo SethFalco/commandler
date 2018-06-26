@@ -1,9 +1,9 @@
-package com.elypia.commandler.annotations;
+package com.elypia.commandler.annotations.validation;
 
 import java.lang.annotation.*;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Reactions {
-    Reaction[] value();
+public @interface IgnoreGlobal {
+
 }

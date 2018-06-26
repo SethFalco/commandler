@@ -1,6 +1,7 @@
 package com.elypia.commandler.confiler;
 
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.confiler.reactions.*;
+import com.elypia.commandler.events.CommandEvent;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.regex.Pattern;
@@ -30,6 +31,10 @@ public class DefaultConfiler implements Confiler {
 
     private final String DEFAULT_PREFIX;
 
+    private final String HELP_URL;
+
+    private final DefaultReactionController REACTION_CONTROLLER = new DefaultReactionController();
+
     /**
      * The first time the commands regular expression is queried, we take
      * {@link #COMMAND_REGEX} and insert the bots id and store it here to save
@@ -39,23 +44,18 @@ public class DefaultConfiler implements Confiler {
     private String commandRegex;
 
     /**
-     * Calls {@link #DefaultConfiler(String)} and defaults the bot prefix to <strong>!</strong>
-     *
-     * @see DefaultConfiler(String)
-     */
-
-    public DefaultConfiler() {
-        this("!");
-    }
-
-    /**
      * Instantiate the Default configuration for Commandler with a different prefix.
      *
      * @param prefix The default prefix for the bot.
      */
 
     public DefaultConfiler(String prefix) {
+        this(prefix, null);
+    }
+
+    public DefaultConfiler(String prefix, String help) {
         DEFAULT_PREFIX = prefix;
+        HELP_URL = help;
     }
 
     /**
@@ -111,7 +111,12 @@ public class DefaultConfiler implements Confiler {
     }
 
     @Override
-    public String getHelpUrl(MessageEvent event) {
-        return null;
+    public String getHelpUrl(CommandEvent event) {
+        return HELP_URL;
+    }
+
+    @Override
+    public IReactionController getReactionController() {
+        return REACTION_CONTROLLER;
     }
 }

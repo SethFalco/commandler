@@ -1,7 +1,7 @@
 package com.elypia.commandler.modules;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.*;
 import com.elypia.commandler.metadata.MetaModule;
 import net.dv8tion.jda.core.EmbedBuilder;
 
@@ -15,21 +15,20 @@ public class HelpModule extends CommandHandler {
 
     @Override
     @Default
-    @Overload("help")
-    @Command(name = "Help", aliases = {"help", "halp", "helpme"})
-    public Object help(MessageEvent event) {
+    @Command(id = 1, name = "Help", aliases = {"help", "halp", "helpme"})
+    public Object help(CommandEvent event) {
         return super.help(event);
     }
 
-    @Overload("help")
+    @Overload(1)
     @Param(name = "module", help = "The name of the module you'd like to query for help.")
-    public void help(MessageEvent event, String module) {
+    public void help(CommandEvent event, String module) {
         String command = module + " help";
         event.trigger(command);
     }
 
     @Command(name = "List all Modules", aliases = "modules", help = "Learn about the various modules and what functionality they bring to Discord.")
-    public EmbedBuilder modules(MessageEvent event) {
+    public EmbedBuilder modules(CommandEvent event) {
         String prefix = confiler.getPrefix(event.getMessageEvent());
         Collection<CommandHandler> handlers = commandler.getHandlers();
         EmbedBuilder builder = new EmbedBuilder();

@@ -1,14 +1,14 @@
 package com.elypia.commandler.validation.param;
 
-import com.elypia.commandler.annotations.validation.param.*;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.annotations.validation.param.Limit;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.validation.IParamValidator;
 
 public class LimitValidator implements IParamValidator<Number, Limit> {
 
     @Override
-    public boolean validate(MessageEvent event, Number value, Limit limit, MetaParam param) {
+    public boolean validate(CommandEvent event, Number value, Limit limit, MetaParam param) {
         if (value.intValue() < limit.min() || value.intValue() > limit.max())
             return event.invalidate(buildMessage("The parameter `" + param.getParamAnnotation().name(), limit));
 

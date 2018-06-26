@@ -1,10 +1,10 @@
 package com.elypia.commandler.validation;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.annotations.Validation;
+import com.elypia.commandler.annotations.validation.Validation;
 import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.exceptions.MalformedValidatorException;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.validation.command.*;
@@ -67,7 +67,7 @@ public class Validator {
         }
     }
 
-    public boolean validateCommand(MessageEvent event, MetaCommand metaCommand) {
+    public boolean validateCommand(CommandEvent event, AbstractMetaCommand metaCommand) {
         for (Map.Entry<MetaValidator, ICommandValidator> entry : metaCommand.getValidators().entrySet()) {
             if (!entry.getValue().validate(event, entry.getKey().getAnnotation()))
                 return false;
@@ -76,7 +76,7 @@ public class Validator {
         return true;
     }
 
-    public boolean validateParams(MessageEvent event, MetaCommand metaCommand, Object[] args) {
+    public boolean validateParams(CommandEvent event, AbstractMetaCommand metaCommand, Object[] args) {
         List<MetaParam> metaParams = metaCommand.getMetaParams();
 
         for (int i = 0; i < metaParams.size(); i++) {

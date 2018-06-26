@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation.command;
 
 import com.elypia.commandler.annotations.validation.command.Permissions;
-import com.elypia.commandler.events.MessageEvent;
+import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.validation.ICommandValidator;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 public class PermissionValidator implements ICommandValidator<Permissions> {
 
     @Override
-    public boolean validate(MessageEvent event, Permissions annotation) {
+    public boolean validate(CommandEvent event, Permissions annotation) {
         GenericMessageEvent e = event.getMessageEvent();
         TextChannel channel = e.getTextChannel();
         Member member = event.getMessage().getMember();
