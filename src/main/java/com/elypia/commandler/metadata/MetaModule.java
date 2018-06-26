@@ -193,6 +193,19 @@ public class MetaModule implements Comparable<MetaModule> {
         return metaCommands.stream().filter(MetaCommand::isStatic).collect(Collectors.toList());
     }
 
+    public Method getReactionEvent(int commandid, String emote) {
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Reaction.class)) {
+                Reaction reaction = method.getAnnotation(Reaction.class);
+
+                if (reaction.id() == commandid && Arrays.asList(reaction.emotes()).contains(emote))
+                    return method;
+            }
+        }
+
+        return null;
+    }
+
     public MetaCommand getCommand(String input) {
         input = input.toLowerCase();
 

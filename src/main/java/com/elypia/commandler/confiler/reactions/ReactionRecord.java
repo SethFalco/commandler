@@ -1,11 +1,11 @@
 package com.elypia.commandler.confiler.reactions;
 
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsing.Parser;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
-import java.util.List;
+import java.util.*;
 
 public class ReactionRecord {
 
@@ -29,7 +29,7 @@ public class ReactionRecord {
      * the raw parameters as we recieved them on Discord.
      */
 
-    private List<List<String>> params;
+    private Map<String, List<String>> params;
 
     /**
      * The parameters after being parsed through {@link Parser}.
@@ -37,6 +37,8 @@ public class ReactionRecord {
      */
 
     private Object[] parsedParams;
+
+    private Map<String, Object> objectStore;
 
     public int getCommandId() {
         return commandId;
@@ -70,11 +72,11 @@ public class ReactionRecord {
         this.ownerId = ownerId;
     }
 
-    public List<List<String>> getParams() {
-        return params;
+    public List<String> getParam(String name) {
+        return params.get(name);
     }
 
-    public void setParams(List<List<String>> params) {
+    public void setParams(Map<String, List<String>> params) {
         this.params = params;
     }
 
@@ -84,5 +86,13 @@ public class ReactionRecord {
 
     public void setParsedParams(Object[] parsedParams) {
         this.parsedParams = parsedParams;
+    }
+
+    public Map<String, Object> getObjectStore() {
+        return objectStore;
+    }
+
+    public void setObjectStore(Map<String, Object> objectStore) {
+        this.objectStore = objectStore;
     }
 }

@@ -56,24 +56,31 @@ public class Sender {
 
         Consumer<Message> consumer = (message) -> {
             AbstractMetaCommand metaCommand = event.getMetaCommand();
+            Set<String> reactions = event.getReactions();
 
-            if (metaCommand.isReactionTracking()) {
+            if (metaCommand.getMethod().isAnnotationPresent(Emojis.class)) {
+                Emoji[] params = metaCommand.getMethod().getAnnotationsByType(Emoji.class);
+
+                for (Emoji e : params)
+                    reactions.addAll(Arrays.asList(e.emotes()));
+            }
+
+            if (!event.getReactions().isEmpty()) {
                 ReactionRecord record = new ReactionRecord();
                 record.setCommandId(metaCommand.getCommand().id());
                 record.setChannelId(message.getChannel().getIdLong());
                 record.setMessageId(message.getIdLong());
                 record.setOwnerId(event.getMessage().getAuthor().getIdLong());
-                record.setParams(event.getParams());
 
+                Map<String, List<String>> params = new HashMap<>();
+                for (int i = 0; i < event.getParams().size(); i++)
+                    params.put(event.getMetaCommand().getInputParams().get(i).getParamAnnotation().name(), event.getParams().get(i));
+
+                record.setParams(params);
                 confiler.getReactionController().startTrackingEvents(record);
             }
 
-            if (metaCommand.getMethod().isAnnotationPresent(Emoji.class)) {
-                Emoji[] params = metaCommand.getMethod().getAnnotationsByType(Emoji.class);
-
-                for (Emoji e : params)
-                    message.addReaction(e.alias()).queue();
-            }
+            reactions.forEach(s -> message.addReaction(s).queue());
 
             if (success != null)
                 success.accept(message);

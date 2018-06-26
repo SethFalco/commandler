@@ -49,12 +49,6 @@ public abstract class AbstractMetaCommand {
     protected Method method;
 
     /**
-     * Does this command need to track reactions to the messages it responds.
-     */
-
-    protected boolean isReactionTracking;
-
-    /**
      * A map of any annotations added to this command, this may include
      * module level annotations.
      */
@@ -88,7 +82,6 @@ public abstract class AbstractMetaCommand {
         commandler = metaModule.getCommandler();
         handler = metaModule.getHandler();
         clazz = metaModule.getHandlerType();
-        isReactionTracking = method.isAnnotationPresent(TrackReactions.class);
 
         parseParams();
         parseAnnotations();
@@ -130,10 +123,6 @@ public abstract class AbstractMetaCommand {
 
     public Class<? extends CommandHandler> getHandlerType() {
         return clazz;
-    }
-
-    public boolean isReactionTracking() {
-        return isReactionTracking;
     }
 
     public Command getCommand() {

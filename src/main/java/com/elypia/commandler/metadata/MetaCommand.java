@@ -194,20 +194,6 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
         }
     }
 
-    public Method getReactionEvent(int commandid) {
-        for (Method method : clazz.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(Reaction.class)) {
-                Reaction reaction = method.getAnnotation(Reaction.class);
-
-                if (reaction.id() == commandid) {
-                    return method;
-                }
-            }
-        }
-
-        return null;
-    }
-
     private void parseOverloads() {
         for (Method method : metaModule.getClass().getDeclaredMethods()) {
             if (method.isAnnotationPresent(Overload.class)) {

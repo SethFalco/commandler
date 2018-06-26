@@ -19,12 +19,12 @@ public class ReactionEvent extends AbstractEvent {
         this.record = record;
     }
 
-    public MessageReactionAddEvent getReactionAddEvent() {
-        return event;
+    public void setMessage(String message) {
+        getMessage(msg -> msg.editMessage(message).queue());
     }
 
-    public ReactionRecord getReactionRecord() {
-        return record;
+    public void appendMessage(String message) {
+        getMessage(msg -> msg.editMessage(msg.getContentRaw() + "\n" + message).queue());
     }
 
     public void getMessage(Consumer<Message> consumer) {
@@ -47,4 +47,14 @@ public class ReactionEvent extends AbstractEvent {
 
         return message;
     }
+
+    public MessageReactionAddEvent getReactionAddEvent() {
+        return event;
+    }
+
+    public ReactionRecord getReactionRecord() {
+        return record;
+    }
+
+
 }

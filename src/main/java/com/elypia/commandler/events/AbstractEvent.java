@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public abstract class AbstractEvent {
@@ -44,6 +44,8 @@ public abstract class AbstractEvent {
 
     protected List<List<String>> params;
 
+    private Set<String> reactions;
+
     /**
      * The command associated with this command if the command is valid.
      */
@@ -58,8 +60,18 @@ public abstract class AbstractEvent {
         this.commandler = commandler;
         this.event = event;
         this.message = message;
+        reactions = new HashSet<>();
 
         confiler = commandler.getConfiler();
+    }
+
+    public void addReaction(String... unicode) {
+        reactions.addAll(Arrays.asList(unicode));
+    }
+
+
+    public Set<String> getReactions() {
+        return reactions;
     }
 
     /**

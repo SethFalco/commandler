@@ -92,13 +92,14 @@ public class Dispatcher extends ListenerAdapter {
             if (users.size() != 100 && users.contains(user)) {
                 ReactionEvent reactionEvent = new ReactionEvent(commandler, event, record);
                 MetaCommand metaCommand = commandler.getCommands().get(record.getCommandId());
-                Method method = metaCommand.getReactionEvent(record.getCommandId());
+                Method method = metaCommand.getMetaModule().getReactionEvent(record.getCommandId(), event.getReactionEmote().getName());
 
                 try {
-                    method.invoke(metaCommand.getHandler(), reactionEvent);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
+                    Object object = method.invoke(metaCommand.getHandler(), reactionEvent);
+
+                    if (object != null)
+                        reactionEvent.setMessage(object.toString());
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }

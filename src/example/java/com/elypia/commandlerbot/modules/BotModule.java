@@ -2,7 +2,6 @@ package com.elypia.commandlerbot.modules;
 
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.param.Everyone;
-import com.elypia.commandler.confiler.reactions.IReactionController;
 import com.elypia.commandler.events.*;
 import com.elypia.commandler.exceptions.MalformedCommandException;
 import com.elypia.commandler.modules.CommandHandler;
@@ -74,28 +73,22 @@ public class BotModule extends CommandHandler {
      */
 
     @Static
-    @TrackReactions
     @Command(id = 3, name = "Say", aliases = "say", help = "I'll say what you want; deleting your message if possible.")
     @Param(name = "message", help = "The message to repeat.")
-    @Emoji(alias = "\uD83D\uDD01", help = "Make the bot create a new line and append the same text.")
+    @Emoji(emotes = "\uD83D\uDD01", help = "Make the bot create a new line and append the same text.")
+    @Emoji(emotes = "❌", help = "Reset this to a single say.")
     public String say(CommandEvent event, @Everyone String message) {
         event.tryDeleteMessage();
         return message;
     }
 
-    /**
-     * Here we introduce reaction handling, in the above command we specify an ID and
-     * say that it is ReactionTracking with the {@link TrackReactions} annotation.
-     * This means an event will be raised to the registered {@link IReactionController}
-     * with the message ID of any resulting messages from this method either through the
-     * return or the {@link AbstractEvent#reply(Object)} method.
-     */
-
     @Reaction(id = 3, emotes = "\uD83D\uDD01")
     public void sayReaction(ReactionEvent event) {
-        event.getMessage(o -> {
-            String newMessage = o.getContentRaw() + "\n" + o.getContentRaw();
-            o.editMessage(newMessage).queue();
-        });
+        event.appendMessage(event.getReactionRecord().getParam("message").get(0));
+    }
+
+    @Reaction(id = 3, emotes = "❌")
+    public String resetReaction(ReactionEvent event) {
+        return event.getReactionRecord().getParam("message").get(0);
     }
 }
