@@ -3,7 +3,7 @@ package com.elypia.commandler.confiler.reactions;
 import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsing.Parser;
-import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.*;
 
@@ -23,6 +23,8 @@ public class ReactionRecord {
     private long channelId;
     private long messageId;
     private long ownerId;
+
+    private Message message;
 
     /**
      * The parameters the user specified as in raw text, these are
@@ -88,11 +90,23 @@ public class ReactionRecord {
         this.parsedParams = parsedParams;
     }
 
-    public Map<String, Object> getObjectStore() {
-        return objectStore;
+    public Object getObject(String name) {
+        return objectStore.get(name);
+    }
+
+    public void storeObject(String name, Object object) {
+        objectStore.put(name, object);
     }
 
     public void setObjectStore(Map<String, Object> objectStore) {
         this.objectStore = objectStore;
+    }
+
+    public Message getParentMessage() {
+        return message;
+    }
+
+    public void setParentMessage(Message message) {
+        this.message = message;
     }
 }

@@ -20,7 +20,7 @@ public class MetaOverload extends AbstractMetaCommand implements Comparable<Meta
     protected void parseParams() {
         String[] params = overload.params();
 
-        if (params.length == 1 && params[0].equals(Overload.PARAM_DEFAULT)) {
+        if (params.length == 1 && params[0].equals(Overload.INHERIT)) {
             metaParams.addAll(command.getMetaParams());
 
             return;

@@ -18,4 +18,6 @@ public @interface Param {
 	 */
 
 	String help();
+
+	String fallback() default "";
 }

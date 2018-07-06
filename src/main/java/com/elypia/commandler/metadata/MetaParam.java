@@ -3,7 +3,7 @@ package com.elypia.commandler.metadata;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.annotations.validation.Validation;
-import com.elypia.commandler.events.CommandEvent;
+import com.elypia.commandler.events.*;
 import com.elypia.commandler.exceptions.MalformedCommandException;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.validation.IParamValidator;
@@ -69,7 +69,7 @@ public class MetaParam {
 
         clazz = abstractMetaCommand.getHandlerType();
         commandler = abstractMetaCommand.getCommandler();
-        isInput = parameter.getType() != CommandEvent.class;
+        isInput = !AbstractEvent.class.isAssignableFrom(parameter.getType());
 
         parseAnnotations();
     }

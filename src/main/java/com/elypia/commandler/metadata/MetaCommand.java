@@ -173,7 +173,7 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
 
         Param[] params = method.getAnnotationsByType(Param.class);
         Parameter[] parameters = method.getParameters();
-        inputRequired = (int)Arrays.stream(parameters).filter(o -> o.getType() != CommandEvent.class).count();
+        inputRequired = (int)Arrays.stream(parameters).filter(o -> !AbstractEvent.class.isAssignableFrom(o.getType())).count();
 
         if (inputRequired != params.length)
             throw new MalformedCommandException(String.format("Command %s in module %s (%s) doesn't contain the correct number of @Param annotations.", command.name(), metaModule.getModule().name(), clazz.getName()));
@@ -184,7 +184,7 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
             Parameter parameter = parameters[i];
             Param param = null;
 
-            if (parameter.getType() != CommandEvent.class)
+            if (!AbstractEvent.class.isAssignableFrom(parameter.getType()))
                 param = params[i - offset];
             else if (++offset == 2)
                 Utils.log("Command %s in module %s (%s) contains multiple MessageEvent parameters, there is no benefit to this.", command.name(), metaModule.getModule().name(), clazz.getName());

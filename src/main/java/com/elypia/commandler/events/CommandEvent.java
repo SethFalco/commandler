@@ -66,8 +66,7 @@ public class CommandEvent extends AbstractEvent {
      */
 
 	public CommandEvent(Commandler commandler, GenericMessageEvent event, Message message, String content) {
-		super(commandler, event);
-		this.message = message;
+		super(commandler, event, message);
 
 		confiler = commandler.getConfiler();
 		params = new ArrayList<>();

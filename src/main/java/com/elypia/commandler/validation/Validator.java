@@ -81,12 +81,23 @@ public class Validator {
 
         for (int i = 0; i < metaParams.size(); i++) {
             MetaParam metaParam = metaParams.get(i);
+            Object arg = args[i];
+            Class<?> type = metaParam.getParameter().getType();
             Map<MetaValidator, IParamValidator> validators = metaParam.getValidators();
 
             for (Map.Entry<MetaValidator, IParamValidator> entry : validators.entrySet()) {
-                Object arg = args[i];
-                if (!entry.getValue().validate(event, arg.getClass().cast(arg), entry.getKey().getAnnotation(), metaParam))
-                    return false;
+
+                if (type.isArray()) {
+                    String[] array = (String[])arg;
+
+                    for (String in : array) {
+                        if (!entry.getValue().validate(event, in, entry.getKey().getAnnotation(), metaParam))
+                            return false;
+                    }
+                } else {
+                    if (!entry.getValue().validate(event, arg, entry.getKey().getAnnotation(), metaParam))
+                        return false;
+                }
             }
         }
 

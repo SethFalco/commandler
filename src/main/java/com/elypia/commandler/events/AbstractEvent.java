@@ -2,8 +2,9 @@ package com.elypia.commandler.events;
 
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.confiler.Confiler;
+import com.elypia.commandler.confiler.reactions.ReactionRecord;
 import com.elypia.commandler.metadata.AbstractMetaCommand;
-import com.elypia.commandler.sending.Sender;
+import com.elypia.commandler.sending.Builder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
@@ -44,7 +45,9 @@ public abstract class AbstractEvent {
 
     protected List<List<String>> params;
 
-    private Set<String> reactions;
+    private List<String> reactions;
+
+    private Map<String, Object> objectStore;
 
     /**
      * The command associated with this command if the command is valid.
@@ -52,15 +55,12 @@ public abstract class AbstractEvent {
 
     protected AbstractMetaCommand metaCommand;
 
-    public AbstractEvent(Commandler commandler, GenericMessageEvent event) {
-        this(commandler, event, null);
-    }
-
     public AbstractEvent(Commandler commandler, GenericMessageEvent event, Message message) {
         this.commandler = commandler;
         this.event = event;
         this.message = message;
-        reactions = new HashSet<>();
+        reactions = new ArrayList<>();
+        objectStore = new HashMap<>();
 
         confiler = commandler.getConfiler();
     }
@@ -69,8 +69,11 @@ public abstract class AbstractEvent {
         reactions.addAll(Arrays.asList(unicode));
     }
 
+    public void storeObject(String name, Object object) {
+        objectStore.put(name, object);
+    }
 
-    public Set<String> getReactions() {
+    public List<String> getReactions() {
         return reactions;
     }
 
@@ -79,13 +82,35 @@ public abstract class AbstractEvent {
      * This is useful when using {@link Consumer}s as you're unable to return from within
      * an anonymous function.
      *
-     * @param message The item to send to the {@link Sender} to process.
+     * @param object The item to send to the {@link Builder} to process.
      * @param <T> Type of object to send, this type is compared to the types in our
-     * {@link Sender} so we know how to send it.
+     * {@link Builder} so we know how to send it.
      */
 
-    public <T> void reply(T message) {
-        commandler.getDispatcher().getSender().sendAsMessage(this, message, null);
+    public <T> void reply(T object) {
+        Builder builder = commandler.getDispatcher().getBuilder();
+        Message message = builder.buildMessage(this, object);
+        event.getChannel().sendMessage(message).queue(msg -> {
+            if (!reactions.isEmpty()) {
+                ReactionRecord record = new ReactionRecord();
+                record.setCommandId(metaCommand.getCommand().id());
+                record.setChannelId(msg.getChannel().getIdLong());
+                record.setMessageId(msg.getIdLong());
+                record.setParentMessage(this.message);
+                record.setOwnerId(msg.getAuthor().getIdLong());
+
+                Map<String, List<String>> params = new HashMap<>();
+                for (int i = 0; i < params.size(); i++)
+                    params.put(metaCommand.getInputParams().get(i).getParamAnnotation().name(), this.params.get(i));
+
+                record.setParams(params);
+
+                record.setObjectStore(objectStore);
+                confiler.getReactionController().startTrackingEvents(record);
+            }
+
+            reactions.forEach(s -> msg.addReaction(s).queue());
+        });
     }
 
     /**
@@ -123,7 +148,11 @@ public abstract class AbstractEvent {
         String command = event.getJDA().getSelfUser().getAsMention();
         command += trigger;
 
-        commandler.getDispatcher().processCommand(event, message, command);
+        if (this instanceof ReactionEvent)
+            commandler.getDispatcher().processCommand(event, message, command);
+        else
+            commandler.getDispatcher().processCommand(event, message, command);
+
     }
 
     /**
@@ -160,5 +189,9 @@ public abstract class AbstractEvent {
 
     public AbstractMetaCommand getMetaCommand() {
         return metaCommand;
+    }
+
+    public void setMetaCommand(AbstractMetaCommand metaCommand) {
+        this.metaCommand = metaCommand;
     }
 }

@@ -4,7 +4,7 @@ import com.elypia.commandler.confiler.*;
 import com.elypia.commandler.metadata.MetaCommand;
 import com.elypia.commandler.modules.*;
 import com.elypia.commandler.parsing.IParamParser;
-import com.elypia.commandler.sending.IMessageSender;
+import com.elypia.commandler.sending.IMessageBuilder;
 import com.elypia.commandler.validation.*;
 import net.dv8tion.jda.core.JDA;
 
@@ -136,8 +136,8 @@ public class Commandler {
         dispatcher.getParser().registerParser(clazz, parser);
     }
 
-    public <T> void registerSender(Class<T> clazz, IMessageSender<T> sender) {
-        dispatcher.getSender().registerSender(clazz, sender);
+    public <T> void registerSender(Class<T> clazz, IMessageBuilder<T> sender) {
+        dispatcher.getBuilder().registerBuilder(clazz, sender);
     }
 
     public <T extends Annotation> void registerValidator(Class<T> clazz, IParamValidator<?, T> validator) {

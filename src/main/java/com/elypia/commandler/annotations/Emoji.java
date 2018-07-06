@@ -7,6 +7,8 @@ import java.lang.annotation.*;
 @Repeatable(Emojis.class)
 public @interface Emoji {
 
+
+
 	/**
 	 * @return The reaction to post after the commands has executed as a String.
 	 */
@@ -18,8 +20,6 @@ public @interface Emoji {
 	 */
 
 	String help();
-
-	boolean auto() default true;
 
 	boolean owned() default true;
 

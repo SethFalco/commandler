@@ -6,9 +6,9 @@ import com.elypia.commandler.events.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsing.Parser;
-import com.elypia.commandler.sending.Sender;
+import com.elypia.commandler.sending.Builder;
 import com.elypia.commandler.validation.Validator;
-import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.*;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
@@ -16,7 +16,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.lang.reflect.*;
 import java.time.OffsetDateTime;
-import java.util.Collections;
+import java.util.*;
 
 public class Dispatcher extends ListenerAdapter {
 
@@ -37,12 +37,12 @@ public class Dispatcher extends ListenerAdapter {
     private final Parser parser;
 
     /**
-     * Sender is the register that allows you to define how objects are
+     * Builder is the register that allows you to define how objects are
      * sent. This allows Commandler to know how certain return types
      * need to be processed in order to send in chat.
      */
 
-    private final Sender sender;
+    private final Builder builder;
 
     /**
      * Validator is a registery that allows you to define custom annotations
@@ -66,7 +66,7 @@ public class Dispatcher extends ListenerAdapter {
         this.commandler = commandler;
         this.confiler = commandler.getConfiler();
         this.parser = new Parser();
-        this.sender = new Sender(commandler);
+        this.builder = new Builder(commandler);
         this.validator = new Validator(commandler);
     }
 
@@ -89,7 +89,7 @@ public class Dispatcher extends ListenerAdapter {
         }
 
         event.getReaction().getUsers().queue(users -> {
-            if (users.size() != 100 && users.contains(user)) {
+            if (users.contains(user)) {
                 ReactionEvent reactionEvent = new ReactionEvent(commandler, event, record);
                 MetaCommand metaCommand = commandler.getCommands().get(record.getCommandId());
                 Method method = metaCommand.getMetaModule().getReactionEvent(record.getCommandId(), event.getReactionEmote().getName());
@@ -98,7 +98,12 @@ public class Dispatcher extends ListenerAdapter {
                     Object object = method.invoke(metaCommand.getHandler(), reactionEvent);
 
                     if (object != null)
-                        reactionEvent.setMessage(object.toString());
+                        reactionEvent.setMessage(builder.buildMessage(reactionEvent, object));
+
+                    if (event.getChannelType().isGuild()) {
+                        if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+                            event.getReaction().removeReaction(event.getUser()).queue();
+                    }
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -155,7 +160,7 @@ public class Dispatcher extends ListenerAdapter {
      */
 
     public void processCommand(GenericMessageEvent messageEvent, Message msg, String content) {
-        if (msg.getAuthor().isBot())
+        if (msg.getAuthor().isBot() && msg.getAuthor() != msg.getJDA().getSelfUser())
             return;
 
         CommandEvent event = new CommandEvent(commandler, messageEvent, msg, content);
@@ -182,9 +187,9 @@ public class Dispatcher extends ListenerAdapter {
             Object message = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
 
             if (message != null)
-                sender.sendAsMessage(event, message);
+                event.reply(builder.buildMessage(event, message));
         } catch (IllegalAccessException | InvocationTargetException ex) {
-            sender.sendAsMessage(event, "Sorry! Something went wrong and I was unable to perform that commands.");
+            messageEvent.getChannel().sendMessage("Sorry! Something went wrong and I was unable to perform that commands.").queue();
             ex.printStackTrace();
         }
     }
@@ -301,8 +306,8 @@ public class Dispatcher extends ListenerAdapter {
         return parser;
     }
 
-    public Sender getSender() {
-        return sender;
+    public Builder getBuilder() {
+        return builder;
     }
 
     public Validator getValidator() {

@@ -116,6 +116,11 @@ public class DefaultConfiler implements Confiler {
     }
 
     @Override
+    public String getHelp(String key) {
+        return key;
+    }
+
+    @Override
     public IReactionController getReactionController() {
         return REACTION_CONTROLLER;
     }

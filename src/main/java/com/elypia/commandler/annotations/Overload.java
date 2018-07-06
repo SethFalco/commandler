@@ -14,7 +14,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Overload {
 
-    String PARAM_DEFAULT = "";
+    String INHERIT = "";
+    String[] INHERIT_NONE = {};
 
     /**
      * Before you can use this you must ensure the command you are overloading
@@ -26,13 +27,15 @@ public @interface Overload {
 
     /**
      * This dictates which parameters are copied from the parent {@link Command}
-     * and in what order. If {@link #PARAM_DEFAULT} (defalt) is specified, then
+     * and in what order. If {@link #INHERIT} (default) is specified, then
      * it copies all parent params in the same order, and appends any new ones
      * in the overload, otherwise you can specify a String[] specifying a list
      * of params in the order the overload required them.
      */
 
-    String[] params() default PARAM_DEFAULT;
+    String[] params() default INHERIT;
+
+    String[] emotes() default INHERIT;
 
     /**
      * This dictates which validators are copied from the parent {@link Command}.

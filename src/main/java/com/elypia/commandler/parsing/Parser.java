@@ -85,10 +85,10 @@ public class Parser {
         SearchScope scope = search != null ? search.value() : SearchScope.GLOBAL;
 
         if (clazz.isArray()) {
-            Object[] objects = (Object[])Array.newInstance(clazz, items.size());
+            Object[] objects = (Object[])Array.newInstance(clazz.getComponentType(), items.size());
 
             for (int i = 0; i < items.size(); i++)
-                objects[i] = parsers.get(clazz).parse(event, scope, items.get(0));
+                objects[i] = parsers.get(clazz.getComponentType()).parse(event, scope, items.get(i));
 
             return objects;
         } else {

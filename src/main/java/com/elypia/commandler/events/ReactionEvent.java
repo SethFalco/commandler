@@ -13,13 +13,13 @@ public class ReactionEvent extends AbstractEvent {
     private ReactionRecord record;
 
     public ReactionEvent(Commandler commandler, MessageReactionAddEvent event, ReactionRecord record) {
-        super(commandler, event);
+        super(commandler, event, record.getParentMessage());
 
         this.event = event;
         this.record = record;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(Message message) {
         getMessage(msg -> msg.editMessage(message).queue());
     }
 
@@ -27,25 +27,19 @@ public class ReactionEvent extends AbstractEvent {
         getMessage(msg -> msg.editMessage(msg.getContentRaw() + "\n" + message).queue());
     }
 
-    public void getMessage(Consumer<Message> consumer) {
-        if (message == null) {
-            event.getChannel().getMessageById(event.getMessageIdLong()).queue(o -> {
-                message = o;
-                consumer.accept(o);
-            });
-
-            return;
-        }
-
-        consumer.accept(message);
+    public void deleteMessage() {
+        event.getChannel().deleteMessageById(record.getMessageId()).queue();
     }
 
-    @Override
-    public Message getMessage() {
-        if (message == null)
-            message = event.getChannel().getMessageById(event.getMessageIdLong()).complete();
+    public void deleteParentMessage() {
+        record.getParentMessage().delete().queue();
+    }
 
-        return message;
+    public void getMessage(Consumer<Message> consumer) {
+        event.getChannel().getMessageById(record.getMessageId()).queue(o -> {
+            message = o;
+            consumer.accept(o);
+        });
     }
 
     public MessageReactionAddEvent getReactionAddEvent() {
@@ -55,6 +49,4 @@ public class ReactionEvent extends AbstractEvent {
     public ReactionRecord getReactionRecord() {
         return record;
     }
-
-
 }

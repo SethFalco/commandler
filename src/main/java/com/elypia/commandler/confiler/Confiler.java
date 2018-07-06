@@ -59,5 +59,7 @@ public interface Confiler {
 
     String getHelpUrl(CommandEvent event);
 
+    String getHelp(String key);
+
     IReactionController getReactionController();
 }
