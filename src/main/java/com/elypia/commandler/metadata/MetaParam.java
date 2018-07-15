@@ -6,7 +6,7 @@ import com.elypia.commandler.annotations.validation.Validation;
 import com.elypia.commandler.events.*;
 import com.elypia.commandler.exceptions.MalformedCommandException;
 import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.validation.IParamValidator;
+import com.elypia.commandler.impl.IParamValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;

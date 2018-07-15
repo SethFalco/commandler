@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Commandler-Core.iml" filepath="$PROJECT_DIR$/.idea/modules/Commandler-Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Commandler-Core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Commandler-Core_main.iml" group="Commandler-Core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Commandler-Core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Commandler-Core_test.iml" group="Commandler-Core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commandler-jda.iml" filepath="$PROJECT_DIR$/.idea/modules/commandler-jda.iml" group="commandler-jda" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commandler-jda/commandler-jda_main.iml" filepath="$PROJECT_DIR$/.idea/modules/commandler-jda/commandler-jda_main.iml" group="commandler-jda" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commandler-jda/commandler-jda_test.iml" filepath="$PROJECT_DIR$/.idea/modules/commandler-jda/commandler-jda_test.iml" group="commandler-jda" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commandler-string.iml" filepath="$PROJECT_DIR$/.idea/modules/commandler-string.iml" />
+    </modules>
+  </component>
+</project>

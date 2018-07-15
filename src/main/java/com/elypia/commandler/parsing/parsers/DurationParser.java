@@ -2,7 +2,7 @@ package com.elypia.commandler.parsing.parsers;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.CommandEvent;
-import com.elypia.commandler.parsing.IParamParser;
+import com.elypia.commandler.impl.IParamParser;
 
 import java.time.Duration;
 import java.util.*;
@@ -39,7 +39,6 @@ public class DurationParser implements IParamParser<Duration> {
             return duration;
         }
 
-        event.invalidate("Was unable to parse the input: `" + input + "` as a duration.");
         return null;
     }
 

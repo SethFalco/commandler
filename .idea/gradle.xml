@@ -5,24 +5,12 @@
       <GradleProjectSettings>
         <option name="createEmptyContentRootDirectories" value="true" />
         <option name="distributionType" value="WRAPPED" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/../Alexis" />
-        <option name="gradleHome" value="C:/Program Files/gradle-4.6" />
-        <option name="modules">
-          <set>
-            <option value="$PROJECT_DIR$/../Alexis" />
-            <option value="$PROJECT_DIR$" />
-          </set>
-        </option>
-        <option name="useAutoImport" value="true" />
-      </GradleProjectSettings>
-      <GradleProjectSettings>
-        <option name="createEmptyContentRootDirectories" value="true" />
-        <option name="distributionType" value="WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="C:/Program Files/gradle-4.6" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/commandler-jda" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />

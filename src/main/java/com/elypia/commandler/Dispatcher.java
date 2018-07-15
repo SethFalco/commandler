@@ -1,12 +1,12 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.confiler.Confiler;
-import com.elypia.commandler.confiler.reactions.*;
+import com.elypia.commandler.building.Builder;
+import com.elypia.commandler.confiler.reactions.ReactionRecord;
 import com.elypia.commandler.events.*;
+import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsing.Parser;
-import com.elypia.commandler.sending.Builder;
 import com.elypia.commandler.validation.Validator;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
@@ -16,7 +16,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.lang.reflect.*;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Collections;
 
 public class Dispatcher extends ListenerAdapter {
 
@@ -27,7 +27,7 @@ public class Dispatcher extends ListenerAdapter {
 
     private final Commandler commandler;
 
-    private final Confiler confiler;
+    private final IConfiler confiler;
 
     /**
      * Parser is the registry that allows you to define how objects are
@@ -64,10 +64,11 @@ public class Dispatcher extends ListenerAdapter {
 
     public Dispatcher(final Commandler commandler) {
         this.commandler = commandler;
-        this.confiler = commandler.getConfiler();
-        this.parser = new Parser();
-        this.builder = new Builder(commandler);
-        this.validator = new Validator(commandler);
+
+        confiler = commandler.getConfiler();
+        parser = new Parser();
+        builder = new Builder(commandler);
+        validator = new Validator(commandler);
     }
 
     @Override
@@ -160,12 +161,19 @@ public class Dispatcher extends ListenerAdapter {
      */
 
     public void processCommand(GenericMessageEvent messageEvent, Message msg, String content) {
-        if (msg.getAuthor().isBot() && msg.getAuthor() != msg.getJDA().getSelfUser())
+        User author = msg.getAuthor();
+
+        if (author.isBot() && author != msg.getJDA().getSelfUser())
+            return;
+
+        CommandInput input = confiler.processEvent(messageEvent, content);
+
+        if (input == null)
             return;
 
         CommandEvent event = new CommandEvent(commandler, messageEvent, msg, content);
 
-        if (!event.isValid() || !commandler.getRootAlises().contains(event.getModule().toLowerCase()) || !parseCommand(event))
+        if (!commandler.getRootAlises().contains(event.getModule().toLowerCase()) || !parseCommand(event))
             return;
 
         AbstractMetaCommand metaCommand = event.getMetaCommand();

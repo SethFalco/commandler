@@ -2,7 +2,7 @@ package com.elypia.commandler.parsing.parsers;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.CommandEvent;
-import com.elypia.commandler.parsing.IParamParser;
+import com.elypia.commandler.impl.IParamParser;
 
 public class BooleanParser implements IParamParser<Boolean> {
 
@@ -38,7 +38,6 @@ public class BooleanParser implements IParamParser<Boolean> {
                 return false;
         }
 
-        event.invalidate("Input '" + input + "'can't be parsed as a boolean (true / false) value.");
         return null;
     }
 }

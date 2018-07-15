@@ -1,11 +1,11 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.confiler.*;
+import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.MetaCommand;
 import com.elypia.commandler.modules.*;
-import com.elypia.commandler.parsing.IParamParser;
-import com.elypia.commandler.sending.IMessageBuilder;
-import com.elypia.commandler.validation.*;
+import com.elypia.commandler.impl.IParamParser;
+import com.elypia.commandler.building.IMessageBuilder;
 import net.dv8tion.jda.core.JDA;
 
 import java.lang.annotation.Annotation;
@@ -33,7 +33,7 @@ public class Commandler {
      * This will assume the value of <em>!</em> if not specified.
      */
 
-    private final Confiler confiler;
+    private final IConfiler confiler;
 
     /**
      * The event handler registered to JDA to recieved events for Commandler
@@ -168,7 +168,7 @@ public class Commandler {
         return dispatcher;
     }
 
-    public Confiler getConfiler() {
+    public IConfiler getConfiler() {
         return confiler;
     }
 

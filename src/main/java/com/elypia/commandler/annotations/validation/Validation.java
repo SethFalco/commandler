@@ -15,5 +15,5 @@ public @interface Validation {
      * @return The path to the icon that represents this validator.
      */
 
-    String value() default "";
+    String value();
 }

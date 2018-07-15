@@ -3,14 +3,14 @@ package com.elypia.commandler.validation.param;
 import com.elypia.commandler.annotations.validation.param.Limit;
 import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.metadata.MetaParam;
-import com.elypia.commandler.validation.IParamValidator;
+import com.elypia.commandler.impl.IParamValidator;
 
 public class LimitValidator implements IParamValidator<Number, Limit> {
 
     @Override
     public boolean validate(CommandEvent event, Number value, Limit limit, MetaParam param) {
         if (value.intValue() < limit.min() || value.intValue() > limit.max())
-            return event.invalidate(buildMessage("The parameter `" + param.getParamAnnotation().name(), limit));
+            return event.invalidate(buildMessage("The parameter `" + param.getParamAnnotation().name() + "`", limit));
 
         return true;
     }
@@ -22,9 +22,9 @@ public class LimitValidator implements IParamValidator<Number, Limit> {
 
     private String buildMessage(String item, Limit limit) {
         if (limit.min() == Long.MIN_VALUE && limit.max() != Long.MAX_VALUE)
-            return String.format("%s must have a value less than %,d!", item, limit.max());
+            return String.format("%s must have a value less than or equal to %,d!", item, limit.max());
         else if (limit.min() != Long.MIN_VALUE && limit.max() == Long.MAX_VALUE)
-            return String.format("%s must have a value greater than %,d!", item, limit.min());
+            return String.format("%s must have a value greater than or equal to %,d!", item, limit.min());
         else
             return String.format("%s must have a value between %,d and %,d!", item, limit.min(), limit.max());
     }

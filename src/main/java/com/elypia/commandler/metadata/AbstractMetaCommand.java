@@ -5,7 +5,7 @@ import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.Validation;
 import com.elypia.commandler.exceptions.MalformedCommandException;
 import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.validation.ICommandValidator;
+import com.elypia.commandler.impl.ICommandValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -101,7 +101,7 @@ public abstract class AbstractMetaCommand {
             if (validator != null)
                 validators.put(MetaValidator.of(annotation), validator);
             else
-                throw new MalformedCommandException(String.format("Command %s in module %s (%s) has the %s annotation, but a validator of this type is not registered.", command.name(), metaModule.getModule().name(), clazz.getName(), type.getName()));
+                throw new MalformedCommandException(String.format("Command in module %s (%s) has the %s annotation, but a validator of this type is not registered.", metaModule.getModule().name(), clazz.getName(), type.getName()));
         });
     }
 

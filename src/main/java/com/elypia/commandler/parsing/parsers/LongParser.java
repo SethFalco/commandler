@@ -2,7 +2,7 @@ package com.elypia.commandler.parsing.parsers;
 
 import com.elypia.commandler.data.SearchScope;
 import com.elypia.commandler.events.CommandEvent;
-import com.elypia.commandler.parsing.IParamParser;
+import com.elypia.commandler.impl.IParamParser;
 
 public class LongParser implements IParamParser<Long> {
 
@@ -11,7 +11,6 @@ public class LongParser implements IParamParser<Long> {
         try {
             return Long.parseLong(input);
         } catch (NumberFormatException ex){
-            event.invalidate("Parameter `" + input + "` is not a number.");
             return null;
         }
     }

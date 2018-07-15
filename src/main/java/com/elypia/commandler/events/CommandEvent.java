@@ -1,166 +1,189 @@
 package com.elypia.commandler.events;
 
-import com.elypia.commandler.Commandler;
-import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.confiler.Confiler;
-import com.elypia.commandler.metadata.*;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.*;
+import com.elypia.commandler.*;
+import com.elypia.commandler.impl.Confiler;
+import com.elypia.commandler.confiler.reactions.ReactionRecord;
+import com.elypia.commandler.metadata.AbstractMetaCommand;
+import com.elypia.commandler.building.Builder;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.*;
-import java.util.regex.*;
+import java.util.function.Consumer;
 
-public class CommandEvent extends AbstractEvent {
+public class CommandEvent {
 
-    /**
-     * If the commands performed is considered a valid commands at all.
-     */
-
-	private boolean isValid;
+    protected GenericMessageEvent event;
 
     /**
-     * The root alias refers to the first segment of a commands which may be the alias of a {@link Module} <br>
-     * <strong>Possible null</strong>: If commands is not {@link #isValid() valid}.
-     */
-
-	private String module;
-
-	/**
-	 * The module associated with this command if the module is valid.
-	 */
-
-	private MetaModule metaModule;
-
-    /**
-     * The commands segment of this commands if valid, this refers to which commands
-     * in the specified module to perform. <br>
-     * <br>
-     * <strong>Possible null</strong>: <br>
-     * If commands is not {@link #isValid() valid}.
-     */
-
-	private String command;
-
-    /**
-     * Calls {@link #CommandEvent(Commandler, GenericMessageEvent, Message, String)}
-     * with the content as this the content of this message.
+     * The {@link Message} that triggered this commands. <br>
+     * The contents of this message it not necessarily the commands the message event is parsing.
      *
-     * @param commandler The parent {@link Commandler} instance spawning this event.
-     * @param event The {@link MessageReceivedEvent} or {@link MessageUpdateEvent} as provided by {@link JDA}.
-     * @param message The {@link Message} to attempt to process as a commands.
+     * @see #trigger(String)
      */
 
-	public CommandEvent(Commandler commandler, GenericMessageEvent event, Message message) {
-		this(commandler, event, message, message.getContentRaw());
-	}
+    protected Message message;
 
     /**
-     *  Parse the {@link JDA} {@link GenericMessageEvent} into an event object {@link Commandler}
-     *  will better utilise.
+     * The parent {@link Commandler} instance that spawned this {@link CommandEvent}.
+     */
+
+    protected Commandler commandler;
+
+    /**
+     * A reference to the configuration object for our {@link #confiler}.
+     */
+
+    protected Confiler confiler;
+
+    /**
+     * A list of all parameters associated with this commands. This list may contain
+     * both {@link String}s and {@link String[]}s. List parameters (comma seperated) are stored
+     * as an array.
+     */
+
+    protected CommandInput input;
+
+    private List<String> reactions;
+
+    private Map<String, Object> objectStore;
+
+    /**
+     * The command associated with this command if the command is valid.
+     */
+
+    protected AbstractMetaCommand metaCommand;
+
+    public CommandEvent(Commandler commandler, GenericMessageEvent event, Message message) {
+        this.commandler = commandler;
+        this.event = event;
+        this.message = message;
+        reactions = new ArrayList<>();
+        objectStore = new HashMap<>();
+
+        confiler = commandler.getConfiler();
+    }
+
+    public void addReaction(String... unicode) {
+        reactions.addAll(Arrays.asList(unicode));
+    }
+
+    public void storeObject(String name, Object object) {
+        objectStore.put(name, object);
+    }
+
+    public List<String> getReactions() {
+        return reactions;
+    }
+
+    /**
+     * Send a response to the {@link MessageChannel} this event occured in. <br>
+     * This is useful when using {@link Consumer}s as you're unable to return from within
+     * an anonymous function.
      *
-     * @param commandler The parent {@link Commandler} instance spawning this event.
-     * @param event The {@link MessageReceivedEvent} or {@link MessageUpdateEvent} as provided by {@link JDA}.
-     * @param message The {@link Message} to attempt to process as a commands.
-     * @param content The commands itself, this may be different from the contents of the message sent.
+     * @param object The item to send to the {@link Builder} to process.
+     * @param <T> Type of object to send, this type is compared to the types in our
+     * {@link Builder} so we know how to send it.
      */
 
-	public CommandEvent(Commandler commandler, GenericMessageEvent event, Message message, String content) {
-		super(commandler, event, message);
+    public <T> void reply(T object) {
+        Builder builder = commandler.getDispatcher().getBuilder();
+        Message message = builder.buildMessage(this, object);
+        event.getChannel().sendMessage(message).queue(msg -> {
+            if (!reactions.isEmpty()) {
+                ReactionRecord record = new ReactionRecord();
+                record.setCommandId(metaCommand.getCommand().id());
+                record.setChannelId(msg.getChannel().getIdLong());
+                record.setMessageId(msg.getIdLong());
+                record.setParentMessage(this.message);
+                record.setOwnerId(msg.getAuthor().getIdLong());
 
-		confiler = commandler.getConfiler();
-		params = new ArrayList<>();
+                Map<String, List<String>> params = new HashMap<>();
+                for (int i = 0; i < params.size(); i++)
+                    params.put(metaCommand.getInputParams().get(i).getParamAnnotation().name(), this.params.get(i));
 
-		Pattern pattern = confiler.getCommandRegex(event);
-		Matcher matcher = pattern.matcher(content);
+                record.setParams(params);
 
-		isValid = matcher.matches();
+                record.setObjectStore(objectStore);
+                confiler.getReactionController().startTrackingEvents(record);
+            }
 
-		if (!isValid)
-			return;
-
-		module = matcher.group("module");
-		command = matcher.group("commands");
-
-		String parameters = matcher.group("params");
-
-		if (parameters != null) {
-			Pattern splitPattern = confiler.getSplitRegex(event);
-			matcher = confiler.getParamRegex(event).matcher(parameters);
-
-			while (matcher.find()) {
-				String group = matcher.group();
-				Matcher splitMatcher = splitPattern.matcher(group);
-
-				List<String> input = new ArrayList<>();
-				while (splitMatcher.find()) {
-					String quote = splitMatcher.group("quote");
-					input.add(quote != null ?  quote : splitMatcher.group("word"));
-				}
-
-				params.add(input);
-			}
-		}
-	}
-
-	/**
-	 * If an error occurs during the command, if for whatever reason
-	 * the syntax is valid but the command event can't be performed,
-	 * invalidate the command with the reason why we can't perform it.
-	 * If the value is null, fail silently and don't send a message. <br>
-	 * The reason for this is sent in the channel the command was performed in
-	 * if not null.
-	 *
-	 * @param reason The message to post as to why we aren't going to perform the command.
-	 * @return The new state of {@link #isValid}; this should <strong>always</strong> be <em>false</em>.
-	 */
-
-	public boolean invalidate(String reason) {
-		isValid = false;
-
-		if (reason != null)
-			event.getChannel().sendMessage(reason).queue();
-
-		return isValid;
-	}
+            reactions.forEach(s -> msg.addReaction(s).queue());
+        });
+    }
 
     /**
-     * @return If message sent actually fits the commands format as
-     * dictated in {@link Confiler#getCommandRegex(GenericMessageEvent)}.
+     * If the bot has permission to, delete the message that triggered this event. <br>
+     * This will do nothing in {@link ChannelType#PRIVATE} channels a user may only delete it's
+     * own messages and the bot can't trigger it's own event.
+     *
+     * @return If the bot sent a request to delete the {@link Message}.
      */
 
-	public boolean isValid() {
-		return isValid;
-	}
+    public boolean tryDeleteMessage() {
+        if (!event.isFromType(ChannelType.TEXT))
+            return false;
+
+        if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+            getMessage().delete().queue();
+            return true;
+        }
+
+        return false;
+    }
 
     /**
-     * @return Get the module of a command, this is normally the first thing
-     * after the prefix.
+     * Trigger another commands which branches from this commands. The new commands
+     * will use the same {@link GenericMessageEvent} and {@link Message} but with the commands
+     * specified instead. <br>
+     * <strong>Do not</strong> include the prefix when executing a trigger. <br>
+     * Example: <br>
+     * <em>event.trigger("bot help");</em>
+     *
+     * @param trigger The new commands to process instead.
      */
 
-	public String getModule() {
-		return module;
-	}
+    public void trigger(String trigger) {
+        String command = event.getJDA().getSelfUser().getAsMention();
+        command += trigger;
 
-	public MetaModule getMetaModule() {
-		return metaModule;
-	}
+        if (this instanceof ReactionEvent)
+            commandler.getDispatcher().processCommand(event, message, command);
+        else
+            commandler.getDispatcher().processCommand(event, message, command);
 
-	public void setMetaModule(MetaModule metaModule) {
-		this.metaModule = metaModule;
-		module = metaModule.getModule().aliases()[0];
-	}
+    }
 
     /**
-     * @return Get the commands for this event.
+     * @return The {@link GenericMessageEvent} that caused this event.
      */
 
-	public String getCommand() {
-		return command;
-	}
+    public GenericMessageEvent getMessageEvent() {
+        return event;
+    }
 
-	public void setMetaCommand(AbstractMetaCommand metaCommand) {
-		this.metaCommand = metaCommand;
-		command = metaCommand.getCommand().aliases()[0];
-	}
+    /**
+     * @return The {@link Message} that caused this event.
+     */
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public Commandler getCommandler() {
+        return commandler;
+    }
+
+    public Confiler getConfiler() {
+        return confiler;
+    }
+
+    public AbstractMetaCommand getMetaCommand() {
+        return metaCommand;
+    }
+
+    public void setMetaCommand(AbstractMetaCommand metaCommand) {
+        this.metaCommand = metaCommand;
+    }
 }

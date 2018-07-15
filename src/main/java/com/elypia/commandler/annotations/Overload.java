@@ -16,6 +16,7 @@ public @interface Overload {
 
     String INHERIT = "";
     String[] INHERIT_NONE = {};
+    Class<? extends Annotation> INHERIT_VALDIDATION = Overload.class;
 
     /**
      * Before you can use this you must ensure the command you are overloading
@@ -41,9 +42,9 @@ public @interface Overload {
      * This dictates which validators are copied from the parent {@link Command}.
      * This copies each validator by class. <br>
      * If an empty array is passed, no validators are copied. <br>
-     * If {@link Overload} is passed (default), all validators are copied
+     * If {@link #INHERIT_VALDIDATION} is passed (default), all validators are copied
      * unless otherwise overridden by the overloading method.
      */
 
-    Class<? extends Annotation>[] validation() default Overload.class;
+    Class<? extends Annotation>[] validation() default INHERIT_VALDIDATION;
 }
