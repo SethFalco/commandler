@@ -4,9 +4,21 @@
     <bytecodeTargetLevel>
       <module name="Commandler-Core_example" target="1.8" />
       <module name="Commandler-Core_main" target="1.8" />
+      <module name="Commandler-core_main" target="1.8" />
       <module name="Commandler-Core_test" target="1.8" />
+      <module name="Commandler-core_test" target="1.8" />
       <module name="commandler-jda_main" target="1.8" />
       <module name="commandler-jda_test" target="1.8" />
+      <module name="Commandler_main" target="1.8" />
+      <module name="Commandler_test" target="1.8" />
+      <module name="core_example" target="1.8" />
+      <module name="core_main" target="1.8" />
+      <module name="core_test" target="1.8" />
+      <module name="jda_example" target="1.8" />
+      <module name="jda_main" target="1.8" />
+      <module name="jda_test" target="1.8" />
+      <module name="string_main" target="1.8" />
+      <module name="string_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

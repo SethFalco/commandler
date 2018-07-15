@@ -1,0 +1,23 @@
+plugins {
+    id "java"
+    id "idea"
+    id "jacoco"
+}
+
+configurations {
+    exampleImplementation.extendsFrom testImplementation
+}
+
+sourceSets {
+    example {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+        }
+    }
+}
+
+dependencies {
+    implementation project(":core")
+    implementation 'net.dv8tion:JDA:3.6.0_376'
+}

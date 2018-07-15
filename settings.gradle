@@ -1,4 +1,4 @@
-rootProject.name = 'Commandler-Core'
-include 'commandler-jda'
-include 'commandler-string'
-
+rootProject.name = 'Commandler'
+include 'core'
+include 'jda'
+include 'string'
