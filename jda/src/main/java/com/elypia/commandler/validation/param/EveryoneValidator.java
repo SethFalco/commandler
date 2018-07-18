@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation.param;
 
 import com.elypia.commandler.annotations.validation.param.Everyone;
-import com.elypia.commandler.events.CommandEvent;
+import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.impl.IParamValidator;
 import net.dv8tion.jda.core.Permission;

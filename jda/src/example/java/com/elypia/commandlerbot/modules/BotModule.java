@@ -1,5 +1,6 @@
 package com.elypia.commandlerbot.modules;
 
+import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.param.Everyone;
 import com.elypia.commandler.events.*;

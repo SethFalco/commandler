@@ -1,21 +1,20 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.IConfiler;
+import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
-import com.elypia.commandler.modules.CommandHandler;
 
 import java.util.*;
 
-public class CommandInput {
+public class CommandInput<C, E, M> {
 
-    private Commandler commandler;
+    private Commandler<C, E, M> commandler;
 
-    private IConfiler confiler;
+    private IConfiler<C, E, M> confiler;
 
     private String content;
 
-    private MetaModule metaModule;
+    private MetaModule<C, E, M> metaModule;
 
     private String module;
 
@@ -27,7 +26,7 @@ public class CommandInput {
 
     private int parameterCount;
 
-    public CommandInput(Commandler commandler, String content, String module, String command, List<List<String>> parameters) {
+    public CommandInput(Commandler<C, E, M> commandler, String content, String module, String command, List<List<String>> parameters) {
         this.commandler = Objects.requireNonNull(commandler);
         this.content = Objects.requireNonNull(content);
         this.module = Objects.requireNonNull(module);
@@ -67,14 +66,14 @@ public class CommandInput {
      */
 
     public boolean normalize() {
-        for (CommandHandler handler : commandler.getHandlers()) {
-            MetaModule metaModule = handler.getModule();
+        for (IHandler<C, E, M> handler : commandler.getHandlers()) {
+            MetaModule<C, E, M> metaModule = handler.getModule();
 
             if (metaModule.hasPerformed(module)) {
                 this.metaModule = metaModule;
 
                 if (command != null) {
-                    MetaCommand metaCommand = metaModule.getCommand(command);
+                    MetaCommand<C, E, M> metaCommand = metaModule.getCommand(command);
 
                     if (metaCommand != null) {
                         this.abstractMetaCommand = metaCommand;
@@ -95,46 +94,46 @@ public class CommandInput {
                     }
                 }
 
-                MetaCommand defaultCommand = metaModule.getDefaultCommand();
+                MetaCommand<C, E, M> defaultCommand = metaModule.getDefaultCommand();
 
                 if (defaultCommand == null)
-                    return event.invalidate("You've specified a module without a valid command, however there is no default command associated with this module.");
+                    return false;
 
                 if (command != null)
-                    event.getParams().add(0, Collections.singletonList(command));
+                    parameters.add(0, Collections.singletonList(command));
 
-                if (event.getParams().size() != defaultCommand.getInputRequired()) {
-                    for (MetaOverload metaOverload : defaultCommand.getOverloads()) {
-                        if (event.getParams().size() == metaOverload.getInputRequired()) {
-                            event.setMetaCommand(metaOverload);
+                if (parameters.size() != defaultCommand.getInputRequired()) {
+                    for (MetaOverload<C, E, M> metaOverload : defaultCommand.getOverloads()) {
+                        if (parameters.size() == metaOverload.getInputRequired()) {
+                            abstractMetaCommand = metaOverload;
                             return true;
                         }
                     }
 
-                    return event.invalidate("It seems the command you attemped to do doesn't exist, maybe you should try the help command instead?");
+                    return false;
                 }
 
-                event.setMetaCommand(defaultCommand);
+                abstractMetaCommand = defaultCommand;
                 return true;
             }
 
             for (MetaCommand metaCommand : metaModule.getStaticCommands()) {
                 if (metaCommand.hasPerformed(module)) {
                     if (command != null)
-                        event.getParams().add(0, Collections.singletonList(command));
+                        parameters.add(0, Collections.singletonList(command));
 
-                    event.setMetaModule(metaModule);
-                    event.setMetaCommand(metaCommand);
+                    metaModule = metaModule;
+                    metaCommand = metaCommand;
 
-                    if (event.getParams().size() != metaCommand.getInputRequired())
-                        return event.invalidate("The parameters you provided doesn't match up with the paramaters this command required.");
+                    if (parameters.size() != metaCommand.getInputRequired())
+                        return false;
 
                     return true;
                 }
             }
         }
 
-        return event.invalidate(null);
+        return false;
     }
 
 

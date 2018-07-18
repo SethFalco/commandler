@@ -1,17 +1,18 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.Utils;
+import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.*;
-import com.elypia.commandler.events.*;
 import com.elypia.commandler.exceptions.*;
-import com.elypia.commandler.modules.CommandHandler;
+import org.slf4j.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
-public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaCommand> {
+public class MetaCommand<C, E, M> extends AbstractMetaCommand implements Comparable<MetaCommand> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MetaCommand.class);
 
     /**
      * This is the ID of the command as managed used internally by Commandler.
@@ -32,7 +33,7 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
      * meta data from here.
      */
 
-    private List<MetaOverload> overloads;
+    private List<MetaOverload<C, E, M>> overloads;
 
     /**
      * Is this a {@link Static} command. <br>
@@ -86,15 +87,17 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
 
         parseAliases();
 
-        if (id != -1) {
-            commandler.getCommands().put(id, this);
-            parseOverloads();
-        }
+//        if (id != -1) {
+//            commandler.getCommands().put(id, this);
+//            parseOverloads();
+//        }
+
         if (isStatic) {
-            if (!Collections.disjoint(commandler.getRootAlises(), aliases))
+            if (!Collections.disjoint(commandler.getRoots().keySet(), aliases))
                 throw new RecursiveAliasException(String.format("Command %s in module %s (%s) contains a static alias which has already been registered by a previous module or static command.", command.name(), metaModule.getModule().name(), metaModule.getHandlerType().getName()));
 
-            commandler.getRootAlises().addAll(aliases);
+            for (String in : aliases)
+                commandler.getRoots().put(in, metaModule);
         }
 
         isPublic = !command.help().equals("");
@@ -116,7 +119,7 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
             aliases.add(alias.toLowerCase());
 
         if (aliases.size() != command.aliases().length)
-            Utils.log("Command %s in module %s (%s) contains multiple aliases which are identical.", command.name(), metaModule.getModule().name(), clazz.getName());
+            logger.warn("Command {} in module {} ({}) contains multiple aliases which are identical.", command.name(), metaModule.getModule().name(), clazz.getName());
     }
 
     /**
@@ -144,7 +147,7 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
                 isStatic = true;
             else if (type == Default.class)
                 isDefault = true;
-            else if (type == IgnoreGlobal.class)
+            else if (type == Ignore.class)
                 ignoresGlobal = true;
         }
 
@@ -173,7 +176,7 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
 
         Param[] params = method.getAnnotationsByType(Param.class);
         Parameter[] parameters = method.getParameters();
-        inputRequired = (int)Arrays.stream(parameters).filter(o -> !AbstractEvent.class.isAssignableFrom(o.getType())).count();
+        inputRequired = (int)Arrays.stream(parameters).filter(o -> !CommandEvent.class.isAssignableFrom(o.getType())).count();
 
         if (inputRequired != params.length)
             throw new MalformedCommandException(String.format("Command %s in module %s (%s) doesn't contain the correct number of @Param annotations.", command.name(), metaModule.getModule().name(), clazz.getName()));
@@ -184,10 +187,10 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
             Parameter parameter = parameters[i];
             Param param = null;
 
-            if (!AbstractEvent.class.isAssignableFrom(parameter.getType()))
+            if (!CommandEvent.class.isAssignableFrom(parameter.getType()))
                 param = params[i - offset];
             else if (++offset == 2)
-                Utils.log("Command %s in module %s (%s) contains multiple MessageEvent parameters, there is no benefit to this.", command.name(), metaModule.getModule().name(), clazz.getName());
+                logger.warn("Command {} in module {} ({}) contains multiple MessageEvent parameters, there is no benefit to this.", command.name(), metaModule.getModule().name(), clazz.getName());
 
             MetaParam meta = MetaParam.of(this, param, parameter);
             metaParams.add(meta);
@@ -214,7 +217,7 @@ public class MetaCommand extends AbstractMetaCommand implements Comparable<MetaC
         return aliases.contains(input.toLowerCase());
     }
 
-    public List<MetaOverload> getOverloads() {
+    public List<MetaOverload<C, E, M>> getOverloads() {
         return overloads;
     }
 

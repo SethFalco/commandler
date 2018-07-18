@@ -1,24 +1,18 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.building.Builder;
+import com.elypia.commandler.components.*;
 import com.elypia.commandler.impl.*;
-import com.elypia.commandler.metadata.MetaCommand;
-import com.elypia.commandler.modules.*;
-import com.elypia.commandler.impl.IParamParser;
-import com.elypia.commandler.building.IMessageBuilder;
-import com.elypia.commandler.parsing.Parser;
-import com.elypia.commandler.validation.Validator;
-import net.dv8tion.jda.core.JDA;
+import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.components.Validator;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
 
-
-
 /**
  * This is the manager class and core of the {@link Commandler}
  * framework. This centralises all usage of Commandler for
- * implementation.
+ * implementation. This and the relevent classes must be implemented
+ * for the client you wish to integrate with before a bot can be made.
  *
  * @param <C> The client this {@link Commandler} manages.
  * @param <E> The type of event we're handling.
@@ -29,7 +23,9 @@ public abstract class Commandler<C, E, M> {
 
     /**
      * The client represents the platform you're chatting on
-     * and where {@link E messages} are being receieved.
+     * and where {@link E messages} are being receieved. <br>
+     * If a client is not applicable to this implementation, this can be
+     * set to {@link Void} to indicate this.
      */
 
     protected C client;
@@ -42,74 +38,55 @@ public abstract class Commandler<C, E, M> {
      * of the Confiler.
      */
 
-    protected IConfiler<E, M> confiler;
+    protected IConfiler<C, E, M> confiler;
 
     /**
-     * The event handler registered to JDA to recieved events for Commandler
-     * to handle.
+     * The proxy between the {@link #client} event handler, and {@link Commandler}.
+     * This will have an implementation to process the command into something
+     * {@link Commandler} can interpret.
      */
 
-    protected IDispatcher<E, M> dispatcher;
+    protected IDispatcher<C, E, M> dispatcher;
 
     /**
-     * All registered modules / commands handlers with this JDACommandler.
+     * All registered modules with this {@link Commandler}.
      */
 
-    protected List<CommandHandler> handlers;
+    protected List<IHandler<C, E, M>> handlers;
 
     /**
      * Any root alias, this could be a module alias or an alias to a
      * static commmand. We need to keep track of a list to ensure a root
-     * alias isn't registered more than once.
+     * alias isn't registered more than once, we also use this as a global
+     * reference to obtain the a module.
      */
 
-    protected Collection<String> rootAlises;
+    protected Map<String, MetaModule<C, E, M>> roots;
+
+    protected Parser parser;
+
+    protected Validator validator;
+
+    protected Builder builder;
 
     /**
-     * A global map of all commands with reference to an ID.
-     * This is used for reaction handling as they are stored by ID so
-     * it is faster to obtain the command by ID rather than search for it
-     * though iterating {@link #handlers}.
+     * Creates an instance of the {@link Commandler} framework.
+     * This requires an {@link IConfiler} to specify configuration for this
+     * platform, and an {@link IDispatcher} to specify how to process the
+     * {@link E event} and / or {@link M message} received from the {@link C client}.
      */
 
-    protected Map<Integer, MetaCommand> commands;
-
-
-
-    public Commandler(String... prefixes) {
-        this(new Confiler<>(prefixes));
-    }
-
-    /**
-     * Creates an instance of the Commandler with the provided Confiler.
-     * This could be the {@link DefaultConfiler} or a class made using the
-     * {@link Confiler} interface. The Confiler is essentially some basic settings
-     * and functions for the bot to use, such as how to get the prefix if for example
-     * you want a custom prefix per guild.
-     *
-     * @param confiler The configuration for Commandler.
-     */
-
-    public Commandler(Confiler<E> confiler) {
+    public Commandler(IConfiler<C, E, M> confiler) {
         this.confiler = confiler;
-        dispatcher = new Dispatcher<E, M>(this);
         handlers = new ArrayList<>();
-        rootAlises = new ArrayList<>();
-        commands = new HashMap<>();
-
-        registerModule(new HelpModule());
+        roots = new HashMap<>();
+        parser = new Parser(this);
+        validator = new Validator();
+        builder = new Builder();
     }
 
-    /**
-     * Register multiple handlers at once.
-     * Calls {@link #registerModule(CommandHandler)} for each module specified.
-     *
-     * @param handlers A list of modules to register at once.
-     */
-
-    public void registerModules(CommandHandler... handlers) {
-        for (CommandHandler handler : handlers)
-            registerModule(handler);
+    public void setDispatcher(IDispatcher<C, E, M> dispatcher) {
+        this.dispatcher = dispatcher;
     }
 
     /**
@@ -119,13 +96,13 @@ public abstract class Commandler<C, E, M> {
      * @param handler The commands handler / module to register.
      */
 
-    public void registerModule(CommandHandler handler) {
-        boolean enabled = handler.init(jda, this);
+    public void registerModule(IHandler<C, E, M> handler) {
+        boolean enabled = handler.init(this);
 
-        handler.setEnabled(enabled);
+//        handler.setEnabled(enabled);
         handlers.add(handler);
 
-        Collections.sort(handlers);
+//        Collections.sort(handlers);
     }
 
     public M trigger(E event, String input) {
@@ -133,9 +110,34 @@ public abstract class Commandler<C, E, M> {
     }
 
 
+    /**
+     * You can register custom parsers, this allows Commandler to know
+     * how to parse certain objects as method parameters for you.
+     *
+     * @param clazz The type of class this parser will parse.
+     * @param parser The parser which implements {@link IParser}, this has the method
+     * which will interpret the String as our class object, else invalidate the command.
+     * @param <T> The type of class this parses.
+     */
+
+    public <T> void registerParser(Class<T> clazz, IParser<T> parser) {
+        this.parser.registerParser(clazz, parser);
+    }
+
+    public <T> void registerBuilder(Class<T> clazz, IBuilder<T, M> builder) {
+        this.builder.registerBuilder(clazz, builder);
+    }
+
+    public <T extends Annotation> void registerValidator(Class<T> clazz, IParamValidator<?, T> validator) {
+        this.validator.registerValidator(clazz, validator);
+    }
+
+    public <T extends Annotation> void registerValidator(Class<T> clazz, ICommandValidator<T> validator) {
+        this.validator.registerValidator(clazz, validator);
+    }
 
     public C getClient() {
-        return jda;
+        return client;
     }
 
     /**
@@ -145,32 +147,35 @@ public abstract class Commandler<C, E, M> {
      * @param jda The client object for your bot.
      */
 
-    public void setJDA(C client) {
-        this.jda = Objects.requireNonNull(jda);
-        jda.addEventListener(dispatcher);
+    public Parser getParser() {
+        return parser;
+    }
+
+    public Builder<M> getBuilder() {
+        return builder;
+    }
+
+    public Validator getValidator() {
+        return validator;
+    }
+
+    public void setClient(C client) {
+        this.client = Objects.requireNonNull(client);
     }
 
     public IDispatcher getDispatcher() {
         return dispatcher;
     }
 
-    public void setDispatcher(IDispatcher<E, M> dispatcher) {
-        this.dispatcher = dispatcher;
-    }
-
-    public IConfiler<E> getConfiler() {
+    public IConfiler<C, E, M> getConfiler() {
         return confiler;
     }
 
-    public Collection<CommandHandler> getHandlers() {
+    public Collection<IHandler<C, E, M>> getHandlers() {
         return handlers;
     }
 
-    public Collection<String> getRootAlises() {
-        return rootAlises;
-    }
-
-    public Map<Integer, MetaCommand> getCommands() {
-        return commands;
+    public Map<String, MetaModule<C, E, M>> getRoots() {
+        return roots;
     }
 }

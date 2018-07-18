@@ -1,8 +1,8 @@
 package com.elypia.commandler.pages;
 
 import com.elypia.commandler.Commandler;
+import com.elypia.commandler.impl.IHandler;
 import com.elypia.commandler.metadata.MetaModule;
-import com.elypia.commandler.modules.CommandHandler;
 import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
@@ -21,7 +21,7 @@ public class PageBuilder {
 
     private Commandler commandler;
     private Collection<MetaModule> modules;
-    private Collection<CommandHandler> handlers;
+    private Collection<IHandler> handlers;
 
     private String name;
     private String description;
@@ -33,7 +33,7 @@ public class PageBuilder {
     public PageBuilder(Commandler commandler) {
         this.commandler = Objects.requireNonNull(commandler);
         this.handlers = commandler.getHandlers();
-        modules = handlers.stream().map(CommandHandler::getModule).collect(Collectors.toList());
+        modules = handlers.stream().map(IHandler::getModule).collect(Collectors.toList());
 
         velocityProperties = new Properties();
         velocityProperties.setProperty(VelocityEngine.RESOURCE_LOADER, "class");

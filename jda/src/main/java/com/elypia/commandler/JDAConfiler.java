@@ -1,12 +1,7 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.confiler.reactions.DefaultReactionController;
-import com.elypia.commandler.events.CommandEvent;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
-
-import java.util.*;
-import java.util.regex.*;
 
 /**
  * If you're configuing Commandler, it's a good idea to extend and {@link Override}

@@ -2,7 +2,7 @@ package com.elypia.commandler.confiler;
 
 import com.elypia.commandler.CommandInput;
 import com.elypia.commandler.confiler.reactions.DefaultReactionController;
-import com.elypia.commandler.events.CommandEvent;
+import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.impl.*;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 

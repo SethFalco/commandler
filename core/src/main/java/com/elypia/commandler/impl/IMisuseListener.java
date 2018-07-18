@@ -2,10 +2,9 @@ package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.events.CommandEvent;
-import com.elypia.commandler.metadata.MetaCommand;
-import com.elypia.commandler.modules.CommandHandler;
+import com.elypia.commandler.metadata.*;
+
+import java.util.List;
 
 /**
  * Whenever user errors occur such as using the bot incorrectly (<strong>not exceptions</strong>)
@@ -36,6 +35,8 @@ public interface IMisuseListener<M> {
 
     M noDefaultCommand();
 
+    M noParser(CommandEvent event, Class<?> type, String input);
+
     /**
      * This may occur whenever user input fails to parse.
      *
@@ -47,13 +48,23 @@ public interface IMisuseListener<M> {
 
     M parameterParseFailure(CommandEvent event, Class<?> type, String input);
 
+    /**
+     *
+     * @param event
+     * @param param
+     * @param items
+     * @return
+     */
+
+    M unsupportedList(CommandEvent event, MetaParam param, List<String> items);
+
     M commandInvalidated();
 
     M parameterInvalidated();
 
     /**
      * This may occur when a user attempts to perform a command
-     * which isn't the {@link CommandHandler#help(CommandEvent)} command on
+     * which isn't the {@link IHandler#help(CommandEvent)} command on
      * a {@link Module} that has been disbaled.
      *
      * @param event The event that caused this failure.

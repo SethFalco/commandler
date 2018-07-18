@@ -2,9 +2,8 @@ package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.DefaultConfiler;
 import com.elypia.commandler.annotations.validation.command.Developer;
-import com.elypia.commandler.events.CommandEvent;
+import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.pages.PageBuilder;
 
 /**
@@ -15,7 +14,7 @@ import com.elypia.commandler.pages.PageBuilder;
  * the methods from there.
  */
 
-public interface IConfiler<E, M> {
+public interface IConfiler<C, E, M> {
 
     /**
      * Parse the event {@link E} spawned by the client using
@@ -28,7 +27,7 @@ public interface IConfiler<E, M> {
      * @return The parsed contents of the message, or null if the command is invalid.
      */
 
-    CommandInput processEvent(Commandler commandler, E event, String content);
+    CommandInput<C, E, M> processEvent(Commandler<C, E, M> commandler, E event, String content);
 
     IMisuseListener<M> getMisuseListener();
 
@@ -36,7 +35,7 @@ public interface IConfiler<E, M> {
      * The prefix for this event. This can be set to return a static
      * {@link String}. This exists for bots that have a customizable prefix
      * in order to check where the commands was performed and obtain the correct
-     * prefix to use in {@link #processEvent(E, String)} or when
+     * prefix to use in {@link #processEvent(Commandler, E, String)} or when
      * queried elsewhere in the code.
      *
      * @param event The message event as provided by the client.
@@ -73,7 +72,7 @@ public interface IConfiler<E, M> {
      * @see PageBuilder for dynamic webpage generation.
      */
 
-    String getHelpUrl(Commandler commandler, E event);
+    String getHelpUrl(Commandler<C, E, M> commandler, E event);
 
     /**
      * The developers of this application, this can be used internally

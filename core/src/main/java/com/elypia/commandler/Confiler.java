@@ -13,7 +13,7 @@ import java.util.regex.*;
  * from scratch by making an implementation of {@link IConfiler}.
  */
 
-public class Confiler<E> implements IConfiler<E> {
+public class Confiler<C, E, M> implements IConfiler<C, E, M> {
 
     /**
      * The default commands regex, this matches the commands to see if its
@@ -84,7 +84,7 @@ public class Confiler<E> implements IConfiler<E> {
      */
 
     @Override
-    public CommandInput processEvent(Commandler commandler, E event, String content) {
+    public CommandInput processEvent(Commandler<C, E, M> commandler, E event, String content) {
         StringJoiner joiner = new StringJoiner("|");
 
         for (String prefix : getPrefixes(commandler, event))
@@ -124,6 +124,11 @@ public class Confiler<E> implements IConfiler<E> {
         return new CommandInput(commandler, content, module, command, parameters);
     }
 
+    @Override
+    public IMisuseListener<M> getMisuseListener() {
+        return null;
+    }
+
     /**
      * @param event The message event provided by the client.
      * @return The prefixes considered acceptable for this event.
@@ -145,7 +150,7 @@ public class Confiler<E> implements IConfiler<E> {
     }
 
     @Override
-    public String getHelpUrl(Commandler commandler, E event) {
+    public String getHelpUrl(Commandler<C, E, M> commandler, E event) {
         return HELP_URL;
     }
 }

@@ -4,7 +4,7 @@ import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.parsing.parsers.DurationParser;
+import com.elypia.commandler.parsers.DurationParser;
 import net.dv8tion.jda.core.entities.*;
 
 import java.time.Duration;

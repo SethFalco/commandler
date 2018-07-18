@@ -2,7 +2,6 @@ package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.IgnoreGlobal;
-import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.modules.CommandHandler;
 import net.dv8tion.jda.core.EmbedBuilder;

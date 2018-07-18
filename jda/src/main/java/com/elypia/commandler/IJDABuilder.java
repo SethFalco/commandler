@@ -1,6 +1,5 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.events.CommandEvent;
 import com.elypia.commandler.impl.IBuilder;
 
 public interface IJDABuilder<I, O> implements IBuilder<I> {

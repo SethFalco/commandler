@@ -1,6 +1,6 @@
 package com.elypia.commandler.impl;
 
-import com.elypia.commandler.events.CommandEvent;
+import com.elypia.commandler.CommandEvent;
 
 import java.lang.annotation.Annotation;
 

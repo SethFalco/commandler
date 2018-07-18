@@ -1,39 +1,37 @@
 package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.annotations.validation.Validation;
-import com.elypia.commandler.exceptions.MalformedCommandException;
-import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.impl.ICommandValidator;
+import com.elypia.commandler.impl.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractMetaCommand {
+public abstract class AbstractMetaCommand<C, E, M> {
 
     /**
      * The parent {@link Commandler} instance that spawned this object.
      */
 
-    protected Commandler commandler;
+    protected Commandler<C, E, M> commandler;
 
     /**
      * The {@link MetaModule meta data} of the parent {@link CommandHandler}
      * that spawned this {@link MetaCommand}.
      */
 
-    protected MetaModule metaModule;
+    protected MetaModule<C, E, M> metaModule;
 
-    protected CommandHandler handler;
+    protected IHandler<C, E, M> handler;
 
     /**
      * The type of command handler we are handling.
      */
 
-    protected Class<? extends CommandHandler> clazz;
+    protected Class<? extends IHandler> clazz;
 
     /**
      * The {@link Command} annotation associated with this command. <br>
@@ -75,7 +73,7 @@ public abstract class AbstractMetaCommand {
 
     protected int inputRequired;
 
-    public AbstractMetaCommand(MetaModule metaModule, Method method) {
+    public AbstractMetaCommand(MetaModule<C, E, M> metaModule, Method method) {
         this.metaModule = Objects.requireNonNull(metaModule);
         this.method = Objects.requireNonNull(method);
 
@@ -96,12 +94,12 @@ public abstract class AbstractMetaCommand {
         validators = new HashMap<>();
 
         validationAnnotations.forEach((type, annotation) -> {
-            ICommandValidator validator = commandler.getDispatcher().getValidator().getCommandValidators().get(type);
+//            ICommandValidator validator = commandler.getDispatcher().getValidator().getCommandValidators().get(type);
 
-            if (validator != null)
-                validators.put(MetaValidator.of(annotation), validator);
-            else
-                throw new MalformedCommandException(String.format("Command in module %s (%s) has the %s annotation, but a validator of this type is not registered.", metaModule.getModule().name(), clazz.getName(), type.getName()));
+//            if (validator != null)
+//                validators.put(MetaValidator.of(annotation), validator);
+//            else
+//                throw new MalformedCommandException(String.format("Command in module %s (%s) has the %s annotation, but a validator of this type is not registered.", metaModule.getModule().name(), clazz.getName(), type.getName()));
         });
     }
 
@@ -113,15 +111,15 @@ public abstract class AbstractMetaCommand {
         return commandler;
     }
 
-    public CommandHandler getHandler() {
+    public IHandler getHandler() {
         return handler;
     }
 
-    public MetaModule getMetaModule() {
+    public MetaModule<C, E, M> getMetaModule() {
         return metaModule;
     }
 
-    public Class<? extends CommandHandler> getHandlerType() {
+    public Class<? extends IHandler> getHandlerType() {
         return clazz;
     }
 

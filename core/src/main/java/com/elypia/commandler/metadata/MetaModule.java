@@ -1,33 +1,36 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.exceptions.*;
-import com.elypia.commandler.modules.CommandHandler;
+import com.elypia.commandler.impl.IHandler;
+import org.slf4j.*;
 
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MetaModule implements Comparable<MetaModule> {
+public class MetaModule<C, E, M> implements Comparable<MetaModule> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MetaModule.class);
 
     /**
      * Parent {@link Commandler} object this {@link MetaModule} is registered too.
      */
 
-    private Commandler commandler;
+    private Commandler<C, E, M> commandler;
 
     /**
-     * The {@link CommandHandler} this {@link MetaModule} is describing.
+     * The {@link IHandler} this {@link MetaModule} is describing.
      */
 
-    private CommandHandler handler;
+    private IHandler handler;
 
     /**
-     * The {@link Class} type of the {@link CommandHandler} this {@link MetaModule} is describing.
+     * The {@link Class} type of the {@link IHandler} this {@link MetaModule} is describing.
      */
 
-    private Class<? extends CommandHandler> clazz;
+    private Class<? extends IHandler> clazz;
 
     /**
      * The metadata associated with this module.
@@ -50,42 +53,19 @@ public class MetaModule implements Comparable<MetaModule> {
     private Set<String> aliases;
 
     /**
-     * A list of {@link MetaCommand} that were created inside the {@link CommandHandler}.
+     * A list of {@link MetaCommand} that were created inside the {@link IHandler}.
      */
 
-    private List<MetaCommand> metaCommands;
+    private List<MetaCommand<C, E, M>> metaCommands;
 
     /**
      * The {@link Default} command for this module. This value
      * can be null if no default command is specified.
      */
 
-    private MetaCommand defaultCommand;
+    private MetaCommand<C, E, M> defaultCommand;
 
-    /**
-     * Create a wrapper object around this {@link CommandHandler} to obtain any
-     * static information on the method itself or the module annotation as well as
-     * convinience methods to obtain any validation.
-     *
-     * @param commandler The parent this {@link CommandHandler} is registered to.
-     * @param t The {@link CommandHandler} to obtain information from.
-     * @param <T> An instance of the {@link CommandHandler} class.
-     * @return A wrapper object around the commands handler and it's commands.
-     */
-
-    public static <T extends CommandHandler> MetaModule of(Commandler commandler, T t) {
-        return new MetaModule(commandler, t);
-    }
-
-    /**
-     * @see #of(Commandler, CommandHandler)
-     *
-     * @param commandler The parent this {@link CommandHandler} is registered to.
-     * @param t The {@link CommandHandler} to obtain information from.
-     * @param <T> An instance of the {@link CommandHandler} class.
-     */
-
-    private <T extends CommandHandler> MetaModule(Commandler commandler, T t) {
+    public <T extends IHandler<C, E, M>> MetaModule(Commandler<C, E, M> commandler, T t) {
         this.commandler = Objects.requireNonNull(commandler);
         handler = Objects.requireNonNull(t);
         clazz = t.getClass();
@@ -108,7 +88,7 @@ public class MetaModule implements Comparable<MetaModule> {
      * Should an alias be registered that was already registed by another module,
      * we throw an exception as this is considered a malformed command.
      * If everything checks out alright, we add all the aliases to the list
-     * of {@link Commandler#rootAlises root aliases} and reserve these so other
+     * of {@link Commandler#roots root aliases} and reserve these so other
      * modules of static commands can't try consume them.
      *
      * @throws RecursiveAliasException If this module has an alias which was already registered by
@@ -122,10 +102,12 @@ public class MetaModule implements Comparable<MetaModule> {
             aliases.add(alias.toLowerCase());
 
         if (aliases.size() != module.aliases().length)
-            Utils.log("Module %s (%s) contains multiple aliases which are identical.", module.name(), clazz.getName());
+            logger.warn("Module {} ({}) contains multiple aliases which are identical.", module.name(), clazz.getName());
 
-        if (Collections.disjoint(commandler.getRootAlises(), aliases))
-            commandler.getRootAlises().addAll(aliases);
+        if (Collections.disjoint(commandler.getRoots().keySet(), aliases)) {
+            for (String in : aliases)
+                commandler.getRoots().put(in, this);
+        }
         else
             throw new RecursiveAliasException(String.format("Module %s contains an alias which has already been registered by a previous module or static command.", module.name()));
     }
@@ -193,23 +175,10 @@ public class MetaModule implements Comparable<MetaModule> {
         return metaCommands.stream().filter(MetaCommand::isStatic).collect(Collectors.toList());
     }
 
-    public Method getReactionEvent(int commandid, String emote) {
-        for (Method method : clazz.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(Reaction.class)) {
-                Reaction reaction = method.getAnnotation(Reaction.class);
-
-                if (reaction.id() == commandid && Arrays.asList(reaction.emotes()).contains(emote))
-                    return method;
-            }
-        }
-
-        return null;
-    }
-
-    public MetaCommand getCommand(String input) {
+    public MetaCommand<C, E, M> getCommand(String input) {
         input = input.toLowerCase();
 
-        for (MetaCommand metaCommand : metaCommands) {
+        for (MetaCommand<C, E, M> metaCommand : metaCommands) {
             if (metaCommand.getAliases().contains(input))
                 return metaCommand;
         }
@@ -217,15 +186,15 @@ public class MetaModule implements Comparable<MetaModule> {
         return null;
     }
 
-    public Commandler getCommandler() {
+    public Commandler<C, E, M> getCommandler() {
         return commandler;
     }
 
-    public CommandHandler getHandler() {
+    public IHandler<C, E, M> getHandler() {
         return handler;
     }
 
-    public Class<? extends CommandHandler> getHandlerType() {
+    public Class<? extends IHandler> getHandlerType() {
         return clazz;
     }
 
@@ -241,11 +210,11 @@ public class MetaModule implements Comparable<MetaModule> {
         return aliases;
     }
 
-    public Collection<MetaCommand> getMetaCommands() {
+    public Collection<MetaCommand<C, E, M>> getMetaCommands() {
         return metaCommands;
     }
 
-    public MetaCommand getDefaultCommand() {
+    public MetaCommand<C, E, M> getDefaultCommand() {
         return defaultCommand;
     }
 

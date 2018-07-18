@@ -1,17 +1,18 @@
 package com.elypia.commandler.impl;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.events.CommandEvent;
+import com.elypia.commandler.CommandEvent;
 
 /**
  * The {@link IDispatcher} is the event handler, and should recieve
  * all events from the client.
  *
+ * @param <C> The type of the client we're integrating with.
  * @param <E> The type of event we're expecting to process.
  * @param <M> The data type the client expects when replying to a message.
  */
 
-public interface IDispatcher<E, M> {
+public interface IDispatcher<C, E, M> {
 
     /**
      * This should just overload the main {@link #processEvent(Object)} by passing

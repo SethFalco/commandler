@@ -16,7 +16,6 @@ public @interface Overload {
 
     String INHERIT = "";
     String[] INHERIT_NONE = {};
-    Class<? extends Annotation> INHERIT_VALDIDATION = Overload.class;
 
     /**
      * Before you can use this you must ensure the command you are overloading
@@ -46,5 +45,5 @@ public @interface Overload {
      * unless otherwise overridden by the overloading method.
      */
 
-    Class<? extends Annotation>[] validation() default INHERIT_VALDIDATION;
+    Class<? extends Annotation>[] validation() default Overload.class;
 }

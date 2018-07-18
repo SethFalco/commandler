@@ -1,9 +1,8 @@
 package com.elypia.commandler.string.test;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.string.*;
-import com.elypia.commandler.string.building.builders.DefaultBuilder;
+import com.elypia.commandler.string.client.*;
+import com.elypia.commandler.string.commandler.*;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.*;
 
@@ -11,33 +10,41 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestModuleTest {
 
-    private StringCommandler commandler;
+    private static StringCommandler commandler;
 
     @BeforeAll
-    public void beforeAll() {
-        StringDispatcher dispatcher = new StringDispatcher();
-        dispatcher.registerBuilder(String.class, new DefaultBuilder());
-
-        StringCommandler commandler = new StringCommandler(">");
-        commandler.setDispatcher(new StringDispatcher());
-
+    public static void beforeAll() {
+        commandler = new StringCommandler(new StringClient(), ">");
         commandler.registerModule(new TestModule());
     }
 
     @Test
     public void testSay() {
-        String response = commandler.trigger(">test say hi");
+        // ? Imagine we raised this event via the StringClient.
+        StringEvent event = new StringEvent(">test say hi");
+
+        String response = commandler.trigger(event, event.getContent());
         assertEquals("hi", response);
     }
 
     @Test
     public void testRepeat() {
-        String response = commandler.trigger(">test repeat hello 5");
+        StringEvent event = new StringEvent(">test repeat hello 5");
+
+        String response = commandler.trigger(event, event.getContent());
         assertEquals("hellohellohellohellohello", response);
     }
 
+    @Test
+    public void testHelp() {
+        StringEvent event = new StringEvent(">test help");
+
+        String response = commandler.trigger(event, event.getContent());
+        assertEquals("helped", response);
+    }
+
     @Module(name = "Test", aliases = "test", description = "My test module.")
-    public class TestModule extends CommandHandler {
+    public static class TestModule extends StringHandler {
 
         @Command(name = "Say", aliases = "say", help = "I'll repeat something you say!")
         @Param(name = "input", help = "What you want me to say!")

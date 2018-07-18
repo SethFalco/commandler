@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation.command;
 
 import com.elypia.commandler.annotations.validation.command.Permissions;
-import com.elypia.commandler.events.CommandEvent;
+import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.impl.ICommandValidator;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;

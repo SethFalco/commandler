@@ -1,7 +1,7 @@
 package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.events.CommandEvent;
+import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.impl.IParamParser;
 import net.dv8tion.jda.core.entities.*;
 

@@ -1,13 +1,12 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.building.Builder;
+import com.elypia.commandler.components.*;
 import com.elypia.commandler.confiler.reactions.ReactionRecord;
 import com.elypia.commandler.events.*;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.parsing.Parser;
-import com.elypia.commandler.validation.Validator;
+import com.elypia.commandler.components.Validator;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.*;
@@ -313,6 +312,14 @@ public class JDADispatcher extends ListenerAdapter implements IDispatcher<Generi
 
         event.setMetaCommand(defaultCommand);
         return true;
+    }
+
+    public Commandler getCommandler() {
+        return commandler;
+    }
+
+    public Commandler setCommandler() {
+        this.commandler = commandler;
     }
 
     public Parser getParser() {

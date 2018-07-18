@@ -5,13 +5,13 @@ import com.elypia.commandler.annotations.Overload;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class MetaOverload extends AbstractMetaCommand implements Comparable<MetaOverload> {
+public class MetaOverload<C, E, M> extends AbstractMetaCommand<C, E, M> implements Comparable<MetaOverload> {
 
-    private MetaCommand command;
+    private MetaCommand<C, E, M> command;
 
     private Overload overload;
 
-    public MetaOverload(MetaCommand metaCommand, Method method, Overload overload) {
+    public MetaOverload(MetaCommand<C, E, M> metaCommand, Method method, Overload overload) {
         super(metaCommand.getMetaModule(), method);
         this.overload = Objects.requireNonNull(overload);
     }

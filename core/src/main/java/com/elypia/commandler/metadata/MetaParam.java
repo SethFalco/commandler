@@ -1,12 +1,10 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.annotations.validation.Validation;
-import com.elypia.commandler.events.*;
 import com.elypia.commandler.exceptions.MalformedCommandException;
-import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.impl.IParamValidator;
+import com.elypia.commandler.impl.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
@@ -22,7 +20,7 @@ public class MetaParam {
 
     private AbstractMetaCommand abstractMetaCommand;
 
-    private Class<? extends CommandHandler> clazz;
+    private Class<? extends IHandler> clazz;
 
     /**
      * The method paramater this is for. This could be any object including
@@ -69,7 +67,7 @@ public class MetaParam {
 
         clazz = abstractMetaCommand.getHandlerType();
         commandler = abstractMetaCommand.getCommandler();
-        isInput = !AbstractEvent.class.isAssignableFrom(parameter.getType());
+        isInput = !CommandEvent.class.isAssignableFrom(parameter.getType());
 
         parseAnnotations();
     }
@@ -85,14 +83,14 @@ public class MetaParam {
         for (Annotation annotation : parameter.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
 
-            if (type.isAnnotationPresent(Validation.class)) {
-                IParamValidator validator = commandler.getDispatcher().getValidator().getParamValidators().get(type);
-
-                if (validator == null)
-                    throw new MalformedCommandException(String.format("Command %s in module %s (%s) has a parameter with the %s annotation, but a validator of this type is not registered.", abstractMetaCommand.getCommand().name(), abstractMetaCommand.getMetaModule().getModule().name(), clazz.getName(), annotation.annotationType().getName()));
-
-                validators.put(MetaValidator.of(annotation), validator);
-            }
+//            if (type.isAnnotationPresent(Validation.class)) {
+//                IParamValidator validator = commandler.getDispatcher().getValidator().getParamValidators().get(type);
+//
+//                if (validator == null)
+//                    throw new MalformedCommandException(String.format("Command %s in module %s (%s) has a parameter with the %s annotation, but a validator of this type is not registered.", abstractMetaCommand.getCommand().name(), abstractMetaCommand.getMetaModule().getModule().name(), clazz.getName(), annotation.annotationType().getName()));
+//
+//                validators.put(MetaValidator.of(annotation), validator);
+//            }
         }
     }
 
