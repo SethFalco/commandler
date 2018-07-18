@@ -39,21 +39,23 @@ public class Parser {
         confiler = commandler.getConfiler();
         parsers = new HashMap<>();
 
-        registerParser(String.class, new StringParser());
-        registerParser(Number.class, new NumberParser());
-        registerParser(Boolean.class, new BooleanParser());
-        registerParser(URL.class, new UrlParser());
-        registerParser(Duration.class, new DurationParser());
-        registerParser(Enum.class, new EnumParser());
+        registerParser(new StringParser(), String.class);
+        registerParser(new NumberParser(), Number.class, double.class, float.class, long.class, int.class, short.class, byte.class);
+        registerParser(new BooleanParser(), Boolean.class, boolean.class);
+        registerParser(new UrlParser(), URL.class);
+        registerParser(new DurationParser(), Duration.class);
+        registerParser(new EnumParser(), Enum.class);
     }
 
-    public <T> void registerParser(Class<T> type, IParser<T> newParser) {
-        IParser<?> oldParser = parsers.put(type, newParser);
+    public void registerParser(IParser newParser, Class...types) {
+        for (Class type : types) {
+            IParser<?> oldParser = parsers.put(type, newParser);
 
-        if (oldParser == null)
-            logger.debug(REGISTERED_PARSER, newParser.getClass().getName(), type.getName());
-        else
-            logger.info(REPLACED_PARSER, oldParser.getClass().getName(), type.getName(), newParser.getClass().getName());
+            if (oldParser == null)
+                logger.debug(REGISTERED_PARSER, newParser.getClass().getName(), type.getName());
+            else
+                logger.info(REPLACED_PARSER, oldParser.getClass().getName(), type.getName(), newParser.getClass().getName());
+        }
     }
 
     /**
@@ -109,13 +111,13 @@ public class Parser {
             Object[] objects = (Object[])Array.newInstance(clazz, items.size());
 
             for (int i = 0; i < items.size(); i++)
-                objects[i] = clazz.cast(parser.parse(event, clazz, items.get(i)));
+                objects[i] = parser.parse(event, clazz, items.get(i));
 
             return objects;
         }
 
         if (items.size() == 1)
-            return clazz.cast(parser.parse(event, clazz, items.get(0)));
+            return parser.parse(event, clazz, items.get(0));
 
         commandler.getConfiler().getMisuseListener().unsupportedList(event, param, items);
         return null;

@@ -61,9 +61,10 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M>, Comparable<
 	 * @return The message to reply to the client.
 	 */
 
+	@Override
 	@Ignore
 	@Command(name = "Help", aliases = "help")
-	public abstract M help(CommandEvent<C, E, M> event);
+	public abstract Object help(CommandEvent<C, E, M> event);
 
 	public C getClient() {
 		return client;

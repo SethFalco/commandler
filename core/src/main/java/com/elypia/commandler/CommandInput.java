@@ -66,6 +66,8 @@ public class CommandInput<C, E, M> {
      */
 
     public boolean normalize() {
+        commandler.getRoots().get(module);
+
         for (IHandler<C, E, M> handler : commandler.getHandlers()) {
             MetaModule<C, E, M> metaModule = handler.getModule();
 

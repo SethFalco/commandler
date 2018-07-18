@@ -20,7 +20,6 @@ public class TestModuleTest {
 
     @Test
     public void testSay() {
-        // ? Imagine we raised this event via the StringClient.
         StringEvent event = new StringEvent(">test say hi");
 
         String response = commandler.trigger(event, event.getContent());
@@ -33,6 +32,14 @@ public class TestModuleTest {
 
         String response = commandler.trigger(event, event.getContent());
         assertEquals("hellohellohellohellohello", response);
+    }
+
+    @Test
+    public void testStaticPing() {
+        StringEvent event = new StringEvent(">ping");
+
+        String response = commandler.trigger(event, event.getContent());
+        assertEquals("pong!", response);
     }
 
     @Test
@@ -57,6 +64,12 @@ public class TestModuleTest {
         @Param(name = "count", help = "The number of times I should say it")
         public String repeat(String input, int count) {
             return StringUtils.repeat(input, count);
+        }
+
+        @Static
+        @Command(name = "Ping!", aliases = "ping", help = "Check if the bot is alive!")
+        public String ping() {
+            return "pong!";
         }
     }
 }

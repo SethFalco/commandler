@@ -56,7 +56,7 @@ public interface IHandler<C, E, M> {
 
     @Ignore
     @Command(name = "Help", aliases = "help")
-    M help(CommandEvent<C, E, M> event);
+    Object help(CommandEvent<C, E, M> event);
 
     MetaModule<C, E, M> getModule();
 }

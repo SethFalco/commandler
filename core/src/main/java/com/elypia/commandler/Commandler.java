@@ -120,8 +120,8 @@ public abstract class Commandler<C, E, M> {
      * @param <T> The type of class this parses.
      */
 
-    public <T> void registerParser(Class<T> clazz, IParser<T> parser) {
-        this.parser.registerParser(clazz, parser);
+    public void registerParser(IParser parser, Class... types) {
+        this.parser.registerParser(parser, types);
     }
 
     public <T> void registerBuilder(Class<T> clazz, IBuilder<T, M> builder) {
