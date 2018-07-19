@@ -1,7 +1,8 @@
-package com.elypia.commandler.string.commandler;
+package com.elypia.commandler.string;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.string.commandler.builders.DefaultBuilder;
+import com.elypia.commandler.parsers.NumberParser;
+import com.elypia.commandler.string.builders.*;
 import com.elypia.commandler.string.client.*;
 
 public class StringCommandler extends Commandler<StringClient, StringEvent, String> {
@@ -10,7 +11,9 @@ public class StringCommandler extends Commandler<StringClient, StringEvent, Stri
         super(new Confiler<>(prefixes));
         this.client = client;
         dispatcher = new StringDispatcher(this);
-        registerBuilder(String.class, new DefaultBuilder());
+
+        registerBuilder(new DefaultBuilder(), String.class);
+        registerBuilder(new NumberBuilder(), NumberParser.TYPES);
     }
 
     @Override

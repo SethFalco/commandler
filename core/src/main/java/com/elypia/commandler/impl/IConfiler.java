@@ -2,7 +2,6 @@ package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.validation.command.Developer;
 import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.pages.PageBuilder;
 
@@ -73,16 +72,4 @@ public interface IConfiler<C, E, M> {
      */
 
     String getHelpUrl(Commandler<C, E, M> commandler, E event);
-
-    /**
-     * The developers of this application, this can be used internally
-     * by validators to ensure the developers are always able to perform
-     * commands but also limit other users, for example with {@link Developer}.
-     *
-     * @return An ordered list of identifiers to identify each developer.
-     * @see Developer To limit a {@link Command} or {@link Module}
-     *      to only {@link #getDevelopers(Commandler, E) developers} can perform them.
-     */
-
-    String[] getDevelopers(Commandler commandler, E event);
 }

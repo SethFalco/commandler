@@ -11,9 +11,4 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Validation {
 
-    /**
-     * @return The path to the icon that represents this validator.
-     */
-
-    String value();
 }

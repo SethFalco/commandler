@@ -77,7 +77,7 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
         parseAliases();
         parseMethods();
 
-        isPublic = !module.hidden();
+        isPublic = module.help().equals(Module.DEFAULT_HELP);
     }
 
     /**

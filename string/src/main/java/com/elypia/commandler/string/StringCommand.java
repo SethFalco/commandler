@@ -1,4 +1,4 @@
-package com.elypia.commandler.string.commandler;
+package com.elypia.commandler.string;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.string.client.*;

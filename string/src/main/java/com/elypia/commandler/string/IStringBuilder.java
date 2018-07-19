@@ -1,4 +1,4 @@
-package com.elypia.commandler.string.commandler;
+package com.elypia.commandler.string;
 
 import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.impl.IBuilder;

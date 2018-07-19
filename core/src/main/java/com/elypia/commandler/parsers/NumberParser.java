@@ -5,6 +5,10 @@ import com.elypia.commandler.impl.IParser;
 
 public class NumberParser implements IParser<Number> {
 
+    public static Class[] TYPES = {
+        Number.class, double.class, float.class, long.class, int.class, short.class, byte.class
+    };
+
     @Override
     public Number parse(CommandEvent event, Class<? extends Number> type, String input) {
         try {

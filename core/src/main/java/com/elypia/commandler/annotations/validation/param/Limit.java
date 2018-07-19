@@ -11,18 +11,30 @@ import java.lang.annotation.*;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@Validation("./resources/params/limit.svg")
+@Validation
 public @interface Limit {
+
+    /**
+     * The default minimum value this number can have.
+     */
+
+    long DEFAULT_MIN = Long.MIN_VALUE;
+
+    /**
+     * The default maximium value this number can have.
+     */
+
+    long DEFAULT_MAX = Long.MAX_VALUE;
 
     /**
      * @return The minimum value that the parameter can be, inclusive.
      */
 
-    long min() default Long.MIN_VALUE;
+    long min() default DEFAULT_MIN;
 
     /**
-     * @return The maximum value that the parameter can be, inclusive.
+     * @return The maximum value that the parameter can be, exclusive.
      */
 
-    long max() default Long.MAX_VALUE;
+    long max() default DEFAULT_MAX;
 }

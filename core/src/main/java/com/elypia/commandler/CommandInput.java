@@ -66,8 +66,6 @@ public class CommandInput<C, E, M> {
      */
 
     public boolean normalize() {
-        commandler.getRoots().get(module);
-
         for (IHandler<C, E, M> handler : commandler.getHandlers()) {
             MetaModule<C, E, M> metaModule = handler.getModule();
 
@@ -115,7 +113,7 @@ public class CommandInput<C, E, M> {
                     return false;
                 }
 
-                abstractMetaCommand = defaultCommand;
+                this.abstractMetaCommand = defaultCommand;
                 return true;
             }
 
@@ -124,8 +122,8 @@ public class CommandInput<C, E, M> {
                     if (command != null)
                         parameters.add(0, Collections.singletonList(command));
 
-                    metaModule = metaModule;
-                    metaCommand = metaCommand;
+                    this.metaModule = metaModule;
+                    this.abstractMetaCommand = metaCommand;
 
                     if (parameters.size() != metaCommand.getInputRequired())
                         return false;

@@ -140,11 +140,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
     }
 
     @Override
-    public String[] getDevelopers(Commandler commandler, E event) {
-        return new String[0];
-    }
-
-    @Override
     public String getHelp(Commandler commandler, E event, String key) {
         return key;
     }

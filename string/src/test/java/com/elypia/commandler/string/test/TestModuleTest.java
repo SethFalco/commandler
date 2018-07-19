@@ -1,9 +1,8 @@
 package com.elypia.commandler.string.test;
 
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.string.*;
 import com.elypia.commandler.string.client.*;
-import com.elypia.commandler.string.commandler.*;
-import org.apache.commons.lang3.StringUtils;
+import com.elypia.commandler.string.modules.TestModule;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,28 +47,5 @@ public class TestModuleTest {
 
         String response = commandler.trigger(event, event.getContent());
         assertEquals("helped", response);
-    }
-
-    @Module(name = "Test", aliases = "test", description = "My test module.")
-    public static class TestModule extends StringHandler {
-
-        @Command(name = "Say", aliases = "say", help = "I'll repeat something you say!")
-        @Param(name = "input", help = "What you want me to say!")
-        public String say(String input) {
-            return input;
-        }
-
-        @Command(name = "Repeat", aliases = "repeat", help = "Repeat some text multiple times.")
-        @Param(name = "input", help = "What you want me to say!")
-        @Param(name = "count", help = "The number of times I should say it")
-        public String repeat(String input, int count) {
-            return StringUtils.repeat(input, count);
-        }
-
-        @Static
-        @Command(name = "Ping!", aliases = "ping", help = "Check if the bot is alive!")
-        public String ping() {
-            return "pong!";
-        }
     }
 }

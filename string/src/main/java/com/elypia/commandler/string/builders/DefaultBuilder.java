@@ -1,7 +1,7 @@
-package com.elypia.commandler.string.commandler.builders;
+package com.elypia.commandler.string.builders;
 
 import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.string.commandler.IStringBuilder;
+import com.elypia.commandler.string.IStringBuilder;
 
 // ? Just named it DefaultBuilder to avoid clashing with Java's StringBuilder
 public class DefaultBuilder implements IStringBuilder<String> {

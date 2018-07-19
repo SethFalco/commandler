@@ -5,12 +5,12 @@ import com.elypia.commandler.annotations.validation.Validation;
 import java.lang.annotation.*;
 
 /**
- * Limit a String parameter to a certain set of values.
+ * Limit a {@link String} parameter to a certain set of values.
  */
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@Validation("./resources/params/option.svg")
+@Validation
 public @interface Option {
 
     /**

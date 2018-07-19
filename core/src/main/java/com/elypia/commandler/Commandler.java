@@ -63,11 +63,11 @@ public abstract class Commandler<C, E, M> {
 
     protected Map<String, MetaModule<C, E, M>> roots;
 
-    protected Parser parser;
+    protected Parsers parser;
 
     protected Validator validator;
 
-    protected Builder builder;
+    protected Builders<M> builder;
 
     /**
      * Creates an instance of the {@link Commandler} framework.
@@ -80,9 +80,9 @@ public abstract class Commandler<C, E, M> {
         this.confiler = confiler;
         handlers = new ArrayList<>();
         roots = new HashMap<>();
-        parser = new Parser(this);
+        parser = new Parsers(this);
         validator = new Validator();
-        builder = new Builder();
+        builder = new Builders<>();
     }
 
     public void setDispatcher(IDispatcher<C, E, M> dispatcher) {
@@ -120,12 +120,12 @@ public abstract class Commandler<C, E, M> {
      * @param <T> The type of class this parses.
      */
 
-    public void registerParser(IParser parser, Class... types) {
+    public void registerParser(IParser parser, Class...types) {
         this.parser.registerParser(parser, types);
     }
 
-    public <T> void registerBuilder(Class<T> clazz, IBuilder<T, M> builder) {
-        this.builder.registerBuilder(clazz, builder);
+    public void registerBuilder(IBuilder<?, M> builder, Class...types) {
+        this.builder.registerBuilder(builder, types);
     }
 
     public <T extends Annotation> void registerValidator(Class<T> clazz, IParamValidator<?, T> validator) {
@@ -147,11 +147,11 @@ public abstract class Commandler<C, E, M> {
      * @param jda The client object for your bot.
      */
 
-    public Parser getParser() {
+    public Parsers getParser() {
         return parser;
     }
 
-    public Builder<M> getBuilder() {
+    public Builders<M> getBuilder() {
         return builder;
     }
 

@@ -1,6 +1,5 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.components.Builder;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
 
