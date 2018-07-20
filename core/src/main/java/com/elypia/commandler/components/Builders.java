@@ -37,12 +37,6 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
     private static final String NULL_DEFAULT_BUILDER = "String builder %s for data-type %s returned null.";
 
     /**
-     * This is logged whenever a new {@link IBuilder} is registered to a data-type.
-     */
-
-    private static final String REGISTERED_BUILDER = "Registered builder {} for data-type {}.";
-
-    /**
      * This is logged when an existing {@link IBuilder} is replaced with
      * a new one. <br> This isn't bad, it's just a warning for the developer.
      */
@@ -81,10 +75,12 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
         for (Class type : types) {
             IBuilder<?, M> oldBuilder = builders.put(type, newBuilder);
 
-            if (oldBuilder == null)
-                logger.debug(REGISTERED_BUILDER, newBuilder.getClass().getName(), type.getName());
-            else
-                logger.info(REPLACED_REGISTERED, oldBuilder.getClass().getName(), type.getName(), newBuilder.getClass().getName());
+            if (oldBuilder != null) {
+                String oldName = oldBuilder.getClass().getName();
+                String newName = newBuilder.getClass().getName();
+
+                logger.info(REPLACED_REGISTERED, oldName, type.getName(), newName);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.elypia.commandler.string.modules;
 
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.string.StringHandler;
 import org.apache.commons.lang3.StringUtils;
 

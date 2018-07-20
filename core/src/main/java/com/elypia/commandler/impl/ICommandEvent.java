@@ -1,7 +1,6 @@
 package com.elypia.commandler.impl;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.components.Builder;
 
 /**
  * The {@link ICommandEvent} is the event object produced and used

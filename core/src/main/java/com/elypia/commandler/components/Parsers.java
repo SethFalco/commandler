@@ -26,12 +26,6 @@ import java.util.*;
 public class Parsers implements Iterable<IParser<?>> {
 
     /**
-     * This is logged whenever a new {@link IParser} is registered.
-     */
-
-    private static final String REGISTERED_PARSER = "Registered the {} parser for the data-type {}.";
-
-    /**
      * This is logged whenever a existing {@link IParser} for a
      * particular data-type is replaced with a new one.
      */
@@ -96,9 +90,7 @@ public class Parsers implements Iterable<IParser<?>> {
         for (Class type : types) {
             IParser<?> oldParser = parsers.put(type, newParser);
 
-            if (oldParser == null)
-                logger.debug(REGISTERED_PARSER, newParser.getClass().getName(), type.getName());
-            else
+            if (oldParser != null)
                 logger.info(REPLACED_PARSER, oldParser.getClass().getName(), type.getName(), newParser.getClass().getName());
         }
     }

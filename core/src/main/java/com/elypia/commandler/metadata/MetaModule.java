@@ -2,6 +2,7 @@ package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.exceptions.*;
 import com.elypia.commandler.impl.IHandler;
 import org.slf4j.*;

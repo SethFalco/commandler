@@ -2,11 +2,10 @@ package com.elypia.commandler.string.test;
 
 import com.elypia.commandler.string.StringCommandler;
 import com.elypia.commandler.string.client.*;
-import com.elypia.commandler.string.modules.*;
+import com.elypia.commandler.string.modules.ArrayModule;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ArrayModuleTest {
 
@@ -24,6 +23,14 @@ public class ArrayModuleTest {
 
         String response = commandler.trigger(event, event.getContent());
         assertEquals("10", response);
+    }
+
+    @Test
+    public void testSumWithMultipler() {
+        StringEvent event = new StringEvent(">array sum 1, 2, 3, 4 4");
+
+        String response = commandler.trigger(event, event.getContent());
+        assertEquals("40", response);
     }
 
     @Test
