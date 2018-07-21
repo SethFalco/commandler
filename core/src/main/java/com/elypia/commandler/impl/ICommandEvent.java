@@ -1,6 +1,7 @@
 package com.elypia.commandler.impl;
 
 import com.elypia.commandler.Commandler;
+import com.elypia.commandler.components.Builders;
 
 /**
  * The {@link ICommandEvent} is the event object produced and used
@@ -21,13 +22,11 @@ public interface ICommandEvent<C, E, M> {
      * by the client because this allows us to utilise our builders
      * and implementation around it.
      *
-     * @param object The item to send to the {@link Builder} to process.
-     * @param <O> The output type, this can be anything so long as there is
-     *            a registered {@link IBuilder} so we know how to build and send it.
-     * @return The message that was built by the {@link Builder}.
+     * @param object The item to send to the {@link Builders} to process.
+     * @return The message that was built by the {@link Builders}.
      */
 
-    <O> M reply(O object);
+    M reply(Object object);
 
     /**
      * Try delete the message that was sent in chat, if this isn't possible
@@ -46,5 +45,13 @@ public interface ICommandEvent<C, E, M> {
      * @param trigger The new commands to process instead.
      */
 
-    M trigger(String trigger);
+    default M trigger(String trigger) {
+        return getCommandler().trigger(getSourceEvent(), trigger);
+    }
+
+    void invalidate(Object reason);
+
+    Commandler<C, E, M> getCommandler();
+
+    E getSourceEvent();
 }

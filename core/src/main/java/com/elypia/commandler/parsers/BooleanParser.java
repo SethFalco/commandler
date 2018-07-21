@@ -7,12 +7,16 @@ import java.util.*;
 
 public class BooleanParser implements IParser<Boolean> {
 
-    private static final Collection<String> TRUE = Arrays.asList(
-        "true", "yes", "y", "1", "✔"
+    public static final Class[] TYPES = {
+        Boolean.class, boolean.class
+    };
+
+    private static final Collection<String> TRUE = List.of(
+        "true", "t", "yes", "y", "1", "one", "✔"
     );
 
-    private static final Collection<String> FALSE = Arrays.asList(
-        "false", "no", "n", "0", "❌"
+    private static final Collection<String> FALSE = List.of(
+        "false", "f", "no", "n", "0", "zero", "❌"
     );
 
     @Override

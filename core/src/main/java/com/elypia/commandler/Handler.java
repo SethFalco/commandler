@@ -52,20 +52,6 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M>, Comparable<
 		return true;
 	}
 
-	/**
-	 * Using this modules {@link MetaModule} this should build the default
-	 * help command users will expect to see when performing the modules
-	 * help command.
-	 *
-	 * @param event The {@link CommandEvent event} produced by Commandler.
-	 * @return The message to reply to the client.
-	 */
-
-	@Override
-	@Ignore
-	@Command(name = "Help", aliases = "help")
-	public abstract Object help(CommandEvent<C, E, M> event);
-
 	public C getClient() {
 		return client;
 	}

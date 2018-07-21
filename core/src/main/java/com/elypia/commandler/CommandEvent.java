@@ -25,7 +25,7 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      * as well as the respective {@link AbstractMetaCommand} and {@link MetaModule}.
      */
 
-    protected CommandInput input;
+    protected CommandInput<C, E, M> input;
 
     /**
      * The {@link E event} that was spawned by the {@link C client}
@@ -33,6 +33,10 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      */
 
     protected E event;
+
+    protected M error;
+
+    protected boolean invalidated;
 
     /**
      * Instantiate this event, this just sets the values of the parents
@@ -42,7 +46,7 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      * @param event The parent {@link E event} which was provided by the {@link C client}.
      */
 
-    public CommandEvent(Commandler<C, E, M> commandler, E event, CommandInput<C, E, M> input) {
+    public CommandEvent(Commandler<C, E, M> commandler, CommandInput<C, E, M> input, E event) {
         this.commandler = commandler;
         this.event = event;
         this.input = input;
@@ -62,7 +66,7 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      */
 
     @Override
-    public abstract <O> M reply(O output);
+    public abstract M reply(Object output);
 
     /**
      * Try delete the message that was sent in chat, if this isn't possible
@@ -75,14 +79,24 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
     public abstract boolean deleteMessage();
 
     /**
-     * Makes a call to the {@link Commandler#trigger(E, String)}
-     * method to trigger an event manually using the {@link E event}
-     * from this {@link CommandEvent event}.
+     * This indicates that the event has been invalidated. If the error
+     * should be reported to the user then this should set {@link #error}
+     * to a non-null value (the object to be sent to the user).
+     *
+     * @param reason Why the message was invalidated if the user should know.
      */
 
     @Override
-    public M trigger(String trigger) {
-        return commandler.trigger(event, trigger);
+    public void invalidate(Object reason) {
+        invalidated = true;
+
+        if (reason != null) {
+            // ? Store the error in the event so we can return if from our dispatcher
+            error = commandler.builder.build(this, reason);
+
+            // ? Reply and let the user know what went wrong.
+            reply(error);
+        }
     }
 
     /**
@@ -106,8 +120,12 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      * @return Get the input parsed from this event.
      */
 
-    public CommandInput getInput() {
+    public CommandInput<C, E, M> getInput() {
         return input;
+    }
+
+    public M getError() {
+        return error;
     }
 
     /**

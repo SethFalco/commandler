@@ -1,11 +1,8 @@
 package com.elypia.commandler.string;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.metadata.AbstractMetaCommand;
+import com.elypia.commandler.metadata.MetaCommand;
 import com.elypia.commandler.string.client.*;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class StringDispatcher extends Dispatcher<StringClient, StringEvent, String> implements StringListener {
 
@@ -31,33 +28,33 @@ public class StringDispatcher extends Dispatcher<StringClient, StringEvent, Stri
         if (input == null)
             return null;
 
-        CommandEvent<StringClient, StringEvent, String> event = new StringCommand(commandler, v, input);
+        CommandEvent<StringClient, StringEvent, String> event = new StringCommand(commandler, input, v);
 
-        if (!commandler.getRoots().containsKey(input.getModule().toLowerCase()) || !input.normalize())
-            return null;
+        if (!commandler.getRoots().containsKey(input.getModule().toLowerCase()) || !input.normalize(event))
+            return event.getError();
 
-        AbstractMetaCommand metaCommand = event.getInput().getMetaCommand();
+        MetaCommand<StringClient, StringEvent, String> metaCommand = event.getInput().getMetaCommand();
 
         if (!commandler.getValidator().validateCommand(event, metaCommand))
-            return null;
+            return event.getError();
 
-        Object[] params = commandler.getParser().parseParameters(event, metaCommand);
+        Object[] params = commandler.getParser().processEvent(event, metaCommand);
 
         if (params == null || !commandler.getValidator().validateParams(event, metaCommand, params))
-            return null;
+            return event.getError();
 
-//        if (!input.getCommand().equalsIgnoreCase("help") && !input.getMetaModule().getHandler().isEnabled()) {
-//            confiler.getMisuseListener().moduleDisabled(event);
-//            return null;
-//        }
+        if (!input.getCommand().equalsIgnoreCase("help") && !input.getMetaModule().getHandler().isEnabled()) {
+            confiler.getMisuseListener().onModuleDisabled(event);
+            return event.getError();
+        }
 
         try {
             Object message = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
 
             if (message != null)
-                return commandler.getBuilder().buildMessage(event, message);
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            confiler.getMisuseListener().exceptionFailure(ex);
+                return commandler.getBuilder().build(event, message);
+        } catch (Exception ex) {
+            event.invalidate(confiler.getMisuseListener().onExceptionFailure(ex));
             ex.printStackTrace();
         }
 

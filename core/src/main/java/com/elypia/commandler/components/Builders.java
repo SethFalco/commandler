@@ -96,7 +96,7 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * @return A built message ready to send to the client.
      */
 
-    public M buildMessage(CommandEvent<?, ?, M> event, Object object) {
+    public M build(CommandEvent<?, ?, M> event, Object object) {
         Objects.requireNonNull(object);
         IBuilder builder = getBuilder(object.getClass());
 

@@ -3,6 +3,7 @@ package com.elypia.commandler.impl;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.CommandEvent;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.pages.PageBuilder;
 
 /**
@@ -28,7 +29,7 @@ public interface IConfiler<C, E, M> {
 
     CommandInput<C, E, M> processEvent(Commandler<C, E, M> commandler, E event, String content);
 
-    IMisuseListener<M> getMisuseListener();
+    IMisuseListener getMisuseListener();
 
     /**
      * The prefix for this event. This can be set to return a static
@@ -56,7 +57,7 @@ public interface IConfiler<C, E, M> {
      *
      * @param event The message event as provided by the client.
      * @param key The help as specified in the annotations, for
-     *            example in: {@link Module#description()} or {@link Command#help()}.
+     *            example in: {@link Module#help()} or {@link Command#help()}.
      * @return The help {@link String} which should be displayed to users.
      * @see <a href="https://gitlab.com/Elypia/ElyScript">ElyScript</a>
      */

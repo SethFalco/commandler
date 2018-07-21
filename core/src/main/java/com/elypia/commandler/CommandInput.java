@@ -18,7 +18,7 @@ public class CommandInput<C, E, M> {
 
     private String module;
 
-    private AbstractMetaCommand abstractMetaCommand;
+    private MetaCommand<C, E, M> metaCommand;
 
     private String command;
 
@@ -65,28 +65,28 @@ public class CommandInput<C, E, M> {
      * @return If the command is still valid.
      */
 
-    public boolean normalize() {
+    public boolean normalize(CommandEvent<C, E, M> event) {
         for (IHandler<C, E, M> handler : commandler.getHandlers()) {
             MetaModule<C, E, M> metaModule = handler.getModule();
 
-            if (metaModule.hasPerformed(module)) {
+            if (metaModule.performed(module)) {
                 this.metaModule = metaModule;
 
                 if (command != null) {
                     MetaCommand<C, E, M> metaCommand = metaModule.getCommand(command);
 
                     if (metaCommand != null) {
-                        this.abstractMetaCommand = metaCommand;
+                        this.metaCommand = metaCommand;
 
                         if (parameterCount != metaCommand.getInputRequired()) {
-                            for (MetaOverload metaOverload : metaCommand.getOverloads()) {
+                            for (MetaCommand<C, E, M> metaOverload : metaCommand.getOverloads()) {
                                 if (parameterCount == metaOverload.getInputRequired()) {
-                                    this.abstractMetaCommand = metaOverload;
+                                    this.metaCommand = metaOverload;
                                     return true;
                                 }
                             }
 
-                            confiler.getMisuseListener().parameterCountMismatch(this, metaCommand);
+                            event.invalidate(confiler.getMisuseListener().onParameterCountMismatch(this, metaCommand));
                             return false;
                         }
 
@@ -96,16 +96,18 @@ public class CommandInput<C, E, M> {
 
                 MetaCommand<C, E, M> defaultCommand = metaModule.getDefaultCommand();
 
-                if (defaultCommand == null)
+                if (defaultCommand == null) {
+                    event.invalidate(confiler.getMisuseListener().onNoDefault(event));
                     return false;
+                }
 
                 if (command != null)
                     parameters.add(0, Collections.singletonList(command));
 
                 if (parameters.size() != defaultCommand.getInputRequired()) {
-                    for (MetaOverload<C, E, M> metaOverload : defaultCommand.getOverloads()) {
+                    for (MetaCommand<C, E, M> metaOverload : defaultCommand.getOverloads()) {
                         if (parameters.size() == metaOverload.getInputRequired()) {
-                            abstractMetaCommand = metaOverload;
+                            this.metaCommand = metaOverload;
                             return true;
                         }
                     }
@@ -113,17 +115,20 @@ public class CommandInput<C, E, M> {
                     return false;
                 }
 
-                this.abstractMetaCommand = defaultCommand;
+                this.metaCommand = defaultCommand;
                 return true;
             }
 
             for (MetaCommand metaCommand : metaModule.getStaticCommands()) {
-                if (metaCommand.hasPerformed(module)) {
+                if (metaCommand.performed(module)) {
                     if (command != null)
                         parameters.add(0, Collections.singletonList(command));
 
+                    this.command = metaModule.getModule().aliases()[0];
                     this.metaModule = metaModule;
-                    this.abstractMetaCommand = metaCommand;
+
+                    this.command = metaCommand.getCommand().aliases()[0];
+                    this.metaCommand = metaCommand;
 
                     if (parameters.size() != metaCommand.getInputRequired())
                         return false;
@@ -157,8 +162,8 @@ public class CommandInput<C, E, M> {
         this.module = module;
     }
 
-    public AbstractMetaCommand getMetaCommand() {
-        return abstractMetaCommand;
+    public MetaCommand<C, E, M> getMetaCommand() {
+        return metaCommand;
     }
 
     public String getCommand() {

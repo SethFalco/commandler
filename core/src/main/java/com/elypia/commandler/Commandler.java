@@ -1,9 +1,10 @@
 package com.elypia.commandler;
 
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.components.*;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
-import com.elypia.commandler.components.Validator;
+import com.elypia.commandler.components.Validators;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -63,9 +64,18 @@ public abstract class Commandler<C, E, M> {
 
     protected Map<String, MetaModule<C, E, M>> roots;
 
+    /**
+     * Any commands with a non-zero {@link Command#id()}. This is a
+     * pool of commands for referencing whenever we need an
+     * {@link Overload} so we know what the parent {@link Command} is.
+     * This can also be reused for implementation to dictate more actions.
+     */
+
+    protected Map<Integer, MetaCommand<C, E, M>> commands;
+
     protected Parsers parser;
 
-    protected Validator validator;
+    protected Validators validator;
 
     protected Builders<M> builder;
 
@@ -78,10 +88,12 @@ public abstract class Commandler<C, E, M> {
 
     public Commandler(IConfiler<C, E, M> confiler) {
         this.confiler = confiler;
+
         handlers = new ArrayList<>();
         roots = new HashMap<>();
+        commands = new HashMap<>();
         parser = new Parsers(this);
-        validator = new Validator();
+        validator = new Validators();
         builder = new Builders<>();
     }
 
@@ -99,7 +111,7 @@ public abstract class Commandler<C, E, M> {
     public void registerModule(IHandler<C, E, M> handler) {
         boolean enabled = handler.init(this);
 
-//        handler.setEnabled(enabled);
+        handler.setEnabled(enabled);
         handlers.add(handler);
 
 //        Collections.sort(handlers);
@@ -140,35 +152,16 @@ public abstract class Commandler<C, E, M> {
         return client;
     }
 
-    /**
-     * Set the JDA instance this initialised Commandler instance should
-     * register too.
-     *
-     * @param jda The client object for your bot.
-     */
-
-    public Parsers getParser() {
-        return parser;
-    }
-
-    public Builders<M> getBuilder() {
-        return builder;
-    }
-
-    public Validator getValidator() {
-        return validator;
-    }
-
     public void setClient(C client) {
         this.client = Objects.requireNonNull(client);
     }
 
-    public IDispatcher getDispatcher() {
-        return dispatcher;
-    }
-
     public IConfiler<C, E, M> getConfiler() {
         return confiler;
+    }
+
+    public IDispatcher getDispatcher() {
+        return dispatcher;
     }
 
     public Collection<IHandler<C, E, M>> getHandlers() {
@@ -178,4 +171,21 @@ public abstract class Commandler<C, E, M> {
     public Map<String, MetaModule<C, E, M>> getRoots() {
         return roots;
     }
+
+    public Map<Integer, MetaCommand<C, E, M>> getCommands() {
+        return commands;
+    }
+
+    public Parsers getParser() {
+        return parser;
+    }
+
+    public Builders<M> getBuilder() {
+        return builder;
+    }
+
+    public Validators getValidator() {
+        return validator;
+    }
+
 }

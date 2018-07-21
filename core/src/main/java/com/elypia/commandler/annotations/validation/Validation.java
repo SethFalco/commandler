@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * {@link Validation} annotation so Commandler knows it is a validator.
  */
 
-@Target({ElementType.ANNOTATION_TYPE})
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Validation {
 

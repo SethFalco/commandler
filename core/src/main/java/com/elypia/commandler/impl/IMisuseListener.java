@@ -2,19 +2,32 @@ package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.metadata.*;
+import org.slf4j.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Whenever user errors occur such as using the bot incorrectly (<strong>not exceptions</strong>)
  * these methods are called to provide a friendly error message to the user.
- *
- * @param <M></M> The type of message that the client expects to send.
  */
 
+public interface IMisuseListener {
 
-public interface IMisuseListener<M> {
+    Logger logger = LoggerFactory.getLogger(IMisuseListener.class);
+
+    /**
+     * This will occur when the user attempts to do a command
+     * where the root alias (first argument) doesn't match any of our
+     * registered modules or static commands what so ever.
+     *
+     * @return The friendly error to send to the user.
+     */
+
+    default Object onNoModule() {
+        return null; // ? By default we just won't do anything at all.
+    }
 
     /**
      * This may occur when we've found the command the user wanted to perform
@@ -23,7 +36,59 @@ public interface IMisuseListener<M> {
      * @return The friendly error to send to users in chat.
      */
 
-    M parameterCountMismatch(CommandInput input, MetaCommand metaCommand);
+    default Object onParameterCountMismatch(CommandInput<?, ?, ?> input, MetaCommand metaCommand) {
+        String format = "You specified the '%s' command in the '%s' module but the parameters weren't what I expected.\n\n%s";
+
+        StringBuilder parameters = new StringBuilder("Provided:\n");
+
+        List<List<String>> lists = input.getParameters();
+
+        if (lists.isEmpty())
+            parameters.append("(0) None");
+        else {
+            StringJoiner parameterJoiner = new StringJoiner(" | ");
+
+            for (List<String> list : lists) {
+                StringJoiner itemJoiner = new StringJoiner(", ");
+
+                for (String string : list)
+                    itemJoiner.add("'" + string + "'");
+
+                parameterJoiner.add(itemJoiner.toString());
+            }
+
+            parameters.append("(").append(lists.size()).append(") ").append(parameterJoiner.toString());
+        }
+
+        parameters.append("\n\nPossibilities:\n");
+
+        List<MetaCommand> metaCommands = metaCommand.getOverloads(true);
+
+        for (MetaCommand command : metaCommands) {
+            List<MetaParam> params = command.getMetaParams();
+
+            if (params.isEmpty())
+                parameters.append("(0) None");
+            else {
+                StringJoiner joiner = new StringJoiner(" | ");
+
+                for (MetaParam param : params) {
+                    String name = param.getParamAnnotation().name();
+
+                    if (param.isList())
+                        joiner.add("['" + name + "']");
+                    else
+                        joiner.add("'" + name + "'");
+                }
+
+                parameters.append("(").append(params.size()).append(") ").append(joiner.toString());
+            }
+        }
+
+        String commandName = metaCommand.getCommand().name();
+        String moduleName = metaCommand.getMetaModule().getModule().name();
+        return String.format(format, commandName, moduleName, parameters.toString());
+    }
 
     /**
      * This occurs when it looks like the user had attempted to perform a
@@ -33,9 +98,23 @@ public interface IMisuseListener<M> {
      * @return The friendly error to send to users in chat.
      */
 
-    M noDefaultCommand();
+    default Object onNoDefault(CommandEvent event) {
+        String format = "You specified the '%s' module without a valid command, however this module has no default command.\n\nPossibilities:\n%s\n\nSee the help command for more information.";
+        MetaModule<?, ?, ?> module = event.getInput().getMetaModule();
 
-    M noParser(CommandEvent event, Class<?> type, String input);
+        StringJoiner commandJoiner = new StringJoiner("\n");
+
+        for (MetaCommand<?, ?, ?> command : module.getMetaCommands()) {
+            StringJoiner aliasJoiner = new StringJoiner(", ");
+
+            for (String alias : command.getAliases())
+                aliasJoiner.add("'" + alias + "'");
+
+            commandJoiner.add("(" + command.getCommand().name() + ") " + aliasJoiner.toString());
+        }
+
+        return String.format(format, module.getModule().name(), commandJoiner.toString());
+    }
 
     /**
      * This may occur whenever user input fails to parse.
@@ -46,9 +125,14 @@ public interface IMisuseListener<M> {
      * @return The friendly error to send to users in chat.
      */
 
-    M parameterParseFailure(CommandEvent event, Class<?> type, String input);
+    default Object onFailedParameterParse(CommandEvent event, Class<?> type, String input) {
+        String format = "You specified the '%s' command in the '%s' module, however I couldn't process your parameters.\n\n%s";
+        return format;
+    }
 
     /**
+     * This may occur whenever the user has specified list
+     * parameters however a list is not acceptable here.
      *
      * @param event
      * @param param
@@ -56,32 +140,58 @@ public interface IMisuseListener<M> {
      * @return
      */
 
-    M unsupportedList(CommandEvent event, MetaParam param, List<String> items);
+    default Object onSupportedList(CommandEvent event, MetaParam param, List<String> items) {
+        return null;
+    }
 
-    M commandInvalidated();
+    /**
+     * This occurs when an {@link ICommandValidator} invalidates the event.
+     *
+     * @return
+     */
 
-    M parameterInvalidated();
+    default Object onCommandInvalidated() {
+        return null;
+    }
+
+    /**
+     * This occurs when an {@link IParamValidator} invalidates a parameter on the command.
+     *
+     * @return
+     */
+
+    default Object onParameterInvalidated() {
+        return null;
+    }
 
     /**
      * This may occur when a user attempts to perform a command
      * which isn't the {@link IHandler#help(CommandEvent)} command on
-     * a {@link Module} that has been disbaled.
+     * a {@link Module} that has been disabled.
      *
      * @param event The event that caused this failure.
      * @return The friendly error to send to users in chat.
      */
 
-    M moduleDisabled(CommandEvent event);
+    default Object onModuleDisabled(CommandEvent event) {
+        return null;
+    }
 
     /**
-     * This will occur if an {@link ReflectiveOperationException} exception occurs
-     * when attempting to perform the command, while this should never happen thanks
-     * to validation performed by {@link Commandler} this event is called
-     * should it ever occur.
+     * This will occur if an {@link Exception exception} occurs
+     * when attempting to perform the command. This would normally due to a
+     * module having an uncaught exception but is also a fall back in case
+     * there is a bug in {@link Commandler}.
      *
      * @param ex The exception that occured.
      * @return The friendly error to send to users in chat.
      */
 
-    M exceptionFailure(ReflectiveOperationException ex);
+    default Object onExceptionFailure(Exception ex) {
+        final String error = "An unknown error occured.";
+        logger.error(error, ex);
+
+        // ? It's a bad idea to actually show the exception to users as it may contain sensitive information.
+        return error;
+    }
 }

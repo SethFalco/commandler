@@ -4,11 +4,11 @@ plugins {
     id "maven"
     id "maven-publish"
     id "jacoco"
-    id "com.jfrog.bintray" version "1.8.2"
+    id "com.jfrog.bintray" version "1.8.4"
 }
 
-String projectName = 'Commandler-Core'
-String projectVersion = '2.0.0'
+String projectName = 'Commandler'
+String projectVersion = '2.0.1'
 String projectDescription = "Commandler is a generic command handling framework ready to be implemented with any platform."
 String projectGit = 'https://gitlab.com/Elypia/Commandler.git'
 
@@ -33,7 +33,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     javadoc {
         options {
             links += [
-                'https://docs.oracle.com/javase/8/docs/api/'
+                'https://docs.oracle.com/javase/10/docs/api/'
             ]
         }
     }

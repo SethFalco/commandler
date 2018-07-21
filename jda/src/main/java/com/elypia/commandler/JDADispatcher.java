@@ -1,23 +1,25 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.components.*;
 import com.elypia.commandler.confiler.reactions.ReactionRecord;
 import com.elypia.commandler.events.*;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.components.Validator;
+import com.elypia.commandler.components.Validators;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.*;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.slf4j.*;
 
 import java.lang.reflect.*;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 
 public class JDADispatcher extends ListenerAdapter implements IDispatcher<GenericMessageEvent, Message> {
+
+    private static final Logger logger = LoggerFactory.getLogger(JDADispatcher.class);
 
     /**
      * The {@link Commandler} instance which is what gives access to all
@@ -44,13 +46,13 @@ public class JDADispatcher extends ListenerAdapter implements IDispatcher<Generi
     private final Builder builder;
 
     /**
-     * Validator is a registery that allows you to define custom annotations
+     * Validators is a registery that allows you to define custom annotations
      * and mark them above methods or parameters in order to perform validation.
      * This is useful to ensure a unifed approach is done and to reduce code
      * required to make commands.
      */
 
-    private final Validator validator;
+    private final Validators validator;
 
     /**
      * The JDADispatcher is what recieved JDA events and where Commandler begins
@@ -67,7 +69,7 @@ public class JDADispatcher extends ListenerAdapter implements IDispatcher<Generi
         confiler = commandler.getConfiler();
         parser = new Parser();
         builder = new Builder(commandler);
-        validator = new Validator(commandler);
+        validator = new Validators(commandler);
     }
 
     @Override
@@ -105,7 +107,7 @@ public class JDADispatcher extends ListenerAdapter implements IDispatcher<Generi
                             event.getReaction().removeReaction(event.getUser()).queue();
                     }
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
+                    logger.
                 }
             }
         });
@@ -200,9 +202,9 @@ public class JDADispatcher extends ListenerAdapter implements IDispatcher<Generi
 
                 event.reply(builder.buildMessage(event, message));
             }
-        } catch (IllegalAccessException | InvocationTargetException ex) {
+        } catch (Exception ex) {
             messageEvent.getChannel().sendMessage("Sorry! Something went wrong and I was unable to perform that commands.").queue();
-            ex.printStackTrace();
+            logger.error("Unhandled exception during command processing.", ex);
         }
     }
 
@@ -330,7 +332,7 @@ public class JDADispatcher extends ListenerAdapter implements IDispatcher<Generi
         return builder;
     }
 
-    public Validator getValidator() {
+    public Validators getValidator() {
         return validator;
     }
 }

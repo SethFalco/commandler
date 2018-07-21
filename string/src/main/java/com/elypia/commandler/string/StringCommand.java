@@ -5,13 +5,13 @@ import com.elypia.commandler.string.client.*;
 
 public class StringCommand extends CommandEvent<StringClient, StringEvent, String> {
 
-    public StringCommand(Commandler<StringClient, StringEvent, String> commandler, StringEvent event, CommandInput<StringClient, StringEvent, String> input) {
-        super(commandler, event, input);
+    public StringCommand(Commandler<StringClient, StringEvent, String> commandler, CommandInput<StringClient, StringEvent, String> input, StringEvent event) {
+        super(commandler, input, event);
     }
 
     @Override
-    public <O> String reply(O output) {
-        throw new UnsupportedOperationException();
+    public String reply(Object output) {
+        return commandler.getBuilder().build(this, output);
     }
 
     @Override

@@ -3,8 +3,7 @@ package com.elypia.commandler.metadata;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.annotations.validation.Validation;
-import com.elypia.commandler.exceptions.MalformedCommandException;
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.impl.IParamValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
@@ -18,9 +17,7 @@ public class MetaParam {
 
     private Commandler commandler;
 
-    private AbstractMetaCommand abstractMetaCommand;
-
-    private Class<? extends IHandler> clazz;
+    private MetaCommand metaCommand;
 
     /**
      * The method paramater this is for. This could be any object including
@@ -35,7 +32,7 @@ public class MetaParam {
      * Note: This <strong>WILL</strong> be null if the {@link #parameter} is {@link CommandEvent}.
      */
 
-    private Param paramAnnotation;
+    private Param annotation;
 
     /**
      * If this parameter is something that {@link Commandler} will populate
@@ -45,29 +42,19 @@ public class MetaParam {
 
     private boolean isInput;
 
+    private boolean isList;
+
     Map<MetaValidator, IParamValidator> validators;
 
-    /**
-     * Wrap around this parameter for convinience functions.
-     *
-     * @param abstractMetaCommand The wrapper object around the module that contains this parameter.
-     * @param parameter The standard paramater as in the method.
-     * @param annotation The paramater annotation decorated on the command.
-     * @return A wrapper object around this paramater to obtain information around it.
-     */
-
-    protected static MetaParam of(AbstractMetaCommand abstractMetaCommand, Param annotation, Parameter parameter) {
-        return new MetaParam(abstractMetaCommand, annotation, parameter);
-    }
-
-    private MetaParam(AbstractMetaCommand abstractMetaCommand, Param annotation, Parameter parameter) {
-        this.abstractMetaCommand = Objects.requireNonNull(abstractMetaCommand);
+    MetaParam(MetaCommand metaCommand, Param annotation, Parameter parameter) {
+        this.metaCommand = Objects.requireNonNull(metaCommand);
+        this.annotation = annotation;
         this.parameter = Objects.requireNonNull(parameter);
-        this.paramAnnotation = annotation;
 
-        clazz = abstractMetaCommand.getHandlerType();
-        commandler = abstractMetaCommand.getCommandler();
+
+        commandler = metaCommand.getCommandler();
         isInput = !CommandEvent.class.isAssignableFrom(parameter.getType());
+        isList = parameter.getType().isArray();
 
         parseAnnotations();
     }
@@ -83,14 +70,14 @@ public class MetaParam {
         for (Annotation annotation : parameter.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
 
-//            if (type.isAnnotationPresent(Validation.class)) {
-//                IParamValidator validator = commandler.getDispatcher().getValidator().getParamValidators().get(type);
-//
-//                if (validator == null)
-//                    throw new MalformedCommandException(String.format("Command %s in module %s (%s) has a parameter with the %s annotation, but a validator of this type is not registered.", abstractMetaCommand.getCommand().name(), abstractMetaCommand.getMetaModule().getModule().name(), clazz.getName(), annotation.annotationType().getName()));
-//
-//                validators.put(MetaValidator.of(annotation), validator);
-//            }
+            if (type.isAnnotationPresent(Validation.class)) {
+                IParamValidator validator = commandler.getValidator().getParamValidators().get(type);
+
+                if (validator == null)
+                    throw new IllegalStateException(String.format("Command %s in module %s (%s) has a parameter with the %s annotation, but a validator of this type is not registered.", metaCommand.getCommand().name(), metaCommand.getMetaModule().getModule().name(), "temp", annotation.annotationType().getName()));
+
+                validators.put(new MetaValidator(annotation), validator);
+            }
         }
     }
 
@@ -98,8 +85,8 @@ public class MetaParam {
         return commandler;
     }
 
-    public AbstractMetaCommand getAbstractMetaCommand() {
-        return abstractMetaCommand;
+    public MetaCommand getMetaCommand() {
+        return metaCommand;
     }
 
     public Parameter getParameter() {
@@ -111,10 +98,14 @@ public class MetaParam {
     }
 
     public Param getParamAnnotation() {
-        return paramAnnotation;
+        return annotation;
     }
 
     public boolean isInput() {
         return isInput;
+    }
+
+    public boolean isList() {
+        return isList;
     }
 }

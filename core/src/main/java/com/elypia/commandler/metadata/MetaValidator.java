@@ -7,28 +7,24 @@ import java.lang.annotation.Annotation;
 public class MetaValidator {
 
     private Annotation annotation;
-    private Class<? extends Annotation> clazz;
+    private Class<? extends Annotation> type;
     private Validation validatorAnnotation;
 
-    protected static MetaValidator of(Annotation annotation) {
-        return new MetaValidator(annotation);
-    }
-
-    private MetaValidator(Annotation annotation) {
+    MetaValidator(Annotation annotation) {
         this.annotation = annotation;
-        clazz = annotation.annotationType();
-        validatorAnnotation = clazz.getAnnotation(Validation.class);
+        type = annotation.annotationType();
+        validatorAnnotation = type.getAnnotation(Validation.class);
     }
 
-    public Annotation getAnnotation() {
+    public Annotation getValidator() {
         return annotation;
     }
 
-    public Validation getValidatorAnnotation() {
+    public Validation getValidation() {
         return validatorAnnotation;
     }
 
-    public Class<? extends Annotation> getAnnotationType() {
-        return clazz;
+    public Class<? extends Annotation> getType() {
+        return type;
     }
 }

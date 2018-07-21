@@ -59,4 +59,8 @@ public interface IHandler<C, E, M> {
     Object help(CommandEvent<C, E, M> event);
 
     MetaModule<C, E, M> getModule();
+
+    boolean isEnabled();
+
+    void setEnabled(boolean enabled);
 }
