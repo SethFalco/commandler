@@ -1,38 +1,30 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.impl.IParamParser;
+import com.elypia.commandler.*;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.*;
 
-public class GuildParser implements IParamParser<Guild> {
+public class GuildParser implements IJDAParser<Guild> {
 
     @Override
-    public Guild parse(CommandEvent event, SearchScope scope, String input) {
-        final Collection<Guild> guilds = new ArrayList<>();
+    public Guild parse(JDACommand event, Class<? extends Guild> type, String input) {
+        Set<Guild> guilds = new HashSet<>(event.getClient().getGuilds());
+        List<Guild> matches = new ArrayList<>();
 
-        switch (scope) {
-            case GLOBAL:
-                guilds.addAll(event.getMessageEvent().getJDA().getGuilds());
-                break;
+        guilds.forEach(guild -> {
+            if (guild.getId().equals(input))
+                matches.add(guild);
 
-            case MUTUAL:
-                User user = event.getMessage().getAuthor();
-                guilds.addAll(user.getMutualGuilds());
-                break;
+            else if (guild.getName().equalsIgnoreCase(input))
+                matches.add(guild);
 
-            case LOCAL:
-                guilds.add(event.getMessageEvent().getGuild());
-                break;
-        }
+            else if (guild.toString().equalsIgnoreCase(input))
+                matches.add(guild);
+        });
 
-        for (Guild g : guilds) {
-            if (g.getId().equals(input) || g.getName().equalsIgnoreCase(input))
-                return g;
-        }
-
-        return null;
+        return matches.isEmpty() ? null : matches.get(0);
     }
 }

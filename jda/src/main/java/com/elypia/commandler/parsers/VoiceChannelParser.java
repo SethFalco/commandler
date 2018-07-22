@@ -1,39 +1,30 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.impl.IParamParser;
+import com.elypia.commandler.*;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.*;
 
-public class VoiceChannelParser implements IParamParser<VoiceChannel> {
+public class VoiceChannelParser implements IJDAParser<VoiceChannel> {
 
     @Override
-    public VoiceChannel parse(CommandEvent event, SearchScope scope, String input) {
-        final Collection<VoiceChannel> channels = new ArrayList<>();
+    public VoiceChannel parse(JDACommand event, Class<? extends VoiceChannel> type, String input) {
+        Set<VoiceChannel> channels = new HashSet<>(event.getClient().getVoiceChannels());
+        List<VoiceChannel> matches = new ArrayList<>();
 
-        switch (scope) {
-            case GLOBAL:
-                channels.addAll(event.getMessageEvent().getJDA().getVoiceChannels());
-                break;
+        channels.forEach(channel -> {
+            if (channel.getId().equals(input))
+                matches.add(channel);
 
-            case MUTUAL:
-                User user = event.getMessage().getAuthor();
-                Collection<Guild> guilds = user.getMutualGuilds();
-                guilds.forEach(g -> channels.addAll(g.getVoiceChannels()));
-                break;
+            else if (channel.getName().equalsIgnoreCase(input))
+                matches.add(channel);
 
-            case LOCAL:
-                channels.addAll(event.getMessageEvent().getGuild().getVoiceChannels());
-                break;
-        }
+            else if (channel.toString().equalsIgnoreCase(input))
+                matches.add(channel);
+        });
 
-        for (VoiceChannel channel : channels) {
-            if (channel.getId().equals(input) || channel.getName().equalsIgnoreCase(input))
-                return channel;
-        }
-
-        return null;
+        return matches.isEmpty() ? null : matches.get(0);
     }
 }

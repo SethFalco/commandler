@@ -1,7 +1,7 @@
 package com.elypia.commandler.builders;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.impl.IBuilder;
+import com.elypia.commandler.impl.*;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
@@ -13,8 +13,8 @@ import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 public class EmbedBuilderBuilder implements IJDABuilder<EmbedBuilder> {
 
     @Override
-    public Message buildAsEmbed(CommandEvent<JDA, GenericMessageEvent, Message> event, EmbedBuilder output) {
-        GenericMessageEvent jdaEvent = event.getSourceEvent();
+    public Message buildAsEmbed(JDACommand event, EmbedBuilder output) {
+        GenericMessageEvent jdaEvent = event.getSource();
 
         if (jdaEvent.getChannelType().isGuild())
             output.setColor(jdaEvent.getGuild().getSelfMember().getColor());
@@ -23,7 +23,7 @@ public class EmbedBuilderBuilder implements IJDABuilder<EmbedBuilder> {
     }
 
     @Override
-    public Message build(CommandEvent event, EmbedBuilder input) {
+    public Message build(ICommandEvent<?, ?, Message> event, EmbedBuilder input) {
         return null;
     }
 }

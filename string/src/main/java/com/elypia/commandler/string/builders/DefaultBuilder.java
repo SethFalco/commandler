@@ -7,7 +7,7 @@ import com.elypia.commandler.string.IStringBuilder;
 public class DefaultBuilder implements IStringBuilder<String> {
 
     @Override
-    public String build(ICommandEvent<?, ?, String> event, String input) {
-        return input;
+    public String build(ICommandEvent<?, ?, String> event, String output) {
+        return output;
     }
 }

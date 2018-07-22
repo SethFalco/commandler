@@ -1,12 +1,12 @@
 package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.impl.IParser;
+import com.elypia.commandler.impl.*;
 
-public class StringParser implements IParser<String> {
+public class StringParser implements IParser<ICommandEvent, String> {
 
     @Override
-    public String parse(CommandEvent event, Class<? extends String> type, String input) {
+    public String parse(ICommandEvent event, Class<? extends String> type, String input) {
         return input;
     }
 }

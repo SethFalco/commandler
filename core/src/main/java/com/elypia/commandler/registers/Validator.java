@@ -1,4 +1,4 @@
-package com.elypia.commandler.components;
+package com.elypia.commandler.registers;
 
 import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.annotations.validation.Validation;
@@ -15,7 +15,7 @@ import java.util.*;
  * they are within the bounds that is specified relative to the input
  * provided when performing the commands.
  */
-public class Validators {
+public class Validator {
 
     /**
      * A map defining annotations to what {@link ICommandValidator} they are associated with.
@@ -32,7 +32,7 @@ public class Validators {
      */
     private Map<Class<? extends Annotation>, IParamValidator> paramValidators;
 
-    public Validators() {
+    public Validator() {
         commandValidators = new HashMap<>();
         paramValidators = new HashMap<>();
 

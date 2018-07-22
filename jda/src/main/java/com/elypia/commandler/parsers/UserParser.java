@@ -1,45 +1,36 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.impl.IParamParser;
+import com.elypia.commandler.*;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class UserParser implements IParamParser<User> {
+public class UserParser implements IJDAParser<User> {
 
     @Override
-    public User parse(CommandEvent event, SearchScope scope, String input) {
-        final Collection<User> users = new ArrayList<>();
+    public User parse(JDACommand event, Class<? extends User> type, String input) {
+        Set<User> users = new HashSet<>(event.getClient().getUsers());
+        List<User> matches = new ArrayList<>();
 
-        switch (scope) {
-            case GLOBAL:
-                users.addAll(event.getMessageEvent().getJDA().getUsers());
-                break;
+        users.forEach(user -> {
+            if (user.getId().equals(input))
+                matches.add(user);
 
-            case MUTUAL:
-                User user = event.getMessage().getAuthor();
-                Collection<Guild> guilds = user.getMutualGuilds();
-                guilds.forEach(g -> users.addAll(g.getMembers().stream().map(Member::getUser).collect(Collectors.toList())));
-                break;
+            else if (user.getName().equalsIgnoreCase(input))
+                matches.add(user);
 
-            case LOCAL:
-                users.addAll(event.getMessageEvent().getGuild().getMembers().stream().map(Member::getUser).collect(Collectors.toList()));
-                break;
-        }
+            else if (user.getAsMention().equals(input))
+                matches.add(user);
 
-        for (User user : users) {
-            if (user.getId().equals(input) || user.getName().equalsIgnoreCase(input) || user.getAsMention().equals(input))
-                return user;
+            else if (user.toString().equalsIgnoreCase(input))
+                matches.add(user);
 
-            String nickMention = "<@!" + user.getId() + ">";
+            else if (input.equals("<@!" + user.getId() + ">"))
+                matches.add(user);
+        });
 
-            if (nickMention.equals(input))
-                return user;
-        }
-
-        return null;
+        return matches.isEmpty() ? null : matches.get(0);
     }
 }

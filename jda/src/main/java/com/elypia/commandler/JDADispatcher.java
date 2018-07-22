@@ -30,6 +30,7 @@ public class JDADispatcher extends ListenerAdapter implements IDispatcher<JDA, G
 
     public JDADispatcher(final JDACommandler commandler) {
         this.commandler = commandler;
+        commandler.getClient().addEventListener(this);
         confiler = (JDAConfiler)commandler.getConfiler();
     }
 

@@ -8,7 +8,7 @@ import com.elypia.commandler.parsers.DurationParser;
 
 import java.time.Duration;
 
-public class PeriodValidator implements IParamValidator<Duration, Period> {
+public class PeriodValidator implements IParamValidator<CommandEvent, Duration, Period> {
 
     @Override
     public boolean validate(CommandEvent event, Duration duration, Period period, MetaParam param) {

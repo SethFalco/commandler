@@ -1,9 +1,9 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.validation.IgnoreGlobal;
+import com.elypia.commandler.annotations.Module;
+import com.elypia.commandler.annotations.validation.Ignore;
 import com.elypia.commandler.metadata.*;
-import com.elypia.commandler.modules.CommandHandler;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
@@ -16,21 +16,20 @@ import java.util.*;
  * permission to do so, else it will fall back to using the
  * default implementation.
  */
+public class JDAHandler extends Handler {
 
-public class JDACommandHandler extends CommandHandler {
-
-    @IgnoreGlobal
+    @Ignore
     @Command(name = "Help", aliases = "help")
     public Object help(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
 
         Module annotation = module.getModule();
-        builder.setTitle(annotation.name(), confiler.getHelpUrl(event));
+        builder.setTitle(annotation.name(), confiler.getHelpUrl(commandler, event));
 
         if (!enabled)
-            builder.setDescription(annotation.description() + "\n**```diff\n- Disabled due to live issues! -\n```\n**");
+            builder.setDescription(annotation.help() + "\n**```diff\n- Disabled due to live issues! -\n```\n**");
         else
-            builder.setDescription(annotation.description() + "\n_ _");
+            builder.setDescription(annotation.help() + "\n_ _");
 
         Iterator<MetaCommand> metaCommandIt = module.getPublicCommands().iterator();
         boolean moduleHasParams = false;
@@ -45,7 +44,7 @@ public class JDACommandHandler extends CommandHandler {
                 for (String string : command.aliases())
                     aliasJoiner.add("`" + string + "`");
 
-                String value = "**Aliases: **" + aliasJoiner.toString() + "\n" + confiler.getHelp(event, command.help());
+                String value = "**Aliases: **" + aliasJoiner.toString() + "\n" + confiler.getHelp(commandler, event, command.help());
                 List<MetaParam> metaParams = metaCommand.getInputParams();
 
                 if (!metaParams.isEmpty()) {
@@ -56,7 +55,7 @@ public class JDACommandHandler extends CommandHandler {
                     metaParams.forEach(metaParam -> {
                         if (metaParam.isInput()) {
                             Param param = metaParam.getParamAnnotation();
-                            helpJoiner.add("`" + param.name() + "`: " + confiler.getHelp(event, param.help()));
+                            helpJoiner.add("`" + param.name() + "`: " + confiler.getHelp(commandler, event, param.help()));
                         }
                     });
 
@@ -71,7 +70,7 @@ public class JDACommandHandler extends CommandHandler {
         }
 
         String params = moduleHasParams ? " {params}" : "";
-        String prefix = confiler.getPrefix(event.getMessageEvent());
+        String prefix = confiler.getPrefixes(commandler, event.getSource())[0];
         String format = "Try \"%s%s {command} %s\" to perform commands!";
         builder.setFooter(String.format(format, prefix, annotation.aliases()[0], params), null);
 

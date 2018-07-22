@@ -1,9 +1,10 @@
 package com.elypia.commandlerbot.modules;
 
+import com.elypia.commandler.JDAHandler;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
-import com.elypia.commandler.modules.CommandHandler;
 import com.elypia.commandler.parsers.DurationParser;
 import net.dv8tion.jda.core.entities.*;
 
@@ -17,8 +18,8 @@ import java.util.stream.IntStream;
  * however, modules, you can still query the help if you know the module exists.
  */
 
-@Module(name = "Example Module for Demo", aliases = {"example", "ex"}, description = "Example module to demonstarte functionality.", hidden = true)
-public class ExampleModule extends CommandHandler {
+@Module(name = "Example Module for Demo", aliases = {"example", "ex"})
+public class ExampleModule extends JDAHandler {
 
     /**
      * Commandler provides ample inline validation through annotations.

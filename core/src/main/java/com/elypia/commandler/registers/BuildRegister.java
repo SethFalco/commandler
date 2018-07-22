@@ -1,4 +1,4 @@
-package com.elypia.commandler.components;
+package com.elypia.commandler.registers;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.impl.*;
@@ -18,7 +18,7 @@ import java.util.*;
  *            should be the data-type the client of our integrating
  *            platform expects us to send back to users.
  */
-public class Builders<M> implements Iterable<IBuilder<?, M>> {
+public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
 
     /**
      * This is thrown with an {@link IllegalArgumentException} if there is no registered
@@ -28,7 +28,7 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
 
     /**
      * This is thrown with a {@link IllegalStateException} when the
-     * {@link IBuilder#build(CommandEvent, Object)} returns null. <br>
+     * {@link IBuilder#build(ICommandEvent, Object)} returns null. <br>
      * The default build method is the fallback and should always return a value.
      */
     private static final String NULL_DEFAULT_BUILDER = "String builder %s for data-type %s returned null.";
@@ -43,15 +43,15 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
-    private static final Logger logger = LoggerFactory.getLogger(Builders.class);
+    private static final Logger logger = LoggerFactory.getLogger(BuildRegister.class);
 
     /**
      * All registered {@link IBuilder} instances mapped
      * to the data type it builds for.
      */
-    private Map<Class<?>, IBuilder<?, M>> builders;
+    private Map<Class<?>, IBuilder<?, ?, M>> builders;
 
-    public Builders() {
+    public BuildRegister() {
         builders = new HashMap<>();
     }
 
@@ -64,9 +64,9 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * @param newBuilder The {@link IBuilder} that builds an object into a message.
      * @param types The data types this builder can build.
      */
-    public void registerBuilder(IBuilder<?, M> newBuilder, Class...types) {
+    public void registerBuilder(IBuilder<?, ?, M> newBuilder, Class...types) {
         for (Class type : types) {
-            IBuilder<?, M> oldBuilder = builders.put(type, newBuilder);
+            IBuilder<?, ?, M> oldBuilder = builders.put(type, newBuilder);
 
             if (oldBuilder != null) {
                 String oldName = oldBuilder.getClass().getName();
@@ -81,7 +81,7 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * Build an object into the {@link M message} using
      * the respective {@link IBuilder}. <br>
      * When integrating with a platform, you may wish to extend
-     * and {@link Override} the {@link #build(ICommandEvent, Object)}
+     * and {@link Override} the build
      * method to accomodate platform specific requirements.
      *
      * @param event The source event that triggered this.
@@ -90,7 +90,7 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      */
     public M build(ICommandEvent<?, ?, M> event, Object object) {
         Objects.requireNonNull(object);
-        IBuilder builder = getBuilder(object.getClass());
+        IBuilder<?, ?, M> builder = getBuilder(object.getClass());
 
         M content = (M)builder.build(event, object);
 
@@ -113,11 +113,11 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * @throws IllegalArgumentException If no {@link IBuilder} is
      *         registered for this data-type.
      */
-    protected IBuilder<?, M> getBuilder(Class<?> clazz) {
+    protected B getBuilder(Class<?> clazz) {
         if (builders.containsKey(clazz))
             return builders.get(clazz);
 
-        for (Map.Entry<Class<?>, IBuilder<?, M>> entry : builders.entrySet()) {
+        for (Map.Entry<Class<?>, B> entry : builders.entrySet()) {
             if (entry.getKey().isAssignableFrom(clazz))
                 return entry.getValue();
         }
@@ -126,7 +126,7 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
     }
 
     @Override
-    public Iterator<IBuilder<?, M>> iterator() {
+    public Iterator<B> iterator() {
         return builders.values().iterator();
     }
 }

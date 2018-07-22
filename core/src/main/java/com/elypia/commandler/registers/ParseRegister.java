@@ -1,4 +1,4 @@
-package com.elypia.commandler.components;
+package com.elypia.commandler.registers;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
@@ -16,13 +16,13 @@ import java.util.*;
  * The {@link Param paramter} parser which is used to interpret
  * parameters specified in the {@link Command command} arguments.
  * Before a data-type can be used as an argument a {@link IParser parser}
- * must be specified and registered to the {@link Parsers} via the
+ * must be specified and registered to the {@link ParseRegister} via the
  * {@link Commandler#registerParser(IParser, Class[])} method. <br>
- * The {@link Parsers} is how {@link String} input provided
+ * The {@link ParseRegister} is how {@link String} input provided
  * by the chat client is converted into the respective object and passed
  * to the method associated with the {@link Command}.
  */
-public class Parsers implements Iterable<IParser<?>> {
+public class ParseRegister implements Iterable<IParser> {
 
     /**
      * This is logged whenever a existing {@link IParser} for a
@@ -32,7 +32,7 @@ public class Parsers implements Iterable<IParser<?>> {
 
     /**
      * This is thrown whenever a data-type is required however
-     * this {@link Parsers} doesn't have an {@link IParser}
+     * this {@link ParseRegister} doesn't have an {@link IParser}
      * registered to know how to parse it.
      */
     private static final String PARSER_NOT_FOUND = "No parser was created for the data-type %s.";
@@ -41,7 +41,7 @@ public class Parsers implements Iterable<IParser<?>> {
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
-    private static final Logger logger = LoggerFactory.getLogger(Parsers.class);
+    private static final Logger logger = LoggerFactory.getLogger(ParseRegister.class);
 
     /**
      * Our parent Commandler instance which receives and manages the events.
@@ -57,9 +57,9 @@ public class Parsers implements Iterable<IParser<?>> {
      * The registered parsers which allow us to use particular data-types
      * as {@link Command} {@link Param parameters}.
      */
-    protected Map<Class<?>, IParser<?>> parsers;
+    protected Map<Class<?>, IParser> parsers;
 
-    public Parsers(Commandler commandler) {
+    public ParseRegister(Commandler commandler) {
         this.commandler = Objects.requireNonNull(commandler);
         confiler = commandler.getConfiler();
         parsers = new HashMap<>();
@@ -89,7 +89,7 @@ public class Parsers implements Iterable<IParser<?>> {
      */
     public void registerParser(IParser newParser, Class...types) {
         for (Class type : types) {
-            IParser<?> oldParser = parsers.put(type, newParser);
+            IParser oldParser = parsers.put(type, newParser);
 
             if (oldParser != null) {
                 String oldName = oldParser.getClass().getName();
@@ -209,11 +209,11 @@ public class Parsers implements Iterable<IParser<?>> {
      * @param clazz The class to obtain a parser for.
      * @return The parser to can parse this data into this data-type.
      */
-    protected IParser<?> getParser(Class<?> clazz) {
+    protected IParser<?, ?> getParser(Class<?> clazz) {
         if (parsers.containsKey(clazz))
             return parsers.get(clazz);
 
-        for (Map.Entry<Class<?>, IParser<?>> entry : parsers.entrySet()) {
+        for (Map.Entry<Class<?>, IParser> entry : parsers.entrySet()) {
             if (entry.getKey().isAssignableFrom(clazz))
                 return entry.getValue();
         }
@@ -222,7 +222,7 @@ public class Parsers implements Iterable<IParser<?>> {
     }
 
     @Override
-    public Iterator<IParser<?>> iterator() {
+    public Iterator<IParser> iterator() {
         return parsers.values().iterator();
     }
 }

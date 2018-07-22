@@ -1,7 +1,7 @@
 package com.elypia.commandler.impl;
 
-import com.elypia.commandler.Commandler;
-import com.elypia.commandler.components.Builders;
+import com.elypia.commandler.*;
+import com.elypia.commandler.registers.Builders;
 
 /**
  * The {@link ICommandEvent} is the event object produced and used
@@ -36,12 +36,18 @@ public interface ICommandEvent<C, E, M> {
      * @param trigger The new commands to process instead.
      */
     default M trigger(String trigger) {
-        return getCommandler().trigger(getSourceEvent(), trigger);
+        return getCommandler().trigger(getSource(), trigger);
     }
 
     void invalidate(Object reason);
 
     Commandler<C, E, M> getCommandler();
 
-    E getSourceEvent();
+    CommandInput<C, E, M> getInput();
+
+    C getClient();
+
+    E getSource();
+
+    M getMessage();
 }

@@ -45,7 +45,9 @@ public class TestModuleTest {
     public void testHelp() {
         StringEvent event = new StringEvent(">test help");
 
-        String response = commandler.trigger(event, event.getContent());
-        assertEquals("helped", response);
+        String expected = "Test (test)\nMy test module.\n\nPing! (ping)\nCheck if the bot is alive!\n\nRepeat (repeat)\nRepeat some text multiple times.\ninput: What you want me to say!\ncount: The number of times I should say it!\n\nSay (say)\nI'll repeat something you say!\ninput: What you want me to say!";
+        String actual = commandler.trigger(event, event.getContent());
+
+        assertEquals(expected, actual);
     }
 }

@@ -1,38 +1,33 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.impl.IParamParser;
+import com.elypia.commandler.*;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.*;
 
-public class RoleParser implements IParamParser<Role> {
+public class RoleParser implements IJDAParser<Role> {
 
     @Override
-    public Role parse(CommandEvent event, SearchScope scope, String input) {
-        final Collection<Role> roles = new ArrayList<>();
+    public Role parse(JDACommand event, Class<? extends Role> type, String input) {
+        Set<Role> roles = new HashSet<>(event.getClient().getRoles());
+        List<Role> matches = new ArrayList<>();
 
-        switch (scope) {
-            case GLOBAL:
-                roles.addAll(event.getMessageEvent().getJDA().getRoles());
-                break;
+        roles.forEach(role -> {
+            if (role.getId().equals(input))
+                matches.add(role);
 
-            case MUTUAL:
-                User user = event.getMessage().getAuthor();
-                Collection<Guild> guilds = user.getMutualGuilds();
-                guilds.forEach(g -> roles.addAll(g.getRoles()));
-                break;
+            else if (role.getName().equalsIgnoreCase(input))
+                matches.add(role);
 
-            case LOCAL:
-                roles.addAll(event.getMessageEvent().getGuild().getRoles());
-        }
+            else if (role.getAsMention().equalsIgnoreCase(input))
+                matches.add(role);
 
-        for (Role role : roles) {
-            if (role.getId().equals(input) || role.getAsMention().equals(input) || role.getName().equalsIgnoreCase(input))
-                return role;
-        }
+            else if (role.toString().equalsIgnoreCase(input))
+                matches.add(role);
+        });
 
-        return null;
+        return matches.isEmpty() ? null : matches.get(0);
     }
 }

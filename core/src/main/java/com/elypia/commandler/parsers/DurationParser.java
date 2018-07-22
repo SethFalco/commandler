@@ -1,20 +1,20 @@
 package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.impl.IParser;
+import com.elypia.commandler.impl.*;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.*;
 
-public class DurationParser implements IParser<Duration> {
+public class DurationParser implements IParser<ICommandEvent, Duration> {
 
     private Pattern matchPattern = Pattern.compile("(?i)\\A(?:\\d+\\s*[A-Z]+(?:\\s*,\\s*|\\s*)?)+\\Z");
     private Pattern splitPattern = Pattern.compile("(?i)(?<time>\\d+)\\s*(?<unit>[A-Z]+)");
 
     @Override
-    public Duration parse(CommandEvent event, Class<? extends Duration> type, String input) {
+    public Duration parse(ICommandEvent event, Class<? extends Duration> type, String input) {
         if (matchPattern.matcher(input).matches()) {
             Duration duration = Duration.ZERO;
             Matcher split = splitPattern.matcher(input);

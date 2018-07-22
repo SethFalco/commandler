@@ -1,10 +1,9 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.components.Parsers;
-import com.elypia.commandler.impl.*;
-import net.dv8tion.jda.core.*;
+import com.elypia.commandler.impl.IBuilder;
+import com.elypia.commandler.registers.Parsers;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 /**
  * This is an extention to the normal {@link IBuilder}
@@ -15,8 +14,7 @@ import net.dv8tion.jda.core.events.message.GenericMessageEvent;
  * @param <O> The object to build, this would have been the
  *            output from the {@link Parsers}.
  */
-public interface IJDABuilder<O> extends IBuilder<O, Message>
-{
+public interface IJDABuilder<O> extends IBuilder<O, Message> {
 
     /**
      * Build the object into an {@link MessageEmbed}. <br>
@@ -34,12 +32,12 @@ public interface IJDABuilder<O> extends IBuilder<O, Message>
      *
      * {@link Commandler} will attempt to build the object as an {@link MessageEmbed}
      * however if null is returned, an error occurs, or the bot lacks permission,
-     * {@link #build(ICommandEvent, Object)} will be used as a fallback,
+     * {@link #buildAsEmbed(JDACommand, Object)} will be used as a fallback,
      * which should return a {@link String}.
      *
      * @param event The Commandler managed event that trigger this.
      * @param output The object we're hoping to build.
      * @return The {@link MessageEmbed} ready to send to Discord.
      */
-    Message buildAsEmbed(CommandEvent<JDA, GenericMessageEvent, Message> event, O output);
+    Message buildAsEmbed(JDACommand event, O output);
 }

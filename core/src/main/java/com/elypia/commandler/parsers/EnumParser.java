@@ -1,7 +1,7 @@
 package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.impl.IParser;
+import com.elypia.commandler.impl.*;
 
 /**
  * This is the generic {@link Enum} parser. This should be the fallback parser
@@ -11,10 +11,10 @@ import com.elypia.commandler.impl.IParser;
  * spaces, under scores, and converting to lower case.
  */
 
-public class EnumParser implements IParser<Enum> {
+public class EnumParser implements IParser<ICommandEvent, Enum> {
 
     @Override
-    public Enum parse(CommandEvent event, Class<? extends Enum> type, String input) {
+    public Enum parse(ICommandEvent event, Class<? extends Enum> type, String input) {
         input = input.toLowerCase().replace(" ", "");
 
         for (Enum e : type.getEnumConstants()) {

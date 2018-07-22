@@ -1,9 +1,9 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.components.*;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.registers.*;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -65,11 +65,11 @@ public abstract class Commandler<C, E, M> {
      */
     protected Map<Integer, MetaCommand<C, E, M>> commands;
 
-    protected Parsers parser;
+    protected ParseRegister parser;
 
-    protected Validators validator;
+    protected BuildRegister<?, M> builder;
 
-    protected Builders<M> builder;
+    protected Validator validator;
 
     /**
      * Creates an instance of the {@link Commandler} framework.
@@ -80,12 +80,13 @@ public abstract class Commandler<C, E, M> {
     public Commandler(IConfiler<C, E, M> confiler) {
         this.confiler = confiler;
 
+        parser = new ParseRegister(this);
+        builder = new BuildRegister<>();
+        validator = new Validator();
+
         handlers = new ArrayList<>();
         roots = new HashMap<>();
         commands = new HashMap<>();
-        parser = new Parsers(this);
-        validator = new Validators();
-        builder = new Builders<>();
     }
 
     public void setDispatcher(IDispatcher<C, E, M> dispatcher) {
@@ -105,6 +106,11 @@ public abstract class Commandler<C, E, M> {
         handlers.add(handler);
 
         Collections.sort(handlers);
+    }
+
+    public void registerModules(IHandler<C, E, M>... handlers) {
+        for (IHandler<C, E, M> handler : handlers)
+            registerModule(handler);
     }
 
     public M trigger(E event, String input) {
@@ -128,11 +134,11 @@ public abstract class Commandler<C, E, M> {
         this.builder.registerBuilder(builder, types);
     }
 
-    public <T extends Annotation> void registerValidator(Class<T> clazz, IParamValidator<?, T> validator) {
+    public <T extends Annotation> void registerValidator(Class<T> clazz, IParamValidator<?, ?, T> validator) {
         this.validator.registerValidator(clazz, validator);
     }
 
-    public <T extends Annotation> void registerValidator(Class<T> clazz, ICommandValidator<T> validator) {
+    public <T extends Annotation> void registerValidator(Class<T> clazz, ICommandValidator<?, T> validator) {
         this.validator.registerValidator(clazz, validator);
     }
 
@@ -164,15 +170,15 @@ public abstract class Commandler<C, E, M> {
         return commands;
     }
 
-    public Parsers getParser() {
+    public ParseRegister getParser() {
         return parser;
     }
 
-    public Builders<M> getBuilder() {
+    public BuildRegister<?, M> getBuilder() {
         return builder;
     }
 
-    public Validators getValidator() {
+    public Validator getValidator() {
         return validator;
     }
 

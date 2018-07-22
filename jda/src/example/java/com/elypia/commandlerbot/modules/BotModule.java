@@ -1,15 +1,13 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.CommandEvent;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.validation.param.Everyone;
-import com.elypia.commandler.exceptions.MalformedCommandException;
-import com.elypia.commandler.modules.CommandHandler;
-import com.elypia.commandler.reactions.ReactionEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
 
-@Module(name = "Bot", aliases = {"bot", "robot"}, description = "Get info on the bot itself and it's development!")
-public class BotModule extends CommandHandler {
+@Module(name = "Bot", aliases = {"bot", "robot"}, help = "Get info on the bot itself and it's development!")
+public class BotModule extends JDAHandler {
 
     /**
      * This is the {@link Default} command for the module, and can be executed
@@ -78,18 +76,18 @@ public class BotModule extends CommandHandler {
     @Param(name = "message", help = "The message to repeat.")
     @Emoji(emotes = "\uD83D\uDD01", help = "Make the bot create a new line and append the same text.")
     @Emoji(emotes = "❌", help = "Reset this to a single say.")
-    public String say(CommandEvent event, @Everyone String message) {
-        event.tryDeleteMessage();
+    public String say(JDACommand event, @Everyone String message) {
+        event.deleteMessage();
         return message;
     }
 
-    @Reaction(id = 3, emotes = "\uD83D\uDD01")
-    public void sayReaction(ReactionEvent event) {
-        event.appendMessage(event.getReactionRecord().getParam("message").get(0));
-    }
-
-    @Reaction(id = 3, emotes = "❌")
-    public String resetReaction(ReactionEvent event) {
-        return event.getReactionRecord().getParam("message").get(0);
-    }
+//    @Reaction(id = 3, emotes = "\uD83D\uDD01")
+//    public void sayReaction(ReactionEvent event) {
+//        event.appendMessage(event.getReactionRecord().getParam("message").get(0));
+//    }
+//
+//    @Reaction(id = 3, emotes = "❌")
+//    public String resetReaction(ReactionEvent event) {
+//        return event.getReactionRecord().getParam("message").get(0);
+//    }
 }

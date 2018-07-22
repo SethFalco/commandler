@@ -10,6 +10,10 @@ import net.dv8tion.jda.core.events.message.GenericMessageEvent;
  */
 public class JDAConfiler extends Confiler<JDA, GenericMessageEvent, Message> {
 
+    public JDAConfiler(String... prefixes) {
+        super(prefixes);
+    }
+
     /**
      * Break the command down into it's individual components.
      *

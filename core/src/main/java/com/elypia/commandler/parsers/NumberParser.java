@@ -1,16 +1,16 @@
 package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.impl.IParser;
+import com.elypia.commandler.impl.*;
 
-public class NumberParser implements IParser<Number> {
+public class NumberParser implements IParser<ICommandEvent, Number> {
 
     public static Class[] TYPES = {
         Number.class, double.class, float.class, long.class, int.class, short.class, byte.class
     };
 
     @Override
-    public Number parse(CommandEvent event, Class<? extends Number> type, String input) {
+    public Number parse(ICommandEvent event, Class<? extends Number> type, String input) {
         try {
             if (type == Double.class || type == double.class)
                 return Double.parseDouble(input);

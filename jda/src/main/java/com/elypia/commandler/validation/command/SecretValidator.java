@@ -1,19 +1,25 @@
 package com.elypia.commandler.validation.command;
 
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.validation.command.Secret;
-import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.impl.ICommandValidator;
-import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.concurrent.TimeUnit;
 
-public class SecretValidator implements ICommandValidator<Secret> {
+public class SecretValidator implements IJDACommandValidator<Secret> {
+
+    private static final String WARNING = "**```diff\n- Delete that message right now and head to DMs. -\n```**";
 
     @Override
-    public boolean validate(CommandEvent event, Secret annotation) {
-        if (!event.getMessageEvent().isFromType(ChannelType.PRIVATE)) {
-            if (!event.tryDeleteMessage()) {
-                event.getMessageEvent().getChannel().sendMessage("**```diff\n- Delete that message right now and head to DMs. -\n```**").queue(message -> {
+    public boolean validate(JDACommand event, Secret annotation) {
+        GenericMessageEvent source = event.getSource();
+
+        if (!source.isFromType(ChannelType.PRIVATE)) {
+            if (!event.deleteMessage()) {
+                source.getChannel().sendMessage(WARNING).queue(message -> {
                     message.delete().queueAfter(3, TimeUnit.SECONDS);
                 });
             }
@@ -22,7 +28,7 @@ public class SecretValidator implements ICommandValidator<Secret> {
                 channel.sendMessage(help(annotation)).queue();
             });
 
-            return event.invalidate(null);
+            return false;
         }
 
         return true;

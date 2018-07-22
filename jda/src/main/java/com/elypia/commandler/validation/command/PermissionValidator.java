@@ -1,35 +1,29 @@
 package com.elypia.commandler.validation.command;
 
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.validation.command.Permissions;
-import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.impl.ICommandValidator;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
-public class PermissionValidator implements ICommandValidator<Permissions> {
+public class PermissionValidator implements IJDACommandValidator<Permissions> {
 
     @Override
-    public boolean validate(CommandEvent event, Permissions annotation) {
-        GenericMessageEvent e = event.getMessageEvent();
+    public boolean validate(JDACommand event, Permissions annotation) {
+        GenericMessageEvent e = event.getSource();
         TextChannel channel = e.getTextChannel();
         Member member = event.getMessage().getMember();
         Member self = e.getGuild().getSelfMember();
         Permission[] permissions = annotation.value();
 
         if (annotation.userRequiresPermission()) {
-            if (!member.hasPermission(channel, permissions)) {
-                String list = buildList(permissions);
-                String message = "You must have the permissions: " + list + " to perform this commands.";
-                return event.invalidate(message);
-            }
+            if (!member.hasPermission(channel, permissions))
+                return false;
         }
 
-        if (!self.hasPermission(channel, permissions)) {
-            String list = buildList(permissions);
-            String message = "I need the permissions: " + list + " to be able to do what you just asked. :c";
-            return event.invalidate(message);
-        }
+        if (!self.hasPermission(channel, permissions))
+            return false;
 
         return true;
     }

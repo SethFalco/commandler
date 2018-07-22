@@ -1,45 +1,35 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.data.SearchScope;
-import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.impl.IParamParser;
+import com.elypia.commandler.*;
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.*;
 
-public class EmoteParser implements IParamParser<Emote> {
+public class EmoteParser implements IJDAParser<Emote> {
 
     @Override
-    public Emote parse(CommandEvent event, SearchScope scope, String input) {
-        final Set<Emote> emotes = new HashSet<>();
-
+    public Emote parse(JDACommand event, Class<? extends Emote> type, String input) {
+        Set<Emote> emotes = new HashSet<>(event.getClient().getEmotes());
         emotes.addAll(event.getMessage().getEmotes());
 
-        switch (scope) {
-            case GLOBAL:
-                emotes.addAll(event.getMessageEvent().getJDA().getEmotes());
-                break;
+        List<Emote> matches = new ArrayList<>();
 
-            case MUTUAL:
-                User user = event.getMessage().getAuthor();
-                Collection<Guild> guilds = user.getMutualGuilds();
-                guilds.forEach(g -> emotes.addAll(g.getEmotes()));
-                break;
+        emotes.forEach(emote -> {
+            if (emote.getId().equals(input))
+                matches.add(emote);
 
-            case LOCAL:
-                emotes.addAll(event.getMessageEvent().getGuild().getEmotes());
-                break;
-        }
+            else if (emote.getAsMention().equalsIgnoreCase(input))
+                matches.add(emote);
 
-        for (Emote emote : emotes) {
-            if (compare(input, emote))
-                return emote;
-        }
+            else if (emote.getName().equalsIgnoreCase(input))
+                matches.add(emote);
 
-        return null;
-    }
+            else if (emote.toString().equalsIgnoreCase(input))
+                matches.add(emote);
+        });
 
-    public boolean compare(String input, Emote emote) {
-        return (emote.getId().equals(input) || emote.getAsMention().equalsIgnoreCase(input) || emote.getName().equalsIgnoreCase(input) || emote.toString().equalsIgnoreCase(input));
+        return matches.isEmpty() ? null : matches.get(0);
     }
 }

@@ -5,7 +5,7 @@ import com.elypia.commandler.annotations.validation.param.Partial;
 import com.elypia.commandler.impl.IParamValidator;
 import com.elypia.commandler.metadata.MetaParam;
 
-public class PartialValidator implements IParamValidator<Object, Partial> {
+public class PartialValidator implements IParamValidator<CommandEvent, Object, Partial> {
 
     @Override
     public boolean validate(CommandEvent event, Object input, Partial annotation, MetaParam param) {

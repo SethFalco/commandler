@@ -57,9 +57,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      */
     public Confiler(String... prefixes) {
         this(prefixes, null);
-
-        // ? By default use the IMisuseListener default implementation
-        misuseListener = new IMisuseListener(){};
     }
 
     /**
@@ -71,6 +68,9 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
     public Confiler(String[] prefixes, String help) {
         DEFAULT_PREFIXES = prefixes;
         HELP_URL = help;
+
+        // ? By default use the IMisuseListener default implementation
+        misuseListener = new IMisuseListener(){};
     }
 
     /**
@@ -128,6 +128,11 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
             @Override
             public M reply(Object output) {
                 throw new UnsupportedOperationException("You can not reply to this message.");
+            }
+
+            @Override
+            public M getMessage() {
+                return null;
             }
         };
     }

@@ -1,7 +1,7 @@
 package com.elypia.commandler.builders;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.impl.IBuilder;
+import com.elypia.commandler.impl.*;
 import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
@@ -13,12 +13,12 @@ import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 public class MessageEmbedBuilder implements IJDABuilder<MessageEmbed> {
 
     @Override
-    public Message buildAsEmbed(CommandEvent<JDA, GenericMessageEvent, Message> event, MessageEmbed output) {
+    public Message buildAsEmbed(JDACommand event, MessageEmbed output) {
         return new MessageBuilder(output).build();
     }
 
     @Override
-    public Message build(CommandEvent event, MessageEmbed input) {
-        return null;
+    public Message build(ICommandEvent<?, ?, Message> event, MessageEmbed output) {
+        return new MessageBuilder(output).build();
     }
 }

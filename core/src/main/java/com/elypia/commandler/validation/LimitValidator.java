@@ -5,7 +5,7 @@ import com.elypia.commandler.annotations.validation.param.Limit;
 import com.elypia.commandler.impl.IParamValidator;
 import com.elypia.commandler.metadata.MetaParam;
 
-public class LimitValidator implements IParamValidator<Number, Limit> {
+public class LimitValidator implements IParamValidator<CommandEvent, Number, Limit> {
 
     @Override
     public boolean validate(CommandEvent event, Number value, Limit limit, MetaParam param) {

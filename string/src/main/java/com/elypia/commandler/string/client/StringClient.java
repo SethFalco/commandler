@@ -10,7 +10,6 @@ import java.util.*;
  * but rather an easy to test implementation so we can test
  * all common features any implementation will share.
  */
-
 public class StringClient {
 
     private Collection<StringListener> listeners;

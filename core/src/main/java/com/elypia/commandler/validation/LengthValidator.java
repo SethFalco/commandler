@@ -5,7 +5,7 @@ import com.elypia.commandler.annotations.validation.param.Length;
 import com.elypia.commandler.impl.IParamValidator;
 import com.elypia.commandler.metadata.MetaParam;
 
-public class LengthValidator implements IParamValidator<String, Length> {
+public class LengthValidator implements IParamValidator<CommandEvent, String, Length> {
 
     @Override
     public boolean validate(CommandEvent event, String s, Length length, MetaParam param) {

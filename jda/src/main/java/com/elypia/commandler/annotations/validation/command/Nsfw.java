@@ -10,6 +10,6 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Validation
-public @interface NSFW {
+public @interface Nsfw {
 
 }

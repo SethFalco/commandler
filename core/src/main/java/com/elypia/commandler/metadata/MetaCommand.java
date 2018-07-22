@@ -417,6 +417,10 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
         return Collections.unmodifiableList(metaParams);
     }
 
+    public List<MetaParam> getInputParams() {
+        return metaParams.stream().filter(MetaParam::isInput).collect(Collectors.toUnmodifiableList());
+    }
+
     public Set<String> getAliases() {
         return aliases;
     }

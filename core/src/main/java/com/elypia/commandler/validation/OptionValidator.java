@@ -7,7 +7,7 @@ import com.elypia.commandler.metadata.MetaParam;
 
 import java.util.*;
 
-public class OptionValidator implements IParamValidator<String, Option> {
+public class OptionValidator implements IParamValidator<CommandEvent, String, Option> {
 
     @Override
     public boolean validate(CommandEvent event, String string, Option option, MetaParam param) {

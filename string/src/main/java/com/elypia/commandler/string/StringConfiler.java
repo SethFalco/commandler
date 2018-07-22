@@ -5,6 +5,14 @@ import com.elypia.commandler.string.client.*;
 
 public class StringConfiler extends Confiler<StringClient, StringEvent, String> {
 
+    public StringConfiler(String... prefixes) {
+        this(prefixes, null);
+    }
+
+    public StringConfiler(String[] prefixes, String help) {
+        super(prefixes, help);
+    }
+
     /**
      * Break the command down into it's individual components.
      *

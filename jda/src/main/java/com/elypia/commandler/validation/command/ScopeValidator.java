@@ -1,24 +1,26 @@
 package com.elypia.commandler.validation.command;
 
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.validation.command.Scope;
-import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.impl.ICommandValidator;
-import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.Arrays;
 
-public class ScopeValidator implements ICommandValidator<Scope> {
+public class ScopeValidator implements IJDACommandValidator<Scope> {
 
     @Override
-    public boolean validate(CommandEvent event, Scope scope) {
+    public boolean validate(JDACommand event, Scope scope) {
         ChannelType[] types = scope.value();
 
-        if (Arrays.asList(types).contains(event.getMessageEvent().getChannelType()))
+        if (Arrays.asList(types).contains(event.getSource().getChannelType()))
             return true;
 
         String list = buildList(types);
         String message = "This commands can only be performed in " + list + " channels.";
-        return event.invalidate(message);
+        return false;
     }
 
     @Override

@@ -59,7 +59,7 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 		return confiler;
 	}
 
-	public MetaModule getModule() {
+	public MetaModule<C, E, M> getModule() {
 		return module;
 	}
 

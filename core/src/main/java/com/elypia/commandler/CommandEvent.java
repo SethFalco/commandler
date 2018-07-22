@@ -1,6 +1,5 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.components.Builders;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
 
@@ -25,6 +24,8 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      */
     protected CommandInput<C, E, M> input;
 
+    protected C client;
+
     /**
      * The {@link E event} that was spawned by the {@link C client}
      * and what was used to instantiate this {@link CommandEvent event}.
@@ -46,6 +47,8 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
         this.commandler = commandler;
         this.event = event;
         this.input = input;
+
+        client = commandler.getClient();
     }
 
     /**
@@ -94,10 +97,14 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
         return error;
     }
 
+    public C getClient() {
+        return client;
+    }
+
     /**
      * @return The {@link E event} that caused this event.
      */
-    public E getSourceEvent() {
+    public E getSource() {
         return event;
     }
 }

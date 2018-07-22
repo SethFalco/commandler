@@ -4,7 +4,9 @@ import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.validation.Ignore;
-import com.elypia.commandler.metadata.MetaModule;
+import com.elypia.commandler.metadata.*;
+
+import java.util.*;
 
 /**
  * The {@link IHandler} is the interface which defines methods
@@ -53,7 +55,63 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
      */
     @Ignore
     @Command(name = "Help", aliases = "help")
-    Object help(CommandEvent<C, E, M> event);
+    default Object help(CommandEvent<C, E, M> event) {
+        StringBuilder builder = new StringBuilder();
+
+        Module annotation = getModule().getModule();
+        builder.append(annotation.name());
+
+        StringJoiner commandAliasJoiner = new StringJoiner(", ");
+
+        for (String alias : annotation.aliases())
+            commandAliasJoiner.add(alias);
+
+        builder.append(" (" + commandAliasJoiner.toString() + ")");
+        builder.append("\n" + annotation.help());
+
+        if (!isEnabled())
+            builder.append("\n" + getConfiler().getMisuseListener().onModuleDisabled(event));
+
+        builder.append("\n\n");
+
+        Iterator<MetaCommand<C, E, M>> metaCommandIt = getModule().getPublicCommands().iterator();
+
+        while (metaCommandIt.hasNext()) {
+            MetaCommand<C, E, M> metaCommand = metaCommandIt.next();
+            Command command = metaCommand.getCommand();
+            builder.append(command.name());
+
+            StringJoiner aliasJoiner = new StringJoiner(", ");
+
+            for (String string : command.aliases())
+                aliasJoiner.add(string);
+
+            builder.append(" (" + aliasJoiner.toString() + ")");
+            builder.append("\n" + command.help());
+
+            List<MetaParam> metaParams = metaCommand.getInputParams();
+
+            metaParams.forEach(metaParam -> {
+                Param param = metaParam.getParamAnnotation();
+                builder.append("\n" + param.name() + ": ");
+                builder.append(getConfiler().getHelp(getCommandler(), event.getSource(), param.help()));
+            });
+
+            if (metaCommandIt.hasNext())
+                builder.append("\n\n");
+        }
+
+        String helpUrl = getConfiler().getHelpUrl(getCommandler(), event.getSource());
+
+        if (helpUrl != null)
+            builder.append("You can get more information here: " + helpUrl);
+
+        return builder.toString();
+    }
+
+    Commandler<C, E, M> getCommandler();
+
+    IConfiler<C, E, M> getConfiler();
 
     MetaModule<C, E, M> getModule();
 
