@@ -64,7 +64,6 @@ public class CommandInput<C, E, M> {
      *
      * @return If the command is still valid.
      */
-
     public boolean normalize(CommandEvent<C, E, M> event) {
         for (IHandler<C, E, M> handler : commandler.getHandlers()) {
             MetaModule<C, E, M> metaModule = handler.getModule();

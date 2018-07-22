@@ -14,7 +14,6 @@ public class MetaParam {
     /**
      * The parent Commandler instance that spawned this MetaParam.
      */
-
     private Commandler commandler;
 
     private MetaCommand metaCommand;
@@ -23,7 +22,6 @@ public class MetaParam {
      * The method paramater this is for. This could be any object including
      * {@link CommandEvent}.
      */
-
     private Parameter parameter;
 
     /**
@@ -31,7 +29,6 @@ public class MetaParam {
      * information to generate things like the help command. <br>
      * Note: This <strong>WILL</strong> be null if the {@link #parameter} is {@link CommandEvent}.
      */
-
     private Param annotation;
 
     /**
@@ -39,7 +36,6 @@ public class MetaParam {
      * or if it something that contirbutes towards command parameters and required
      * user input.
      */
-
     private boolean isInput;
 
     private boolean isList;
@@ -62,7 +58,6 @@ public class MetaParam {
      * Parse all annotations on this parameter and collects any validation annotations
      * associated with it.
      */
-
     private void parseAnnotations() {
         validators = new HashMap<>();
 

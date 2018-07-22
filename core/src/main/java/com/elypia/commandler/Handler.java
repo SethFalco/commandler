@@ -1,7 +1,5 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.Command;
-import com.elypia.commandler.annotations.validation.Ignore;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.MetaModule;
 
@@ -16,7 +14,6 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M>, Comparable<
 	/**
 	 * If this module is enabled or out of service.
 	 */
-
 	protected boolean enabled;
 
 	/**
@@ -28,7 +25,6 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M>, Comparable<
 	 * @param commandler Our parent Commandler class.
 	 * @return Returns if the {@link #test()} for this module passed.
 	 */
-
 	@Override
 	public boolean init(Commandler<C, E, M> commandler) {
 		this.commandler = commandler;
@@ -46,7 +42,6 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M>, Comparable<
 	 *
 	 * @return If the module should remain enabled.
 	 */
-
 	@Override
 	public boolean test() {
 		return true;

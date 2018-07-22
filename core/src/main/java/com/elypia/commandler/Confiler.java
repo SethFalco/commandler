@@ -1,6 +1,7 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.pages.PageBuilder;
 
@@ -12,28 +13,24 @@ import java.util.regex.*;
  * methods in the {@link Confiler}, alternatively you can make your own
  * from scratch by making an implementation of {@link IConfiler}.
  */
-
 public class Confiler<C, E, M> implements IConfiler<C, E, M> {
 
     /**
      * The default commands regex, this matches the commands to see if its
      * valid and returns the matches as groups.
      */
-
     protected static final String COMMAND_REGEX = "(?i)\\A(?:%s)(?<module>[A-Z\\d]+)(?:\\s+(?<command>[A-Z\\d]+))?(?:\\s+(?<params>.+))?\\Z";
 
     /**
      * The default params regex, this matches every argument in the commands,
      * any comma seperated <strong>args</strong> will be split by {@link #ITEM_PATTERN} as a list.
      */
-
     protected static final Pattern PARAM_PATTERN = Pattern.compile("(?:(?:\"(?:\\\\\"|[^\"])*\"|[^\\s,]+)(?:\\s*,\\s*)?)+");
 
     /**
      * The default item regex, this matches every item within a list of parameters.
      * This is for list parameters as a single parameter can contain multiple items.
      */
-
     protected static final Pattern ITEM_PATTERN = Pattern.compile("\"(?<quote>(?:\\\\\"|[^\"])*)\"|(?<word>[^\\s,]+)");
 
     /**
@@ -41,7 +38,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      * The first prefix in this list is considered the global application default,
      * all other prefixes are alternatives.
      */
-
     protected final String[] DEFAULT_PREFIXES;
 
     /**
@@ -49,7 +45,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      * @see PageBuilder for generating a website with information
      *      on {@link Module}s and {@link Command}s.
      */
-
     protected final String HELP_URL;
 
     protected IMisuseListener misuseListener;
@@ -60,7 +55,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      * @param prefixes The default prefixes for the bot, if not prefix
      *                 is passed, then the bot does not require a prefix what so ever.
      */
-
     public Confiler(String... prefixes) {
         this(prefixes, null);
 
@@ -74,7 +68,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      * @param prefixes The default prefix for the bot.
      * @param help The url to the help documentaton for the bot.
      */
-
     public Confiler(String[] prefixes, String help) {
         DEFAULT_PREFIXES = prefixes;
         HELP_URL = help;
@@ -87,7 +80,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      * @param content The content of the meessage.
      * @return The input the user provided or null if it's not a valid command.
      */
-
     @Override
     public CommandInput processEvent(Commandler<C, E, M> commandler, E event, String content) {
         StringJoiner joiner = new StringJoiner("|");
@@ -138,7 +130,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      * @param event The message event provided by the client.
      * @return The prefixes considered acceptable for this event.
      */
-
     @Override
     public String[] getPrefixes(Commandler commandler, E event) {
         return DEFAULT_PREFIXES;

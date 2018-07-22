@@ -1,9 +1,9 @@
 package com.elypia.commandler.validation;
 
-import com.elypia.commandler.annotations.validation.param.Limit;
 import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.metadata.MetaParam;
+import com.elypia.commandler.annotations.validation.param.Limit;
 import com.elypia.commandler.impl.IParamValidator;
+import com.elypia.commandler.metadata.MetaParam;
 
 public class LimitValidator implements IParamValidator<Number, Limit> {
 

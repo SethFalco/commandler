@@ -4,7 +4,6 @@ import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.metadata.*;
-import org.slf4j.*;
 
 import java.util.*;
 
@@ -12,7 +11,6 @@ import java.util.*;
  * Whenever user errors occur such as using the bot incorrectly (<strong>not exceptions</strong>)
  * these methods are called to provide a friendly error message to the user.
  */
-
 public interface IMisuseListener {
 
     /**

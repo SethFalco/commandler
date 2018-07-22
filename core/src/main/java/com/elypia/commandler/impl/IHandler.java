@@ -2,6 +2,7 @@ package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.validation.Ignore;
 import com.elypia.commandler.metadata.MetaModule;
 
@@ -16,7 +17,6 @@ import com.elypia.commandler.metadata.MetaModule;
  * @param <E> The type of event we're processing.
  * @param <M> The type of message we're receieving and sending.
  */
-
 public interface IHandler<C, E, M> {
 
     /**
@@ -30,7 +30,6 @@ public interface IHandler<C, E, M> {
      * @param commandler Our parent Commandler class.
      * @return If the command initialised succesfully or if something went wrong.
      */
-
     boolean init(Commandler<C, E, M> commandler);
 
     /**
@@ -41,7 +40,6 @@ public interface IHandler<C, E, M> {
      *
      * @return If the tests passed or failed.
      */
-
     boolean test();
 
     /**
@@ -53,7 +51,6 @@ public interface IHandler<C, E, M> {
      * @param event The {@link CommandEvent event} produced by Commandler.
      * @return The message to send to the end user.
      */
-
     @Ignore
     @Command(name = "Help", aliases = "help")
     Object help(CommandEvent<C, E, M> event);

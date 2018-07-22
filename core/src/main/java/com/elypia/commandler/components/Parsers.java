@@ -9,7 +9,7 @@ import org.slf4j.*;
 
 import java.lang.reflect.Array;
 import java.net.URL;
-import java.time.*;
+import java.time.Duration;
 import java.util.*;
 
 /**
@@ -22,14 +22,12 @@ import java.util.*;
  * by the chat client is converted into the respective object and passed
  * to the method associated with the {@link Command}.
  */
-
 public class Parsers implements Iterable<IParser<?>> {
 
     /**
      * This is logged whenever a existing {@link IParser} for a
      * particular data-type is replaced with a new one.
      */
-
     private static final String REPLACED_PARSER = "The parser, {}, for the data-type {} has been replaced with {}.";
 
     /**
@@ -37,33 +35,28 @@ public class Parsers implements Iterable<IParser<?>> {
      * this {@link Parsers} doesn't have an {@link IParser}
      * registered to know how to parse it.
      */
-
     private static final String PARSER_NOT_FOUND = "No parser was created for the data-type %s.";
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
-
     private static final Logger logger = LoggerFactory.getLogger(Parsers.class);
 
     /**
      * Our parent Commandler instance which receives and manages the events.
      */
-
     protected Commandler commandler;
 
     /**
      * The associated configuration for our {@link #commandler} instance.
      */
-
     protected IConfiler confiler;
 
     /**
      * The registered parsers which allow us to use particular data-types
      * as {@link Command} {@link Param parameters}.
      */
-
     protected Map<Class<?>, IParser<?>> parsers;
 
     public Parsers(Commandler commandler) {
@@ -93,7 +86,6 @@ public class Parsers implements Iterable<IParser<?>> {
      *              the same type first, else an
      *              {@link Class#isAssignableFrom(Class) assignable} type.
      */
-
     public void registerParser(IParser newParser, Class...types) {
         for (Class type : types) {
             IParser<?> oldParser = parsers.put(type, newParser);
@@ -115,7 +107,6 @@ public class Parsers implements Iterable<IParser<?>> {
      * @param metaCommand The method to imitate the fields of.
      * @return An Object[] array of all parameters parsed as required for the given method.
      */
-
     public Object[] processEvent(CommandEvent<?, ?, ?> event, MetaCommand<?, ?, ?> metaCommand) {
         List<MetaParam> metaParams = metaCommand.getMetaParams();
         List<List<String>> inputs = event.getInput().getParameters();
@@ -161,7 +152,6 @@ public class Parsers implements Iterable<IParser<?>> {
      * @return      The parsed object as required for the command, or null
      *              if we failed to parse the input. (Usually user misuse.)
      */
-
     protected Object parseParameter(CommandEvent<?, ?, ?> event, MetaParam param, List<String> items) {
         Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
@@ -218,7 +208,6 @@ public class Parsers implements Iterable<IParser<?>> {
      * @param clazz The class to obtain a parser for.
      * @return The parser to can parse this data into this data-type.
      */
-
     protected IParser<?> getParser(Class<?> clazz) {
         if (parsers.containsKey(clazz))
             return parsers.get(clazz);

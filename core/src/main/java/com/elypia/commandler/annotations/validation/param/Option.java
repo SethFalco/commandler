@@ -17,6 +17,5 @@ public @interface Option {
      * @return The only values this paremeter may be.
      * The check is non-case sensitive.
      */
-
     String[] value();
 }

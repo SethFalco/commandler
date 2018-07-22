@@ -14,7 +14,6 @@ import java.lang.annotation.*;
  * Even if partial is enabled, an error will still be thrown if
  * there are zero succesfully parsed results.
  */
-
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Validation

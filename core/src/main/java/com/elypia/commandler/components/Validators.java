@@ -15,7 +15,6 @@ import java.util.*;
  * they are within the bounds that is specified relative to the input
  * provided when performing the commands.
  */
-
 public class Validators {
 
     /**
@@ -23,7 +22,6 @@ public class Validators {
      * Command validation validates the entire command itself, this could entail user permissions
      * to perform the command or other requirement.
      */
-
     private Map<Class<? extends Annotation>, ICommandValidator> commandValidators;
 
     /**
@@ -32,7 +30,6 @@ public class Validators {
      * of parameters, this be limiting the length of a String or make sure certain input
      * can't contain profanity.
      */
-
     private Map<Class<? extends Annotation>, IParamValidator> paramValidators;
 
     public Validators() {

@@ -2,7 +2,6 @@ package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.pages.PageBuilder;
 
@@ -13,7 +12,6 @@ import com.elypia.commandler.pages.PageBuilder;
  * @see Confiler for the default implementation, it is recommend to extend and {@link Override}
  * the methods from there.
  */
-
 public interface IConfiler<C, E, M> {
 
     /**
@@ -26,7 +24,6 @@ public interface IConfiler<C, E, M> {
      * @param content The content of the meessage.
      * @return The parsed contents of the message, or null if the command is invalid.
      */
-
     CommandInput<C, E, M> processEvent(Commandler<C, E, M> commandler, E event, String content);
 
     IMisuseListener getMisuseListener();
@@ -41,7 +38,6 @@ public interface IConfiler<C, E, M> {
      * @param event The message event as provided by the client.
      * @return The prefixes to be used for this particular event.
      */
-
     String[] getPrefixes(Commandler commandler, E event);
 
     /**
@@ -61,7 +57,6 @@ public interface IConfiler<C, E, M> {
      * @return The help {@link String} which should be displayed to users.
      * @see <a href="https://gitlab.com/Elypia/ElyScript">ElyScript</a>
      */
-
     String getHelp(Commandler commandler, E event, String key);
 
     /**
@@ -71,6 +66,5 @@ public interface IConfiler<C, E, M> {
      * @return The url the help is hosted at.
      * @see PageBuilder for dynamic webpage generation.
      */
-
     String getHelpUrl(Commandler<C, E, M> commandler, E event);
 }

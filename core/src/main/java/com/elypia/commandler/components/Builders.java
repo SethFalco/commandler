@@ -1,7 +1,7 @@
 package com.elypia.commandler.components;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.impl.IBuilder;
 import org.slf4j.*;
 
 import java.util.*;
@@ -18,14 +18,12 @@ import java.util.*;
  *            should be the data-type the client of our integrating
  *            platform expects us to send back to users.
  */
-
 public class Builders<M> implements Iterable<IBuilder<?, M>> {
 
     /**
      * This is thrown with an {@link IllegalArgumentException} if there is no registered
      * {@link IBuilder} with the data type of the object being built.
      */
-
     private static final String NO_VALID_BUILDER = "No builder implementation registered for data type %s.";
 
     /**
@@ -33,28 +31,24 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * {@link IBuilder#build(CommandEvent, Object)} returns null. <br>
      * The default build method is the fallback and should always return a value.
      */
-
     private static final String NULL_DEFAULT_BUILDER = "String builder %s for data-type %s returned null.";
 
     /**
      * This is logged when an existing {@link IBuilder} is replaced with
      * a new one. <br> This isn't bad, it's just a warning for the developer.
      */
-
     private static final String REPLACED_REGISTERED = "Replaced registered builder for {} ({}) with {}.";
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
-
     private static final Logger logger = LoggerFactory.getLogger(Builders.class);
 
     /**
      * All registered {@link IBuilder} instances mapped
      * to the data type it builds for.
      */
-
     private Map<Class<?>, IBuilder<?, M>> builders;
 
     public Builders() {
@@ -70,7 +64,6 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * @param newBuilder The {@link IBuilder} that builds an object into a message.
      * @param types The data types this builder can build.
      */
-
     public void registerBuilder(IBuilder<?, M> newBuilder, Class...types) {
         for (Class type : types) {
             IBuilder<?, M> oldBuilder = builders.put(type, newBuilder);
@@ -88,14 +81,13 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * Build an object into the {@link M message} using
      * the respective {@link IBuilder}. <br>
      * When integrating with a platform, you may wish to extend
-     * and {@link Override} the {@link #buildMessage(CommandEvent, Object)}
+     * and {@link Override} the {@link #build(CommandEvent, Object)}
      * method to accomodate platform specific requirements.
      *
      * @param event The source event that triggered this.
      * @param object The user input after already being parsed by the {@link Parsers}.
      * @return A built message ready to send to the client.
      */
-
     public M build(CommandEvent<?, ?, M> event, Object object) {
         Objects.requireNonNull(object);
         IBuilder builder = getBuilder(object.getClass());
@@ -121,7 +113,6 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * @throws IllegalArgumentException If no {@link IBuilder} is
      *         registered for this data-type.
      */
-
     protected IBuilder<?, M> getBuilder(Class<?> clazz) {
         if (builders.containsKey(clazz))
             return builders.get(clazz);

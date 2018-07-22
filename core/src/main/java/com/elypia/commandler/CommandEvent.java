@@ -1,5 +1,6 @@
 package com.elypia.commandler;
 
+import com.elypia.commandler.components.Builders;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
 
@@ -11,27 +12,23 @@ import com.elypia.commandler.metadata.*;
  * @param <E> The type of event we're processing.
  * @param <M> The type of message we send and receieve.
  */
-
 public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
 
     /**
      * The parent {@link Commandler} instance that spawned this {@link CommandEvent}.
      */
-
     protected Commandler<C, E, M> commandler;
 
     /**
      * A list of all input associated with this {@link CommandEvent}
-     * as well as the respective {@link AbstractMetaCommand} and {@link MetaModule}.
+     * as well as the respective {@link MetaCommand} and {@link MetaModule}.
      */
-
     protected CommandInput<C, E, M> input;
 
     /**
      * The {@link E event} that was spawned by the {@link C client}
      * and what was used to instantiate this {@link CommandEvent event}.
      */
-
     protected E event;
 
     protected M error;
@@ -45,7 +42,6 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      * @param commandler The parent {@link Commandler} which processed the event.
      * @param event The parent {@link E event} which was provided by the {@link C client}.
      */
-
     public CommandEvent(Commandler<C, E, M> commandler, CommandInput<C, E, M> input, E event) {
         this.commandler = commandler;
         this.event = event;
@@ -59,12 +55,9 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      * This allows {@link Commandler} to build and manage replies and perform
      * any pre or post actions for the platform we're integrating with.
      *
-     * @param output The item to send to the {@link Builder} to process.
-     * @param <O> The type of output, this can be anything so long as there
-     *            is a registered {@link IBuilder} in the {@link Builder}.
+     * @param output The item to send to the {@link Builders} to process.
      * @return The message that was built from the output.
      */
-
     @Override
     public abstract M reply(Object output);
 
@@ -74,7 +67,6 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      *
      * @return If a request was made to delete the message.
      */
-
     @Override
     public abstract boolean deleteMessage();
 
@@ -85,7 +77,6 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      *
      * @param reason Why the message was invalidated if the user should know.
      */
-
     @Override
     public void invalidate(Object reason) {
         invalidated = true;
@@ -102,7 +93,6 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
     /**
      * @return The perant {@link Commandler} instance.
      */
-
     public Commandler<C, E, M> getCommandler() {
         return commandler;
     }
@@ -111,7 +101,6 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      * @return Quick access to the {@link IConfiler} this
      *         {@link #commandler} is using.
      */
-
     public IConfiler<C, E, M> getConfiler() {
         return commandler.getConfiler();
     }
@@ -119,7 +108,6 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
     /**
      * @return Get the input parsed from this event.
      */
-
     public CommandInput<C, E, M> getInput() {
         return input;
     }
@@ -131,7 +119,6 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
     /**
      * @return The {@link E event} that caused this event.
      */
-
     public E getSourceEvent() {
         return event;
     }

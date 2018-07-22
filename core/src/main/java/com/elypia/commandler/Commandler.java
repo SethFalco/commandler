@@ -4,7 +4,6 @@ import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.components.*;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
-import com.elypia.commandler.components.Validators;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -19,7 +18,6 @@ import java.util.*;
  * @param <E> The type of event we're handling.
  * @param <M> The type of message we're expecting to send and receieve.
  */
-
 public abstract class Commandler<C, E, M> {
 
     /**
@@ -28,7 +26,6 @@ public abstract class Commandler<C, E, M> {
      * If a client is not applicable to this implementation, this can be
      * set to {@link Void} to indicate this.
      */
-
     protected C client;
 
     /**
@@ -38,7 +35,6 @@ public abstract class Commandler<C, E, M> {
      * @see Confiler for a default implementation
      * of the Confiler.
      */
-
     protected IConfiler<C, E, M> confiler;
 
     /**
@@ -46,13 +42,11 @@ public abstract class Commandler<C, E, M> {
      * This will have an implementation to process the command into something
      * {@link Commandler} can interpret.
      */
-
     protected IDispatcher<C, E, M> dispatcher;
 
     /**
      * All registered modules with this {@link Commandler}.
      */
-
     protected List<IHandler<C, E, M>> handlers;
 
     /**
@@ -61,7 +55,6 @@ public abstract class Commandler<C, E, M> {
      * alias isn't registered more than once, we also use this as a global
      * reference to obtain the a module.
      */
-
     protected Map<String, MetaModule<C, E, M>> roots;
 
     /**
@@ -70,7 +63,6 @@ public abstract class Commandler<C, E, M> {
      * {@link Overload} so we know what the parent {@link Command} is.
      * This can also be reused for implementation to dictate more actions.
      */
-
     protected Map<Integer, MetaCommand<C, E, M>> commands;
 
     protected Parsers parser;
@@ -85,7 +77,6 @@ public abstract class Commandler<C, E, M> {
      * platform, and an {@link IDispatcher} to specify how to process the
      * {@link E event} and / or {@link M message} received from the {@link C client}.
      */
-
     public Commandler(IConfiler<C, E, M> confiler) {
         this.confiler = confiler;
 
@@ -107,7 +98,6 @@ public abstract class Commandler<C, E, M> {
      *
      * @param handler The commands handler / module to register.
      */
-
     public void registerModule(IHandler<C, E, M> handler) {
         boolean enabled = handler.init(this);
 
@@ -126,12 +116,10 @@ public abstract class Commandler<C, E, M> {
      * You can register custom parsers, this allows Commandler to know
      * how to parse certain objects as method parameters for you.
      *
-     * @param clazz The type of class this parser will parse.
      * @param parser The parser which implements {@link IParser}, this has the method
      * which will interpret the String as our class object, else invalidate the command.
-     * @param <T> The type of class this parses.
+     * @param types The data-types this parser can work with.
      */
-
     public void registerParser(IParser parser, Class...types) {
         this.parser.registerParser(parser, types);
     }

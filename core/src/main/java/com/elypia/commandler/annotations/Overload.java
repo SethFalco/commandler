@@ -3,7 +3,6 @@ package com.elypia.commandler.annotations;
 import com.elypia.commandler.Commandler;
 
 import java.lang.annotation.*;
-import java.lang.reflect.Parameter;
 
 /**
  * Command groups are used when overloading commands, ie there is
@@ -12,7 +11,6 @@ import java.lang.reflect.Parameter;
  * can associate it with a CommandGroup, and it will copy the data from
  * the main Command.
  */
-
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Overload {
@@ -22,7 +20,6 @@ public @interface Overload {
      * {@link Commandler} will interpret this as inherit
      * all of the {@link Command}'s data.
      */
-
     String INHERIT = "";
 
     /**
@@ -30,7 +27,6 @@ public @interface Overload {
      * specified the {@link Command#id()} value. That is the unique reference to the
      * command and how Commandler knows what command this is overloading.
      */
-
     int value();
 
     /**
@@ -41,7 +37,6 @@ public @interface Overload {
      * of params in the order the overload required them. If an empty array
      * is passed, no parameters is inherited.
      */
-
     String[] params() default INHERIT;
 
     /**
@@ -52,6 +47,5 @@ public @interface Overload {
      * unless otherwise overridden by the overloading method, if an empty
      * array is passed no validation is inherited.
      */
-
     Class<? extends Annotation>[] validation() default Overload.class;
 }

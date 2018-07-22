@@ -274,11 +274,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
     protected void parseParams() {
         Param[] params = method.getAnnotationsByType(Param.class);
         Parameter[] parameters = method.getParameters();
-        inputRequired = (int)Arrays.stream(parameters).filter(o -> {
-            return !CommandEvent.class.isAssignableFrom(o.getType());
-        }).count();
-
-        checkParamLength(inputRequired, params.length);
+        inputRequired = checkParamLength(parameters, params.length);
 
         int offset = 0;
 
@@ -328,11 +324,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
         }
 
         Parameter[] parameters = method.getParameters();
-        inputRequired = (int)Arrays.stream(parameters).filter(o -> {
-            return !CommandEvent.class.isAssignableFrom(o.getType());
-        }).count();
-
-        checkParamLength(inputRequired, order.size());
+        inputRequired = checkParamLength(parameters, order.size());
 
         int offset = 0;
 
@@ -366,7 +358,11 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
         }
     }
 
-    private void checkParamLength(int inputRequired, int paramLength) {
+    private int checkParamLength(Parameter[] parameters, int paramLength) {
+        int inputRequired = (int)Arrays.stream(parameters).filter(o -> {
+            return !CommandEvent.class.isAssignableFrom(o.getType());
+        }).count();
+
         if (inputRequired != paramLength) {
             String commandName = command.name();
             String moduleName = metaModule.getModule().name();
@@ -375,6 +371,8 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
 
             throw new IllegalStateException(message);
         }
+
+        return inputRequired;
     }
 
     private void checkOffset(int offset) {

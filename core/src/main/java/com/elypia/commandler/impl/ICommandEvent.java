@@ -13,7 +13,6 @@ import com.elypia.commandler.components.Builders;
  * @param <E> The event that the client spawns.
  * @param <M> The message type that users send and receieve.
  */
-
 public interface ICommandEvent<C, E, M> {
 
     /**
@@ -25,7 +24,6 @@ public interface ICommandEvent<C, E, M> {
      * @param object The item to send to the {@link Builders} to process.
      * @return The message that was built by the {@link Builders}.
      */
-
     M reply(Object object);
 
     /**
@@ -34,7 +32,6 @@ public interface ICommandEvent<C, E, M> {
      *
      * @return If a request was made to delete the message.
      */
-
     boolean deleteMessage();
 
     /**
@@ -44,7 +41,6 @@ public interface ICommandEvent<C, E, M> {
      *
      * @param trigger The new commands to process instead.
      */
-
     default M trigger(String trigger) {
         return getCommandler().trigger(getSourceEvent(), trigger);
     }

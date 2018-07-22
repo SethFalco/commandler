@@ -11,7 +11,6 @@ import java.lang.annotation.*;
  * See {@link Static} and {@link Default} for making simple commands
  * though {@link Module}s.
  */
-
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
@@ -23,14 +22,12 @@ public @interface Module {
 	 * from the help commands and documentation. Assign this a value
 	 * to be displayed.
 	 */
-
 	String DEFAULT_HELP = "";
 
 	/**
 	 * @return Name of the module as it should appear at the top
 	 * of the help commands. This is not the alias of the module.
 	 */
-
 	String name();
 
 	/**
@@ -38,7 +35,6 @@ public @interface Module {
 	 * user access to the module, these must be unique, the same
 	 * alias can not be registered to two modules.
 	 */
-
 	String[] aliases();
 
 	/**
@@ -46,7 +42,6 @@ public @interface Module {
 	 * the module is for, if this is {@link String#isEmpty()}
 	 * then the module is hidden from any help commands or documentation.
 	 */
-
 	String help() default DEFAULT_HELP;
 
 	/**
@@ -56,6 +51,5 @@ public @interface Module {
 	 * @return The parent class this is a child of. Or {@link IHandler} if
 	 * this has no parent module.
 	 */
-
 	Class<? extends IHandler> parent() default IHandler.class;
 }

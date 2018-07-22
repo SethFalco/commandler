@@ -1,10 +1,10 @@
 package com.elypia.commandler.validation;
 
-import com.elypia.commandler.annotations.validation.param.Period;
 import com.elypia.commandler.CommandEvent;
+import com.elypia.commandler.annotations.validation.param.Period;
+import com.elypia.commandler.impl.IParamValidator;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.parsers.DurationParser;
-import com.elypia.commandler.impl.IParamValidator;
 
 import java.time.Duration;
 
