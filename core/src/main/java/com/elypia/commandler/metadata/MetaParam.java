@@ -51,7 +51,6 @@ public class MetaParam {
         this.annotation = annotation;
         this.parameter = Objects.requireNonNull(parameter);
 
-
         commandler = metaCommand.getCommandler();
         isInput = !CommandEvent.class.isAssignableFrom(parameter.getType());
         isList = parameter.getType().isArray();

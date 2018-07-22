@@ -3,8 +3,11 @@ package com.elypia.commandler.string;
 import com.elypia.commandler.*;
 import com.elypia.commandler.metadata.MetaCommand;
 import com.elypia.commandler.string.client.*;
+import org.slf4j.*;
 
 public class StringDispatcher extends Dispatcher<StringClient, StringEvent, String> implements StringListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(StringDispatcher.class);
 
     protected StringDispatcher(Commandler<StringClient, StringEvent, String> commandler) {
         super(commandler);
@@ -55,7 +58,7 @@ public class StringDispatcher extends Dispatcher<StringClient, StringEvent, Stri
                 return commandler.getBuilder().build(event, message);
         } catch (Exception ex) {
             event.invalidate(confiler.getMisuseListener().onExceptionFailure(ex));
-            ex.printStackTrace();
+            logger.error("An unknown error occured.", ex);
         }
 
         return null;

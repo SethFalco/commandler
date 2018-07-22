@@ -4,6 +4,7 @@ import com.elypia.commandler.Commandler;
 import com.elypia.commandler.pages.PageBuilder;
 import com.elypia.commandlerbot.modules.*;
 import net.dv8tion.jda.core.*;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
@@ -29,7 +30,6 @@ public class CommandlerBot {
         builder.setAvatar("./resources/alexis.png");
         builder.setFavicon("./resources/favicon.ico");
         builder.setDescription("CommandlerBot is the example bot for Commandler!");
-
         builder.build(String.format(".%spages%<s", File.separator)); // ./pages/
     }
 }

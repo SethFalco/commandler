@@ -15,8 +15,6 @@ import java.util.*;
 
 public interface IMisuseListener {
 
-    Logger logger = LoggerFactory.getLogger(IMisuseListener.class);
-
     /**
      * This will occur when the user attempts to do a command
      * where the root alias (first argument) doesn't match any of our
@@ -24,7 +22,6 @@ public interface IMisuseListener {
      *
      * @return The friendly error to send to the user.
      */
-
     default Object onNoModule() {
         return null; // ? By default we just won't do anything at all.
     }
@@ -35,8 +32,7 @@ public interface IMisuseListener {
      *
      * @return The friendly error to send to users in chat.
      */
-
-    default Object onParameterCountMismatch(CommandInput<?, ?, ?> input, MetaCommand metaCommand) {
+    default Object onParameterCountMismatch(CommandInput<?, ?, ?> input, MetaCommand<?, ?, ?> metaCommand) {
         String format = "You specified the '%s' command in the '%s' module but the parameters weren't what I expected.\n\n%s";
 
         StringBuilder parameters = new StringBuilder("Provided:\n");
@@ -62,28 +58,30 @@ public interface IMisuseListener {
 
         parameters.append("\n\nPossibilities:\n");
 
-        List<MetaCommand> metaCommands = metaCommand.getOverloads(true);
+        StringJoiner commandJoiner = new StringJoiner("\n");
 
-        for (MetaCommand command : metaCommands) {
+        for (MetaCommand<?, ?, ?> command : metaCommand.getOverloads(true)) {
             List<MetaParam> params = command.getMetaParams();
 
             if (params.isEmpty())
-                parameters.append("(0) None");
+                commandJoiner.add("(0) None");
             else {
-                StringJoiner joiner = new StringJoiner(" | ");
+                StringJoiner itemJoiner = new StringJoiner(" | ");
 
                 for (MetaParam param : params) {
                     String name = param.getParamAnnotation().name();
 
                     if (param.isList())
-                        joiner.add("['" + name + "']");
+                        itemJoiner.add("['" + name + "']");
                     else
-                        joiner.add("'" + name + "'");
+                        itemJoiner.add("'" + name + "'");
                 }
 
-                parameters.append("(").append(params.size()).append(") ").append(joiner.toString());
+                commandJoiner.add("(" + params.size() + ") " + itemJoiner.toString());
             }
         }
+
+        parameters.append(commandJoiner.toString());
 
         String commandName = metaCommand.getCommand().name();
         String moduleName = metaCommand.getMetaModule().getModule().name();
@@ -97,7 +95,6 @@ public interface IMisuseListener {
      *
      * @return The friendly error to send to users in chat.
      */
-
     default Object onNoDefault(CommandEvent event) {
         String format = "You specified the '%s' module without a valid command, however this module has no default command.\n\nPossibilities:\n%s\n\nSee the help command for more information.";
         MetaModule<?, ?, ?> module = event.getInput().getMetaModule();
@@ -124,7 +121,6 @@ public interface IMisuseListener {
      * @param input The input the user provided.
      * @return The friendly error to send to users in chat.
      */
-
     default Object onFailedParameterParse(CommandEvent event, Class<?> type, String input) {
         String format = "You specified the '%s' command in the '%s' module, however I couldn't process your parameters.\n\n%s";
         return format;
@@ -139,7 +135,6 @@ public interface IMisuseListener {
      * @param items
      * @return
      */
-
     default Object onSupportedList(CommandEvent event, MetaParam param, List<String> items) {
         return null;
     }
@@ -149,7 +144,6 @@ public interface IMisuseListener {
      *
      * @return
      */
-
     default Object onCommandInvalidated() {
         return null;
     }
@@ -159,7 +153,6 @@ public interface IMisuseListener {
      *
      * @return
      */
-
     default Object onParameterInvalidated() {
         return null;
     }
@@ -172,7 +165,6 @@ public interface IMisuseListener {
      * @param event The event that caused this failure.
      * @return The friendly error to send to users in chat.
      */
-
     default Object onModuleDisabled(CommandEvent event) {
         return null;
     }
@@ -185,13 +177,8 @@ public interface IMisuseListener {
      *
      * @param ex The exception that occured.
      * @return The friendly error to send to users in chat.
-     */
-
+     */ // ? It's a bad idea to actually show the exception to users as it may contain sensitive information.
     default Object onExceptionFailure(Exception ex) {
-        final String error = "An unknown error occured.";
-        logger.error(error, ex);
-
-        // ? It's a bad idea to actually show the exception to users as it may contain sensitive information.
-        return error;
+        return "An unknown error occured.";
     }
 }
