@@ -104,7 +104,7 @@ public abstract class Commandler<C, E, M> {
         handler.setEnabled(enabled);
         handlers.add(handler);
 
-//        Collections.sort(handlers);
+        Collections.sort(handlers);
     }
 
     public M trigger(E event, String input) {

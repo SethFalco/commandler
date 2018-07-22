@@ -12,10 +12,9 @@ import java.lang.annotation.*;
  * if performed in a chat that may include anyone but the bot, and the
  * user performing the command.
  */
-
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Validation("./resources/commands/secret.svg")
+@Validation
 public @interface Secret {
 
 }

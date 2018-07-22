@@ -1,7 +1,7 @@
 package com.elypia.commandler.components;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.impl.IBuilder;
+import com.elypia.commandler.impl.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -81,14 +81,14 @@ public class Builders<M> implements Iterable<IBuilder<?, M>> {
      * Build an object into the {@link M message} using
      * the respective {@link IBuilder}. <br>
      * When integrating with a platform, you may wish to extend
-     * and {@link Override} the {@link #build(CommandEvent, Object)}
+     * and {@link Override} the {@link #build(ICommandEvent, Object)}
      * method to accomodate platform specific requirements.
      *
      * @param event The source event that triggered this.
      * @param object The user input after already being parsed by the {@link Parsers}.
      * @return A built message ready to send to the client.
      */
-    public M build(CommandEvent<?, ?, M> event, Object object) {
+    public M build(ICommandEvent<?, ?, M> event, Object object) {
         Objects.requireNonNull(object);
         IBuilder builder = getBuilder(object.getClass());
 

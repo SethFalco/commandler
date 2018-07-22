@@ -10,12 +10,10 @@ public @interface Emoji {
 	/**
 	 * @return The reaction to post after the commands has executed as a String.
 	 */
-
 	String[] emotes();
 
 	/**
 	 * @return What will occur when the user performs this reaction on the message.
 	 */
-
 	String help();
 }

@@ -20,6 +20,16 @@ public abstract class Dispatcher<C, E, M> implements IDispatcher<C, E, M> {
         client = commandler.getClient();
     }
 
+    @Override
+    public Commandler<C, E, M> getCommandler() {
+        return commandler;
+    }
+
+    @Override
+    public IConfiler<C, E, M> getConfiler() {
+        return confiler;
+    }
+
     public C getClient() {
         return client;
     }

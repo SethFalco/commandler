@@ -1,23 +1,24 @@
 package com.elypia.commandler.builders;
 
-import com.elypia.commandler.CommandEvent;
+import com.elypia.commandler.*;
 import com.elypia.commandler.impl.IBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 /**
  * This is a builder so should a user desire to perform
  * different functionality they are able to overwrite it.
  */
-
-public class MessageEmbedBuilder implements IBuilder<MessageEmbed> {
+public class MessageEmbedBuilder implements IJDABuilder<MessageEmbed> {
 
     @Override
-    public MessageEmbed buildAsEmbed(CommandEvent event, MessageEmbed toSend) {
-        return toSend;
+    public Message buildAsEmbed(CommandEvent<JDA, GenericMessageEvent, Message> event, MessageEmbed output) {
+        return new MessageBuilder(output).build();
     }
 
     @Override
-    public String buildAsString(CommandEvent event, MessageEmbed toSend) {
+    public Message build(CommandEvent event, MessageEmbed input) {
         return null;
     }
 }

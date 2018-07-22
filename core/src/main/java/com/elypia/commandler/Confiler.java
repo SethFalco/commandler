@@ -81,7 +81,7 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      * @return The input the user provided or null if it's not a valid command.
      */
     @Override
-    public CommandInput processEvent(Commandler<C, E, M> commandler, E event, String content) {
+    public CommandEvent<C, E, M> processEvent(Commandler<C, E, M> commandler, E event, String content) {
         StringJoiner joiner = new StringJoiner("|");
 
         for (String prefix : getPrefixes(commandler, event))
@@ -118,7 +118,18 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
             }
         }
 
-        return new CommandInput(commandler, content, module, command, parameters);
+        CommandInput<C, E, M> input = new CommandInput<>(commandler, content, module, command, parameters);
+
+        /*
+         * If overriding this for your own event, just call the super method
+         * and pass this CommandEvent as the constructor to your event.
+         */
+        return new CommandEvent<>(commandler, input, event) {
+            @Override
+            public M reply(Object output) {
+                throw new UnsupportedOperationException("You can not reply to this message.");
+            }
+        };
     }
 
     @Override

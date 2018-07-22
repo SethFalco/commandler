@@ -49,28 +49,6 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
     }
 
     /**
-     * This should be used internally where possible. This is the reply
-     * method which is managed by {@link Commandler} seperate from any
-     * reply or send message implementations provided by the client.
-     * This allows {@link Commandler} to build and manage replies and perform
-     * any pre or post actions for the platform we're integrating with.
-     *
-     * @param output The item to send to the {@link Builders} to process.
-     * @return The message that was built from the output.
-     */
-    @Override
-    public abstract M reply(Object output);
-
-    /**
-     * Try delete the message that was sent in chat, if this isn't possible
-     * for whatever reason, then do nothing.
-     *
-     * @return If a request was made to delete the message.
-     */
-    @Override
-    public abstract boolean deleteMessage();
-
-    /**
      * This indicates that the event has been invalidated. If the error
      * should be reported to the user then this should set {@link #error}
      * to a non-null value (the object to be sent to the user).

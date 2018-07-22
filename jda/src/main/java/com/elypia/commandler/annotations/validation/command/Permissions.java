@@ -10,10 +10,9 @@ import java.lang.annotation.*;
  * By default the user will also require these permission however this
  * can be overrideen by setting {@link #userRequiresPermission()} to false.
  */
-
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Validation("./resources/commands/permissions.svg")
+@Validation
 public @interface Permissions {
 
     /**

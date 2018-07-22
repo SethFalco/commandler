@@ -1,7 +1,4 @@
-package com.elypia.commandler.confiler.reactions;
-
-import com.elypia.commandler.impl.IReactionController;
-import com.elypia.commandler.impl.IReactionListener;
+package com.elypia.commandler.reactions;
 
 import java.util.*;
 

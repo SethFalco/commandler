@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@Validation("./resources/params/talkable.svg")
+@Validation
 public @interface Talkable {
 
 }

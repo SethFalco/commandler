@@ -12,10 +12,9 @@ import java.lang.annotation.*;
  * permission to be able to perform it by making the bot @everyone
  * on their behalf.
  */
-
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@Validation("./resources/params/everyone.svg")
+@Validation
 public @interface Everyone {
 
 }

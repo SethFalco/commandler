@@ -2,6 +2,7 @@ package com.elypia.commandler.string;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.validation.Ignore;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.string.client.*;
@@ -16,15 +17,17 @@ public class StringHandler extends Handler<StringClient, StringEvent, String> {
 //        StringBuilder builder = new StringBuilder();
 //
 //        Module annotation = module.getModule();
-//        builder.append(annotation.name());
 //
-//        if (confiler.getHelpUrl(commandler, event.getSourceEvent()) != null)
-//            builder.append("\n").append("You can get more information here: " + )
+//        StringJoiner commandAliasJoiner = new StringJoiner(", ");
+//
+//        for (String alias : annotation.aliases())
+//            commandAliasJoiner.add("'" + alias + "'");
+//
+//        builder.append(annotation.name() + " (" + commandAliasJoiner.toString() + ")");
+//        builder.append("\n" + annotation.help());
 //
 //        if (!enabled)
-//            builder.setDescription(annotation.description() + "\n**```diff\n- Disabled due to live issues! -\n```\n**");
-//        else
-//            builder.setDescription(annotation.description() + "\n_ _");
+//            builder.append("\n" + confiler.getMisuseListener().onModuleDisabled(event));
 //
 //        Iterator<MetaCommand> metaCommandIt = module.getPublicCommands().iterator();
 //        boolean moduleHasParams = false;
@@ -70,6 +73,7 @@ public class StringHandler extends Handler<StringClient, StringEvent, String> {
 //        builder.setFooter(String.format(format, prefix, annotation.aliases()[0], params), null);
 //
 //        return builder;
+
         return "helped";
     }
 }

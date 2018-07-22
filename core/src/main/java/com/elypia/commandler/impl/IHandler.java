@@ -17,7 +17,7 @@ import com.elypia.commandler.metadata.MetaModule;
  * @param <E> The type of event we're processing.
  * @param <M> The type of message we're receieving and sending.
  */
-public interface IHandler<C, E, M> {
+public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
 
     /**
      * This initializes the {@link IHandler}. This is used

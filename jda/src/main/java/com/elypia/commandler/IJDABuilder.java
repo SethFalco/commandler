@@ -1,8 +1,22 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.impl.IBuilder;
+import com.elypia.commandler.components.Parsers;
+import com.elypia.commandler.impl.*;
+import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
-public interface IJDABuilder<I, O> implements IBuilder<I> {
+/**
+ * This is an extention to the normal {@link IBuilder}
+ * which defaults the parameterised types where possible
+ * and forced the user to define a second method for each builder
+ * so we can build is as an embed, or as a normal message.
+ *
+ * @param <O> The object to build, this would have been the
+ *            output from the {@link Parsers}.
+ */
+public interface IJDABuilder<O> extends IBuilder<O, Message>
+{
 
     /**
      * Build the object into an {@link MessageEmbed}. <br>
@@ -20,24 +34,12 @@ public interface IJDABuilder<I, O> implements IBuilder<I> {
      *
      * {@link Commandler} will attempt to build the object as an {@link MessageEmbed}
      * however if null is returned, an error occurs, or the bot lacks permission,
-     * {@link #buildAsString(CommandEvent, Object)} will be used as a fallback.
+     * {@link #build(ICommandEvent, Object)} will be used as a fallback,
+     * which should return a {@link String}.
      *
      * @param event The Commandler managed event that trigger this.
-     * @param toSend The object we're hoping to build.
+     * @param output The object we're hoping to build.
      * @return The {@link MessageEmbed} ready to send to Discord.
      */
-
-    O buildAsEmbed(CommandEvent event, I toSend);
-
-    /**
-     * Build the object into a {@link String}.
-     * This is called automatically if {@link #buildAsEmbed(CommandEvent, Object)}
-     * fails for whatever reason or returns null.
-     *
-     * @param event The Commandler managed event that trigger this.
-     * @param toSend The object we're hoping to build.
-     * @return The {@link String} ready to send to Discord.
-     */
-
-    O buildAsString(CommandEvent event, I toSend);
+    Message buildAsEmbed(CommandEvent<JDA, GenericMessageEvent, Message> event, O output);
 }

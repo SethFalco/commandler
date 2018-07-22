@@ -12,7 +12,14 @@ public class StringCommandler extends Commandler<StringClient, StringEvent, Stri
 
     public StringCommandler(StringClient client, String... prefixes) {
         // ? Initialise Commandler
-        super(new Confiler<>(prefixes));
+        super(new Confiler<>(prefixes) {
+            @Override
+            public CommandEvent<StringClient, StringEvent, String> processEvent(Commandler<StringClient, StringEvent, String> commandler, StringEvent event, String content) {
+                var parent = super.processEvent(commandler, event, content);
+                return new StringCommand(parent);
+            }
+        });
+
         this.client = client;
         dispatcher = new StringDispatcher(this);
 

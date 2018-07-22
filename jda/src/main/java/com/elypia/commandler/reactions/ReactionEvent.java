@@ -1,7 +1,6 @@
-package com.elypia.commandler.events;
+package com.elypia.commandler.reactions;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.confiler.reactions.ReactionRecord;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
@@ -13,7 +12,7 @@ public class ReactionEvent extends CommandEvent {
     private ReactionRecord record;
 
     public ReactionEvent(Commandler commandler, MessageReactionAddEvent event, ReactionRecord record) {
-        super(commandler, event, record.getParentMessage());
+        super(commandler, null, event);
 
         this.event = event;
         this.record = record;
@@ -25,6 +24,11 @@ public class ReactionEvent extends CommandEvent {
 
     public void appendMessage(String message) {
         getMessage(msg -> msg.editMessage(msg.getContentRaw() + "\n" + message).queue());
+    }
+
+    @Override
+    public Object reply(Object output) {
+        return null;
     }
 
     public void deleteMessage() {

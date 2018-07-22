@@ -3,9 +3,9 @@ package com.elypia.commandlerbot.modules;
 import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.param.Everyone;
-import com.elypia.commandler.events.*;
 import com.elypia.commandler.exceptions.MalformedCommandException;
 import com.elypia.commandler.modules.CommandHandler;
+import com.elypia.commandler.reactions.ReactionEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
 
 @Module(name = "Bot", aliases = {"bot", "robot"}, description = "Get info on the bot itself and it's development!")

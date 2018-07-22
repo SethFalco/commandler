@@ -11,7 +11,6 @@ import java.lang.annotation.*;
  * only in the current chat or in any mutual guilds, and Globally,
  * through all of Discord that the bot can see.
  */
-
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Search {
@@ -19,6 +18,5 @@ public @interface Search {
     /**
      * @return The scope to search for, defaults to {@link SearchScope#GLOBAL}.
      */
-
     SearchScope value() default SearchScope.GLOBAL;
 }

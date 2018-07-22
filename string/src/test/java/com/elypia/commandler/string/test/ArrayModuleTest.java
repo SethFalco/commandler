@@ -49,4 +49,63 @@ public class ArrayModuleTest {
         String response = commandler.trigger(event, event.getContent());
         assertEquals("15", response);
     }
+
+    // ? Just try each type of primitive array
+
+    @Test
+    public void testBoolSum() {
+        StringEvent event = new StringEvent(">array boolsum true, true, true, false, false, true");
+
+        String response = commandler.trigger(event, event.getContent());
+        assertEquals("4 true, 2 false", response);
+    }
+
+    @Test void testCharSum() {
+        StringEvent event = new StringEvent(">array chars h, e, l, l, o, w, o, r, l, d");
+
+        String expected = "helloworld";
+        String actual = commandler.trigger(event, event.getContent());
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testDoubles() {
+        StringEvent event = new StringEvent(">array doubles 1, 2, 3, 4");
+
+        String response = commandler.trigger(event, event.getContent());
+        assertEquals("10", response);
+    }
+
+    @Test
+    public void testFloats() {
+        StringEvent event = new StringEvent(">array floats 1, 2, 3, 4");
+
+        String response = commandler.trigger(event, event.getContent());
+        assertEquals("10", response);
+    }
+
+    @Test
+    public void testLongs() {
+        StringEvent event = new StringEvent(">array longs 1, 2, 3, 4");
+
+        String response = commandler.trigger(event, event.getContent());
+        assertEquals("10", response);
+    }
+
+    @Test
+    public void testShorts() {
+        StringEvent event = new StringEvent(">array shorts 1, 2, 3, 4");
+
+        String response = commandler.trigger(event, event.getContent());
+        assertEquals("10", response);
+    }
+
+    @Test
+    public void testBytes() {
+        StringEvent event = new StringEvent(">array bytes 1, 2, 3, 4");
+
+        String response = commandler.trigger(event, event.getContent());
+        assertEquals("10", response);
+    }
 }

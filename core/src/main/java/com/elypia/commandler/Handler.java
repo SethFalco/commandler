@@ -3,7 +3,7 @@ package com.elypia.commandler;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.MetaModule;
 
-public abstract class Handler<C, E, M> implements IHandler<C, E, M>, Comparable<Handler<C, E, M>> {
+public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 
 	protected Commandler<C, E, M> commandler;
 	protected IConfiler<C, E, M> confiler;
@@ -72,7 +72,7 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M>, Comparable<
 	}
 
 	@Override
-	public int compareTo(Handler<C, E, M> o) {
-		return module.compareTo(o.module);
+	public int compareTo(IHandler<C, E, M> o) {
+		return module.compareTo(o.getModule());
 	}
 }

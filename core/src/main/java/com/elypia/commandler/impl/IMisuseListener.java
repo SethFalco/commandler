@@ -4,6 +4,7 @@ import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.metadata.*;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -177,6 +178,7 @@ public interface IMisuseListener {
      * @return The friendly error to send to users in chat.
      */ // ? It's a bad idea to actually show the exception to users as it may contain sensitive information.
     default Object onExceptionFailure(Exception ex) {
+        LoggerFactory.getLogger(IMisuseListener.class).error("An exception occured during command processing.", ex);
         return "An unknown error occured.";
     }
 }

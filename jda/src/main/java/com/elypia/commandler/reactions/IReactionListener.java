@@ -1,8 +1,6 @@
-package com.elypia.commandler.impl;
+package com.elypia.commandler.reactions;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.confiler.reactions.ReactionRecord;
-import com.elypia.commandler.events.ReactionEvent;
 
 /**
  * This is a controller class which receieved events from {@link Commandler}

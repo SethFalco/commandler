@@ -8,7 +8,6 @@ import java.lang.annotation.*;
  * ID. The reaction event can specify the id of the command it's for
  * and then the emotes are valid for this method.
  */
-
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Reaction {
@@ -19,12 +18,10 @@ public @interface Reaction {
      * @see Command#id() The ID this corresponds with.
      * @return The command ID this reaction event handles reactions for.
      */
-
     int id();
 
     /**
      * The reactions that can trigger this reaction command.
      */
-
     String[] emotes();
 }

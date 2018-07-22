@@ -1,51 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f3dffdf-b7ec-4bdf-b31f-883c7718ea74" name="Default" comment="- Now have a minimal (incomplete but functional) implementation of Overloads&#10;- Have a negative test case for with overloads and fixed bug&#10;- Fixed bug in string dispatcher to prevent logging error twice&#10;- Cleaned up line breaks (thank you Arthur. &lt;3)&#10;- Added validation to prevent same method from having both @Command and @Overload&#10;- [skip-ci]">
+    <list default="true" id="5f3dffdf-b7ec-4bdf-b31f-883c7718ea74" name="Default" comment="- Just went through all code and removed the extra line breaks from the docs, as well as removed all unused imports from classes&#10;- [skip-ci]&#10; 59% code coverage \\(^-^)/">
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/CharacterParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDACommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringConfiler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/BuilderTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/MalformedModuleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/jda/jda_main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/jda/jda_main.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandInput.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandInput.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Commandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Commandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Confiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Confiler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Dispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Dispatcher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Default.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Default.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Module.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Module.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Overload.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Overload.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Param.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Param.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Params.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Params.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Static.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Static.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/Ignore.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/Ignore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/Validation.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/Validation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Length.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Length.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Limit.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Limit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Option.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Option.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Partial.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Partial.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Period.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Period.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Builders.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Builders.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Parsers.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Parsers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Validators.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Validators.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IConfiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IConfiler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IDispatcher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IMisuseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IMisuseListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaParam.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaParam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/StringParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/StringParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/UrlParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/UrlParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LengthValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LengthValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LimitValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LimitValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/OptionValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/OptionValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PeriodValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PeriodValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/commands/developer.svg" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/commands/developer.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/params/length.svg" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/params/length.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/params/limit.svg" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/params/limit.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/params/option.svg" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/params/option.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/params/period.svg" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/resources/pages/include/resources/params/period.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/modules/BotModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/modules/BotModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDABuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDABuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDAConfiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDAConfiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDADispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDADispatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/MisuseListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/Emoji.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/Emoji.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/Reaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/Reaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/filter/Search.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/filter/Search.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Elevated.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Elevated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/NSFW.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/NSFW.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Permissions.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Permissions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Scope.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Scope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Secret.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Secret.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/param/Everyone.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/param/Everyone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/param/Talkable.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/param/Talkable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/EmbedBuilderBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/EmbedBuilderBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/MessageEmbedBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/MessageEmbedBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/confiler/DefaultConfiler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/confiler/reactions/ReactionListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/ReactionListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/confiler/reactions/ReactionRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/ReactionRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/data/SearchScope.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/data/SearchScope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/events/ReactionEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/ReactionEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/impl/IReactionListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/IReactionListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/IStringBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/IStringBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringDispatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/DefaultBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/DefaultBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/NumberBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/NumberBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/ArrayModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/ArrayModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/TestModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/TestModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/ArrayModuleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/ArrayModuleTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -69,7 +78,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Commandler$StringCommandler_Test.exec" NAME="StringCommandler Test Coverage Results" MODIFIED="1532220308330" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+    <SUITE FILE_PATH="coverage/Commandler$StringCommandler_Test.exec" NAME="StringCommandler Test Coverage Results" MODIFIED="1532263546364" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>com.elypia.commandler.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/Commandler$TestModuleTest.ic" NAME="TestModuleTest Coverage Results" MODIFIED="1531950265264" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
@@ -83,7 +92,7 @@
     <option name="myAddOrReplace" value="0" />
   </component>
   <component name="CoverageViewManager">
-    <option name="myElementSize" value="84" />
+    <option name="myElementSize" value="27" />
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -114,24 +123,25 @@
           <entry key="project.closed" value="2" />
           <entry key="project.open.time.13" value="2" />
           <entry key="project.open.time.14" value="1" />
-          <entry key="project.opened" value="3" />
+          <entry key="project.open.time.16" value="1" />
+          <entry key="project.opened" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="1" />
           <entry key="gradle" value="4" />
-          <entry key="java" value="30127" />
+          <entry key="java" value="37757" />
           <entry key="properties" value="8" />
-          <entry key="txt" value="2711" />
+          <entry key="txt" value="2885" />
           <entry key="yaml" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Groovy" value="4" />
-          <entry key="JAVA" value="30127" />
-          <entry key="PLAIN_TEXT" value="2712" />
+          <entry key="JAVA" value="37757" />
+          <entry key="PLAIN_TEXT" value="2886" />
           <entry key="Properties" value="8" />
           <entry key="YAML" value="15" />
         </counts>
@@ -139,14 +149,16 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="gradle" value="7" />
-          <entry key="java" value="229" />
+          <entry key="java" value="348" />
+          <entry key="svg" value="1" />
           <entry key="yaml" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Groovy" value="7" />
-          <entry key="JAVA" value="229" />
+          <entry key="JAVA" value="348" />
+          <entry key="SVG" value="1" />
           <entry key="YAML" value="1" />
         </counts>
       </usages-collector>
@@ -155,111 +167,92 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Commandler.java">
+        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Builders.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="173" lean-forward="true" selection-start-line="173" selection-end-line="173" />
+            <state relative-caret-position="323">
+              <caret line="94" column="51" selection-start-line="94" selection-start-column="51" selection-end-line="94" selection-end-column="51" />
               <folding>
-                <element signature="docComment;class#Commandler#0" expanded="true" />
-                <element signature="docComment;field#client#0;class#Commandler#0" expanded="true" />
-                <element signature="docComment;field#confiler#0;class#Commandler#0" expanded="true" />
-                <element signature="docComment;field#dispatcher#0;class#Commandler#0" expanded="true" />
-                <element signature="docComment;field#handlers#0;class#Commandler#0" expanded="true" />
-                <element signature="docComment;field#roots#0;class#Commandler#0" expanded="true" />
-                <element signature="docComment;field#commands#0;class#Commandler#0" expanded="true" />
-                <element signature="docComment;method#registerModule#0;class#Commandler#0" expanded="true" />
-                <element signature="docComment;method#registerParser#0;class#Commandler#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="docComment;class#Builders#0" expanded="true" />
+                <element signature="docComment;method#build#0;class#Builders#0" expanded="true" />
+                <element signature="docComment;method#getBuilder#0;class#Builders#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Confiler.java">
+        <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/NumberBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="241">
-              <caret line="131" column="7" selection-start-line="131" selection-start-column="7" selection-end-line="131" selection-end-column="7" />
-              <folding>
-                <element signature="docComment;field#DEFAULT_PREFIXES#0;class#Confiler#0" expanded="true" />
-                <element signature="docComment;field#HELP_URL#0;class#Confiler#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="119">
+              <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Dispatcher.java">
+        <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/DefaultBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="102">
-              <caret line="6" column="4" lean-forward="true" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
-              <folding>
-                <element signature="docComment;field#commandler#0;class#Dispatcher#0" expanded="true" />
-              </folding>
+              <caret line="7" selection-start-line="7" selection-end-line="7" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/ReactionEvent.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="459">
+              <caret line="31" column="5" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Handler.java">
+        <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/ElevatedValidator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="3" column="49" lean-forward="true" selection-start-line="3" selection-start-column="49" selection-end-line="3" selection-end-column="49" />
-              <folding>
-                <element signature="docComment;method#test#0;class#Handler#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="374">
+              <caret line="27" column="7" lean-forward="true" selection-start-line="27" selection-start-column="7" selection-end-line="27" selection-end-column="7" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LimitValidator.java">
+        <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/NSFWValidator.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
-              <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/OptionValidator.java">
+        <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDABuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandEvent.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="362">
-              <caret line="102" column="7" selection-start-line="102" selection-start-column="7" selection-end-line="102" selection-end-column="7" />
+            <state relative-caret-position="519">
+              <caret line="36" column="45" selection-start-line="36" selection-start-column="45" selection-end-line="36" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="docComment;field#input#0;class#CommandEvent#0" expanded="true" />
-                <element signature="docComment;method#CommandEvent#0;class#CommandEvent#0" expanded="true" />
-                <element signature="docComment;method#reply#0;class#CommandEvent#0" expanded="true" />
-                <element signature="docComment;method#invalidate#0;class#CommandEvent#0" expanded="true" />
-                <element signature="docComment;method#getInput#0;class#CommandEvent#0" expanded="true" />
+                <element signature="docComment;class#IJDABuilder#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandInput.java">
+        <entry file="file://$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/EnumModuleTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1493">
-              <caret line="65" column="7" selection-start-line="65" selection-start-column="7" selection-end-line="65" selection-end-column="7" />
+            <state relative-caret-position="357">
+              <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PartialValidator.java">
+        <entry file="file://$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/MalformedModuleTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+            <state relative-caret-position="561">
+              <caret line="38" column="5" lean-forward="true" selection-start-line="38" selection-start-column="5" selection-end-line="38" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -268,10 +261,15 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PeriodValidator.java">
+        <entry file="file://$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/BuilderTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+            <state relative-caret-position="289">
+              <caret line="17" column="15" lean-forward="true" selection-start-line="17" selection-start-column="15" selection-end-line="17" selection-end-column="15" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="docComment;method#builderIteration#0;class#BuilderTest#0" expanded="true" />
+                <element signature="docComment;class#NoBuilderModule#0;class#BuilderTest#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1006,7 +1004,7 @@
       <map>
         <entry key="$PROJECT_DIR$" value="9190828616054" />
         <entry key="$PROJECT_DIR$/.gradle" value="0" />
-        <entry key="$PROJECT_DIR$/build.gradle" value="3733188830" />
+        <entry key="$PROJECT_DIR$/build.gradle" value="2513158848" />
         <entry key="$PROJECT_DIR$/commandler-jda/build.gradle" value="542858178" />
         <entry key="$PROJECT_DIR$/core/build.gradle" value="0" />
         <entry key="$PROJECT_DIR$/jda/build.gradle" value="2547815858" />
@@ -1453,57 +1451,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/string/src/test/resources/log4j.yaml" />
-        <option value="$PROJECT_DIR$/string/src/test/resources/log4j2.yaml" />
-        <option value="$PROJECT_DIR$/string/src/test/resources/log4j2.properties" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Validator.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/AbstractMetaCommand.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/Partial.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PartialValidator.java" />
-        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommandler.java" />
-        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommand.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParamValidator.java" />
-        <option value="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/MisuseTest.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/BooleanParser.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaOverload.java" />
-        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDADispatcher.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaValidator.java" />
-        <option value="$PROJECT_DIR$/build.gradle" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaModule.java" />
-        <option value="$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/CommandlerBot.java" />
-        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringDispatcher.java" />
-        <option value="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/ArrayModuleTest.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaCommand.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Length.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Limit.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Option.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Partial.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Period.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/Ignore.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/Validation.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Command.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Default.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Module.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Overload.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Param.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Params.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Static.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Builders.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/invalid/NoModuleModule.java" />
+        <option value="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/MalformedModuleTest.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/ArrayModule.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/NumberParser.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/CharParser.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/CharacterParser.java" />
         <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Parsers.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Validators.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandEvent.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IConfiler.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IDispatcher.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IHandler.java" />
+        <option value="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/ArrayModuleTest.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/filter/Search.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Elevated.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/NSFW.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Permissions.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Scope.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Secret.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/param/Everyone.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/param/Talkable.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/Emoji.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/Reaction.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/EmbedBuilderBuilder.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/MessageEmbedBuilder.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/confiler/reactions/ReactionListener.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/confiler/reactions/ReactionRecord.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/data/SearchScope.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/events/ReactionEvent.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/impl/IReactionListener.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/IReactionListener.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/ReactionEvent.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/IStringBuilder.java" />
         <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IMisuseListener.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParser.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaParam.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandEvent.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandInput.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Commandler.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Confiler.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IConfiler.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommandler.java" />
         <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Dispatcher.java" />
-        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Handler.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/StringConfiler.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IDispatcher.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommand.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Confiler.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringDispatcher.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandEvent.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Builders.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringConfiler.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/TestModule.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringHandler.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/JDACommand.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandEvent.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDACommand.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDAConfiler.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDADispatcher.java" />
+        <option value="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IBuilder.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/NumberBuilder.java" />
+        <option value="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/DefaultBuilder.java" />
+        <option value="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDABuilder.java" />
       </list>
     </option>
   </component>
@@ -1538,7 +1536,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -1589,39 +1586,6 @@
               <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="commandler" type="462c0819:PsiDirectoryNode" />
-              <item name="annotations" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="commandler" type="462c0819:PsiDirectoryNode" />
-              <item name="annotations" type="462c0819:PsiDirectoryNode" />
-              <item name="validation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="commandler" type="462c0819:PsiDirectoryNode" />
-              <item name="annotations" type="462c0819:PsiDirectoryNode" />
-              <item name="validation" type="462c0819:PsiDirectoryNode" />
-              <item name="param" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="commandler" type="462c0819:PsiDirectoryNode" />
               <item name="components" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -1637,60 +1601,13 @@
             <path>
               <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
               <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="commandler" type="462c0819:PsiDirectoryNode" />
-              <item name="metadata" type="462c0819:PsiDirectoryNode" />
+              <item name="jda" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
             </path>
             <path>
               <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
               <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="commandler" type="462c0819:PsiDirectoryNode" />
-              <item name="pages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="commandler" type="462c0819:PsiDirectoryNode" />
-              <item name="parsers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="commandler" type="462c0819:PsiDirectoryNode" />
-              <item name="validation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="core" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="jda" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
@@ -1733,14 +1650,69 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="string" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="string" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="string" type="462c0819:PsiDirectoryNode" />
+              <item name="builders" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="string" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="string" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="string" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="string" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="string" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="string" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Commandler" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Commandler" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="string" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1532220303881" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1532263877734" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/build.gradle" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15625" />
@@ -1889,38 +1861,45 @@
       <option name="project" value="LOCAL" />
       <updated>1532219114748</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="- Just went through all code and removed the extra line breaks from the docs, as well as removed all unused imports from classes&#10;- [skip-ci]&#10; 59% code coverage \\(^-^)/">
+      <created>1532220342917</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1532220342917</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 05m 57s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 11h 21m 25s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 08m 58s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 11h 23m 59s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 10m 39s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 11h 24m 15s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 10m 54s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 11h 24m 43s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 13m 00s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 11h 31m 03s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 13m 05s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 11h 32m 40s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 13m 10s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 11h 50m 43s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 13m 52s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 12h 38m 43s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 16m 09s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 12h 44m 02s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="StringCommandler_Test - 2018.07.22 at 01h 22m 55s.xml">
+    <history-entry file="StringCommandler_Test - 2018.07.22 at 13h 45m 50s.xml">
       <configuration name="StringCommandler Test" configurationId="JUnit" />
     </history-entry>
   </component>
@@ -1935,9 +1914,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-13" y="-1088" width="1936" height="1066" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28624734" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29584223" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Learn" order="3" show_stripe_button="false" />
@@ -1946,7 +1924,7 @@
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.4989339" weight="0.15071507" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.69402987" visible="true" weight="0.2552255" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.6913646" visible="true" weight="0.105610564" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.7073561" weight="0.29262927" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -1954,20 +1932,20 @@
       <window_info anchor="bottom" id="Build" order="7" weight="0.22430938" />
       <window_info anchor="bottom" id="sbt-shell-toolwindow" order="8" weight="0.32928178" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.105610564" />
-      <window_info anchor="bottom" x="0" y="0" width="434" height="866" id="Documentation" order="10" sideWeight="0.30597016" side_tool="true" visible="true" weight="0.2552255" />
+      <window_info anchor="bottom" x="0" y="0" width="434" height="866" id="Documentation" order="10" sideWeight="0.30863538" side_tool="true" visible="true" weight="0.105610564" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="12" weight="0.32893288" />
-      <window_info anchor="bottom" id="Messages" order="13" sideWeight="0.49626866" weight="0.2750275" />
+      <window_info anchor="bottom" id="Messages" order="13" sideWeight="0.49413645" weight="0.2750275" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" id="Ant Build" order="1" show_stripe_button="false" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="sbt" order="3" />
-      <window_info anchor="right" id="Coverage" order="4" sideWeight="0.61538464" visible="true" weight="0.1705757" />
+      <window_info anchor="right" id="Gradle" order="4" sideWeight="0.38130382" visible="true" weight="0.2793177" />
       <window_info anchor="right" id="Capture Analysis" order="5" />
-      <window_info anchor="right" id="Maven Projects" order="6" />
-      <window_info anchor="right" id="Gradle" order="7" sideWeight="0.38127092" side_tool="true" weight="0.2238806" />
-      <window_info anchor="right" id="Palette&#9;" order="8" />
-      <window_info anchor="right" id="Theme Preview" order="9" />
+      <window_info anchor="right" id="Maven Projects" order="6" show_stripe_button="false" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Theme Preview" order="8" />
+      <window_info anchor="right" id="Coverage" order="9" sideWeight="0.6186962" side_tool="true" visible="true" weight="0.2793177" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -1983,7 +1961,8 @@
     <MESSAGE value="- Started implementing IMisuseHandler and creating default handling methods for each type of error Commandler may report.&#10;- Started making negative test cases which should report default handling methods.&#10;- _Lots_ of code clean up in preparation for implementing Overloads again. (this time without constantly breaking it!)&#10;- OMG MORE DOCS! \\(^-^)/ Am best doccer :ablobaww:&#10;- Removed all custom exceptions and using Java exceptions instead&#10;- Added more options to boolean parser for true/false&#10;- Deleted AbstractMetaCommand and MetaOverload, Overloads will now also just be MetaCommands right up.&#10;- Made all logging/exception messages private static final variables&#10;- Created the @Partial annotation (not implemented yet), this should be attached to array parameters if it's not big deal if some of the list parsed fine, but not all&#10;- [skip-ci]&#10;&#10;We're doing really well. ^-^ I didn't work much today 'cause meh but still achieved a fair bit, project is getting cleaner and better as we go." />
     <MESSAGE value="- Started implementing IMisuseHandler and creating default handling methods for each type of error Commandler may report.&#10;- Started making negative test cases which should report default handling methods.&#10;- _Lots_ of code clean up in preparation for implementing Overloads again. (this time without constantly breaking it!)&#10;- OMG MORE DOCS! \\(^-^)/ Am best doccer :ablobaww:&#10;- Removed all custom exceptions and using Java exceptions instead&#10;- Added more options to boolean parser for true/false&#10;- Deleted AbstractMetaCommand and MetaOverload, Overloads will now also just be MetaCommands right up.&#10;- Made all logging/exception messages private static final variables&#10;- Created the @Partial annotation (not implemented yet), this should be attached to array parameters if it's not big deal if some of the list parsed fine, but not all&#10;- Updated dependencies&#10;- Unknown error now occurs on any uncaught exception.&#10;- [skip-ci]&#10;&#10;We're doing really well. ^-^ I didn't work much today 'cause meh but still achieved a fair bit, project is getting cleaner and better as we go." />
     <MESSAGE value="- Now have a minimal (incomplete but functional) implementation of Overloads&#10;- Have a negative test case for with overloads and fixed bug&#10;- Fixed bug in string dispatcher to prevent logging error twice&#10;- Cleaned up line breaks (thank you Arthur. &lt;3)&#10;- Added validation to prevent same method from having both @Command and @Overload&#10;- [skip-ci]" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Now have a minimal (incomplete but functional) implementation of Overloads&#10;- Have a negative test case for with overloads and fixed bug&#10;- Fixed bug in string dispatcher to prevent logging error twice&#10;- Cleaned up line breaks (thank you Arthur. &lt;3)&#10;- Added validation to prevent same method from having both @Command and @Overload&#10;- [skip-ci]" />
+    <MESSAGE value="- Just went through all code and removed the extra line breaks from the docs, as well as removed all unused imports from classes&#10;- [skip-ci]&#10; 59% code coverage \\(^-^)/" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Just went through all code and removed the extra line breaks from the docs, as well as removed all unused imports from classes&#10;- [skip-ci]&#10; 59% code coverage \\(^-^)/" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2002,461 +1981,143 @@
       </configuration>
     </watches-manager>
   </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/TestModule.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/NSFW.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+          <caret line="11" column="11" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/EnumModule.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Permissions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#EnumModule#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="119">
+          <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/ArrayModule.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Scope.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="21" column="5" lean-forward="true" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
+        <state relative-caret-position="119">
+          <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Length.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Secret.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="34" column="7" selection-start-line="34" selection-start-column="7" selection-end-line="34" selection-end-column="7" />
-          <folding>
-            <element signature="docComment;class#Length#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="119">
+          <caret line="16" column="11" lean-forward="true" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Limit.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/param/Everyone.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="13" column="3" selection-start-line="13" selection-start-column="3" selection-end-line="13" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/param/Talkable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/Emoji.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="16" column="7" selection-start-line="16" selection-start-column="7" selection-end-line="16" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/Emojis.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="18" selection-start-line="6" selection-start-column="18" selection-end-line="6" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/Reaction.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="9" column="3" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Option.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="18" column="7" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Partial.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="3" selection-start-line="15" selection-start-column="3" selection-end-line="15" selection-end-column="3" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#Partial#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/param/Period.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="39" column="7" selection-start-line="39" selection-start-column="7" selection-end-line="39" selection-end-column="7" />
-          <folding>
-            <element signature="docComment;method#unit#0;class#Period#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/Ignore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="3" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/validation/Validation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="3" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Command.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="37" column="7" selection-start-line="37" selection-start-column="7" selection-end-line="37" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Default.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="10" column="3" selection-start-line="10" selection-start-column="3" selection-end-line="10" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Module.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="12" column="3" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Overload.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="49" column="7" selection-start-line="49" selection-start-column="7" selection-end-line="49" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Param.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="21" column="7" selection-start-line="21" selection-start-column="7" selection-end-line="21" selection-end-column="7" />
-          <folding>
-            <element signature="docComment;class#Param#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Params.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="3" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/annotations/Static.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="3" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Builders.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="430">
-          <caret line="126" lean-forward="true" selection-start-line="126" selection-end-line="126" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#Builders#0" expanded="true" />
-            <element signature="docComment;method#registerBuilder#0;class#Builders#0" expanded="true" />
-            <element signature="docComment;method#build#0;class#Builders#0" expanded="true" />
-            <element signature="docComment;method#getBuilder#0;class#Builders#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Parsers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="209" column="7" selection-start-line="209" selection-start-column="7" selection-end-line="209" selection-end-column="7" />
-          <folding>
-            <element signature="docComment;field#REPLACED_PARSER#0;class#Parsers#0" expanded="true" />
-            <element signature="docComment;field#logger#0;class#Parsers#0" expanded="true" />
-            <element signature="docComment;field#commandler#0;class#Parsers#0" expanded="true" />
-            <element signature="docComment;field#confiler#0;class#Parsers#0" expanded="true" />
-            <element signature="docComment;field#parsers#0;class#Parsers#0" expanded="true" />
-            <element signature="docComment;method#registerParser#0;class#Parsers#0" expanded="true" />
-            <element signature="docComment;method#processEvent#0;class#Parsers#0" expanded="true" />
-            <element signature="docComment;method#parseParameter#0;class#Parsers#0" expanded="true" />
-            <element signature="docComment;method#getParser#0;class#Parsers#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Validators.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-405">
-          <caret line="75" column="11" lean-forward="true" selection-start-line="75" selection-start-column="11" selection-end-line="75" selection-end-column="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#Validators#0" expanded="true" />
-            <element signature="docComment;field#commandValidators#0;class#Validators#0" expanded="true" />
-            <element signature="docComment;field#paramValidators#0;class#Validators#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="42" column="7" selection-start-line="42" selection-start-column="7" selection-end-line="42" selection-end-column="7" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;method#reply#0;class#ICommandEvent#0" expanded="true" />
-            <element signature="docComment;method#deleteMessage#0;class#ICommandEvent#0" expanded="true" />
-            <element signature="docComment;method#trigger#0;class#ICommandEvent#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="7" selection-start-line="7" selection-end-line="8" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IConfiler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="68" column="7" selection-start-line="68" selection-start-column="7" selection-end-line="68" selection-end-column="7" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;method#getHelp#0;class#IConfiler#0" expanded="true" />
-            <element signature="docComment;method#getHelpUrl#0;class#IConfiler#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IDispatcher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="20" column="48" lean-forward="true" selection-start-line="20" selection-start-column="48" selection-end-line="20" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="52" column="7" selection-start-line="52" selection-start-column="7" selection-end-line="52" selection-end-column="7" />
-          <folding>
-            <element signature="docComment;class#IHandler#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IMisuseListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2122">
-          <caret line="13" column="3" selection-start-line="13" selection-start-column="3" selection-end-line="13" selection-end-column="3" />
-          <folding>
-            <element signature="docComment;class#IMisuseListener#0" expanded="true" />
-            <element signature="docComment;method#onNoModule#0;class#IMisuseListener#0" expanded="true" />
-            <element signature="docComment;method#onParameterCountMismatch#0;class#IMisuseListener#0" expanded="true" />
-            <element signature="docComment;method#onNoDefault#0;class#IMisuseListener#0" expanded="true" />
-            <element signature="docComment;method#onFailedParameterParse#0;class#IMisuseListener#0" expanded="true" />
-            <element signature="docComment;method#onCommandInvalidated#0;class#IMisuseListener#0" expanded="true" />
-            <element signature="docComment;method#onParameterInvalidated#0;class#IMisuseListener#0" expanded="true" />
-            <element signature="docComment;method#onExceptionFailure#0;class#IMisuseListener#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParamValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="8" column="66" selection-start-line="8" selection-start-column="66" selection-end-line="8" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParser.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/MessageEmbedBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
-          <caret line="26" column="7" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaCommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6474">
-          <caret line="475" column="1" lean-forward="true" selection-start-line="475" selection-start-column="1" selection-end-line="475" selection-end-column="1" />
+          <caret line="11" column="3" lean-forward="true" selection-start-line="11" selection-start-column="3" selection-end-line="11" selection-end-column="3" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#431#605#0" expanded="true" />
-            <element signature="e#791#999#0" expanded="true" />
-            <element signature="e#1134#1360#0" expanded="true" />
-            <element signature="e#1511#1691#0" expanded="true" />
-            <element signature="e#1850#2115#0" expanded="true" />
-            <element signature="e#2272#2420#0" expanded="true" />
-            <element signature="e#2511#2625#0" expanded="true" />
-            <element signature="e#2677#2774#0" expanded="true" />
-            <element signature="e#2826#2901#0" expanded="true" />
-            <element signature="e#2948#3012#0" expanded="true" />
-            <element signature="e#3049#3132#0" expanded="true" />
-            <element signature="e#3167#3267#0" expanded="true" />
-            <element signature="e#3337#3498#0" expanded="true" />
-            <element signature="e#3546#3675#0" expanded="true" />
-            <element signature="e#4731#4839#0" expanded="true" />
-            <element signature="e#6636#6979#0" expanded="true" />
-            <element signature="e#7998#8714#0" expanded="true" />
-            <element signature="e#10208#10703#0" expanded="true" />
-            <element signature="e#11392#11932#0" expanded="true" />
+            <element signature="docComment;class#MessageEmbedBuilder#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaModule.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/EmbedBuilderBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1073">
-          <caret line="172" selection-start-line="172" selection-end-line="172" />
+        <state relative-caret-position="136">
+          <caret line="12" column="49" selection-start-line="12" selection-start-column="49" selection-end-line="12" selection-end-column="49" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;field#NO_MODULE#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#DUPLICATE_ALIASES#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#ALIAS_REGISTERED#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#NO_COMMANDS#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#DUPLICATE_COMMAND_ALIASES#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#MULTIPLE_DEFAULTS#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#logger#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#commandler#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#handler#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#module#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#isPublic#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#aliases#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#metaCommands#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;field#defaultCommand#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;method#parseAliases#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;method#parseMethods#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;method#performed#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;method#getCommand#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;method#getPublicCommands#0;class#MetaModule#0" expanded="true" />
-            <element signature="docComment;method#getStaticCommands#0;class#MetaModule#0" expanded="true" />
+            <element signature="docComment;class#EmbedBuilderBuilder#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaParam.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-269">
-          <caret line="59" column="7" selection-start-line="59" selection-start-column="7" selection-end-line="59" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="18" column="26" selection-start-line="18" selection-start-column="26" selection-end-line="18" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/pages/PageBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1513">
-          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/BooleanParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/DurationParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1180">
-          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/EnumParser.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/confiler/DefaultConfiler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
-          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/NumberParser.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/data/SearchScope.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="17" column="7" selection-start-line="17" selection-start-column="7" selection-end-line="17" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/IReactionListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/ReactionListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/StringParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/UrlParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LengthValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LimitValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/OptionValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PartialValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PeriodValidator.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/MisuseListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+        <state relative-caret-position="-18">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandEvent.java">
+    <entry file="file://$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/CommandlerBot.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="362">
-          <caret line="102" column="7" selection-start-line="102" selection-start-column="7" selection-end-line="102" selection-end-column="7" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;field#input#0;class#CommandEvent#0" expanded="true" />
-            <element signature="docComment;method#CommandEvent#0;class#CommandEvent#0" expanded="true" />
-            <element signature="docComment;method#reply#0;class#CommandEvent#0" expanded="true" />
-            <element signature="docComment;method#invalidate#0;class#CommandEvent#0" expanded="true" />
-            <element signature="docComment;method#getInput#0;class#CommandEvent#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandInput.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1493">
-          <caret line="65" column="7" selection-start-line="65" selection-start-column="7" selection-end-line="65" selection-end-column="7" />
+        <state relative-caret-position="170">
+          <caret line="17" column="14" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Commandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="173" lean-forward="true" selection-start-line="173" selection-end-line="173" />
+        <state relative-caret-position="401">
+          <caret line="108" lean-forward="true" selection-start-line="108" selection-end-line="108" />
           <folding>
             <element signature="docComment;class#Commandler#0" expanded="true" />
             <element signature="docComment;field#client#0;class#Commandler#0" expanded="true" />
@@ -2471,10 +2132,133 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/ReactionRecord.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#ReactionRecord#0" expanded="true" />
+            <element signature="docComment;field#commandId#0;class#ReactionRecord#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/IStringBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="70" selection-start-line="4" selection-start-column="70" selection-end-line="4" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/ArrayModuleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="93" column="5" selection-start-line="93" selection-start-column="5" selection-end-line="93" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/MisuseTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/TestModuleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="349">
+          <caret line="44" column="28" lean-forward="true" selection-start-line="44" selection-start-column="28" selection-end-line="44" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IMisuseListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="543">
+          <caret line="180" column="115" lean-forward="true" selection-start-line="180" selection-start-column="115" selection-end-line="180" selection-end-column="115" />
+          <folding>
+            <element signature="docComment;class#IMisuseListener#0" expanded="true" />
+            <element signature="docComment;method#onNoModule#0;class#IMisuseListener#0" expanded="true" />
+            <element signature="docComment;method#onParameterCountMismatch#0;class#IMisuseListener#0" expanded="true" />
+            <element signature="docComment;method#onNoDefault#0;class#IMisuseListener#0" expanded="true" />
+            <element signature="docComment;method#onFailedParameterParse#0;class#IMisuseListener#0" expanded="true" />
+            <element signature="docComment;method#onCommandInvalidated#0;class#IMisuseListener#0" expanded="true" />
+            <element signature="docComment;method#onParameterInvalidated#0;class#IMisuseListener#0" expanded="true" />
+            <element signature="docComment;method#onExceptionFailure#0;class#IMisuseListener#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IConfiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="26" column="96" selection-start-line="26" selection-start-column="96" selection-end-line="26" selection-end-column="96" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="18" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="41" lean-forward="true" selection-start-line="5" selection-start-column="41" selection-end-line="5" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringDispatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="11" column="31" lean-forward="true" selection-start-line="11" selection-start-column="31" selection-end-line="11" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringConfiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/EnumModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#EnumModule#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/modules/TestModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="32" column="5" lean-forward="true" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="76" column="24" selection-start-line="76" selection-start-column="24" selection-end-line="76" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Confiler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="131" column="7" selection-start-line="131" selection-start-column="7" selection-end-line="131" selection-end-column="7" />
+        <state relative-caret-position="782">
+          <caret line="75" column="4" selection-start-line="75" selection-start-column="4" selection-end-line="83" selection-end-column="104" />
           <folding>
             <element signature="docComment;field#DEFAULT_PREFIXES#0;class#Confiler#0" expanded="true" />
             <element signature="docComment;field#HELP_URL#0;class#Confiler#0" expanded="true" />
@@ -2482,23 +2266,174 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
+          <folding>
+            <element signature="docComment;method#reply#0;class#ICommandEvent#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="48" column="5" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;field#input#0;class#CommandEvent#0" expanded="true" />
+            <element signature="docComment;method#CommandEvent#0;class#CommandEvent#0" expanded="true" />
+            <element signature="docComment;method#invalidate#0;class#CommandEvent#0" expanded="true" />
+            <element signature="docComment;method#getInput#0;class#CommandEvent#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDACommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="62" selection-start-line="9" selection-start-column="62" selection-end-line="9" selection-end-column="62" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDAConfiler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="21" column="49" selection-start-line="21" selection-start-column="49" selection-end-line="21" selection-end-column="49" />
+          <folding>
+            <element signature="docComment;method#processEvent#0;class#JDAConfiler#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Dispatcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="4" lean-forward="true" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+        <state>
+          <caret column="30" selection-start-column="30" selection-end-column="30" />
           <folding>
             <element signature="docComment;field#commandler#0;class#Dispatcher#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Handler.java">
+    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IDispatcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="3" column="49" lean-forward="true" selection-start-line="3" selection-start-column="49" selection-end-line="3" selection-end-column="49" />
+        <state relative-caret-position="351">
+          <caret line="34" column="27" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
           <folding>
-            <element signature="docComment;method#test#0;class#Handler#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;method#processEvent#0;class#IDispatcher#0" expanded="true" />
+            <element signature="docComment;method#processEvent#1;class#IDispatcher#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDADispatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-682">
+          <caret line="32" column="57" selection-start-line="32" selection-start-column="57" selection-end-line="32" selection-end-column="57" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Builders.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="94" column="51" selection-start-line="94" selection-start-column="51" selection-end-line="94" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#Builders#0" expanded="true" />
+            <element signature="docComment;method#build#0;class#Builders#0" expanded="true" />
+            <element signature="docComment;method#getBuilder#0;class#Builders#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/NumberBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/DefaultBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/reactions/ReactionEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="31" column="5" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDABuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="36" column="45" selection-start-line="36" selection-start-column="45" selection-end-line="36" selection-end-column="45" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#IJDABuilder#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/EnumModuleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/MalformedModuleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="38" column="5" lean-forward="true" selection-start-line="38" selection-start-column="5" selection-end-line="38" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/BuilderTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="15" lean-forward="true" selection-start-line="17" selection-start-column="15" selection-end-line="17" selection-end-column="15" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;method#builderIteration#0;class#BuilderTest#0" expanded="true" />
+            <element signature="docComment;class#NoBuilderModule#0;class#BuilderTest#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/NSFWValidator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/ElevatedValidator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="27" column="7" lean-forward="true" selection-start-line="27" selection-start-column="7" selection-end-line="27" selection-end-column="7" />
         </state>
       </provider>
     </entry>

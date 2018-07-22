@@ -10,10 +10,9 @@ import java.lang.annotation.*;
  * be performed in, specify the channel types this functionality
  * can be executed.
  */
-
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Validation("./resources/commands/scope.svg")
+@Validation
 public @interface Scope {
 
     /**

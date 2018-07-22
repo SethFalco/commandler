@@ -21,18 +21,12 @@ public interface ICommandEvent<C, E, M> {
      * by the client because this allows us to utilise our builders
      * and implementation around it.
      *
-     * @param object The item to send to the {@link Builders} to process.
+     * @param output The item to send to the {@link Builders} to process.
      * @return The message that was built by the {@link Builders}.
      */
-    M reply(Object object);
-
-    /**
-     * Try delete the message that was sent in chat, if this isn't possible
-     * for whatever reason, then do nothing.
-     *
-     * @return If a request was made to delete the message.
-     */
-    boolean deleteMessage();
+    default M reply(Object output) {
+        return getCommandler().getBuilder().build(this, output);
+    }
 
     /**
      * Trigger another commands which branches from this commands. The new commands

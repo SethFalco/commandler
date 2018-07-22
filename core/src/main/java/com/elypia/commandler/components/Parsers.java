@@ -65,12 +65,13 @@ public class Parsers implements Iterable<IParser<?>> {
         parsers = new HashMap<>();
 
         // ? Register default parsers provided by Commandler
-        registerParser(new StringParser(), String.class);
-        registerParser(new NumberParser(), NumberParser.TYPES);
         registerParser(new BooleanParser(), BooleanParser.TYPES);
-        registerParser(new UrlParser(), URL.class);
+        registerParser(new CharacterParser(), CharacterParser.TYPES);
         registerParser(new DurationParser(), Duration.class);
         registerParser(new EnumParser(), Enum.class);
+        registerParser(new NumberParser(), NumberParser.TYPES);
+        registerParser(new StringParser(), String.class);
+        registerParser(new UrlParser(), URL.class);
     }
 
     /**

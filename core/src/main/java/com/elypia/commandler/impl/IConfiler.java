@@ -24,7 +24,7 @@ public interface IConfiler<C, E, M> {
      * @param content The content of the meessage.
      * @return The parsed contents of the message, or null if the command is invalid.
      */
-    CommandInput<C, E, M> processEvent(Commandler<C, E, M> commandler, E event, String content);
+    CommandEvent<C, E, M> processEvent(Commandler<C, E, M> commandler, E event, String content);
 
     IMisuseListener getMisuseListener();
 

@@ -1,8 +1,8 @@
-package com.elypia.commandler.confiler.reactions;
+package com.elypia.commandler.reactions;
 
 import com.elypia.commandler.CommandInput;
 import com.elypia.commandler.annotations.Command;
-import com.elypia.commandler.modules.CommandHandler;
+import com.elypia.commandler.impl.IHandler;
 import net.dv8tion.jda.core.entities.*;
 
 import java.util.Map;
@@ -18,39 +18,33 @@ import java.util.Map;
  * primitives to avoid hassle when trying to persist data by storing
  * records in a database or file.
  */
-
 public class ReactionRecord {
 
     /**
      * The command ID as specified on the {@link Command @Command}
-     * annotations in a {@link CommandHandler}.
+     * annotations in a {@link IHandler}.
      */
-
     private int commandId;
 
     /**
      * If the message came from a {@link TextChannel} or
      * {@link MessageChannel}.
      */
-
     private boolean isGuild;
 
     /**
      * The {@link MessageChannel} ID of the channel the channel.
      */
-
     private long channelId;
 
     /**
      * The {@link Message} ID in the {@link #channelId channel}.
      */
-
     private long messageId;
 
     /**
      * The author of the {@link #messageId message}.
      */
-
     private long ownerId;
 
     /**
@@ -62,22 +56,19 @@ public class ReactionRecord {
      * remember to check if the message has been deleted as if so getting
      * it will not be possible.
      */
-
     private long parentMessage;
 
     /**
      * The input the user provided to perform the command
      * that spawned this event.
      */
-
     private CommandInput input;
 
     /**
      * Cached data along with the command in preperation for handling records.
      * For example caching a list of items from an API call to save you
      * from making many requests everytime the reaction event is triggered.
-     */
-    // ! May need to reconsider how we store this.
+     */ // ! May need to reconsider how we store this.
     private Map<String, Object> objectStore;
 
     public int getCommandId() {

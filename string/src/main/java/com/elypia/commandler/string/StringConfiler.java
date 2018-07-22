@@ -1,0 +1,20 @@
+package com.elypia.commandler.string;
+
+import com.elypia.commandler.*;
+import com.elypia.commandler.string.client.*;
+
+public class StringConfiler extends Confiler<StringClient, StringEvent, String> {
+
+    /**
+     * Break the command down into it's individual components.
+     *
+     * @param event The event spanwed by the client.
+     * @param content The content of the meessage.
+     * @return The input the user provided or null if it's not a valid command.
+     */
+    @Override
+    public StringCommand processEvent(Commandler<StringClient, StringEvent, String> commandler, StringEvent event, String content) {
+        var parent = super.processEvent(commandler, event, content);
+        return new StringCommand(parent);
+    }
+}
