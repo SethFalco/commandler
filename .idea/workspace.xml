@@ -1,72 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5f3dffdf-b7ec-4bdf-b31f-883c7718ea74" name="Default" comment="- Wasn't using the String confiler before, now I am. (Questioning if this is a proper design choice though. :thinking:">
-      <change afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDACommandValidator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDAParamValidator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDAParser.java" afterDir="false" />
+    <list default="true" id="5f3dffdf-b7ec-4bdf-b31f-883c7718ea74" name="Default" comment="- Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#10;- Trying to currently reduce the total number of generics used/seen in Commandler and the implementations of it&#10;- Implemented a default help command and corrected the test for it to reflect this, we will only be making a default help command, not a default help module, implementations will have to cover that themself (unless I change my mind otherwise)&#10;- Pulling default implementations into the interface rather than abstract class where possible&#10;- Cleaned up some areas, gave classes/variables more apropriate names and added a getMessage method to the command event.&#10;- Moved the delete message method to JDA specifically rather than the generic as it'll probably not many platforms we can delete others message&#10;- Changed JDACommmandler a lot to reflect the changes made, it's almost entirely set up except it needs it's to override the builder build method to accomodate the fact we want to make it so we have a method for getting as embed and another for getting as string.&#10;- Moving Search from a special annotation to just plain validation (if the item returned when parsing doesn't suit the scope)&#10;- Put the search scope enum inside the Search annotation since I just didn't feel like having a data package just for one enum _shrugs_&#10;66% code coverage guys! ^-^ &#10;Hopefully tomorrow if I want to die enough CommandlerBot will be back online, and in fact thanks to how decoupled it is, I could even copy and paste commands from String Commandler and they'll work with no change required. :o&#10;- [skip-ci]">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/CommandEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Commandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Commandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Confiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Confiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Builders.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/registers/BuildRegister.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Parsers.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/registers/ParseRegister.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/components/Validators.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/registers/Validator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/ICommandValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParamValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParamValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/impl/IParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/metadata/MetaCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/BooleanParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/BooleanParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/CharacterParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/CharacterParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/DurationParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/DurationParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/EnumParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/EnumParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/NumberParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/NumberParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/StringParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/StringParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/UrlParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/parsers/UrlParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LengthValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LengthValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LimitValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/LimitValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/OptionValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/OptionValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PartialValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PartialValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PeriodValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/validation/PeriodValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/CommandlerBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/CommandlerBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/modules/BotModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/modules/BotModule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/modules/ExampleModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/example/java/com/elypia/commandlerbot/modules/ExampleModule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDABuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/IJDABuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDACommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDACommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDACommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDAHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDACommandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDACommandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDAConfiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDAConfiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDADispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/JDADispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/filter/Search.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/param/Search.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/NSFW.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/annotations/validation/command/Nsfw.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/EmbedBuilderBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/EmbedBuilderBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/MessageEmbedBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/builders/MessageEmbedBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/data/SearchScope.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/EmoteParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/EmoteParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/GuildParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/GuildParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/RoleParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/RoleParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/TextChannelParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/TextChannelParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/UserParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/UserParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/VoiceChannelParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/parsers/VoiceChannelParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/ElevatedValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/NSFWValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/NsfwValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/PermissionValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/PermissionValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/ScopeValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/ScopeValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/SecretValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/SecretValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/param/EveryoneValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/param/EveryoneValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/param/TalkableValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/param/TalkableValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringCommandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringConfiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringConfiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/StringHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/DefaultBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/DefaultBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/NumberBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/builders/NumberBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/client/StringClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/main/java/com/elypia/commandler/string/client/StringClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/TestModuleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/string/src/test/java/com/elypia/commandler/string/test/TestModuleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jda/src/main/java/com/elypia/commandler/validation/command/NSFWValidator.java" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -148,7 +85,7 @@
           <entry key="gradle" value="4" />
           <entry key="java" value="43694" />
           <entry key="properties" value="8" />
-          <entry key="txt" value="3497" />
+          <entry key="txt" value="5384" />
           <entry key="yaml" value="15" />
         </counts>
       </usages-collector>
@@ -156,7 +93,7 @@
         <counts>
           <entry key="Groovy" value="4" />
           <entry key="JAVA" value="43694" />
-          <entry key="PLAIN_TEXT" value="3498" />
+          <entry key="PLAIN_TEXT" value="5385" />
           <entry key="Properties" value="8" />
           <entry key="YAML" value="15" />
         </counts>
@@ -204,12 +141,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/registers/BuildRegister.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="177">
-              <caret line="82" column="23" lean-forward="true" selection-start-line="82" selection-start-column="23" selection-end-line="82" selection-end-column="23" />
+            <state relative-caret-position="1060">
+              <caret line="91" column="39" lean-forward="true" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="39" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="docComment;class#Builders#0" expanded="true" />
                 <element signature="docComment;field#NULL_DEFAULT_BUILDER#0;class#BuildRegister#0" expanded="true" />
+                <element signature="docComment;method#build#0;class#BuildRegister#0" expanded="true" />
                 <element signature="docComment;method#getBuilder#0;class#BuildRegister#0" expanded="true" />
               </folding>
             </state>
@@ -1818,7 +1756,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1532292872381" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1532293413862" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/build.gradle" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15625" />
@@ -2098,7 +2036,8 @@
     <MESSAGE value="- Now have a minimal (incomplete but functional) implementation of Overloads&#10;- Have a negative test case for with overloads and fixed bug&#10;- Fixed bug in string dispatcher to prevent logging error twice&#10;- Cleaned up line breaks (thank you Arthur. &lt;3)&#10;- Added validation to prevent same method from having both @Command and @Overload&#10;- [skip-ci]" />
     <MESSAGE value="- Just went through all code and removed the extra line breaks from the docs, as well as removed all unused imports from classes&#10;- [skip-ci]&#10; 59% code coverage \\(^-^)/" />
     <MESSAGE value="- Made more test cases&#10;- created default parser for characters&#10;- changed command input return to command event which can not be overriden as well&#10;- ^The above also allows reusing the same dispatcher code in implementations, overridable if they want to process commands differently&#10;- Removed some redundant code&#10;- cleaned up packagaes&#10;- 64% coverage&#10;- [skip-ci]" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Made more test cases&#10;- created default parser for characters&#10;- changed command input return to command event which can not be overriden as well&#10;- ^The above also allows reusing the same dispatcher code in implementations, overridable if they want to process commands differently&#10;- Removed some redundant code&#10;- cleaned up packagaes&#10;- 64% coverage&#10;- [skip-ci]" />
+    <MESSAGE value="- Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#10;- Trying to currently reduce the total number of generics used/seen in Commandler and the implementations of it&#10;- Implemented a default help command and corrected the test for it to reflect this, we will only be making a default help command, not a default help module, implementations will have to cover that themself (unless I change my mind otherwise)&#10;- Pulling default implementations into the interface rather than abstract class where possible&#10;- Cleaned up some areas, gave classes/variables more apropriate names and added a getMessage method to the command event.&#10;- Moved the delete message method to JDA specifically rather than the generic as it'll probably not many platforms we can delete others message&#10;- Changed JDACommmandler a lot to reflect the changes made, it's almost entirely set up except it needs it's to override the builder build method to accomodate the fact we want to make it so we have a method for getting as embed and another for getting as string.&#10;- Moving Search from a special annotation to just plain validation (if the item returned when parsing doesn't suit the scope)&#10;- Put the search scope enum inside the Search annotation since I just didn't feel like having a data package just for one enum _shrugs_&#10;66% code coverage guys! ^-^ &#10;Hopefully tomorrow if I want to die enough CommandlerBot will be back online, and in fact thanks to how decoupled it is, I could even copy and paste commands from String Commandler and they'll work with no change required. :o&#10;- [skip-ci]" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#10;- Trying to currently reduce the total number of generics used/seen in Commandler and the implementations of it&#10;- Implemented a default help command and corrected the test for it to reflect this, we will only be making a default help command, not a default help module, implementations will have to cover that themself (unless I change my mind otherwise)&#10;- Pulling default implementations into the interface rather than abstract class where possible&#10;- Cleaned up some areas, gave classes/variables more apropriate names and added a getMessage method to the command event.&#10;- Moved the delete message method to JDA specifically rather than the generic as it'll probably not many platforms we can delete others message&#10;- Changed JDACommmandler a lot to reflect the changes made, it's almost entirely set up except it needs it's to override the builder build method to accomodate the fact we want to make it so we have a method for getting as embed and another for getting as string.&#10;- Moving Search from a special annotation to just plain validation (if the item returned when parsing doesn't suit the scope)&#10;- Put the search scope enum inside the Search annotation since I just didn't feel like having a data package just for one enum _shrugs_&#10;66% code coverage guys! ^-^ &#10;Hopefully tomorrow if I want to die enough CommandlerBot will be back online, and in fact thanks to how decoupled it is, I could even copy and paste commands from String Commandler and they'll work with no change required. :o&#10;- [skip-ci]" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2564,12 +2503,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/java/com/elypia/commandler/registers/BuildRegister.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="177">
-          <caret line="82" column="23" lean-forward="true" selection-start-line="82" selection-start-column="23" selection-end-line="82" selection-end-column="23" />
+        <state relative-caret-position="1060">
+          <caret line="91" column="39" lean-forward="true" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#Builders#0" expanded="true" />
             <element signature="docComment;field#NULL_DEFAULT_BUILDER#0;class#BuildRegister#0" expanded="true" />
+            <element signature="docComment;method#build#0;class#BuildRegister#0" expanded="true" />
             <element signature="docComment;method#getBuilder#0;class#BuildRegister#0" expanded="true" />
           </folding>
         </state>

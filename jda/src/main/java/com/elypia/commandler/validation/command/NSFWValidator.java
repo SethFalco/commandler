@@ -1,25 +1,22 @@
 package com.elypia.commandler.validation.command;
 
-import com.elypia.commandler.annotations.validation.command.NSFW;
-import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.impl.ICommandValidator;
+import com.elypia.commandler.*;
+import com.elypia.commandler.annotations.validation.command.Nsfw;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
-public class NSFWValidator implements ICommandValidator<NSFW> {
+public class NsfwValidator implements IJDACommandValidator<Nsfw> {
 
     @Override
-    public boolean validate(CommandEvent event, NSFW annotation) {
-        GenericMessageEvent e = event.getMessageEvent();
-
-        if (e.isFromType(ChannelType.TEXT) && !e.getTextChannel().isNSFW())
-            return event.invalidate(help(annotation));
-
-        return true;
+    public boolean validate(JDACommand event, Nsfw annotation) {
+        GenericMessageEvent e = event.getSource();
+        return e.isFromType(ChannelType.TEXT) && !e.getTextChannel().isNSFW();
     }
 
     @Override
-    public String help(NSFW annotation) {
+    public String help(Nsfw annotation) {
         return "This commands can only be done in PMs or NSFW channels.";
     }
 }
+
+
