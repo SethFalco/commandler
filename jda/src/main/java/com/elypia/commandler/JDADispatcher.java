@@ -34,6 +34,7 @@ public class JDADispatcher extends ListenerAdapter implements IDispatcher<JDA, G
         confiler = (JDAConfiler)commandler.getConfiler();
     }
 
+    // ! I'll readd reaction handling at some point.
 //    @Override
 //    public void onMessageReactionAdd(MessageReactionAddEvent event) {
 //        User user = event.getUser();
@@ -103,12 +104,12 @@ public class JDADispatcher extends ListenerAdapter implements IDispatcher<JDA, G
     }
 
     @Override
-    public Commandler getCommandler() {
+    public JDACommandler getCommandler() {
         return commandler;
     }
 
     @Override
-    public IConfiler getConfiler() {
+    public JDAConfiler getConfiler() {
         return confiler;
     }
 }

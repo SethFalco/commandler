@@ -147,12 +147,12 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      * @return The prefixes considered acceptable for this event.
      */
     @Override
-    public String[] getPrefixes(Commandler commandler, E event) {
+    public String[] getPrefixes(Commandler<C, E, M>  commandler, E event) {
         return DEFAULT_PREFIXES;
     }
 
     @Override
-    public String getHelp(Commandler commandler, E event, String key) {
+    public String getHelp(Commandler<C, E, M> commandler, E event, String key) {
         return key;
     }
 

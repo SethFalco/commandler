@@ -7,7 +7,7 @@ import org.slf4j.*;
 
 public class StringDispatcher extends Dispatcher<StringClient, StringEvent, String> implements StringListener {
 
-    protected StringDispatcher(Commandler<StringClient, StringEvent, String> commandler) {
+    protected StringDispatcher(StringCommandler commandler) {
         super(commandler);
         client.addListener(this);
     }

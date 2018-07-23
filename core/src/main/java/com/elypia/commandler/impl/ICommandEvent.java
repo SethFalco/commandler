@@ -1,7 +1,7 @@
 package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.registers.Builders;
+import com.elypia.commandler.registers.BuildRegister;
 
 /**
  * The {@link ICommandEvent} is the event object produced and used
@@ -21,8 +21,8 @@ public interface ICommandEvent<C, E, M> {
      * by the client because this allows us to utilise our builders
      * and implementation around it.
      *
-     * @param output The item to send to the {@link Builders} to process.
-     * @return The message that was built by the {@link Builders}.
+     * @param output The item to send to the {@link BuildRegister} to process.
+     * @return The message that was built by the {@link BuildRegister}.
      */
     default M reply(Object output) {
         return getCommandler().getBuilder().build(this, output);

@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 public class EmbedBuilderBuilder implements IJDABuilder<EmbedBuilder> {
 
     @Override
-    public Message buildAsEmbed(JDACommand event, EmbedBuilder output) {
+    public Message buildEmbed(JDACommand event, EmbedBuilder output) {
         GenericMessageEvent jdaEvent = event.getSource();
 
         if (jdaEvent.getChannelType().isGuild())
@@ -23,7 +23,7 @@ public class EmbedBuilderBuilder implements IJDABuilder<EmbedBuilder> {
     }
 
     @Override
-    public Message build(ICommandEvent<?, ?, Message> event, EmbedBuilder input) {
+    public Message build(JDACommand event, EmbedBuilder input) {
         return null;
     }
 }

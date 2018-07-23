@@ -53,8 +53,6 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
      * @param event The {@link CommandEvent event} produced by Commandler.
      * @return The message to send to the end user.
      */
-    @Ignore
-    @Command(name = "Help", aliases = "help")
     default Object help(CommandEvent<C, E, M> event) {
         StringBuilder builder = new StringBuilder();
 

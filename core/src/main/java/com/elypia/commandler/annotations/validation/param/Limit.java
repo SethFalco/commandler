@@ -29,7 +29,7 @@ public @interface Limit {
     long min() default DEFAULT_MIN;
 
     /**
-     * @return The maximum value that the parameter can be, exclusive.
+     * @return The maximum value that the parameter can be, inclusive..
      */
     long max() default DEFAULT_MAX;
 }

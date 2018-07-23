@@ -2,12 +2,21 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Alexis.iml" filepath="$PROJECT_DIR$/.idea/modules/Alexis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Alexis_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Alexis_main.iml" group="Alexis" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Alexis_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Alexis_test.iml" group="Alexis" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Commandler.iml" filepath="$PROJECT_DIR$/.idea/modules/Commandler.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/Commandler-core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/Commandler-core.iml" group="core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Commandler_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Commandler_main.iml" group="Commandler" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Commandler_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Commandler_test.iml" group="Commandler" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Elypiai.iml" filepath="$PROJECT_DIR$/.idea/modules/Elypiai.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Elypiai_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Elypiai_main.iml" group="Elypiai" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Elypiai_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Elypiai_test.iml" group="Elypiai" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core_main.iml" group="core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core_test.iml" group="core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1039467293/elyscript.iml" filepath="$PROJECT_DIR$/.idea/modules/1039467293/elyscript.iml" group="elyscript" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1039467293/elyscript_main.iml" filepath="$PROJECT_DIR$/.idea/modules/1039467293/elyscript_main.iml" group="elyscript" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1039467293/elyscript_test.iml" filepath="$PROJECT_DIR$/.idea/modules/1039467293/elyscript_test.iml" group="elyscript" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jda/jda.iml" filepath="$PROJECT_DIR$/.idea/modules/jda/jda.iml" group="jda" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jda/jda_example.iml" filepath="$PROJECT_DIR$/.idea/modules/jda/jda_example.iml" group="jda" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jda/jda_main.iml" filepath="$PROJECT_DIR$/.idea/modules/jda/jda_main.iml" group="jda" />

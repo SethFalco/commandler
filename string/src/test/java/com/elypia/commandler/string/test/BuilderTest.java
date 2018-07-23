@@ -2,7 +2,7 @@ package com.elypia.commandler.string.test;
 
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.impl.IBuilder;
+import com.elypia.commandler.impl.*;
 import com.elypia.commandler.parsers.NumberParser;
 import com.elypia.commandler.string.*;
 import com.elypia.commandler.string.builders.NumberBuilder;
@@ -39,7 +39,13 @@ public class BuilderTest {
     @Test
     public void badBuilder() {
         commandler.registerModule(new NoBuilderModule());
-        commandler.registerBuilder((event, input) -> null, StringClient.class);
+        commandler.registerBuilder(new IStringBuilder<StringClient>() {
+
+            @Override
+            public String build(StringCommand event, StringClient output) {
+                return null;
+            }
+        }, StringClient.class);
 
         StringEvent event = new StringEvent(">nb info");
 

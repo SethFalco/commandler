@@ -34,6 +34,10 @@ public interface IDispatcher<C, E, M> {
      */
     default M processEvent(E source, String content){
         CommandEvent<C, E, M> event = getConfiler().processEvent(getCommandler(), source, content);
+
+        if (event == null) // ? If it didn't have the command format
+            return null;
+
         CommandInput<C, E, M> input = event.getInput();
 
         if (!getCommandler().getRoots().containsKey(input.getModule().toLowerCase()) || !input.normalize(event))

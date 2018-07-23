@@ -13,12 +13,12 @@ import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 public class MessageEmbedBuilder implements IJDABuilder<MessageEmbed> {
 
     @Override
-    public Message buildAsEmbed(JDACommand event, MessageEmbed output) {
+    public Message buildEmbed(JDACommand event, MessageEmbed output) {
         return new MessageBuilder(output).build();
     }
 
     @Override
-    public Message build(ICommandEvent<?, ?, Message> event, MessageEmbed output) {
+    public Message build(JDACommand event, MessageEmbed output) {
         return new MessageBuilder(output).build();
     }
 }

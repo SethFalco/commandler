@@ -64,7 +64,7 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
 
         if (reason != null) {
             // ? Store the error in the event so we can return if from our dispatcher
-            error = commandler.builder.build(this, reason);
+            error = commandler.getBuilder().build(this, reason);
 
             // ? Reply and let the user know what went wrong.
             reply(error);

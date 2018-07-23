@@ -67,7 +67,7 @@ public abstract class Commandler<C, E, M> {
 
     protected ParseRegister parser;
 
-    protected BuildRegister<?, M> builder;
+    protected BuildRegister<M> builder;
 
     protected Validator validator;
 
@@ -130,7 +130,7 @@ public abstract class Commandler<C, E, M> {
         this.parser.registerParser(parser, types);
     }
 
-    public void registerBuilder(IBuilder<?, M> builder, Class...types) {
+    public void registerBuilder(IBuilder<?, ?, M> builder, Class...types) {
         this.builder.registerBuilder(builder, types);
     }
 
@@ -174,7 +174,7 @@ public abstract class Commandler<C, E, M> {
         return parser;
     }
 
-    public BuildRegister<?, M> getBuilder() {
+    public BuildRegister<M> getBuilder() {
         return builder;
     }
 

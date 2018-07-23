@@ -10,6 +10,6 @@ package com.elypia.commandler.impl;
  * @param <O> The object to build, this should be the ouput from a {@link IParser}.
  * @param <M> The message we're returning.
  */
-public interface IBuilder<CE, O, M> {
+public interface IBuilder<CE extends ICommandEvent, O, M> {
     M build(CE event, O output);
 }

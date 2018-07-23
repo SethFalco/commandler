@@ -65,15 +65,15 @@ public class Validator {
         }
     }
 
-    public <C, E, M> boolean validateCommand(CommandEvent event, MetaCommand<C, E, M> metaCommand) {
-//        for (Map.Entry<MetaValidator, ICommandValidator> entry : metaCommand.getValidators().entrySet()) {
-//            MetaValidator metaValidator = entry.getKey();
-//            ICommandValidator validator = entry.getValue();
-//
-//            if (!validator.validate(event, metaValidator.getValidator())) {
-//                return false;
-//            }
-//        }
+    public <C, E, M> boolean validateCommand(ICommandEvent<C, E, M> event, MetaCommand<C, E, M> metaCommand) {
+        for (Map.Entry<MetaValidator, ICommandValidator> entry : metaCommand.getValidators().entrySet()) {
+            MetaValidator metaValidator = entry.getKey();
+            ICommandValidator validator = entry.getValue();
+
+            if (!validator.validate(event, metaValidator.getValidator())) {
+                return false;
+            }
+        }
 
         return true;
     }

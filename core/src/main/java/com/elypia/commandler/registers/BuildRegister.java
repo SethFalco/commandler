@@ -24,26 +24,26 @@ public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
      * This is thrown with an {@link IllegalArgumentException} if there is no registered
      * {@link IBuilder} with the data type of the object being built.
      */
-    private static final String NO_VALID_BUILDER = "No builder implementation registered for data type %s.";
+    protected static final String NO_VALID_BUILDER = "No builder implementation registered for data type %s.";
 
     /**
      * This is thrown with a {@link IllegalStateException} when the
      * {@link IBuilder#build(ICommandEvent, Object)} returns null. <br>
      * The default build method is the fallback and should always return a value.
      */
-    private static final String NULL_DEFAULT_BUILDER = "String builder %s for data-type %s returned null.";
+    protected static final String NULL_DEFAULT_BUILDER = "String builder %s for data-type %s returned null.";
 
     /**
      * This is logged when an existing {@link IBuilder} is replaced with
      * a new one. <br> This isn't bad, it's just a warning for the developer.
      */
-    private static final String REPLACED_REGISTERED = "Replaced registered builder for {} ({}) with {}.";
+    protected static final String REPLACED_REGISTERED = "Replaced registered builder for {} ({}) with {}.";
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
-    private static final Logger logger = LoggerFactory.getLogger(BuildRegister.class);
+    protected static final Logger logger = LoggerFactory.getLogger(BuildRegister.class);
 
     /**
      * All registered {@link IBuilder} instances mapped
@@ -85,12 +85,12 @@ public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
      * method to accomodate platform specific requirements.
      *
      * @param event The source event that triggered this.
-     * @param object The user input after already being parsed by the {@link Parsers}.
+     * @param object The user input after already being parsed by the {@link ParseRegister}.
      * @return A built message ready to send to the client.
      */
     public M build(ICommandEvent<?, ?, M> event, Object object) {
         Objects.requireNonNull(object);
-        IBuilder<?, ?, M> builder = getBuilder(object.getClass());
+        IBuilder builder = getBuilder(object.getClass());
 
         M content = (M)builder.build(event, object);
 
@@ -113,11 +113,11 @@ public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
      * @throws IllegalArgumentException If no {@link IBuilder} is
      *         registered for this data-type.
      */
-    protected B getBuilder(Class<?> clazz) {
+    protected IBuilder<?, ?, M> getBuilder(Class<?> clazz) {
         if (builders.containsKey(clazz))
             return builders.get(clazz);
 
-        for (Map.Entry<Class<?>, B> entry : builders.entrySet()) {
+        for (Map.Entry<Class<?>, IBuilder<?, ?, M>> entry : builders.entrySet()) {
             if (entry.getKey().isAssignableFrom(clazz))
                 return entry.getValue();
         }
@@ -126,7 +126,7 @@ public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
     }
 
     @Override
-    public Iterator<B> iterator() {
+    public Iterator<IBuilder<?, ?, M>> iterator() {
         return builders.values().iterator();
     }
 }

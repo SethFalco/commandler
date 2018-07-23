@@ -4,34 +4,35 @@ import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.validation.Ignore;
 import com.elypia.commandler.metadata.*;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 import java.util.*;
 
 /**
- * The {@link JDACommandHandler} is pretty much the same as
- * the provided {@link CommandHandler} except it overrides the
+ * The {@link JDAHandler} is pretty much the same as
+ * the provided {@link Handler} except it overrides the
  * help command to utilise {@link MessageEmbed}s if we have
  * permission to do so, else it will fall back to using the
  * default implementation.
  */
-public class JDAHandler extends Handler {
+public class JDAHandler extends Handler<JDA, GenericMessageEvent, Message> {
 
     @Ignore
     @Command(name = "Help", aliases = "help")
-    public Object help(CommandEvent event) {
+    public Object help(JDACommand event) {
         EmbedBuilder builder = new EmbedBuilder();
 
         Module annotation = module.getModule();
-        builder.setTitle(annotation.name(), confiler.getHelpUrl(commandler, event));
+        builder.setTitle(annotation.name(), confiler.getHelpUrl(commandler, event.getSource()));
 
         if (!enabled)
             builder.setDescription(annotation.help() + "\n**```diff\n- Disabled due to live issues! -\n```\n**");
         else
             builder.setDescription(annotation.help() + "\n_ _");
 
-        Iterator<MetaCommand> metaCommandIt = module.getPublicCommands().iterator();
+        Iterator<MetaCommand<JDA, GenericMessageEvent, Message>> metaCommandIt = module.getPublicCommands().iterator();
         boolean moduleHasParams = false;
 
         while (metaCommandIt.hasNext()) {
@@ -44,7 +45,7 @@ public class JDAHandler extends Handler {
                 for (String string : command.aliases())
                     aliasJoiner.add("`" + string + "`");
 
-                String value = "**Aliases: **" + aliasJoiner.toString() + "\n" + confiler.getHelp(commandler, event, command.help());
+                String value = "**Aliases: **" + aliasJoiner.toString() + "\n" + confiler.getHelp(commandler, event.getSource(), command.help());
                 List<MetaParam> metaParams = metaCommand.getInputParams();
 
                 if (!metaParams.isEmpty()) {
@@ -55,7 +56,7 @@ public class JDAHandler extends Handler {
                     metaParams.forEach(metaParam -> {
                         if (metaParam.isInput()) {
                             Param param = metaParam.getParamAnnotation();
-                            helpJoiner.add("`" + param.name() + "`: " + confiler.getHelp(commandler, event, param.help()));
+                            helpJoiner.add("`" + param.name() + "`: " + confiler.getHelp(commandler, event.getSource(), param.help()));
                         }
                     });
 

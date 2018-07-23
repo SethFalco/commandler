@@ -1,5 +1,7 @@
 package com.elypia.commandler.annotations.validation.param;
 
+import com.elypia.commandler.SearchScope;
+
 import java.lang.annotation.*;
 
 /**
@@ -12,25 +14,6 @@ import java.lang.annotation.*;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Search {
-
-    enum SearchScope {
-
-        /**
-         * Search everything that the bot can see.
-         */
-        GLOBAL,
-
-        /**
-         * Search mutual places that the performing user, and the bot
-         * can both see.
-         */
-        MUTUAL,
-
-        /**
-         * Only search in the current group or channel.
-         */
-        LOCAL
-    }
 
     /**
      * @return The scope to search for.

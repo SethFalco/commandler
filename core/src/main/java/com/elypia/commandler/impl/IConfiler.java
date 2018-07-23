@@ -38,7 +38,7 @@ public interface IConfiler<C, E, M> {
      * @param event The message event as provided by the client.
      * @return The prefixes to be used for this particular event.
      */
-    String[] getPrefixes(Commandler commandler, E event);
+    String[] getPrefixes(Commandler<C, E, M>  commandler, E event);
 
     /**
      * This is used for generating help commands. As all modules and commands
@@ -57,7 +57,7 @@ public interface IConfiler<C, E, M> {
      * @return The help {@link String} which should be displayed to users.
      * @see <a href="https://gitlab.com/Elypia/ElyScript">ElyScript</a>
      */
-    String getHelp(Commandler commandler, E event, String key);
+    String getHelp(Commandler<C, E, M> commandler, E event, String key);
 
     /**
      * Get the website which the help is hosted at if available.

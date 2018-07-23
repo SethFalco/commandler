@@ -305,6 +305,8 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
      * @param metaCommand The parent {@link MetaCommand} that found this {@link Overload}.
      */ // ? This command is very similar to our existing methods, see if we can use them?
     protected void parseOverload(MetaCommand<C, E, M> metaCommand) {
+        command = metaCommand.command;
+
         List<MetaParam> parentParams = metaCommand.metaParams.stream().filter(o -> {
             return o.isInput();
         }).collect(Collectors.toList());
@@ -360,7 +362,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
 
     private int checkParamLength(Parameter[] parameters, int paramLength) {
         int inputRequired = (int)Arrays.stream(parameters).filter(o -> {
-            return !CommandEvent.class.isAssignableFrom(o.getType());
+            return !ICommandEvent.class.isAssignableFrom(o.getType());
         }).count();
 
         if (inputRequired != paramLength) {
@@ -411,6 +413,10 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
 
     public Method getMethod() {
         return method;
+    }
+
+    public Map<MetaValidator, ICommandValidator> getValidators() {
+        return validators;
     }
 
     public List<MetaParam> getMetaParams() {

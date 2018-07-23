@@ -1,12 +1,13 @@
 package com.elypia.commandler;
 
+import com.elypia.commandler.impl.IConfiler;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
 /**
  * If you're configuing Commandler, it's a good idea to extend and {@link Override}
- * the {@link #getPrefix(GenericMessageEvent)} method here to get you going.
+ * the {@link IConfiler#getPrefixes(Commandler, Object)} method here to get you going.
  */
 public class JDAConfiler extends Confiler<JDA, GenericMessageEvent, Message> {
 
@@ -23,6 +24,7 @@ public class JDAConfiler extends Confiler<JDA, GenericMessageEvent, Message> {
      */
     @Override
     public JDACommand processEvent(Commandler<JDA, GenericMessageEvent, Message> commandler, GenericMessageEvent event, String content) {
-        return new JDACommand(super.processEvent(commandler, event, content));
+        var parent = super.processEvent(commandler, event, content);
+        return parent != null ? new JDACommand(parent) : null;
     }
 }
