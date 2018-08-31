@@ -1,11 +1,11 @@
 package com.elypia.commandler.registers;
 
-import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.annotations.validation.Validation;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.validation.*;
+import org.slf4j.*;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -16,6 +16,23 @@ import java.util.*;
  * provided when performing the commands.
  */
 public class Validator {
+
+    /**
+     * This may occur whenever a validator is replaced with another validator.
+     * Many implmentations may come with their own validation annotations
+     * and validator implementations, but they can be replaced by simply registering
+     * another validator implementation to the annotation if the original is not suited.
+     */
+    private static final String REPLACED_VALIDATOR = "The previous validator for data-type {} ({}) has been replaced with {}.";
+
+    /**
+     * We use SLF4J to log, be sure to include a binding when using this API at runtime!
+     */
+    private static final Logger logger = LoggerFactory.getLogger(Validator.class);
+
+    private Commandler commandler;
+
+    private IConfiler confiler;
 
     /**
      * A map defining annotations to what {@link ICommandValidator} they are associated with.
@@ -32,36 +49,40 @@ public class Validator {
      */
     private Map<Class<? extends Annotation>, IParamValidator> paramValidators;
 
-    public Validator() {
+    public Validator(Commandler commandler) {
+        this.commandler = commandler;
+        confiler = commandler.getConfiler();
+
         commandValidators = new HashMap<>();
         paramValidators = new HashMap<>();
 
         // ? Registering default validators
         registerValidator(Limit.class, new LimitValidator());
-        registerValidator(Length.class, new LengthValidator());
+        registerValidator(Length.class, new Length.Validator(Length.Validator.DEFAULT_HELP));
         registerValidator(Period.class, new PeriodValidator());
         registerValidator(Option.class, new OptionValidator());
     }
 
-    public void registerValidator(Class<? extends Annotation> clazz, ICommandValidator validator) {
-        registerValidator(clazz);
+    public void registerValidator(Class<? extends Annotation> clazz, ICommandValidator newValidator) {
+        ICommandValidator oldValidator = commandValidators.put(clazz, newValidator);
 
-        if (commandValidators.put(clazz, validator) != null)
-            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.\n", clazz.getName());
+        if (oldValidator != null) {
+            String oldName = oldValidator.getClass().getName();
+            String newName = newValidator.getClass().getName();
+
+            logger.info(REPLACED_VALIDATOR, clazz.getName(), oldName, newName);
+        }
     }
 
 
-    public void registerValidator(Class<? extends Annotation> clazz, IParamValidator validator) {
-        registerValidator(clazz);
+    public void registerValidator(Class<? extends Annotation> clazz, IParamValidator newValidator) {
+        IParamValidator oldValidator = paramValidators.put(clazz, newValidator);
 
-        if (paramValidators.put(clazz, validator) != null)
-            System.err.printf("The previous %s validator has been overwritten for the new implementation provided.\n", clazz.getName());
-    }
+        if (oldValidator != null) {
+            String oldName = oldValidator.getClass().getName();
+            String newName = newValidator.getClass().getName();
 
-    private void registerValidator(Class<? extends Annotation> clazz) {
-        if (!clazz.isAnnotationPresent(Validation.class)) {
-            String message = String.format("Annotation for %s doesn't have the Validators annotation.", clazz.getName());
-            throw new IllegalStateException(message);
+            logger.info(REPLACED_VALIDATOR, clazz.getName(), oldName, newName);
         }
     }
 
@@ -71,6 +92,7 @@ public class Validator {
             ICommandValidator validator = entry.getValue();
 
             if (!validator.validate(event, metaValidator.getValidator())) {
+                event.invalidate(confiler.getMisuseListener().onCommandInvalidated(event, metaCommand, validator));
                 return false;
             }
         }
@@ -88,16 +110,23 @@ public class Validator {
             Map<MetaValidator, IParamValidator> validators = metaParam.getValidators();
 
             for (Map.Entry<MetaValidator, IParamValidator> entry : validators.entrySet()) {
+                MetaValidator metaValidator = entry.getKey();
+                IParamValidator validator = entry.getValue();
+
                 if (type.isArray()) {
                     String[] array = (String[])arg;
 
                     for (String in : array) {
-                        if (!entry.getValue().validate(event, in, entry.getKey().getValidator(), metaParam))
+                        if (!validator.validate(event, in, metaValidator.getValidator(), metaParam)) {
+                            event.invalidate(confiler.getMisuseListener().onParameterInvalidated(event, metaCommand, validator));
                             return false;
+                        }
                     }
                 } else {
-                    if (!entry.getValue().validate(event, arg, entry.getKey().getValidator(), metaParam))
+                    if (!validator.validate(event, arg, metaValidator.getValidator(), metaParam)) {
+                        event.invalidate(confiler.getMisuseListener().onParameterInvalidated(event, metaCommand, validator));
                         return false;
+                    }
                 }
             }
         }
@@ -120,10 +149,10 @@ public class Validator {
     }
 
     public Map<Class<? extends Annotation>, IParamValidator> getParamValidators() {
-        return paramValidators;
+        return Collections.unmodifiableMap(paramValidators);
     }
 
     public Map<Class<? extends Annotation>, ICommandValidator> getCommandValidators() {
-        return commandValidators;
+        return Collections.unmodifiableMap(commandValidators);
     }
 }

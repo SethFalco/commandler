@@ -1,6 +1,6 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.impl.*;
 
 /**

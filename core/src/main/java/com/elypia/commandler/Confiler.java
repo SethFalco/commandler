@@ -84,7 +84,7 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
     public CommandEvent<C, E, M> processEvent(Commandler<C, E, M> commandler, E event, String content) {
         StringJoiner joiner = new StringJoiner("|");
 
-        for (String prefix : getPrefixes(commandler, event))
+        for (String prefix : getPrefixes(event))
             joiner.add("\\Q" + prefix + "\\E");
 
         String pattern = String.format(COMMAND_REGEX, joiner.toString());
@@ -124,17 +124,7 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
          * If overriding this for your own event, just call the super method
          * and pass this CommandEvent as the constructor to your event.
          */
-        return new CommandEvent<>(commandler, input, event) {
-            @Override
-            public M reply(Object output) {
-                throw new UnsupportedOperationException("You can not reply to this message.");
-            }
-
-            @Override
-            public M getMessage() {
-                return null;
-            }
-        };
+        return new CommandEvent<>(commandler, input, event);
     }
 
     @Override
@@ -147,17 +137,12 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      * @return The prefixes considered acceptable for this event.
      */
     @Override
-    public String[] getPrefixes(Commandler<C, E, M>  commandler, E event) {
+    public String[] getPrefixes(E event) {
         return DEFAULT_PREFIXES;
     }
 
     @Override
-    public String getHelp(Commandler<C, E, M> commandler, E event, String key) {
-        return key;
-    }
-
-    @Override
-    public String getHelpUrl(Commandler<C, E, M> commandler, E event) {
+    public String getHelpUrl(E event) {
         return HELP_URL;
     }
 }

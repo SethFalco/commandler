@@ -3,7 +3,6 @@ package com.elypia.commandler.impl;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.validation.Ignore;
 import com.elypia.commandler.metadata.*;
 
 import java.util.*;
@@ -53,7 +52,7 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
      * @param event The {@link CommandEvent event} produced by Commandler.
      * @return The message to send to the end user.
      */
-    default Object help(CommandEvent<C, E, M> event) {
+    default Object help(ICommandEvent<C, E, M> event) {
         StringBuilder builder = new StringBuilder();
 
         Module annotation = getModule().getModule();
@@ -92,14 +91,14 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
             metaParams.forEach(metaParam -> {
                 Param param = metaParam.getParamAnnotation();
                 builder.append("\n" + param.name() + ": ");
-                builder.append(getConfiler().getHelp(getCommandler(), event.getSource(), param.help()));
+                builder.append(getConfiler().getScript(event.getSource(), param.help()));
             });
 
             if (metaCommandIt.hasNext())
                 builder.append("\n\n");
         }
 
-        String helpUrl = getConfiler().getHelpUrl(getCommandler(), event.getSource());
+        String helpUrl = getConfiler().getHelpUrl(event.getSource());
 
         if (helpUrl != null)
             builder.append("You can get more information here: " + helpUrl);

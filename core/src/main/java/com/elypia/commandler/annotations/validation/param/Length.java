@@ -1,8 +1,11 @@
 package com.elypia.commandler.annotations.validation.param;
 
-import com.elypia.commandler.annotations.validation.Validation;
+import com.elypia.commandler.CommandEvent;
+import com.elypia.commandler.impl.IParamValidator;
+import com.elypia.commandler.metadata.MetaParam;
 
 import java.lang.annotation.*;
+import java.util.function.Function;
 
 /**
  * Set the minimum and maximum number of characters
@@ -10,7 +13,6 @@ import java.lang.annotation.*;
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@Validation
 public @interface Length {
 
     /**
@@ -34,4 +36,31 @@ public @interface Length {
      * @return The maximum number of characters the {@link String} may have.
      */
     int max() default DEFAULT_MAX;
+
+    class Validator extends IParamValidator<CommandEvent, String, Length> {
+
+        public static final Function<Length, String> DEFAULT_HELP = (length) -> {
+            StringBuilder builder = new StringBuilder("This parameter must be ");
+
+            if (length.min() == Length.DEFAULT_MIN && length.max() != Length.DEFAULT_MAX)
+                builder.append(String.format("less than %,d", length.max()));
+            else if (length.min() != Length.DEFAULT_MIN && length.max() == Length.DEFAULT_MAX)
+                builder.append(String.format("more than %,d", length.min()));
+            else
+                builder.append(String.format("between %,d and %,d", length.min(), length.max()));
+
+            return builder.append(" characters long!").toString();
+        };
+
+        public Validator(Function<Length, String> help) {
+            super(help);
+        }
+
+        @Override
+        public boolean validate(CommandEvent event, String s, Length length, MetaParam param) {
+            int l = s.length();
+            return l >= length.min() && l <= length.max();
+        }
+    }
+
 }

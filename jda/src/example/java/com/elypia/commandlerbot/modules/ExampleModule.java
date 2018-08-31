@@ -1,10 +1,11 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.JDAHandler;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.validation.command.*;
 import com.elypia.commandler.annotations.validation.param.*;
+import com.elypia.commandler.jda.JDAHandler;
+import com.elypia.commandler.jda.annotations.validation.command.*;
+import com.elypia.commandler.jda.annotations.validation.param.Everyone;
 import com.elypia.commandler.parsers.DurationParser;
 import net.dv8tion.jda.core.entities.*;
 

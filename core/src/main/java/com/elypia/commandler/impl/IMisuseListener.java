@@ -21,7 +21,7 @@ public interface IMisuseListener {
      *
      * @return The friendly error to send to the user.
      */
-    default Object onNoModule() {
+    default Object onNoModule(String content) {
         return null; // ? By default we just won't do anything at all.
     }
 
@@ -31,60 +31,16 @@ public interface IMisuseListener {
      *
      * @return The friendly error to send to users in chat.
      */
-    default Object onParameterCountMismatch(CommandInput<?, ?, ?> input, MetaCommand<?, ?, ?> metaCommand) {
-        String format = "You specified the '%s' command in the '%s' module but the parameters weren't what I expected.\n\n%s";
-
-        StringBuilder parameters = new StringBuilder("Provided:\n");
-
-        List<List<String>> lists = input.getParameters();
-
-        if (lists.isEmpty())
-            parameters.append("(0) None");
-        else {
-            StringJoiner parameterJoiner = new StringJoiner(" | ");
-
-            for (List<String> list : lists) {
-                StringJoiner itemJoiner = new StringJoiner(", ");
-
-                for (String string : list)
-                    itemJoiner.add("'" + string + "'");
-
-                parameterJoiner.add(itemJoiner.toString());
-            }
-
-            parameters.append("(").append(lists.size()).append(") ").append(parameterJoiner.toString());
-        }
-
-        parameters.append("\n\nPossibilities:\n");
-
+    default Object onParameterCountMismatch(CommandInput input, MetaCommand<?, ?, ?> metaCommand) {
+        String format = "Command failed; you provided the wrong number of parameters.\nModule: %s\nCommand: %s\n\nProvided:\n%s\n\nPossibilities:\n%s";
         StringJoiner commandJoiner = new StringJoiner("\n");
 
-        for (MetaCommand<?, ?, ?> command : metaCommand.getOverloads(true)) {
-            List<MetaParam> params = command.getMetaParams();
-
-            if (params.isEmpty())
-                commandJoiner.add("(0) None");
-            else {
-                StringJoiner itemJoiner = new StringJoiner(" | ");
-
-                for (MetaParam param : params) {
-                    String name = param.getParamAnnotation().name();
-
-                    if (param.isList())
-                        itemJoiner.add("['" + name + "']");
-                    else
-                        itemJoiner.add("'" + name + "'");
-                }
-
-                commandJoiner.add("(" + params.size() + ") " + itemJoiner.toString());
-            }
-        }
-
-        parameters.append(commandJoiner.toString());
+        for (MetaCommand command : metaCommand.getOverloads(true))
+            commandJoiner.add(command.toString());
 
         String commandName = metaCommand.getCommand().name();
         String moduleName = metaCommand.getMetaModule().getModule().name();
-        return String.format(format, commandName, moduleName, parameters.toString());
+        return String.format(format, moduleName, commandName, input.toString(), commandJoiner.toString());
     }
 
     /**
@@ -94,22 +50,10 @@ public interface IMisuseListener {
      *
      * @return The friendly error to send to users in chat.
      */
-    default Object onNoDefault(CommandEvent event) {
-        String format = "You specified the '%s' module without a valid command, however this module has no default command.\n\nPossibilities:\n%s\n\nSee the help command for more information.";
+    default Object onNoDefault(ICommandEvent event) {
+        String format = "Command failed; this module has no default command.\nModule: %s\n\nPossibilities:\n%s\n\nSee the help command for more information.";
         MetaModule<?, ?, ?> module = event.getInput().getMetaModule();
-
-        StringJoiner commandJoiner = new StringJoiner("\n");
-
-        for (MetaCommand<?, ?, ?> command : module.getMetaCommands()) {
-            StringJoiner aliasJoiner = new StringJoiner(", ");
-
-            for (String alias : command.getAliases())
-                aliasJoiner.add("'" + alias + "'");
-
-            commandJoiner.add("(" + command.getCommand().name() + ") " + aliasJoiner.toString());
-        }
-
-        return String.format(format, module.getModule().name(), commandJoiner.toString());
+        return String.format(format, module.getModule().name(), module);
     }
 
     /**
@@ -117,12 +61,18 @@ public interface IMisuseListener {
      *
      * @param event The event that caused this failure.
      * @param type The data type we were required.
-     * @param input The input the user provided.
+     * @param item The input the user provided.
      * @return The friendly error to send to users in chat.
      */
-    default Object onFailedParameterParse(CommandEvent event, Class<?> type, String input) {
-        String format = "You specified the '%s' command in the '%s' module, however I couldn't process your parameters.\n\n%s";
-        return format;
+    default Object onParseFailure(ICommandEvent event, MetaParam metaParam, Class<?> type, String item) {
+        String format = "Command failed; I couldn't interpret '%s', as the parameter '%s' (%s).\nModule: %s\nCommand: %s\n\nRequired:\n%s";
+
+        CommandInput input = event.getInput();
+        Param param = metaParam.getParamAnnotation();
+        String module = input.getMetaModule().getModule().name();
+        MetaCommand<?, ?, ?> command = input.getMetaCommand();
+
+        return String.format(format, item, param.name(), param.help(), module, command.getCommand().name(), command);
     }
 
     /**
@@ -130,42 +80,64 @@ public interface IMisuseListener {
      * parameters however a list is not acceptable here.
      *
      * @param event
-     * @param param
+     * @param metaParam
      * @param items
      * @return
      */
-    default Object onSupportedList(CommandEvent event, MetaParam param, List<String> items) {
-        return null;
+    default Object onUnsupportedList(ICommandEvent event, MetaParam metaParam, List<String> items) {
+        String format = "Command failed; the input, [%s], for parameter '%s' can't be a list.\nModule: %s\nCommand: %s\n\nRequired:\n%s";
+
+        StringJoiner joiner = new StringJoiner(", ");
+        items.forEach(item -> joiner.add("'" + item + "'"));
+
+        CommandInput input = event.getInput();
+        Param param = metaParam.getParamAnnotation();
+        String module = input.getMetaModule().getModule().name();
+        MetaCommand<?, ?, ?> command = input.getMetaCommand();
+        return String.format(format, joiner, param.name(), module, command.getCommand().name(), command);
     }
 
     /**
      * This occurs when an {@link ICommandValidator} invalidates the event.
      *
      * @return
-     */
-    default Object onCommandInvalidated() {
-        return null;
+     */ // ? Temp
+    default Object onCommandInvalidated(ICommandEvent event, MetaCommand metaCommand, ICommandValidator validator) {
+        String format = "Command failed; the command was invalidated.\nModule: %s\nCommand: %s";
+
+        CommandInput input = event.getInput();
+        String module = input.getMetaModule().getModule().name();
+        String command = input.getMetaCommand().getCommand().name();
+
+        return String.format(format, module, command);
     }
 
     /**
      * This occurs when an {@link IParamValidator} invalidates a parameter on the command.
      *
      * @return
-     */
-    default Object onParameterInvalidated() {
-        return null;
+     */ // ? Temp
+    default Object onParameterInvalidated(ICommandEvent event, MetaCommand metaCommand, IParamValidator validator) {
+        String format = "Command failed; a parameter was invalidated.\nModule: %s\nCommand: %s";
+
+        CommandInput input = event.getInput();
+        String module = input.getMetaModule().getModule().name();
+        String command = input.getMetaCommand().getCommand().name();
+
+        return String.format(format, module, command);
     }
 
     /**
      * This may occur when a user attempts to perform a command
-     * which isn't the {@link IHandler#help(CommandEvent)} command on
+     * which isn't the {@link IHandler#help(ICommandEvent)} command on
      * a {@link Module} that has been disabled.
      *
      * @param event The event that caused this failure.
      * @return The friendly error to send to users in chat.
      */
-    default Object onModuleDisabled(CommandEvent event) {
-        return null;
+    default Object onModuleDisabled(ICommandEvent event) {
+        String format = "Command failed; this module is currently disabled due to live issues.\nModule: %s";
+        return String.format(format, event.getInput().getMetaModule().getModule().name());
     }
 
     /**

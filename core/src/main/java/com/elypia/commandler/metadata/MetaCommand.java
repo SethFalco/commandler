@@ -220,7 +220,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
     /**
      * Parses the annotations on this command or the parent module if appropriate.
      * Is the annotation is a validator, adds it to the internal list of validators.
-     * This is determined by if the annotation has the {@link Validation} annotation. <br>
+     * This is determined by if the annotation if a {@link ICommandValidator} is registered for this type. <br>
      * If the annotation is {@link Static} that sets this as a static command. <br>
      * If the annotation is {@link Default} that sets this as a default command. <br>
      *
@@ -241,22 +241,24 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
                 isDefault = true;
             else if (type == Ignore.class)
                 isIgnore = true;
-            else if (type.isAnnotationPresent(Validation.class)) {
-                MetaValidator metaValidator = new MetaValidator(annotation);
+            else {
                 ICommandValidator validator = commandler.getValidator().getCommandValidator(type);
-                registered.add(type);
-                validators.put(metaValidator, validator);
+
+                if (validator != null) {
+                    MetaValidator metaValidator = new MetaValidator(annotation);
+                    registered.add(type);
+                    validators.put(metaValidator, validator);
+                }
             }
         }
 
         if (!isIgnore) {
             for (Annotation annotation : metaModule.getHandler().getClass().getDeclaredAnnotations()) {
                 Class<? extends Annotation> type = annotation.annotationType();
+                ICommandValidator validator = commandler.getValidator().getCommandValidator(type);
 
-                if (!registered.contains(type) && type.isAnnotationPresent(Validation.class)) {
+                if (!registered.contains(type) && validator != null) {
                     MetaValidator metaValidator = new MetaValidator(annotation);
-                    ICommandValidator validator = commandler.getValidator().getCommandValidator(type);
-
                     validators.put(metaValidator, validator);
                 }
             }
@@ -282,7 +284,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
             Parameter parameter = parameters[i];
             Param param = null;
 
-            if (CommandEvent.class.isAssignableFrom(parameter.getType()))
+            if (ICommandEvent.class.isAssignableFrom(parameter.getType()))
                 checkOffset(++offset);
             else
                 param = params[i - offset];
@@ -387,6 +389,27 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
         }
     }
 
+    @Override
+    public String toString() {
+        List<MetaParam> params = getInputParams();
+
+        if (params.isEmpty())
+            return "(0) None";
+
+        StringJoiner itemJoiner = new StringJoiner(", ");
+
+        for (MetaParam param : params) {
+            String name = param.getParamAnnotation().name();
+
+            if (param.isList())
+                itemJoiner.add("['" + name + "']");
+            else
+                itemJoiner.add("'" + name + "'");
+        }
+
+        return "(" + params.size() + ") " + itemJoiner.toString();
+    }
+
     /**
      * @param input The input module by the user.
      * @return If this command contains an entry of that command.
@@ -429,6 +452,15 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
 
     public Set<String> getAliases() {
         return aliases;
+    }
+
+    public MetaCommand<C, E, M> getOverload(int paramCount) {
+        for (MetaCommand<C, E, M> metaCommand : getOverloads(true)) {
+            if (metaCommand.inputRequired == paramCount)
+                return metaCommand;
+        }
+
+        return null;
     }
 
     /**

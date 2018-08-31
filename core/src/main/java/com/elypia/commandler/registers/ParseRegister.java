@@ -108,7 +108,7 @@ public class ParseRegister implements Iterable<IParser> {
      * @param metaCommand The method to imitate the fields of.
      * @return An Object[] array of all parameters parsed as required for the given method.
      */
-    public Object[] processEvent(CommandEvent<?, ?, ?> event, MetaCommand<?, ?, ?> metaCommand) {
+    public Object[] processEvent(ICommandEvent<?, ?, ?> event, MetaCommand<?, ?, ?> metaCommand) {
         List<MetaParam> metaParams = metaCommand.getMetaParams();
         List<List<String>> inputs = event.getInput().getParameters();
 
@@ -153,7 +153,7 @@ public class ParseRegister implements Iterable<IParser> {
      * @return      The parsed object as required for the command, or null
      *              if we failed to parse the input. (Usually user misuse.)
      */
-    protected Object parseParameter(CommandEvent<?, ?, ?> event, MetaParam param, List<String> items) {
+    protected Object parseParameter(ICommandEvent<?, ?, ?> event, MetaParam param, List<String> items) {
         Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
         IParser parser = getParser(componentType);
@@ -167,7 +167,13 @@ public class ParseRegister implements Iterable<IParser> {
             Object output = Array.newInstance(componentType, size);
 
             for (int i = 0; i < size; i++) {
-                Object o = parser.parse(event, componentType, items.get(i));
+                String item = items.get(i);
+                Object o = parser.parse(event, componentType, item);
+
+                if (o == null) {
+                    event.invalidate(confiler.getMisuseListener().onParseFailure(event, param, componentType, item));
+                    return null;
+                }
 
                 if (componentType == boolean.class)
                     Array.setBoolean(output, i, (boolean)o);
@@ -192,10 +198,16 @@ public class ParseRegister implements Iterable<IParser> {
             return output;
         }
 
-        if (size == 1)
-            return parser.parse(event, componentType, items.get(0));
+        if (size == 1) {
+            Object o = parser.parse(event, componentType, items.get(0));
 
-        confiler.getMisuseListener().onSupportedList(event, param, items);
+            if (o == null)
+                event.invalidate(confiler.getMisuseListener().onParseFailure(event, param, type, items.get(0)));
+
+            return o;
+        }
+
+        event.invalidate(confiler.getMisuseListener().onUnsupportedList(event, param, items));
         return null;
     }
 

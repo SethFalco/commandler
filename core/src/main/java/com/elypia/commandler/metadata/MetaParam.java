@@ -2,8 +2,7 @@ package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.annotations.validation.Validation;
-import com.elypia.commandler.impl.IParamValidator;
+import com.elypia.commandler.impl.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
@@ -48,7 +47,7 @@ public class MetaParam {
         this.parameter = Objects.requireNonNull(parameter);
 
         commandler = metaCommand.getCommandler();
-        isInput = !CommandEvent.class.isAssignableFrom(parameter.getType());
+        isInput = !ICommandEvent.class.isAssignableFrom(parameter.getType());
         isList = parameter.getType().isArray();
 
         parseAnnotations();
@@ -63,15 +62,10 @@ public class MetaParam {
 
         for (Annotation annotation : parameter.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
+            IParamValidator validator = commandler.getValidator().getParamValidator(type);
 
-            if (type.isAnnotationPresent(Validation.class)) {
-                IParamValidator validator = commandler.getValidator().getParamValidators().get(type);
-
-                if (validator == null)
-                    throw new IllegalStateException(String.format("Command %s in module %s (%s) has a parameter with the %s annotation, but a validator of this type is not registered.", metaCommand.getCommand().name(), metaCommand.getMetaModule().getModule().name(), "temp", annotation.annotationType().getName()));
-
+            if (validator != null)
                 validators.put(new MetaValidator(annotation), validator);
-            }
         }
     }
 

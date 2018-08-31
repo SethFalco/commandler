@@ -82,7 +82,7 @@ public abstract class Commandler<C, E, M> {
 
         parser = new ParseRegister(this);
         builder = new BuildRegister<>();
-        validator = new Validator();
+        validator = new Validator(this);
 
         handlers = new ArrayList<>();
         roots = new HashMap<>();
@@ -113,8 +113,8 @@ public abstract class Commandler<C, E, M> {
             registerModule(handler);
     }
 
-    public M trigger(E event, String input) {
-        return dispatcher.processEvent(event, input);
+    public M trigger(E event, String input, boolean send) {
+        return dispatcher.processEvent(event, input, send);
     }
 
 

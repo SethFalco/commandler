@@ -1,9 +1,7 @@
 package com.elypia.commandler.string;
 
-import com.elypia.commandler.*;
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.parsers.NumberParser;
-import com.elypia.commandler.registers.BuildRegister;
 import com.elypia.commandler.string.builders.*;
 import com.elypia.commandler.string.client.*;
 import org.slf4j.*;

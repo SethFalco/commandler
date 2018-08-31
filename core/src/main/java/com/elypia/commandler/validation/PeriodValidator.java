@@ -7,19 +7,15 @@ import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.parsers.DurationParser;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 public class PeriodValidator implements IParamValidator<CommandEvent, Duration, Period> {
 
     @Override
     public boolean validate(CommandEvent event, Duration duration, Period period, MetaParam param) {
-
-
-        long seconds = duration.getSeconds();
-
-        if (seconds < period.min() || seconds> period.max())
-            return false;
-
-        return true;
+        TimeUnit unit = period.unit();
+        long value = unit.convert(duration.getSeconds(), TimeUnit.SECONDS);
+        return value >= period.min() && value <= period.max();
     }
 
     @Override

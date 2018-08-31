@@ -1,7 +1,5 @@
 package com.elypia.commandler.annotations.validation.param;
 
-import com.elypia.commandler.annotations.validation.Validation;
-
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +8,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@Validation
 public @interface Period {
 
     /**

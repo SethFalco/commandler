@@ -37,7 +37,7 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 	/**
 	 * Performs relevent tests to ensure this module
 	 * is still working as intended. Should any test fail we will
-	 * still load and display {@link #help(CommandEvent)} for the module
+	 * still load and display {@link #help(ICommandEvent)} for the module
 	 * however all other commands will not be possible.
 	 *
 	 * @return If the module should remain enabled.

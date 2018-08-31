@@ -5,8 +5,7 @@ import com.elypia.commandler.string.client.*;
 import com.elypia.commandler.string.modules.EnumModule;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EnumModuleTest {
 
@@ -30,7 +29,9 @@ public class EnumModuleTest {
     public void testTimeUnitInvalid() {
         StringEvent event = new StringEvent(">enum time hitler");
 
-        String response = commandler.trigger(event, event.getContent());
-        assertNull(response);
+        String expected = "Command failed; I couldn't interpret 'hitler', as the parameter 'unit' (A unit of time!).\nModule: Enum\nCommand: TimeUnit\n\nRequired:\n(1) 'unit'";
+        String actual = commandler.trigger(event, event.getContent());
+
+        assertEquals(expected, actual);
     }
 }

@@ -11,7 +11,7 @@ import com.elypia.commandler.metadata.*;
  * @param <E> The type of event we're processing.
  * @param <M> The type of message we send and receieve.
  */
-public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
+public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
 
     /**
      * The parent {@link Commandler} instance that spawned this {@link CommandEvent}.
@@ -62,13 +62,9 @@ public abstract class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
     public void invalidate(Object reason) {
         invalidated = true;
 
-        if (reason != null) {
-            // ? Store the error in the event so we can return if from our dispatcher
-            error = commandler.getBuilder().build(this, reason);
-
-            // ? Reply and let the user know what went wrong.
-            reply(error);
-        }
+        // ? Store the error in the event so we can return if from our dispatcher
+        if (reason != null)
+            error = reply(reason);
     }
 
     /**

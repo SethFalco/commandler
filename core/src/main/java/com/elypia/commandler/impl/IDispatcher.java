@@ -14,25 +14,13 @@ import com.elypia.commandler.metadata.MetaCommand;
 public interface IDispatcher<C, E, M> {
 
     /**
-     * This should just overload the main {@link #processEvent(Object, String)} by passing
-     * over the contents of the message. This is because internally there are
-     * methods such as {@link CommandEvent#trigger(String)} and
-     * {@link Commandler#trigger(Object, String)} which can spawn commands using
-     * a different content using the same event.
-     *
-     * @param event The event spawned by the client.
-     * @return The message that was sent to the client.
-     */
-    M processEvent(E event);
-
-    /**
      * This should process the event.
      *
      * @param source The event spawned by the client.
      * @param content The content of the message to parse.
      * @return The message that was sent to the client.
      */
-    default M processEvent(E source, String content){
+    default M processEvent(E source, String content, boolean send) {
         CommandEvent<C, E, M> event = getConfiler().processEvent(getCommandler(), source, content);
 
         if (event == null) // ? If it didn't have the command format
@@ -40,7 +28,10 @@ public interface IDispatcher<C, E, M> {
 
         CommandInput<C, E, M> input = event.getInput();
 
-        if (!getCommandler().getRoots().containsKey(input.getModule().toLowerCase()) || !input.normalize(event))
+        if (!getCommandler().getRoots().containsKey(input.getModule().toLowerCase()))
+            return event.reply(getConfiler().getMisuseListener().onNoModule(content));
+
+        if (!input.normalize(event))
             return event.getError();
 
         MetaCommand<C, E, M> metaCommand = event.getInput().getMetaCommand();
@@ -59,10 +50,10 @@ public interface IDispatcher<C, E, M> {
         }
 
         try {
-            Object message = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
+            Object response = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
 
-            if (message != null)
-                return event.reply(message);
+            if (response != null && send)
+                return event.reply(response);
         } catch (Exception ex) {
             event.invalidate(getConfiler().getMisuseListener().onExceptionFailure(ex));
             return event.getError();

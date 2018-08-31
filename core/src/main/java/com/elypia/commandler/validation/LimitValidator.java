@@ -9,10 +9,8 @@ public class LimitValidator implements IParamValidator<CommandEvent, Number, Lim
 
     @Override
     public boolean validate(CommandEvent event, Number value, Limit limit, MetaParam param) {
-        if (value.intValue() < limit.min() || value.intValue() > limit.max())
-            return false;
-
-        return true;
+        long l = value.longValue();
+        return l >= limit.min() && l <= limit.max();
     }
 
     @Override

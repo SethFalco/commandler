@@ -1,9 +1,11 @@
 package com.elypia.commandlerbot.modules;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.validation.param.Everyone;
+import com.elypia.commandler.jda.*;
+import com.elypia.commandler.jda.annotations.Emoji;
+import com.elypia.commandler.jda.annotations.validation.param.Everyone;
 import net.dv8tion.jda.core.EmbedBuilder;
 
 @Module(name = "Bot", aliases = {"bot", "robot"}, help = "Get info on the bot itself and it's development!")

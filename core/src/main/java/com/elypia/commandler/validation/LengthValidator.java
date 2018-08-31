@@ -1,33 +1,34 @@
-package com.elypia.commandler.validation;
-
-import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.annotations.validation.param.Length;
-import com.elypia.commandler.impl.IParamValidator;
-import com.elypia.commandler.metadata.MetaParam;
-
-public class LengthValidator implements IParamValidator<CommandEvent, String, Length> {
-
-    @Override
-    public boolean validate(CommandEvent event, String s, Length length, MetaParam param) {
-        int l = s.length();
-
-        if (l < length.min() || l > length.max())
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public String help(Length length) {
-        return buildMessage("This parameter", length);
-    }
-
-    private String buildMessage(String item, Length length) {
-        if (length.min() == 0 && length.max() != Integer.MAX_VALUE)
-            return String.format("%s must less than %,d characters long!", item, length.max());
-        else if (length.min() != 0 && length.max() == Integer.MAX_VALUE)
-            return String.format("%s must be more than %,d characters long!", item, length.min());
-        else
-            return String.format("%s must be between %,d and %,d characters long.", item, length.min(), length.max());
-    }
-}
+//package com.elypia.commandler.validation;
+//
+//import com.elypia.commandler.CommandEvent;
+//import com.elypia.commandler.annotations.validation.param.Length;
+//import com.elypia.commandler.impl.IParamValidator;
+//import com.elypia.commandler.metadata.MetaParam;
+//
+//import java.util.function.Function;
+//
+//public class LengthValidator extends IParamValidator<CommandEvent, String, Length> {
+//
+//    public static final Function<Length, String> DEFAULT_HELP = (length) -> {
+//        StringBuilder builder = new StringBuilder("This parameter must be ");
+//
+//        if (length.min() == Length.DEFAULT_MIN && length.max() != Length.DEFAULT_MAX)
+//            builder.append(String.format("less than %,d characters long!", length.max()));
+//        else if (length.min() != Length.DEFAULT_MIN && length.max() == Length.DEFAULT_MAX)
+//            builder.append(String.format("more than %,d characters long!", length.min()));
+//        else
+//            return String.format("between %,d and %,d characters long.", length.min(), length.max());
+//
+//        return builder.toString();
+//    };
+//
+//    public LengthValidator(Function<Length, String> help) {
+//        super(help);
+//    }
+//
+//    @Override
+//    public boolean validate(CommandEvent event, String s, Length length, MetaParam param) {
+//        int l = s.length();
+//        return l >= length.min() && l <= length.max();
+//    }
+//}

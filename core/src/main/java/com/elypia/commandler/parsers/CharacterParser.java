@@ -1,6 +1,5 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.impl.*;
 import org.apache.commons.lang3.math.NumberUtils;
 

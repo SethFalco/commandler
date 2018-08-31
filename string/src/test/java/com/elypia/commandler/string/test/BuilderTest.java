@@ -1,12 +1,10 @@
 package com.elypia.commandler.string.test;
 
-import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.impl.*;
 import com.elypia.commandler.parsers.NumberParser;
-import com.elypia.commandler.string.*;
-import com.elypia.commandler.string.builders.NumberBuilder;
+import com.elypia.commandler.string.StringCommandler;
+import com.elypia.commandler.string.builders.*;
 import com.elypia.commandler.string.client.*;
+import com.elypia.commandler.string.modules.NoBuilderModule;
 import org.junit.jupiter.api.*;
 
 import static org.junit.Assert.*;
@@ -39,13 +37,7 @@ public class BuilderTest {
     @Test
     public void badBuilder() {
         commandler.registerModule(new NoBuilderModule());
-        commandler.registerBuilder(new IStringBuilder<StringClient>() {
-
-            @Override
-            public String build(StringCommand event, StringClient output) {
-                return null;
-            }
-        }, StringClient.class);
+        commandler.registerBuilder(new StringClientBuilder(), StringClient.class);
 
         StringEvent event = new StringEvent(">nb info");
 
@@ -62,18 +54,5 @@ public class BuilderTest {
     @Test
     public void builderIteration() {
         assertNotNull(commandler.getBuilder().iterator().next());
-    }
-
-    /**
-     * This is for when we try to process a command into a data-type
-     * that we don't have a {@link IBuilder} for.
-     */ // ? We just copy and pasted commands from some other module.
-    @Module(name = "No Builder", aliases = "nb")
-    public class NoBuilderModule extends StringHandler {
-
-        @Command(name = "Client Info", aliases = "info", help = "I'll give you the total sum of a list of numbers!")
-        public StringClient info() {
-            return new StringClient();
-        }
     }
 }

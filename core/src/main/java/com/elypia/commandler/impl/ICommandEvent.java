@@ -28,6 +28,10 @@ public interface ICommandEvent<C, E, M> {
         return getCommandler().getBuilder().build(this, output);
     }
 
+    default M trigger(String trigger) {
+        return trigger(trigger, true);
+    }
+
     /**
      * Trigger another commands which branches from this commands. The new commands
      * will use the same {@link E event} and {@link M message} but with the command
@@ -35,10 +39,18 @@ public interface ICommandEvent<C, E, M> {
      *
      * @param trigger The new commands to process instead.
      */
-    default M trigger(String trigger) {
-        return getCommandler().trigger(getSource(), trigger);
+    default M trigger(String trigger, boolean send) {
+        return getCommandler().trigger(getSource(), trigger, send);
     }
 
+    /**
+     * Invalidate the event, if a command follows a valid format, however
+     * is deemed invalid during processing of the event, it should be
+     * invalidated which will send the relevent error message if non-null
+     * and prevent further processing.
+     *
+     * @param reason The reason to send in chat, or null if we should fail silently.
+     */
     void invalidate(Object reason);
 
     Commandler<C, E, M> getCommandler();
@@ -48,6 +60,4 @@ public interface ICommandEvent<C, E, M> {
     C getClient();
 
     E getSource();
-
-    M getMessage();
 }

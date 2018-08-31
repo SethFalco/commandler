@@ -24,8 +24,6 @@ public class CommandInput<C, E, M> {
 
     private List<List<String>> parameters;
 
-    private int parameterCount;
-
     public CommandInput(Commandler<C, E, M> commandler, String content, String module, String command, List<List<String>> parameters) {
         this.commandler = Objects.requireNonNull(commandler);
         this.content = Objects.requireNonNull(content);
@@ -34,7 +32,6 @@ public class CommandInput<C, E, M> {
         this.parameters = Objects.requireNonNull(parameters);
 
         confiler = commandler.getConfiler();
-        parameterCount = parameters.size();
     }
 
     /**
@@ -64,7 +61,7 @@ public class CommandInput<C, E, M> {
      *
      * @return If the command is still valid.
      */
-    public boolean normalize(CommandEvent<C, E, M> event) {
+    public boolean normalize(ICommandEvent<C, E, M> event) {
         for (IHandler<C, E, M> handler : commandler.getHandlers()) {
             MetaModule<C, E, M> metaModule = handler.getModule();
 
@@ -75,22 +72,18 @@ public class CommandInput<C, E, M> {
                     MetaCommand<C, E, M> metaCommand = metaModule.getCommand(command);
 
                     if (metaCommand != null) {
-                        this.metaCommand = metaCommand;
+                        this.metaCommand = metaCommand.getOverload(getParameterCount());
 
-                        if (parameterCount != metaCommand.getInputRequired()) {
-                            for (MetaCommand<C, E, M> metaOverload : metaCommand.getOverloads()) {
-                                if (parameterCount == metaOverload.getInputRequired()) {
-                                    this.metaCommand = metaOverload;
-                                    return true;
-                                }
-                            }
-
+                        if (this.metaCommand == null) {
                             event.invalidate(confiler.getMisuseListener().onParameterCountMismatch(this, metaCommand));
                             return false;
                         }
 
                         return true;
                     }
+
+                    // ? If the above hasn't returned, the "command" may actually be a parameter
+                    parameters.add(0, Collections.singletonList(command));
                 }
 
                 MetaCommand<C, E, M> defaultCommand = metaModule.getDefaultCommand();
@@ -100,37 +93,32 @@ public class CommandInput<C, E, M> {
                     return false;
                 }
 
-                if (command != null)
-                    parameters.add(0, Collections.singletonList(command));
+                this.metaCommand = defaultCommand.getOverload(getParameterCount());
 
-                if (parameters.size() != defaultCommand.getInputRequired()) {
-                    for (MetaCommand<C, E, M> metaOverload : defaultCommand.getOverloads()) {
-                        if (parameters.size() == metaOverload.getInputRequired()) {
-                            this.metaCommand = metaOverload;
-                            return true;
-                        }
-                    }
-
+                if (this.metaCommand == null) {
+                    event.invalidate(confiler.getMisuseListener().onParameterCountMismatch(this, defaultCommand));
                     return false;
                 }
 
-                this.metaCommand = defaultCommand;
+                command = metaCommand.getCommand().aliases()[0];
                 return true;
             }
 
-            for (MetaCommand metaCommand : metaModule.getStaticCommands()) {
+            for (MetaCommand<C, E, M> metaCommand : metaModule.getStaticCommands()) {
                 if (metaCommand.performed(module)) {
                     if (command != null)
                         parameters.add(0, Collections.singletonList(command));
 
-                    this.command = metaModule.getModule().aliases()[0];
-                    this.metaModule = metaModule;
+                    this.metaCommand = metaCommand.getOverload(getParameterCount());
+
+                    if (this.metaCommand == null) {
+                        event.invalidate(confiler.getMisuseListener().onParameterCountMismatch(this, metaCommand));
+                        return false;
+                    }
 
                     this.command = metaCommand.getCommand().aliases()[0];
-                    this.metaCommand = metaCommand;
-
-                    if (parameters.size() != metaCommand.getInputRequired())
-                        return false;
+                    this.module = metaModule.getModule().aliases()[0];
+                    this.metaModule = metaModule;
 
                     return true;
                 }
@@ -140,6 +128,27 @@ public class CommandInput<C, E, M> {
         return false;
     }
 
+    @Override
+    public String toString() {
+        if (parameters.isEmpty())
+            return "(0) None";
+
+        StringJoiner parameterJoiner = new StringJoiner(", ");
+
+        for (List<String> list : parameters) {
+            StringJoiner itemJoiner = new StringJoiner(", ");
+
+            for (String string : list)
+                itemJoiner.add("'" + string + "'");
+
+            if (list.size() > 1)
+                parameterJoiner.add("[" + itemJoiner.toString() + "]");
+            else
+                parameterJoiner.add(itemJoiner.toString());
+        }
+
+        return "(" + parameters.size() + ") " + parameterJoiner.toString();
+    }
 
     public String getContent() {
         return content;
@@ -179,5 +188,9 @@ public class CommandInput<C, E, M> {
 
     public void setParameters(List<List<String>> parameters) {
         this.parameters = parameters;
+    }
+
+    public int getParameterCount() {
+        return parameters.size();
     }
 }

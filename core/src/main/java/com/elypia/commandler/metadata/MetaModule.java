@@ -203,7 +203,10 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
      * @return If this module contains an entry of that module.
      */
     public boolean performed(String input) {
-        return aliases.contains(input.toLowerCase());
+        if (aliases.contains(input.toLowerCase()))
+            return true;
+
+        return getStaticCommands().stream().anyMatch(o -> o.performed(input));
     }
 
     /**
@@ -241,8 +244,8 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
         return isPublic;
     }
 
-    public Collection<String> getAliases() {
-        return aliases;
+    public List<String> getAliases() {
+        return Collections.unmodifiableList(new ArrayList<>(aliases));
     }
 
     public List<MetaCommand<C, E, M>> getMetaCommands() {
@@ -266,6 +269,24 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
 
     public MetaCommand<C, E, M> getDefaultCommand() {
         return defaultCommand;
+    }
+
+    @Override
+    public String toString() {
+        String format = "%s (%s)";
+        StringJoiner commandJoiner = new StringJoiner("\n");
+
+        for (MetaCommand<C, E, M> metaCommand : getPublicCommands()) {
+            String name = metaCommand.command.name();
+            StringJoiner aliasJoiner = new StringJoiner(", ");
+
+            for (String alias : metaCommand.getAliases())
+                aliasJoiner.add("'" + alias + "'");
+
+            commandJoiner.add(String.format(format, name, aliasJoiner.toString()));
+        }
+
+        return commandJoiner.toString();
     }
 
     @Override

@@ -26,19 +26,27 @@ public interface IConfiler<C, E, M> {
      */
     CommandEvent<C, E, M> processEvent(Commandler<C, E, M> commandler, E event, String content);
 
+    /**
+     * The misuse handler is for handling user errors. <strong>Not exceptions!</strong><br>
+     * For example if a user provides the wrong parameters, or a parameter can not be interpretted
+     * as the required type. This has a default implementation but each bot
+     * should {@link Override} this to change the messages.
+     *
+     * @return The misuse handler for handling error messages.
+     */
     IMisuseListener getMisuseListener();
 
     /**
      * The prefix for this event. This can be set to return a static
      * {@link String}. This exists for bots that have a customizable prefix
      * in order to check where the commands was performed and obtain the correct
-     * prefix to use in {@link #processEvent(Commandler, E, String)} or when
+     * prefix to use in {@link #processEvent(Commandler, Object, String)} or when
      * queried elsewhere in the code.
      *
      * @param event The message event as provided by the client.
      * @return The prefixes to be used for this particular event.
      */
-    String[] getPrefixes(Commandler<C, E, M>  commandler, E event);
+    String[] getPrefixes(E event);
 
     /**
      * This is used for generating help commands. As all modules and commands
@@ -57,7 +65,9 @@ public interface IConfiler<C, E, M> {
      * @return The help {@link String} which should be displayed to users.
      * @see <a href="https://gitlab.com/Elypia/ElyScript">ElyScript</a>
      */
-    String getHelp(Commandler<C, E, M> commandler, E event, String key);
+    default String getScript(E event, String key) {
+        return key;
+    }
 
     /**
      * Get the website which the help is hosted at if available.
@@ -66,5 +76,5 @@ public interface IConfiler<C, E, M> {
      * @return The url the help is hosted at.
      * @see PageBuilder for dynamic webpage generation.
      */
-    String getHelpUrl(Commandler<C, E, M> commandler, E event);
+    String getHelpUrl(E event);
 }

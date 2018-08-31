@@ -1,6 +1,5 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.impl.*;
 
 public class StringParser implements IParser<ICommandEvent, String> {

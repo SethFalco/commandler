@@ -129,7 +129,7 @@ allprojects {
 
         testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.2.0'
         testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.2.0'
-        testRuntimeOnly group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.11.0'
+        testRuntimeOnly group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.11.1'
     }
 }
 
@@ -143,10 +143,10 @@ test {
 }
 
 jacoco {
-    toolVersion = "0.8.1"
+    toolVersion = "0.8.2"
 }
 
 task wrapper(type: Wrapper) {
     description = 'Generates gradlew[.bat] scripts'
-    gradleVersion = '4.8.1'
+    gradleVersion = '4.10'
 }
