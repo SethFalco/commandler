@@ -9,7 +9,7 @@ import java.util.function.*;
 
 public abstract class IParamValidator<CE extends ICommandEvent, O, A extends Annotation> {
 
-    private Function<A, String> help;
+    protected Function<A, String> help;
 
     public IParamValidator(Function<A, String> help) {
         this.help = Objects.requireNonNull(help);

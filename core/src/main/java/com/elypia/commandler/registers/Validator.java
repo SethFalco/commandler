@@ -57,10 +57,10 @@ public class Validator {
         paramValidators = new HashMap<>();
 
         // ? Registering default validators
-        registerValidator(Limit.class, new LimitValidator());
+        registerValidator(Limit.class, new LimitValidator(LimitValidator.DEFAULT_HELP));
         registerValidator(Length.class, new Length.Validator(Length.Validator.DEFAULT_HELP));
-        registerValidator(Period.class, new PeriodValidator());
-        registerValidator(Option.class, new OptionValidator());
+        registerValidator(Period.class, new PeriodValidator(PeriodValidator.DEFAULT_HELP));
+        registerValidator(Option.class, new OptionValidator(OptionValidator.DEFAULT_HELP));
     }
 
     public void registerValidator(Class<? extends Annotation> clazz, ICommandValidator newValidator) {

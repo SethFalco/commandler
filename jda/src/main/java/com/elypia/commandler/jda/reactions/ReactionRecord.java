@@ -1,4 +1,4 @@
-package com.elypia.commandler.reactions;
+package com.elypia.commandler.jda.reactions;
 
 import com.elypia.commandler.CommandInput;
 import com.elypia.commandler.annotations.Command;

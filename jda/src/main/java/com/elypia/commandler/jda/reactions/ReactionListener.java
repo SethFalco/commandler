@@ -1,10 +1,10 @@
-package com.elypia.commandler.reactions;
+package com.elypia.commandler.jda.reactions;
 
 import java.util.*;
 
 public class ReactionListener implements IReactionListener {
 
-    private Map<Long, ReactionRecord> trackers;
+    private Map<Long, com.elypia.commandler.reactions.ReactionRecord> trackers;
 
     public ReactionListener() {
         trackers = new HashMap<>();

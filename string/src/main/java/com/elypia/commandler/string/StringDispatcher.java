@@ -12,6 +12,6 @@ public class StringDispatcher extends Dispatcher<StringClient, StringEvent, Stri
 
     @Override
     public void onStringEvent(StringEvent event) {
-        processEvent(event, event.getContent());
+        processEvent(event, event.getContent(), true);
     }
 }

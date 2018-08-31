@@ -7,7 +7,24 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.GenericMessageEvent;
 
-public class EveryoneValidator implements IJDAParamValidator<String, Everyone> {
+import java.util.function.Function;
+
+public class EveryoneValidator extends IJDAParamValidator<String, Everyone> {
+
+    private static final Function<Everyone, String> DEFAULT_HELP = (everyone) -> {
+        return "You must have the Mention Everyone permission in order to mention everyone or here in this parameter.";
+    };
+
+    public EveryoneValidator(Function<Everyone, String> help) {
+        super(help);
+
+        if (this.help == null)
+            this.help = DEFAULT_HELP;
+    }
+
+    public EveryoneValidator() {
+        this(DEFAULT_HELP);
+    }
 
     @Override
     public boolean validate(JDACommand event, String input, Everyone everyone, MetaParam param) {
@@ -23,10 +40,5 @@ public class EveryoneValidator implements IJDAParamValidator<String, Everyone> {
         }
 
         return true;
-    }
-
-    @Override
-    public String help(Everyone annotation) {
-        return "You must have the Mention Everyone permission in order to mention everyone or here in this parameter.";
     }
 }

@@ -1,4 +1,4 @@
-package com.elypia.commandler.reactions;
+package com.elypia.commandler.jda.reactions;
 
 import com.elypia.commandler.*;
 import net.dv8tion.jda.core.entities.Message;
@@ -50,7 +50,7 @@ public class ReactionEvent extends CommandEvent {
         return event;
     }
 
-    public ReactionRecord getReactionRecord() {
+    public com.elypia.commandler.reactions.ReactionRecord getReactionRecord() {
         return record;
     }
 }

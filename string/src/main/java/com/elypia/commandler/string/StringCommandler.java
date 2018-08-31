@@ -25,7 +25,7 @@ public class StringCommandler extends Commandler<StringClient, StringEvent, Stri
     }
 
     @Override
-    public String trigger(StringEvent event, String input) {
-        return dispatcher.processEvent(event, input);
+    public String trigger(StringEvent event, String input, boolean send) {
+        return dispatcher.processEvent(event, input, send);
     }
 }

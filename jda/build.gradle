@@ -19,5 +19,5 @@ sourceSets {
 
 dependencies {
     implementation project(":core")
-    implementation 'net.dv8tion:JDA:3.7.1_390'
+    implementation 'net.dv8tion:JDA:3.7.1_408'
 }

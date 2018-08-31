@@ -113,6 +113,10 @@ public abstract class Commandler<C, E, M> {
             registerModule(handler);
     }
 
+    public M trigger(E event, String input) {
+        return trigger(event, input, true);
+    }
+
     public M trigger(E event, String input, boolean send) {
         return dispatcher.processEvent(event, input, send);
     }

@@ -203,10 +203,7 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
      * @return If this module contains an entry of that module.
      */
     public boolean performed(String input) {
-        if (aliases.contains(input.toLowerCase()))
-            return true;
-
-        return getStaticCommands().stream().anyMatch(o -> o.performed(input));
+        return aliases.contains(input.toLowerCase());
     }
 
     /**

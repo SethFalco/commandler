@@ -1,13 +1,29 @@
 package com.elypia.commandler.validation;
 
 import com.elypia.commandler.CommandEvent;
-import com.elypia.commandler.annotations.validation.param.Option;
+import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.impl.IParamValidator;
 import com.elypia.commandler.metadata.MetaParam;
 
 import java.util.*;
+import java.util.function.Function;
 
-public class OptionValidator implements IParamValidator<CommandEvent, String, Option> {
+public class OptionValidator extends IParamValidator<CommandEvent, String, Option> {
+
+    public static final Function<Option, String> DEFAULT_HELP = (option) -> {
+        return "Input must be one of the following options: " + String.join(", ", option.value());
+    };
+
+    public OptionValidator(Function<Option, String> help) {
+        super(help);
+
+        if (this.help == null)
+            this.help = DEFAULT_HELP;
+    }
+
+    public OptionValidator() {
+        this(DEFAULT_HELP);
+    }
 
     @Override
     public boolean validate(CommandEvent event, String string, Option option, MetaParam param) {
@@ -19,15 +35,9 @@ public class OptionValidator implements IParamValidator<CommandEvent, String, Op
             for (String op : options)
                 joiner.add("`" + op + "`");
 
-            String format = "Sorry, the parameter `%s` must be within the following options: %s.";
             return false;
         }
 
         return true;
-    }
-
-    @Override
-    public String help(Option option) {
-        return "Input must be one of the following options: " + String.join(", ", option.value());
     }
 }
