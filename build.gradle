@@ -131,6 +131,9 @@ subprojects { subproject ->
         if (subproject.name != "core")
             implementation project(":core")
 
+        // Apache Commons
+        compile "org.apache.commons:commons-lang3:3.8.1"
+
         // Logging
         implementation "org.slf4j:slf4j-api:1.7.25"
         testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"

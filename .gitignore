@@ -7,8 +7,9 @@
 *.properties
 
 # IntelliJ
-.idea/
-out/
+/.idea/
+/out/
+/bin/
 
 ##################################################################
 # https://github.com/github/gitignore/blob/master/Java.gitignore #
