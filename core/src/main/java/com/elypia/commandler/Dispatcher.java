@@ -30,6 +30,7 @@ public abstract class Dispatcher<C, E, M> implements IDispatcher<C, E, M> {
         return confiler;
     }
 
+    @Override
     public C getClient() {
         return client;
     }

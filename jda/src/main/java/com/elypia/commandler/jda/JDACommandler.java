@@ -3,6 +3,7 @@ package com.elypia.commandler.jda;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.impl.ICommandEvent;
 import com.elypia.commandler.jda.annotations.validation.command.*;
+import com.elypia.commandler.jda.annotations.validation.command.Channel;
 import com.elypia.commandler.jda.annotations.validation.param.*;
 import com.elypia.commandler.jda.builders.*;
 import com.elypia.commandler.jda.parsers.*;
@@ -68,7 +69,7 @@ public class JDACommandler extends Commandler<JDA, GenericMessageEvent, Message>
 
         registerValidator(Nsfw.class, new NsfwValidator());
         registerValidator(Permissions.class, new PermissionValidator());
-        registerValidator(Scope.class, new ScopeValidator());
+        registerValidator(Channel.class, new ScopeValidator());
         registerValidator(Secret.class, new SecretValidator());
 
         registerValidator(Everyone.class, new EveryoneValidator());
@@ -80,8 +81,6 @@ public class JDACommandler extends Commandler<JDA, GenericMessageEvent, Message>
         registerParser(new TextChannelParser(), TextChannel.class);
         registerParser(new UserParser(), User.class);
         registerParser(new VoiceChannelParser(), VoiceChannel.class);
-
-        logger.info("New instance of StringCommandler succesfully initialised.");
     }
 
     @Override

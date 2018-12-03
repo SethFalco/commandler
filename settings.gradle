@@ -1,4 +1,6 @@
 rootProject.name = 'Commandler'
+
 include 'core'
 include 'jda'
-include 'string'
+include 'console'
+include 'commandlerdoc'

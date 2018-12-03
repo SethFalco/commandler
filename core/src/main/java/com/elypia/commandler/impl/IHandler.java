@@ -91,7 +91,7 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
             metaParams.forEach(metaParam -> {
                 Param param = metaParam.getParamAnnotation();
                 builder.append("\n" + param.name() + ": ");
-                builder.append(getConfiler().getScript(event.getSource(), param.help()));
+                builder.append(getConfiler().getScript(event.getSource(), param.help(), Map.of()));
             });
 
             if (metaCommandIt.hasNext())
@@ -101,7 +101,7 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
         String helpUrl = getConfiler().getHelpUrl(event.getSource());
 
         if (helpUrl != null)
-            builder.append("You can get more information here: " + helpUrl);
+            builder.append(helpUrl);
 
         return builder.toString();
     }

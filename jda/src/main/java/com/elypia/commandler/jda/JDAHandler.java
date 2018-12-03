@@ -26,12 +26,13 @@ public class JDAHandler extends Handler<JDA, GenericMessageEvent, Message> {
         EmbedBuilder builder = new EmbedBuilder();
 
         Module annotation = module.getModule();
-        builder.setTitle(annotation.name(), confiler.getHelpUrl(event.getSource()));
+        builder.setTitle(event.getScript(annotation.name()), confiler.getHelpUrl(event.getSource()));
+        builder.setDescription(event.getScript(annotation.help()));
 
         if (!enabled)
-            builder.setDescription(annotation.help() + "\n**```diff\n- Disabled due to live issues! -\n```\n**");
+            builder.appendDescription("\n**```diff\n- Disabled due to live issues! -\n```\n**");
         else
-            builder.setDescription(annotation.help() + "\n_ _");
+            builder.appendDescription("\n_ _");
 
         Iterator<MetaCommand<JDA, GenericMessageEvent, Message>> metaCommandIt = module.getPublicCommands().iterator();
         boolean moduleHasParams = false;
@@ -57,7 +58,7 @@ public class JDAHandler extends Handler<JDA, GenericMessageEvent, Message> {
                     metaParams.forEach(metaParam -> {
                         if (metaParam.isInput()) {
                             Param param = metaParam.getParamAnnotation();
-                            helpJoiner.add("`" + param.name() + "`: " + confiler.getScript(event.getSource(), param.help()));
+                            helpJoiner.add("`" + event.getScript(param.name()) + "`: " + confiler.getScript(event.getSource(), param.help()));
                         }
                     });
 
@@ -67,7 +68,7 @@ public class JDAHandler extends Handler<JDA, GenericMessageEvent, Message> {
                 if (metaCommandIt.hasNext())
                     value += "\n_ _";
 
-                builder.addField(command.name(), value, false);
+                builder.addField(event.getScript(command.name()), value, false);
             }
         }
 

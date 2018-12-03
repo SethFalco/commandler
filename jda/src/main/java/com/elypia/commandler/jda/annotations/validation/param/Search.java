@@ -1,6 +1,6 @@
 package com.elypia.commandler.jda.annotations.validation.param;
 
-import com.elypia.commandler.jda.SearchScope;
+import com.elypia.commandler.jda.Scope;
 
 import java.lang.annotation.*;
 
@@ -18,6 +18,6 @@ public @interface Search {
     /**
      * @return The scope to search for.
      */
-    SearchScope value();
+    Scope value();
 }
 

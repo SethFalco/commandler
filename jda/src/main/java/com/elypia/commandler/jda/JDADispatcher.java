@@ -101,7 +101,6 @@ public class JDADispatcher extends Dispatcher<JDA, GenericMessageEvent, Message>
         });
     }
 
-    // ! The way we're doing this is pretty gross, look into a better way.
     @Override
     public Message processEvent(GenericMessageEvent source, String content, boolean send){
         return super.processEvent(source, content, send);

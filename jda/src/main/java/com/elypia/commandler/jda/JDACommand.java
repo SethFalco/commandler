@@ -28,6 +28,9 @@ public class JDACommand extends CommandEvent<JDA, GenericMessageEvent, Message> 
 
     @Override
     public Message reply(Object output) {
+        if (output == null)
+            return null;
+
         Message message = super.reply(output);
         event.getChannel().sendMessage(message).queue();
         return message;

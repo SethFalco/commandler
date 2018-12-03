@@ -65,4 +65,6 @@ public interface IDispatcher<C, E, M> {
     Commandler<C, E, M> getCommandler();
 
     IConfiler<C, E, M> getConfiler();
+
+    C getClient();
 }

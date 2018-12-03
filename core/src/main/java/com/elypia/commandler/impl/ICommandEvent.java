@@ -3,6 +3,8 @@ package com.elypia.commandler.impl;
 import com.elypia.commandler.*;
 import com.elypia.commandler.registers.BuildRegister;
 
+import java.util.Map;
+
 /**
  * The {@link ICommandEvent} is the event object produced and used
  * by {@link Commandler} using the the {@link E event} spawned from the
@@ -24,8 +26,31 @@ public interface ICommandEvent<C, E, M> {
      * @param output The item to send to the {@link BuildRegister} to process.
      * @return The message that was built by the {@link BuildRegister}.
      */
-    default M reply(Object output) {
+    default <T> M reply(T output) {
         return getCommandler().getBuilder().build(this, output);
+    }
+
+    /**
+     * Send a reply using {@link Confiler#getScript(Object, String)}
+     * for obtaining a script through your implementation.
+     *
+     * @param key The key associated with the script to obtain.
+     * @return A script associated with this key.
+     */
+    default M replyScript(String key) {
+        return replyScript(key, Map.of());
+    }
+
+    default <T> M replyScript(String key, Map<String, T> params) {
+        return reply(getScript(key, params));
+    }
+
+    default String getScript(String key) {
+        return getScript(key, Map.of());
+    }
+
+    default <T> String getScript(String key, Map<String, T> params) {
+        return getCommandler().getConfiler().getScript(getSource(), key, params);
     }
 
     default M trigger(String trigger) {

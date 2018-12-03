@@ -1,15 +1,15 @@
 package com.elypia.commandler.jda.validation.command;
 
 import com.elypia.commandler.jda.*;
-import com.elypia.commandler.jda.annotations.validation.command.Scope;
+import com.elypia.commandler.jda.annotations.validation.command.Channel;
 import net.dv8tion.jda.core.entities.ChannelType;
 
 import java.util.Arrays;
 
-public class ScopeValidator implements IJDACommandValidator<Scope> {
+public class ScopeValidator implements IJDACommandValidator<Channel> {
 
     @Override
-    public boolean validate(JDACommand event, Scope scope) {
+    public boolean validate(JDACommand event, Channel scope) {
         ChannelType[] types = scope.value();
 
         if (Arrays.asList(types).contains(event.getSource().getChannelType()))
@@ -21,7 +21,7 @@ public class ScopeValidator implements IJDACommandValidator<Scope> {
     }
 
     @Override
-    public String help(Scope annotation) {
+    public String help(Channel annotation) {
         return "This commands can only be performed in the following channels: " + buildList(annotation.value()) + ".";
     }
 

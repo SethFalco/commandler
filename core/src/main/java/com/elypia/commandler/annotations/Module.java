@@ -24,11 +24,19 @@ public @interface Module {
 	 */
 	String DEFAULT_HELP = "";
 
+	String DEFAULT_GROUP = "Misc";
+
 	/**
 	 * @return Name of the module as it should appear at the top
 	 * of the help commands. This is not the alias of the module.
 	 */
 	String name();
+
+	/**
+	 * @return The group this module belongs too, this used for when
+	 * navigating the help menu.
+	 */
+	String group() default DEFAULT_GROUP;
 
 	/**
 	 * @return A list of all the alises that grant the

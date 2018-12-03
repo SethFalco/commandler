@@ -55,8 +55,16 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 		return commandler;
 	}
 
+	public void setCommandler(Commandler<C, E, M> commandler) {
+		this.commandler = commandler;
+	}
+
 	public IConfiler<C, E, M> getConfiler() {
 		return confiler;
+	}
+
+	public void setConfiler(IConfiler<C, E, M> confiler) {
+		this.confiler = confiler;
 	}
 
 	public MetaModule<C, E, M> getModule() {

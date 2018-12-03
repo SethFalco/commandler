@@ -5,6 +5,8 @@ import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.pages.PageBuilder;
 
+import java.util.Map;
+
 /**
  * Confiler is the config object for Commandler and allows the developer
  * to customise how it parses commands and parameters, or how to obtain the prefix. <br>
@@ -48,6 +50,10 @@ public interface IConfiler<C, E, M> {
      */
     String[] getPrefixes(E event);
 
+    default <T> String getScript(E event, String key) {
+        return getScript(event, key, Map.of());
+    }
+
     /**
      * This is used for generating help commands. As all modules and commands
      * dictate help though the provided annotations there needs to be a way
@@ -56,7 +62,7 @@ public interface IConfiler<C, E, M> {
      * file or obtain the language from the event to select the correct
      * script to send. <br>
      * <br>
-     * It may be worth looking into <a href="https://gitlab.com/Elypia/ElyScript">ElyScript</a>
+     * It may be worth looking into <a href="https://gitlab.com/Elypia/ElyScript/Java">ElyScript</a>
      * to help make managing scripts and internationalization easier.
      *
      * @param event The message event as provided by the client.
@@ -65,8 +71,8 @@ public interface IConfiler<C, E, M> {
      * @return The help {@link String} which should be displayed to users.
      * @see <a href="https://gitlab.com/Elypia/ElyScript">ElyScript</a>
      */
-    default String getScript(E event, String key) {
-        return key;
+    default <T> String getScript(E event, String key, Map<String, T> params) {
+        return String.format(key, params);
     }
 
     /**

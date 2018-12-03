@@ -4,6 +4,7 @@ import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.registers.*;
+import org.slf4j.*;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -19,6 +20,8 @@ import java.util.*;
  * @param <M> The type of message we're expecting to send and receieve.
  */
 public abstract class Commandler<C, E, M> {
+
+    private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
 
     /**
      * The client represents the platform you're chatting on
@@ -48,6 +51,8 @@ public abstract class Commandler<C, E, M> {
      * All registered modules with this {@link Commandler}.
      */
     protected List<IHandler<C, E, M>> handlers;
+
+    protected Set<String> groups;
 
     /**
      * Any root alias, this could be a module alias or an alias to a
@@ -85,8 +90,11 @@ public abstract class Commandler<C, E, M> {
         validator = new Validator(this);
 
         handlers = new ArrayList<>();
+        groups = new HashSet<>();
         roots = new HashMap<>();
         commands = new HashMap<>();
+
+        logger.info("New instance of {} succesfully initialised.", this.getClass().getName());
     }
 
     public void setDispatcher(IDispatcher<C, E, M> dispatcher) {
@@ -106,11 +114,15 @@ public abstract class Commandler<C, E, M> {
         handlers.add(handler);
 
         Collections.sort(handlers);
+
+        groups.add(handler.getModule().getModule().group());
     }
 
     public void registerModules(IHandler<C, E, M>... handlers) {
-        for (IHandler<C, E, M> handler : handlers)
+        for (IHandler<C, E, M> handler : handlers) {
             registerModule(handler);
+            logger.debug("Registered handler: " + handler.getClass().getName());
+        }
     }
 
     public M trigger(E event, String input) {
@@ -164,6 +176,10 @@ public abstract class Commandler<C, E, M> {
 
     public Collection<IHandler<C, E, M>> getHandlers() {
         return handlers;
+    }
+
+    public Set<String> getGroups() {
+        return groups;
     }
 
     public Map<String, MetaModule<C, E, M>> getRoots() {
