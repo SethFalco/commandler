@@ -1,7 +1,7 @@
 package com.elypia.commandler.string.modules;
 
-import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.validation.param.*;
 import com.elypia.commandler.parsers.DurationParser;
 import com.elypia.commandler.string.StringHandler;

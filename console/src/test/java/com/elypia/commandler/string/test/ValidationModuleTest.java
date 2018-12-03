@@ -2,7 +2,7 @@ package com.elypia.commandler.string.test;
 
 import com.elypia.commandler.string.StringCommandler;
 import com.elypia.commandler.string.client.*;
-import com.elypia.commandler.string.modules.*;
+import com.elypia.commandler.string.modules.ValidationModule;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

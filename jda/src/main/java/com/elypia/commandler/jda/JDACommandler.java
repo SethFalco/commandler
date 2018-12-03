@@ -2,8 +2,8 @@ package com.elypia.commandler.jda;
 
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.impl.ICommandEvent;
-import com.elypia.commandler.jda.annotations.validation.command.*;
 import com.elypia.commandler.jda.annotations.validation.command.Channel;
+import com.elypia.commandler.jda.annotations.validation.command.*;
 import com.elypia.commandler.jda.annotations.validation.param.*;
 import com.elypia.commandler.jda.builders.*;
 import com.elypia.commandler.jda.parsers.*;

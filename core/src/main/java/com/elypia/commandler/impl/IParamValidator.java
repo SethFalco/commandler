@@ -5,7 +5,7 @@ import com.elypia.commandler.registers.ParseRegister;
 
 import java.lang.annotation.Annotation;
 import java.util.Objects;
-import java.util.function.*;
+import java.util.function.Function;
 
 public abstract class IParamValidator<CE extends ICommandEvent, O, A extends Annotation> {
 

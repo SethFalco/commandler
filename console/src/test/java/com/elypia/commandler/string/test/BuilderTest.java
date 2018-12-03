@@ -7,8 +7,7 @@ import com.elypia.commandler.string.client.*;
 import com.elypia.commandler.string.modules.NoBuilderModule;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BuilderTest {
 

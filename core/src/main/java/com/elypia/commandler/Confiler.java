@@ -1,9 +1,6 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.impl.*;
-import com.elypia.commandler.pages.PageBuilder;
 
 import java.util.*;
 import java.util.regex.*;
@@ -42,8 +39,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
 
     /**
      * The url to the website help is displayed if configured. <br>
-     * @see PageBuilder for generating a website with information
-     *      on {@link Module}s and {@link Command}s.
      */
     protected final String HELP_URL;
 

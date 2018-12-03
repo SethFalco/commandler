@@ -1,9 +1,7 @@
 package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.pages.PageBuilder;
+import com.elypia.commandler.annotations.Command;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
 package com.elypia.commandler.string.modules;
 
-import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.impl.IBuilder;
 import com.elypia.commandler.string.StringHandler;
 import com.elypia.commandler.string.client.StringClient;

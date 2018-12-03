@@ -1,7 +1,7 @@
 package com.elypia.commandler.jda.validation.param;
 
 import com.elypia.commandler.jda.*;
-import com.elypia.commandler.jda.annotations.validation.param.*;
+import com.elypia.commandler.jda.annotations.validation.param.Talkable;
 import com.elypia.commandler.metadata.MetaParam;
 import net.dv8tion.jda.core.entities.*;
 

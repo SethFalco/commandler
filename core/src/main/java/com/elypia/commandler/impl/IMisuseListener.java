@@ -1,8 +1,8 @@
 package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.annotations.Module;
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.metadata.*;
 import org.slf4j.LoggerFactory;
 
