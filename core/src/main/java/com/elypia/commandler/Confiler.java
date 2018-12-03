@@ -115,10 +115,6 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
 
         CommandInput<C, E, M> input = new CommandInput<>(commandler, content, module, command, parameters);
 
-        /*
-         * If overriding this for your own event, just call the super method
-         * and pass this CommandEvent as the constructor to your event.
-         */
         return new CommandEvent<>(commandler, input, event);
     }
 

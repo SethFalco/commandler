@@ -5,6 +5,7 @@ import com.elypia.commandler.annotations.validation.param.Period;
 import com.elypia.commandler.impl.IParamValidator;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.parsers.DurationParser;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;

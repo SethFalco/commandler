@@ -3,6 +3,8 @@ package com.elypia.commandler.impl;
 import com.elypia.commandler.*;
 import com.elypia.commandler.metadata.MetaCommand;
 
+import javax.validation.*;
+
 /**
  * The {@link IDispatcher} is the event handler, and should recieve
  * all events from the client.

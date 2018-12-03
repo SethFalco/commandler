@@ -132,7 +132,10 @@ subprojects { subproject ->
             implementation project(":core")
 
         // Apache Commons
-        compile "org.apache.commons:commons-lang3:3.8.1"
+        implementation "org.apache.commons:commons-lang3:3.8.1"
+
+        // Validation
+        implementation "javax.validation:validation-api:2.0.1.Final"
 
         // Logging
         implementation "org.slf4j:slf4j-api:1.7.25"

@@ -16,7 +16,7 @@ import java.lang.annotation.*;
 public @interface Overload {
 
     /**
-     * By setting a value to a single cell empty string,
+     * By setting a value to a single empty string,
      * {@link Commandler} will interpret this as inherit
      * all of the {@link Command}'s data.
      */
@@ -44,8 +44,7 @@ public @interface Overload {
      * This copies each validator by class. <br>
      * If an empty array is passed, no validators are copied. <br>
      * If {@link Overload} is passed (default), all validators are copied
-     * unless otherwise overridden by the overloading method, if an empty
-     * array is passed no validation is inherited.
+     * unless otherwise overridden by the overloading method.
      */
     Class<? extends Annotation>[] validation() default Overload.class;
 }

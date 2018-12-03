@@ -17,14 +17,18 @@ import java.lang.annotation.*;
 public @interface Module {
 
 	/**
+	 * The default group which is assumed if the a group
+	 * isn't otherwise specified.
+	 */
+	String DEFAULT_GROUP = "Miscellaneous";
+
+	/**
 	 * The default help string for modules. By leaving the
 	 * {@link #help()} as an empty {@link String} it is omitted
 	 * from the help commands and documentation. Assign this a value
 	 * to be displayed.
 	 */
 	String DEFAULT_HELP = "";
-
-	String DEFAULT_GROUP = "Misc";
 
 	/**
 	 * @return Name of the module as it should appear at the top
@@ -33,7 +37,7 @@ public @interface Module {
 	String name();
 
 	/**
-	 * @return The group this module belongs too, this used for when
+	 * @return The group this module belongs too, this is used for
 	 * navigating the help menu.
 	 */
 	String group() default DEFAULT_GROUP;

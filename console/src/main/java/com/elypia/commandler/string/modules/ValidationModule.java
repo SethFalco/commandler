@@ -22,7 +22,7 @@ public class ValidationModule extends StringHandler {
     @Command(name = "Limit", aliases = "limit")
     @Param(name = "one", help = "The number added to the next one.")
     @Param(name = "two", help = "The number added to the previous one.")
-    public long addTogetherLimited(@Limit(max = 100) int one, @Limit(min = 100, max = 200) long two) {
+    public long addTogetherLimited(int one, long two) {
         return one + two;
     }
 
