@@ -1,6 +1,6 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.impl.IHandler;
@@ -17,6 +17,15 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
      * warnings and messages.
      */
     private static final Logger logger = LoggerFactory.getLogger(ModuleData.class);
+
+    /**
+     * The modules context contains data on all modules that
+     * should be registered to this Commandler instance and is reusable.
+     *
+     * It also contains the context of the modules within it to aid
+     * in validation and ensure conflicts don't occur between modules.
+     */
+    private ModulesContext context;
 
     /**
      * The class this module data belongs too.
@@ -53,7 +62,7 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
      */
     private CommandData defaultCommand;
 
-    public ModuleData(Class<H> clazz) {
+    public ModuleData(ModulesContext context, Class<H> clazz) {
         this.clazz = clazz;
         module = clazz.getAnnotation(Module.class);
 
@@ -79,7 +88,7 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
      * Should an alias be registered that was already registed by another module,
      * we throw an exception as this is considered a malformed command.
      * If everything checks out alright, we add all the aliases to the list
-     * of {@link Commandler#roots root aliases} and reserve these so other
+     * of {@link ModulesContext#rootAliases root aliases} and reserve these so other
      * modules of static commands can't try consume them.
      *
      * @throws IllegalStateException If this module has an alias which was already registered by
@@ -129,7 +138,7 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
             logger.warn("Module {} ({}) contains no commands.", module.name(), handler.getClass().getName());
 
         for (Method method : methods) {
-            CommandData<C, E, M> commandData = new CommandData<>(this, method);
+            CommandData commandData = new CommandData(this, method);
 
             if (commandData.isDefault()) {
                 if (defaultCommand != null) {
@@ -173,23 +182,15 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
      * @param input The input command by the user.
      * @return The command that was performed, else null.
      */
-    public CommandData<C, E, M> getCommand(String input) {
+    public CommandData getCommand(String input) {
         input = input.toLowerCase();
 
-        for (CommandData<C, E, M> commandData : this.commandData) {
+        for (CommandData commandData : this.commandData) {
             if (commandData.getAliases().contains(input))
                 return commandData;
         }
 
         return null;
-    }
-
-    public Commandler<C, E, M> getCommandler() {
-        return commandler;
-    }
-
-    public IHandler<C, E, M> getHandler() {
-        return handler;
     }
 
     public Module getModule() {
@@ -201,29 +202,29 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
     }
 
     public List<String> getAliases() {
-        return Collections.unmodifiableList(new ArrayList<>(aliases));
+        return List.copyOf(aliases);
     }
 
-    public List<CommandData<C, E, M>> getCommandData() {
-        return commandData;
+    public List<CommandData> getCommandData() {
+        return List.copyOf(commandData);
     }
 
     /**
      * @return Return all {@link CommandData}s registered to this
      *         module that are {@link CommandData#isPublic() public}.
      */
-    public List<CommandData<C, E, M>> getPublicCommands() {
+    public List<CommandData> getPublicCommands() {
         return commandData.stream().filter(CommandData::isPublic).collect(Collectors.toUnmodifiableList());
     }
 
     /**
      * @return A list of all {@link Static} commands in the module.
      */
-    public List<CommandData<C, E, M>> getStaticCommands() {
+    public List<CommandData> getStaticCommands() {
         return commandData.stream().filter(CommandData::isStatic).collect(Collectors.toUnmodifiableList());
     }
 
-    public CommandData<C, E, M> getDefaultCommand() {
+    public CommandData getDefaultCommand() {
         return defaultCommand;
     }
 
@@ -232,7 +233,7 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
         String format = "%s (%s)";
         StringJoiner commandJoiner = new StringJoiner("\n");
 
-        for (CommandData<C, E, M> commandData : getPublicCommands()) {
+        for (CommandData commandData : getPublicCommands()) {
             String name = commandData.command.name();
             StringJoiner aliasJoiner = new StringJoiner(", ");
 

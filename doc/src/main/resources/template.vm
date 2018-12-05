@@ -15,7 +15,7 @@
     </head>
     <body>
         <nav>
-            <div id="app_info">
+            <div id="app-info">
                 <h1>$name</h1>
                 <img src=$logo alt="Logo representing the application."/>
             </div>
@@ -29,47 +29,41 @@
                 #end
             </ul>
         </nav>
-        <div class="container">
-            #foreach ($moduleData in $metaModules)
-                #if ($moduleData.isPublic())
-                    #set ($name = $moduleData.getModule().name())
-                    #set ($nameNoSpace = $name.replaceAll("\s+", "-"))
-                    <div class="module-info" id="info-$nameNoSpace">
-                        <h1>$name</h1>
-                        <ul class="module-aliases">
-                            #foreach ($alias in $moduleData.getModule().aliases())
-                                <li>$alias</li>
-                            #end
-                        </ul>
-                        <p>$moduleData.getModule().description()</p>
-                        #foreach ($commandData in $moduleData.getMetaCommands())
-                            #if ($commandData.isPublic())
-                                #set ($cmdName = $commandData.getCommand().name())
-                                #set ($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
-                                <div class="command-info">
-                                    <div class="command-title">
-                                        <h3 id="$cmdNameNoSpace">$cmdName</h3>
-                                        <ul class="command-validators">
-                                            #foreach($entry in $commandData.getValidators().entrySet())
-                                                <li class="tooltip">
-                                                    <span class="tooltiptext">$entry.value.help($entry.key.getAnnotation())</span>
-                                                    <img src="$entry.key.getValidatorAnnotation().value()" alt="$entry.key.getAnnotationType().getSimpleName()" height="24" width="24"/>
-                                                </li>
-                                            #end
-                                        </ul>
-                                    </div>
-                                    <ul class="command-aliases">
-                                        #foreach($alias in $commandData.getCommand().aliases())
-                                            <li>$alias</li>
-                                        #end
-                                    </ul>
-                                    <p>$commandData.getCommand().help()</p>
-                                </div>
-                            #end
-                        #end
-                    </div>
+        <div class="module_info">
+            <div class="module-info">
+                <h1>$name</h1>
+                <ul class="module-aliases">
+                    #foreach ($alias in $moduleData.getModule().aliases())
+                        <li>$alias</li>
+                    #end
+                </ul>
+                <p>$moduleData.getModule().description()</p>
+                #foreach ($commandData in $moduleData.getMetaCommands())
+                    #if ($commandData.isPublic())
+                        #set ($cmdName = $commandData.getCommand().name())
+                        #set ($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
+                        <div class="command-info">
+                            <div class="command-title">
+                                <h3 id="$cmdNameNoSpace">$cmdName</h3>
+                                <ul class="command-validators">
+                                    #foreach($entry in $commandData.getValidators().entrySet())
+                                        <li class="tooltip">
+                                            <span class="tooltiptext">$entry.value.help($entry.key.getAnnotation())</span>
+                                            <img src="$entry.key.getValidatorAnnotation().value()" alt="$entry.key.getAnnotationType().getSimpleName()" height="24" width="24"/>
+                                        </li>
+                                    #end
+                                </ul>
+                            </div>
+                            <ul class="command-aliases">
+                                #foreach($alias in $commandData.getCommand().aliases())
+                                    <li>$alias</li>
+                                #end
+                            </ul>
+                            <p>$commandData.getCommand().help()</p>
+                        </div>
+                    #end
                 #end
-            #end
+            </div>
         </div>
     </body>
 </html>

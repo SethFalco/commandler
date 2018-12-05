@@ -9,10 +9,9 @@ import org.jsoup.Jsoup;
 import org.slf4j.*;
 
 import java.io.*;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class DocBuilder {
 
@@ -29,7 +28,7 @@ public class DocBuilder {
     /**
      * The modules parsed as {@link ModuleData}.
      */
-    private ModuleContext context;
+    private ModulesContext context;
 
     /**
      * All documentation specific data to help generate
@@ -105,31 +104,34 @@ public class DocBuilder {
         VelocityEngine engine = getVelocityEngine();
 
         Template template = engine.getTemplate("pages/template.vm", "utf-8");
-        VelocityContext context = new VelocityContext();
-        context.put("name", name);
-        context.put("description", description);
-        context.put("logo", logo);
-        context.put("favicon", favicon);
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("name", name);
+        velocityContext.put("description", description);
+        velocityContext.put("logo", logo);
+        velocityContext.put("favicon", favicon);
+        velocityContext.put("modules", context.getModules().stream().filter(Predicate.not(ModuleData::isPublic)).map());
 
-        for (ModuleData module : moduleData) {
-            context.put("module", module);
+        for (ModuleData module : context.getModules()) {
+            if (!module.isPublic())
+                continue;
 
             String outputName = module.getModule().name()
                 .toLowerCase()
-                .replaceAll("[\\s/\\\\]+", "-");
+                .replaceAll("[^a-z\\d_-]+", "-");
 
-            String encodedName = URLEncoder.encode(outputName, StandardCharsets.UTF_8);
+            while (fileNames.contains(outputName))
+                outputName += "_";
 
-            while (fileNames.contains(encodedName))
-                encodedName += "_";
+            velocityContext.put("module", module);
+            velocityContext.put("output_name", outputName);
 
-            String writePath = file.getAbsolutePath() + File.separator + encodedName + ".html";
+            String writePath = file.getAbsolutePath() + File.separator + outputName + ".html";
             File toWrite = new File(writePath);
             file.mkdirs();
 
             try (StringWriter stringWriter = new StringWriter()) {
                 try (FileWriter fileWriter = new FileWriter(toWrite)) {
-                    template.merge(context, stringWriter);
+                    template.merge(velocityContext, stringWriter);
 
                     String cleanHtml = Jsoup.parse(stringWriter.toString()).html();
                     fileWriter.write(cleanHtml);

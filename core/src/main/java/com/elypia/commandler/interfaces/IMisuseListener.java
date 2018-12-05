@@ -7,6 +7,7 @@ import com.elypia.commandler.impl.*;
 import com.elypia.commandler.metadata.*;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.executable.ExecutableValidator;
 import java.util.*;
 
 /**
@@ -33,7 +34,7 @@ public interface IMisuseListener<C, E, M> {
      *
      * @return The friendly error to send to users in chat.
      */
-    Object onParamCountMismatch(CommandInput input, CommandData<?, ?, ?> commandData);
+    Object onParamCountMismatch(CommandInput input, CommandData commandData);
 
     /**
      * This occurs when it looks like the user had attempted to perform a
@@ -74,9 +75,10 @@ public interface IMisuseListener<C, E, M> {
     Object onCommandInvalidated(ICommandEvent<C, E, M> event, CommandData commandData, ICommandValidator validator);
 
     /**
-     * This occurs when an {@link IParamValidator} invalidates a parameter on the command.
+     * This occurs when the {@link ExecutableValidator} invalidates
+     * one of the parameters provided by the user.
      *
-     * @return
+     * @return The friendly error to send to the users in chat.
      */
     <H extends IHandler<C, E, M>> Object onParamInvalidated(ICommandEvent<C, E, M> event, Set<ConstraintViolation<H>> violations);
 

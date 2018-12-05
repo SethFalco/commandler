@@ -86,7 +86,7 @@ public class CommandData implements Comparable<CommandData> {
      * These are alternative methods of doing this command, and adopt
      * meta data from here.
      */
-    private List<CommandData<C, E, M>> overloads;
+    private List<CommandData> overloads;
 
     /**
      * Is this a {@link Static} command. <br>
@@ -213,6 +213,7 @@ public class CommandData implements Comparable<CommandData> {
 
             if (type == Static.class)
                 isStatic = true;
+
             else if (type == Default.class)
                 isDefault = true;
         }

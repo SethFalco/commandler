@@ -110,7 +110,7 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
 
     IConfiler<C, E, M> getConfiler();
 
-    ModuleData<C, E, M> getModule();
+    ModuleData getModule();
 
     boolean isEnabled();
 

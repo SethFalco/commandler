@@ -22,6 +22,8 @@ public abstract class Commandler<C, E, M> {
 
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
 
+    private ModulesContext context;
+
     /**
      * The client represents the platform you're chatting on
      * and where {@link E messages} are being receieved. <br>
@@ -59,7 +61,7 @@ public abstract class Commandler<C, E, M> {
      * alias isn't registered more than once, we also use this as a global
      * reference to obtain the a module.
      */
-    protected Map<String, ModuleData<C, E, M>> roots;
+    protected Map<String, ModuleData> roots;
 
     /**
      * Any commands with a non-zero {@link Command#id()}. This is a
@@ -67,7 +69,7 @@ public abstract class Commandler<C, E, M> {
      * {@link Overload} so we know what the parent {@link Command} is.
      * This can also be reused for implementation to dictate more actions.
      */
-    protected Map<Integer, CommandData<C, E, M>> commands;
+    protected Map<Integer, CommandData> commands;
 
     protected ParseRegister parser;
 
