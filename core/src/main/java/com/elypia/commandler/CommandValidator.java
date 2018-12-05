@@ -1,7 +1,7 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.impl.*;
-import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.metadata.CommandData;
 import org.slf4j.*;
 
 import javax.validation.*;
@@ -34,13 +34,13 @@ public class CommandValidator {
         exValidator = validator.forExecutables();
     }
 
-    public <C, E, M> boolean validateCommand(ICommandEvent<C, E, M> event, MetaCommand<C, E, M> metaCommand) {
-        for (Map.Entry<MetaValidator, ICommandValidator> entry : metaCommand.getValidators().entrySet()) {
+    public <C, E, M> boolean validateCommand(ICommandEvent<C, E, M> event, CommandData<C, E, M> commandData) {
+        for (Map.Entry<MetaValidator, ICommandValidator> entry : commandData.getValidators().entrySet()) {
             MetaValidator metaValidator = entry.getKey();
             ICommandValidator validator = entry.getValue();
 
             if (!validator.validate(event, metaValidator.getValidator())) {
-                event.invalidate(confiler.getMisuseListener().onCommandInvalidated(event, metaCommand, validator));
+                event.invalidate(confiler.getMisuseListener().onCommandInvalidated(event, commandData, validator));
                 return false;
             }
         }
@@ -49,7 +49,7 @@ public class CommandValidator {
     }
 
     public <C, E, M> boolean validateParams(ICommandEvent<C, E, M> event, Object[] parameters) {
-        MetaCommand<C, E, M> command = event.getInput().getMetaCommand();
+        CommandData<C, E, M> command = event.getInput().getCommandData();
         IHandler<C, E, M> handler = command.getHandler();
         Method method = command.getMethod();
 

@@ -33,7 +33,7 @@ public interface IMisuseListener<C, E, M> {
      *
      * @return The friendly error to send to users in chat.
      */
-    Object onParamCountMismatch(CommandInput input, MetaCommand<?, ?, ?> metaCommand);
+    Object onParamCountMismatch(CommandInput input, CommandData<?, ?, ?> commandData);
 
     /**
      * This occurs when it looks like the user had attempted to perform a
@@ -53,25 +53,25 @@ public interface IMisuseListener<C, E, M> {
      * @param item The input the user provided.
      * @return The friendly error to send to users in chat.
      */
-    Object onParamParseFailure(ICommandEvent event, MetaParam metaParam, Class<?> type, String item);
+    Object onParamParseFailure(ICommandEvent event, ParamData paramData, Class<?> type, String item);
 
     /**
      * This may occur whenever the user has specified list
      * parameters however a list is not acceptable here.
      *
      * @param event
-     * @param metaParam
+     * @param paramData
      * @param items
      * @return
      */
-    Object onListNotSupported(ICommandEvent event, MetaParam metaParam, List<String> items);
+    Object onListNotSupported(ICommandEvent event, ParamData paramData, List<String> items);
 
     /**
      * This occurs when an {@link ICommandValidator} invalidates the event.
      *
      * @return
      */
-    Object onCommandInvalidated(ICommandEvent<C, E, M> event, MetaCommand metaCommand, ICommandValidator validator);
+    Object onCommandInvalidated(ICommandEvent<C, E, M> event, CommandData commandData, ICommandValidator validator);
 
     /**
      * This occurs when an {@link IParamValidator} invalidates a parameter on the command.

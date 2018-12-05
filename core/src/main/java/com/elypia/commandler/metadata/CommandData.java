@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
+public class CommandData implements Comparable<CommandData> {
 
     /**
      * This may occur when a {@link Static} command attempts to register
@@ -51,24 +51,13 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
      * We use SLF4J for logging, be sure to include an implementation / binding
      * so you can configure warnings and other messages.
      */
-    private static final Logger logger = LoggerFactory.getLogger(MetaCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommandData.class);
 
     /**
-     * The {@link Commandler} instance that the parent
-     * {@link #metaModule} was registered with.
-     */
-    protected Commandler<C, E, M> commandler;
-
-    /**
-     * The parent {@link MetaModule} that this {@link MetaCommand}
+     * The parent {@link ModuleData} that this {@link CommandData}
      * belongs to.
      */
-    protected MetaModule<C, E, M> metaModule;
-
-    /**
-     * The command handler this {@link MetaCommand} belongs to.
-     */
-    protected IHandler<C, E, M> handler;
+    protected ModuleData moduleData;
 
     /**
      * The static data associated with this command.
@@ -81,16 +70,10 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
     protected Method method;
 
     /**
-     * All validation that will be performed on this {@link Command}
-     * when called.
-     */
-    protected Map<MetaValidator, ICommandValidator> validators;
-
-    /**
      * The parameters this command requires, this includes event parameters
      * which are not input by the user but instead handled by Commandler.
      */
-    protected List<MetaParam> metaParams;
+    protected List<ParamData> paramData;
 
     /**
      * A list of unique aliases for this command. If the command
@@ -103,7 +86,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
      * These are alternative methods of doing this command, and adopt
      * meta data from here.
      */
-    private List<MetaCommand<C, E, M>> overloads;
+    private List<CommandData<C, E, M>> overloads;
 
     /**
      * Is this a {@link Static} command. <br>
@@ -135,26 +118,23 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
      */
     private boolean isOverload;
 
-    MetaCommand(MetaModule<C, E, M> metaModule, Method method) {
-        this(metaModule, method, null);
+    CommandData(ModuleData moduleData, Method method) {
+        this(moduleData, method, null);
     }
 
-    private MetaCommand(MetaModule<C, E, M> metaModule, Method method, MetaCommand<C, E, M> metaCommand) {
-        this.metaModule = Objects.requireNonNull(metaModule);
+    private CommandData(ModuleData moduleData, Method method, CommandData commandData) {
+        this.moduleData = Objects.requireNonNull(moduleData);
         this.method = Objects.requireNonNull(method);
-        commandler = metaModule.getCommandler();
-        handler = metaModule.getHandler();
 
         aliases = new HashSet<>();
-        metaParams = new ArrayList<>();
-        validators = new HashMap<>();
+        paramData = new ArrayList<>();
 
         command = method.getAnnotation(Command.class);
         isOverload = method.isAnnotationPresent(Overload.class);
 
         if (command != null && isOverload) {
-            String moduleName = metaModule.getModule().name();
-            String typeName = metaModule.getClass().getName();
+            String moduleName = moduleData.getModule().name();
+            String typeName = moduleData.getClass().getName();
             String message = String.format(COMMAND_OVERLOAD, moduleName, typeName);
 
             throw new IllegalStateException(message);
@@ -168,17 +148,17 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
 
             int id = command.id();
             if (id != Command.DEFAULT_ID) {
-                for (Method m : handler.getClass().getMethods()) {
+                for (Method m : moduleData.getHandler().getClass().getMethods()) {
                     Overload overload = m.getAnnotation(Overload.class);
 
                     if (overload != null && overload.value() == id)
-                        overloads.add(new MetaCommand<>(metaModule, m, this));
+                        overloads.add(new CommandData(moduleData, m, this));
                 }
             }
 
             isPublic = !command.help().equals(Command.DEFAULT_HELP);
         } else {
-            parseOverload(metaCommand);
+            parseOverload(commandData);
         }
     }
 
@@ -196,7 +176,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
             aliases.add(alias.toLowerCase());
 
         if (aliases.size() != commandAlliases.length) {
-            String moduleName = metaModule.getModule().name();
+            String moduleName = moduleData.getModule().name();
             String handlerName = handler.getClass().getName();
 
             logger.warn(DUPLICATE_ALIAS, command.name(), moduleName, handlerName);
@@ -205,14 +185,14 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
         if (isStatic) {
             if (!Collections.disjoint(commandler.getRoots().keySet(), aliases)) {
                 String commandName = command.name();
-                String moduleName = metaModule.getModule().name();
-                String moduleType = metaModule.getHandler().getClass().getName();
+                String moduleName = moduleData.getModule().name();
+                String moduleType = moduleData.getHandler().getClass().getName();
 
                 throw new IllegalStateException(String.format(RECURSIVE_ALIAS, commandName, moduleName, moduleType));
             }
 
             for (String in : aliases)
-                commandler.getRoots().put(in, metaModule);
+                commandler.getRoots().put(in, moduleData);
         }
     }
 
@@ -262,27 +242,27 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
             else
                 param = params[i - offset];
 
-            MetaParam meta = new MetaParam(this, param, parameter);
-            metaParams.add(meta);
+            ParamData meta = new ParamData(this, param, parameter);
+            paramData.add(meta);
         }
     }
 
     /**
-     * This is only performed if the {@link MetaCommand}
+     * This is only performed if the {@link CommandData}
      * is an {@link Overload}. Copies data from the parent
-     * {@link MetaCommand} and applies the {@link Overload} to make it
+     * {@link CommandData} and applies the {@link Overload} to make it
      * fit as described. <br>
      *
      * <strong>Note:</strong> Use {@link Overload} where possible it
      * making similar commands to avoid having to redefine or copy and paste
      * meta-data already defined in another {@link Command}.
      *
-     * @param metaCommand The parent {@link MetaCommand} that found this {@link Overload}.
+     * @param commandData The parent {@link CommandData} that found this {@link Overload}.
      */ // ? This command is very similar to our existing methods, see if we can use them?
-    protected void parseOverload(MetaCommand<C, E, M> metaCommand) {
-        command = metaCommand.command;
+    protected void parseOverload(CommandData<C, E, M> commandData) {
+        command = commandData.command;
 
-        List<MetaParam> parentParams = metaCommand.metaParams.stream().filter(o -> {
+        List<ParamData> parentParams = commandData.paramData.stream().filter(o -> {
             return o.isInput();
         }).collect(Collectors.toList());
 
@@ -316,10 +296,10 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
                 String name = order.get(i - offset);
 
                 for (int ii = 0; ii < parentParams.size(); ii++) {
-                    MetaParam parentParam = parentParams.get(ii);
+                    ParamData parentParam = parentParams.get(ii);
 
                     if (name.equals(parentParam.getParamAnnotation().name())) {
-                        metaParams.add(parentParams.remove(ii));
+                        paramData.add(parentParams.remove(ii));
                         continue outer;
                     }
                 }
@@ -330,8 +310,8 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
                 }
             }
 
-            MetaParam meta = new MetaParam(this, param, parameter);
-            metaParams.add(meta);
+            ParamData meta = new ParamData(this, param, parameter);
+            paramData.add(meta);
         }
     }
 
@@ -342,7 +322,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
 
         if (inputRequired != paramLength) {
             String commandName = command.name();
-            String moduleName = metaModule.getModule().name();
+            String moduleName = moduleData.getModule().name();
             String typeName = handler.getClass().getName();
             String message = String.format(PARAM_COUNT_MISMATCH, commandName, moduleName, typeName);
 
@@ -355,7 +335,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
     private void checkOffset(int offset) {
         if (offset == 2) {
             String commandName = command.name();
-            String moduleName = metaModule.getModule().name();
+            String moduleName = moduleData.getModule().name();
             String typeName = handler.getClass().getName();
 
             logger.warn(DUPLICATE_EVENT_PARAM, commandName, moduleName, typeName);
@@ -364,14 +344,14 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
 
     @Override
     public String toString() {
-        List<MetaParam> params = getInputParams();
+        List<ParamData> params = getInputParams();
 
         if (params.isEmpty())
             return "(0) None";
 
         StringJoiner itemJoiner = new StringJoiner(", ");
 
-        for (MetaParam param : params) {
+        for (ParamData param : params) {
             String name = param.getParamAnnotation().name();
 
             if (param.isList())
@@ -395,8 +375,8 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
         return commandler;
     }
 
-    public MetaModule<C, E, M> getMetaModule() {
-        return metaModule;
+    public ModuleData<C, E, M> getModuleData() {
+        return moduleData;
     }
 
     public IHandler<C, E, M> getHandler() {
@@ -415,22 +395,22 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
         return validators;
     }
 
-    public List<MetaParam> getMetaParams() {
-        return Collections.unmodifiableList(metaParams);
+    public List<ParamData> getParamData() {
+        return Collections.unmodifiableList(paramData);
     }
 
-    public List<MetaParam> getInputParams() {
-        return metaParams.stream().filter(MetaParam::isInput).collect(Collectors.toUnmodifiableList());
+    public List<ParamData> getInputParams() {
+        return paramData.stream().filter(ParamData::isInput).collect(Collectors.toUnmodifiableList());
     }
 
     public Set<String> getAliases() {
         return aliases;
     }
 
-    public MetaCommand<C, E, M> getOverload(int paramCount) {
-        for (MetaCommand<C, E, M> metaCommand : getOverloads(true)) {
-            if (metaCommand.inputRequired == paramCount)
-                return metaCommand;
+    public CommandData<C, E, M> getOverload(int paramCount) {
+        for (CommandData<C, E, M> commandData : getOverloads(true)) {
+            if (commandData.inputRequired == paramCount)
+                return commandData;
         }
 
         return null;
@@ -439,24 +419,24 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
     /**
      * @return A list of overloads belonging to this command, exclusive
      *         of the base command itself.
-     * @throws UnsupportedOperationException If this instance of a {@link MetaCommand}
+     * @throws UnsupportedOperationException If this instance of a {@link CommandData}
      *         is already of an {@link Overload}.
      */
-    public List<MetaCommand<C, E, M>> getOverloads() {
+    public List<CommandData<C, E, M>> getOverloads() {
         return getOverloads(false);
     }
 
     /**
      * @param includeCommand If to include the instance of the main command as well.
      * @return A list of overloads belonging to this command.
-     * @throws UnsupportedOperationException If this instance of a {@link MetaCommand}
+     * @throws UnsupportedOperationException If this instance of a {@link CommandData}
      *         is already of an {@link Overload}.
      */
-    public List<MetaCommand<C, E, M>> getOverloads(boolean includeCommand) {
+    public List<CommandData<C, E, M>> getOverloads(boolean includeCommand) {
         if (isOverload)
             throw new UnsupportedOperationException("Can't retrieve overloads from an overload.");
 
-        List<MetaCommand<C, E, M>> list = new ArrayList<>(overloads);
+        List<CommandData<C, E, M>> list = new ArrayList<>(overloads);
 
         if (includeCommand)
             list.add(0, this);
@@ -485,7 +465,7 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
     }
 
     @Override
-    public int compareTo(MetaCommand o) {
+    public int compareTo(CommandData o) {
         return command.name().compareToIgnoreCase(o.command.name());
     }
 }

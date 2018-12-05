@@ -2,20 +2,14 @@ package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.impl.ICommandEvent;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
-import java.util.*;
+import java.util.Objects;
 
-public class MetaParam {
+public class ParamData {
 
-    /**
-     * The parent Commandler instance that spawned this MetaParam.
-     */
-    private Commandler commandler;
-
-    private MetaCommand metaCommand;
+    private CommandData commandData;
 
     /**
      * The method paramater this is for. This could be any object including
@@ -39,35 +33,24 @@ public class MetaParam {
 
     private boolean isList;
 
-    Map<MetaValidator, IParamValidator> validators;
-
-    MetaParam(MetaCommand metaCommand, Param annotation, Parameter parameter) {
-        this.metaCommand = Objects.requireNonNull(metaCommand);
-        this.annotation = annotation;
+    ParamData(CommandData commandData, Param annotation, Parameter parameter) {
+        this.commandData = Objects.requireNonNull(commandData);
+        this.annotation = Objects.requireNonNull(annotation);
         this.parameter = Objects.requireNonNull(parameter);
 
-        commandler = metaCommand.getCommandler();
         isInput = !ICommandEvent.class.isAssignableFrom(parameter.getType());
         isList = parameter.getType().isArray();
     }
 
-    public Commandler getCommandler() {
-        return commandler;
-    }
-
-    public MetaCommand getMetaCommand() {
-        return metaCommand;
+    public CommandData getCommandData() {
+        return commandData;
     }
 
     public Parameter getParameter() {
         return parameter;
     }
 
-    public Map<MetaValidator, IParamValidator> getValidators() {
-        return validators;
-    }
-
-    public Param getParamAnnotation() {
+    public Param getAnnotation() {
         return annotation;
     }
 

@@ -105,20 +105,20 @@ public class ParseRegister implements Iterable<IParser> {
      * format the commands method requires to execute.
      *
      * @param event The message event to take parameters from.
-     * @param metaCommand The method to imitate the fields of.
+     * @param commandData The method to imitate the fields of.
      * @return An Object[] array of all parameters parsed as required for the given method.
      */
-    public Object[] processEvent(ICommandEvent<?, ?, ?> event, MetaCommand<?, ?, ?> metaCommand) {
-        List<MetaParam> metaParams = metaCommand.getMetaParams();
+    public Object[] processEvent(ICommandEvent<?, ?, ?> event, CommandData<?, ?, ?> commandData) {
+        List<ParamData> paramData = commandData.getParamData();
         List<List<String>> inputs = event.getInput().getParameters();
 
-        int size = metaParams.size();
+        int size = paramData.size();
         Object[] objects = new Object[size];
 
         int offset = 0;
 
         for (int i = 0; i < size; i++) {
-            MetaParam param = metaParams.get(i);
+            ParamData param = paramData.get(i);
 
             if (!param.isInput()) {
                 objects[i] = event;
@@ -153,7 +153,7 @@ public class ParseRegister implements Iterable<IParser> {
      * @return      The parsed object as required for the command, or null
      *              if we failed to parse the input. (Usually user misuse.)
      */
-    protected Object parseParameter(ICommandEvent<?, ?, ?> event, MetaParam param, List<String> items) {
+    protected Object parseParameter(ICommandEvent<?, ?, ?> event, ParamData param, List<String> items) {
         Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
         IParser parser = getParser(componentType);

@@ -22,6 +22,4 @@ public interface ICommandValidator<CE extends ICommandEvent, T extends Annotatio
      * @return If this command has passed this validation.
      */
     boolean validate(CE event, T annotation);
-
-    String help(T annotation);
 }

@@ -1,9 +1,7 @@
 package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.metadata.MetaCommand;
-
-import java.lang.reflect.Method;
+import com.elypia.commandler.metadata.CommandData;
 
 /**
  * The {@link IDispatcher} is the event handler, and should recieve
@@ -36,24 +34,23 @@ public interface IDispatcher<C, E, M> {
         if (!input.normalize(event))
             return event.getError();
 
-        MetaCommand<C, E, M> metaCommand = event.getInput().getMetaCommand();
-        Method method = metaCommand.getMethod();
+        CommandData<C, E, M> commandData = event.getInput().getCommandData();
 
-        if (!getCommandler().getCommandValidator().validateCommand(event, metaCommand))
+        if (!getCommandler().getCommandValidator().validateCommand(event, commandData))
             return event.getError();
 
-        Object[] params = getCommandler().getParser().processEvent(event, metaCommand);
+        Object[] params = getCommandler().getParser().processEvent(event, commandData);
 
         if (params == null || !getCommandler().getCommandValidator().validateParams(event, params))
             return event.getError();
 
-        if (!input.getCommand().equalsIgnoreCase("help") && !input.getMetaModule().getHandler().isEnabled()) {
+        if (!input.getCommand().equalsIgnoreCase("help") && !input.getModuleData().getHandler().isEnabled()) {
             event.invalidate(getConfiler().getMisuseListener().onModuleDisabled(event));
             return event.getError();
         }
 
         try {
-            Object response = metaCommand.getMethod().invoke(metaCommand.getHandler(), params);
+            Object response = commandData.getMethod().invoke(commandData.getHandler(), params);
 
             if (response != null && send)
                 return event.reply(response);

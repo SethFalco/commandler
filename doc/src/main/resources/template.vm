@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+    <head>
+        <title>$name | Help</title>
+        <meta charset="UTF-8"/>
+        <link rel="icon" type="image/x-icon" href="$favicon"/>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="reset.css"/>
+        <link href="https://fonts.googleapis.com/css?family=|Megrim|Raleway|Wire+One" rel="stylesheet">
+        <meta property="og:site_name" content="$name"/>
+        <meta property="og:title" content="$name | Help"/>
+        <meta property="og:description" content="$description"/>
+        <meta property="og:image" content="$avatar"/>
+    </head>
+    <body>
+        <nav>
+            <div id="app_info">
+                <h1>$name</h1>
+                <img src=$logo alt="Logo representing the application."/>
+            </div>
+            <ul>
+                #foreach($module in $modules)
+                    #if ($module.isPublic())
+                        #set ($name = $moduleData.getModule().name())
+                        #set ($nameNoSpace = $name.replaceAll("\s+", "-"))
+                        <li class="module-list-item" id="$nameNoSpace">$name</li>
+                    #end
+                #end
+            </ul>
+        </nav>
+        <div class="container">
+            #foreach ($moduleData in $metaModules)
+                #if ($moduleData.isPublic())
+                    #set ($name = $moduleData.getModule().name())
+                    #set ($nameNoSpace = $name.replaceAll("\s+", "-"))
+                    <div class="module-info" id="info-$nameNoSpace">
+                        <h1>$name</h1>
+                        <ul class="module-aliases">
+                            #foreach ($alias in $moduleData.getModule().aliases())
+                                <li>$alias</li>
+                            #end
+                        </ul>
+                        <p>$moduleData.getModule().description()</p>
+                        #foreach ($commandData in $moduleData.getMetaCommands())
+                            #if ($commandData.isPublic())
+                                #set ($cmdName = $commandData.getCommand().name())
+                                #set ($cmdNameNoSpace = $cmdName.replaceAll("\s+", "-"))
+                                <div class="command-info">
+                                    <div class="command-title">
+                                        <h3 id="$cmdNameNoSpace">$cmdName</h3>
+                                        <ul class="command-validators">
+                                            #foreach($entry in $commandData.getValidators().entrySet())
+                                                <li class="tooltip">
+                                                    <span class="tooltiptext">$entry.value.help($entry.key.getAnnotation())</span>
+                                                    <img src="$entry.key.getValidatorAnnotation().value()" alt="$entry.key.getAnnotationType().getSimpleName()" height="24" width="24"/>
+                                                </li>
+                                            #end
+                                        </ul>
+                                    </div>
+                                    <ul class="command-aliases">
+                                        #foreach($alias in $commandData.getCommand().aliases())
+                                            <li>$alias</li>
+                                        #end
+                                    </ul>
+                                    <p>$commandData.getCommand().help()</p>
+                                </div>
+                            #end
+                        #end
+                    </div>
+                #end
+            #end
+        </div>
+    </body>
+</html>

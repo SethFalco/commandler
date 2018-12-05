@@ -59,7 +59,7 @@ public abstract class Commandler<C, E, M> {
      * alias isn't registered more than once, we also use this as a global
      * reference to obtain the a module.
      */
-    protected Map<String, MetaModule<C, E, M>> roots;
+    protected Map<String, ModuleData<C, E, M>> roots;
 
     /**
      * Any commands with a non-zero {@link Command#id()}. This is a
@@ -67,7 +67,7 @@ public abstract class Commandler<C, E, M> {
      * {@link Overload} so we know what the parent {@link Command} is.
      * This can also be reused for implementation to dictate more actions.
      */
-    protected Map<Integer, MetaCommand<C, E, M>> commands;
+    protected Map<Integer, CommandData<C, E, M>> commands;
 
     protected ParseRegister parser;
 
@@ -173,11 +173,11 @@ public abstract class Commandler<C, E, M> {
         return groups;
     }
 
-    public Map<String, MetaModule<C, E, M>> getRoots() {
+    public Map<String, ModuleData<C, E, M>> getRoots() {
         return roots;
     }
 
-    public Map<Integer, MetaCommand<C, E, M>> getCommands() {
+    public Map<Integer, CommandData<C, E, M>> getCommands() {
         return commands;
     }
 

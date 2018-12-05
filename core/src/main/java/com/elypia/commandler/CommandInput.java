@@ -14,11 +14,11 @@ public class CommandInput<C, E, M> {
 
     private String content;
 
-    private MetaModule<C, E, M> metaModule;
+    private ModuleData<C, E, M> moduleData;
 
     private String module;
 
-    private MetaCommand<C, E, M> metaCommand;
+    private CommandData<C, E, M> commandData;
 
     private String command;
 
@@ -63,19 +63,19 @@ public class CommandInput<C, E, M> {
      */
     public boolean normalize(ICommandEvent<C, E, M> event) {
         for (IHandler<C, E, M> handler : commandler.getHandlers()) {
-            MetaModule<C, E, M> metaModule = handler.getModule();
+            ModuleData<C, E, M> moduleData = handler.getModule();
 
-            if (metaModule.performed(module)) {
-                this.metaModule = metaModule;
+            if (moduleData.performed(module)) {
+                this.moduleData = moduleData;
 
                 if (command != null) {
-                    MetaCommand<C, E, M> metaCommand = metaModule.getCommand(command);
+                    CommandData<C, E, M> commandData = moduleData.getCommand(command);
 
-                    if (metaCommand != null) {
-                        this.metaCommand = metaCommand.getOverload(getParameterCount());
+                    if (commandData != null) {
+                        this.commandData = commandData.getOverload(getParameterCount());
 
-                        if (this.metaCommand == null) {
-                            event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, metaCommand));
+                        if (this.commandData == null) {
+                            event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, commandData));
                             return false;
                         }
 
@@ -86,39 +86,39 @@ public class CommandInput<C, E, M> {
                     parameters.add(0, Collections.singletonList(command));
                 }
 
-                MetaCommand<C, E, M> defaultCommand = metaModule.getDefaultCommand();
+                CommandData<C, E, M> defaultCommand = moduleData.getDefaultCommand();
 
                 if (defaultCommand == null) {
                     event.invalidate(confiler.getMisuseListener().onDefaultNotFound(event));
                     return false;
                 }
 
-                this.metaCommand = defaultCommand.getOverload(getParameterCount());
+                this.commandData = defaultCommand.getOverload(getParameterCount());
 
-                if (this.metaCommand == null) {
+                if (this.commandData == null) {
                     event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, defaultCommand));
                     return false;
                 }
 
-                command = metaCommand.getCommand().aliases()[0];
+                command = commandData.getCommand().aliases()[0];
                 return true;
             }
 
-            for (MetaCommand<C, E, M> metaCommand : metaModule.getStaticCommands()) {
-                if (metaCommand.performed(module)) {
+            for (CommandData<C, E, M> commandData : moduleData.getStaticCommands()) {
+                if (commandData.performed(module)) {
                     if (command != null)
                         parameters.add(0, Collections.singletonList(command));
 
-                    this.metaCommand = metaCommand.getOverload(getParameterCount());
+                    this.commandData = commandData.getOverload(getParameterCount());
 
-                    if (this.metaCommand == null) {
-                        event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, metaCommand));
+                    if (this.commandData == null) {
+                        event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, commandData));
                         return false;
                     }
 
-                    this.command = metaCommand.getCommand().aliases()[0];
-                    this.module = metaModule.getModule().aliases()[0];
-                    this.metaModule = metaModule;
+                    this.command = commandData.getCommand().aliases()[0];
+                    this.module = moduleData.getModule().aliases()[0];
+                    this.moduleData = moduleData;
 
                     return true;
                 }
@@ -158,8 +158,8 @@ public class CommandInput<C, E, M> {
         this.content = content;
     }
 
-    public MetaModule getMetaModule() {
-        return metaModule;
+    public ModuleData getModuleData() {
+        return moduleData;
     }
 
     public String getModule() {
@@ -170,8 +170,8 @@ public class CommandInput<C, E, M> {
         this.module = module;
     }
 
-    public MetaCommand<C, E, M> getMetaCommand() {
-        return metaCommand;
+    public CommandData<C, E, M> getCommandData() {
+        return commandData;
     }
 
     public String getCommand() {

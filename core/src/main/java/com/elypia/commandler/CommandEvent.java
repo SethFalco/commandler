@@ -20,7 +20,7 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
 
     /**
      * A list of all input associated with this {@link CommandEvent}
-     * as well as the respective {@link MetaCommand} and {@link MetaModule}.
+     * as well as the respective {@link CommandData} and {@link ModuleData}.
      */
     protected CommandInput<C, E, M> input;
 

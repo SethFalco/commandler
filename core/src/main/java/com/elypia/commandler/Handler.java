@@ -1,13 +1,13 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.impl.*;
-import com.elypia.commandler.metadata.MetaModule;
+import com.elypia.commandler.metadata.ModuleData;
 
 public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 
 	protected Commandler<C, E, M> commandler;
 	protected IConfiler<C, E, M> confiler;
-	protected MetaModule<C, E, M> module;
+	protected ModuleData<C, E, M> module;
 
 	protected C client;
 
@@ -18,7 +18,7 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 
 	/**
 	 * Initialise the module, this will assign the values
-	 * in the module and create a {@link MetaModule} which is
+	 * in the module and create a {@link ModuleData} which is
 	 * what {@link Commandler} uses in runtime to identify modules,
 	 * commands or obtain any static data.
 	 *
@@ -30,7 +30,7 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 		this.commandler = commandler;
 		confiler = commandler.getConfiler();
 		client = commandler.getClient();
-		module = new MetaModule<>(commandler, this);
+		module = new ModuleData<>(commandler, this);
 		return test();
 	}
 
@@ -67,7 +67,7 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 		this.confiler = confiler;
 	}
 
-	public MetaModule<C, E, M> getModule() {
+	public ModuleData<C, E, M> getModule() {
 		return module;
 	}
 

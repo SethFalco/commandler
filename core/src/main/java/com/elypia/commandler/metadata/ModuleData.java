@@ -10,69 +10,23 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MetaModule<C, E, M> implements Comparable<MetaModule> {
-
-    /**
-     * This may be thrown when the {@link IHandler} registered to
-     * {@link Commandler} does not contain the {@link Module} annotation.
-     */
-    private static final String NO_MODULE = "Command handler %s isn't annotated with @Module.";
-
-    /**
-     * This warning may be logged if the same {@link Module} has multiple of the same
-     * alias. This is because it's redundant and the duplicates aren't used.
-     */
-    private static final String DUPLICATE_ALIASES = "Module {} ({}) contains multiple aliases that are identical.";
-
-    /**
-     * This may be thrown if the module registered has a root alias (first argument)
-     * which has already been used by a previously registered module or static command.
-     */
-    private static final String ALIAS_REGISTERED = "Module %s (%s) contains an alias which has already been registered by %s (%s).";
-
-    /**
-     * This may be logged if the module registered doesn't have any commands what so ever.
-     */
-    private static final String NO_COMMANDS = "Module {} ({}) contains no commands.";
-
-    /**
-     * This may be thrown if a command registered has an alias which another command
-     * in the same module had already registered.
-     */
-    private static final String DUPLICATE_COMMAND_ALIASES = "Command %s in module %s (%s) contains an alias which has already been registered by a previous command in this module.";
-
-    /**
-     * This may be thrown if a module is trying to register multiple {@link Default}
-     * commands. Each module can only have up to one default command.
-     */
-    private static final String MULTIPLE_DEFAULTS = "Module %s (%s) contains multiple default commands, modules may only have a single default.";
+public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
 
     /**
      * We use SLF4J for logging, be sure to include a binding so you can see
      * warnings and messages.
      */
-    private static final Logger logger = LoggerFactory.getLogger(MetaModule.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModuleData.class);
 
     /**
-     * Parent {@link Commandler} object this {@link MetaModule} is registered too.
+     * The class this module data belongs too.
      */
-    private Commandler<C, E, M> commandler;
-
-    /**
-     * The {@link IHandler} this {@link MetaModule} is describing.
-     */
-    private IHandler<C, E, M> handler;
+    private Class<H> clazz;
 
     /**
      * The metadata associated with this module.
      */
     private Module module;
-
-    /**
-     * Does this module have a description. If the module doesn't specify a
-     * description, it may be hidden from help commands and pages.
-     */
-    private boolean isPublic;
 
     /**
      * A list of collected aliases from this module. This is used to compare
@@ -81,30 +35,35 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
     private Set<String> aliases;
 
     /**
-     * A list of {@link MetaCommand} that were created inside the {@link IHandler}.
-     * This does not include {@link Overload}s, these are stored inside
-     * {@link MetaCommand#getOverloads()}.
+     * Does this module have a description. If the module doesn't specify a
+     * description, it may be hidden from help commands and pages.
      */
-    private List<MetaCommand<C, E, M>> metaCommands;
+    private boolean isPublic;
+
+    /**
+     * A list of {@link CommandData} that were created inside the {@link IHandler}.
+     * This does not include {@link Overload}s, these are stored inside
+     * {@link CommandData#getOverloads()}.
+     */
+    private List<CommandData> commandData;
 
     /**
      * The {@link Default} command for this module. This value
      * can be null if no default command is specified.
      */
-    private MetaCommand<C, E, M> defaultCommand;
+    private CommandData defaultCommand;
 
-    public MetaModule(Commandler<C, E, M> commandler, IHandler<C, E, M> handler) {
-        this.commandler = Objects.requireNonNull(commandler);
-        this.handler = Objects.requireNonNull(handler);
-        module = handler.getClass().getAnnotation(Module.class);
+    public ModuleData(Class<H> clazz) {
+        this.clazz = clazz;
+        module = clazz.getAnnotation(Module.class);
 
         if (module == null) {
-            String className = handler.getClass().getName();
-            throw new IllegalStateException(String.format(NO_MODULE, className));
+            String className = clazz.getName();
+            throw new IllegalStateException(String.format("Command handler %s isn't annotated with @Module.", className));
         }
 
         aliases = new HashSet<>();
-        metaCommands = new ArrayList<>();
+        commandData = new ArrayList<>();
 
         parseAliases();
         parseMethods();
@@ -130,7 +89,7 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
         for (String alias : module.aliases()) {
             alias = alias.toLowerCase();
 
-            MetaModule existing = commandler.getRoots().get(alias);
+            ModuleData existing = commandler.getRoots().get(alias);
 
             if (existing != null) {
                 String thisModule = module.name();
@@ -138,21 +97,21 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
                 String existingModule = existing.module.name();
                 String existingClass = existing.handler.getClass().getName();
 
-                throw new IllegalStateException(String.format(ALIAS_REGISTERED, thisModule, thisClass, existingModule, existingClass));
+                throw new IllegalStateException(String.format("Module %s (%s) contains an alias which has already been registered by %s (%s).", thisModule, thisClass, existingModule, existingClass));
             }
 
             aliases.add(alias.toLowerCase());
         }
 
         if (aliases.size() != module.aliases().length)
-            logger.warn(DUPLICATE_ALIASES, module.name(), handler.getClass().getName());
+            logger.warn("Module {} ({}) contains multiple aliases that are identical.", module.name(), handler.getClass().getName());
 
         for (String alias : aliases)
             commandler.getRoots().put(alias, this);
     }
 
     /**
-     * Parses the methods in this Module and creates {@link MetaCommand} instances
+     * Parses the methods in this Module and creates {@link CommandData} instances
      * out of methods with the {@link Command} annotation. <br>
      * This method ensures only one command in this module is a {@link Default default} command
      * if any, and validates all the underlying Commands that are created before adding their aliases
@@ -167,35 +126,35 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
         methods = Arrays.stream(methods).filter(m -> m.isAnnotationPresent(Command.class)).toArray(Method[]::new);
 
         if (methods.length == 0)
-            logger.warn(NO_COMMANDS, module.name(), handler.getClass().getName());
+            logger.warn("Module {} ({}) contains no commands.", module.name(), handler.getClass().getName());
 
         for (Method method : methods) {
-            MetaCommand<C, E, M> metaCommand = new MetaCommand<>(this, method);
+            CommandData<C, E, M> commandData = new CommandData<>(this, method);
 
-            if (metaCommand.isDefault()) {
-                if (defaultCommand != null) { // ? If we already registered a default command.
+            if (commandData.isDefault()) {
+                if (defaultCommand != null) {
                     String moduleName = module.name();
                     String typeName = handler.getClass().getName();
 
-                    throw new IllegalStateException(String.format(MULTIPLE_DEFAULTS, moduleName, typeName));
+                    throw new IllegalStateException(String.format("Module %s (%s) contains multiple default commands, modules may only have a single default.", moduleName, typeName));
                 }
 
-                defaultCommand = metaCommand;
+                defaultCommand = commandData;
             }
 
-            if (!Collections.disjoint(commandAliases, metaCommand.getAliases())) {
-                String commandName = metaCommand.getCommand().name();
+            if (!Collections.disjoint(commandAliases, commandData.getAliases())) {
+                String commandName = commandData.getCommand().name();
                 String moduleName = module.name();
                 String moduleType = handler.getClass().getName();
 
-                throw new IllegalStateException(String.format(DUPLICATE_COMMAND_ALIASES, commandName, moduleName, moduleType));
+                throw new IllegalStateException(String.format("Command %s in module %s (%s) contains an alias which has already been registered by a previous command in this module.", commandName, moduleName, moduleType));
             }
 
-            commandAliases.addAll(metaCommand.getAliases());
-            metaCommands.add(metaCommand);
+            commandAliases.addAll(commandData.getAliases());
+            this.commandData.add(commandData);
         }
 
-        Collections.sort(metaCommands);
+        Collections.sort(commandData);
     }
 
     /**
@@ -214,12 +173,12 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
      * @param input The input command by the user.
      * @return The command that was performed, else null.
      */
-    public MetaCommand<C, E, M> getCommand(String input) {
+    public CommandData<C, E, M> getCommand(String input) {
         input = input.toLowerCase();
 
-        for (MetaCommand<C, E, M> metaCommand : metaCommands) {
-            if (metaCommand.getAliases().contains(input))
-                return metaCommand;
+        for (CommandData<C, E, M> commandData : this.commandData) {
+            if (commandData.getAliases().contains(input))
+                return commandData;
         }
 
         return null;
@@ -245,26 +204,26 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
         return Collections.unmodifiableList(new ArrayList<>(aliases));
     }
 
-    public List<MetaCommand<C, E, M>> getMetaCommands() {
-        return metaCommands;
+    public List<CommandData<C, E, M>> getCommandData() {
+        return commandData;
     }
 
     /**
-     * @return Return all {@link MetaCommand}s registered to this
-     *         module that are {@link MetaCommand#isPublic() public}.
+     * @return Return all {@link CommandData}s registered to this
+     *         module that are {@link CommandData#isPublic() public}.
      */
-    public List<MetaCommand<C, E, M>> getPublicCommands() {
-        return metaCommands.stream().filter(MetaCommand::isPublic).collect(Collectors.toUnmodifiableList());
+    public List<CommandData<C, E, M>> getPublicCommands() {
+        return commandData.stream().filter(CommandData::isPublic).collect(Collectors.toUnmodifiableList());
     }
 
     /**
      * @return A list of all {@link Static} commands in the module.
      */
-    public List<MetaCommand<C, E, M>> getStaticCommands() {
-        return metaCommands.stream().filter(MetaCommand::isStatic).collect(Collectors.toUnmodifiableList());
+    public List<CommandData<C, E, M>> getStaticCommands() {
+        return commandData.stream().filter(CommandData::isStatic).collect(Collectors.toUnmodifiableList());
     }
 
-    public MetaCommand<C, E, M> getDefaultCommand() {
+    public CommandData<C, E, M> getDefaultCommand() {
         return defaultCommand;
     }
 
@@ -273,11 +232,11 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
         String format = "%s (%s)";
         StringJoiner commandJoiner = new StringJoiner("\n");
 
-        for (MetaCommand<C, E, M> metaCommand : getPublicCommands()) {
-            String name = metaCommand.command.name();
+        for (CommandData<C, E, M> commandData : getPublicCommands()) {
+            String name = commandData.command.name();
             StringJoiner aliasJoiner = new StringJoiner(", ");
 
-            for (String alias : metaCommand.getAliases())
+            for (String alias : commandData.getAliases())
                 aliasJoiner.add("'" + alias + "'");
 
             commandJoiner.add(String.format(format, name, aliasJoiner.toString()));
@@ -287,7 +246,15 @@ public class MetaModule<C, E, M> implements Comparable<MetaModule> {
     }
 
     @Override
-    public int compareTo(MetaModule o) {
+    public boolean equals(Object o) {
+        if (!(o instanceof ModuleData))
+            return false;
+
+        return (((ModuleData)o).clazz == clazz);
+    }
+
+    @Override
+    public int compareTo(ModuleData o) {
         return module.name().compareToIgnoreCase(o.module.name());
     }
 }

@@ -45,7 +45,7 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
 
     /**
      * The default help command for a {@link IHandler},
-     * this should use the {@link MetaModule} around
+     * this should use the {@link ModuleData} around
      * this {@link IHandler} to display helpful information
      * to the user.
      *
@@ -71,11 +71,11 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
 
         builder.append("\n\n");
 
-        Iterator<MetaCommand<C, E, M>> metaCommandIt = getModule().getPublicCommands().iterator();
+        Iterator<CommandData<C, E, M>> metaCommandIt = getModule().getPublicCommands().iterator();
 
         while (metaCommandIt.hasNext()) {
-            MetaCommand<C, E, M> metaCommand = metaCommandIt.next();
-            Command command = metaCommand.getCommand();
+            CommandData<C, E, M> commandData = metaCommandIt.next();
+            Command command = commandData.getCommand();
             builder.append(command.name());
 
             StringJoiner aliasJoiner = new StringJoiner(", ");
@@ -86,9 +86,9 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
             builder.append(" (" + aliasJoiner.toString() + ")");
             builder.append("\n" + command.help());
 
-            List<MetaParam> metaParams = metaCommand.getInputParams();
+            List<ParamData> paramData = commandData.getInputParams();
 
-            metaParams.forEach(metaParam -> {
+            paramData.forEach(metaParam -> {
                 Param param = metaParam.getParamAnnotation();
                 builder.append("\n" + param.name() + ": ");
                 builder.append(getConfiler().getScript(event.getSource(), param.help(), Map.of()));
@@ -110,7 +110,7 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
 
     IConfiler<C, E, M> getConfiler();
 
-    MetaModule<C, E, M> getModule();
+    ModuleData<C, E, M> getModule();
 
     boolean isEnabled();
 
