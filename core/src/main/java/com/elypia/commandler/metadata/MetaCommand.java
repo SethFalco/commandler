@@ -218,19 +218,16 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
 
     /**
      * Parses the annotations on this command or the parent module if appropriate.
-     * Is the annotation is a validator, adds it to the internal list of validators.
+     * Is the annotation is a commandValidator, adds it to the internal list of validators.
      * This is determined by if the annotation if a {@link ICommandValidator} is registered for this type. <br>
      * If the annotation is {@link Static} that sets this as a static command. <br>
      * If the annotation is {@link Default} that sets this as a default command. <br>
      *
      * Once the command is iterated, we search through any annotations on the {@link IHandler}
      * to see if there are any default validation for commands in this module if not
-     * specified at the command already unless the {@link Ignore} annotation is present.
+     * specified at the command already.
      */
     protected void parseAnnotations() {
-        List<Class<? extends Annotation>> registered = new ArrayList<>();
-        boolean isIgnore = false;
-
         for (Annotation annotation : method.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
 
@@ -238,29 +235,6 @@ public class MetaCommand<C, E, M> implements Comparable<MetaCommand> {
                 isStatic = true;
             else if (type == Default.class)
                 isDefault = true;
-            else if (type == Ignore.class)
-                isIgnore = true;
-            else {
-                ICommandValidator validator = commandler.getValidator().getCommandValidator(type);
-
-                if (validator != null) {
-                    MetaValidator metaValidator = new MetaValidator(annotation);
-                    registered.add(type);
-                    validators.put(metaValidator, validator);
-                }
-            }
-        }
-
-        if (!isIgnore) {
-            for (Annotation annotation : metaModule.getHandler().getClass().getDeclaredAnnotations()) {
-                Class<? extends Annotation> type = annotation.annotationType();
-                ICommandValidator validator = commandler.getValidator().getCommandValidator(type);
-
-                if (!registered.contains(type) && validator != null) {
-                    MetaValidator metaValidator = new MetaValidator(annotation);
-                    validators.put(metaValidator, validator);
-                }
-            }
         }
     }
 

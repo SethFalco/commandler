@@ -34,7 +34,7 @@ public interface IConfiler<C, E, M> {
      *
      * @return The misuse handler for handling error messages.
      */
-    IMisuseListener getMisuseListener();
+    MisuseListener getMisuseListener();
 
     /**
      * The prefix for this event. This can be set to return a static

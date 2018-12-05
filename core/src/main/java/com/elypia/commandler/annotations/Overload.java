@@ -41,7 +41,7 @@ public @interface Overload {
 
     /**
      * This dictates which validators are copied from the parent {@link Command}.
-     * This copies each validator by class. <br>
+     * This copies each commandValidator by class. <br>
      * If an empty array is passed, no validators are copied. <br>
      * If {@link Overload} is passed (default), all validators are copied
      * unless otherwise overridden by the overloading method.

@@ -42,7 +42,7 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
      */
     protected final String HELP_URL;
 
-    protected IMisuseListener misuseListener;
+    protected MisuseListener misuseListener;
 
     /**
      * Instantiate the configuration to inject into {@link Commandler}.
@@ -64,8 +64,8 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
         DEFAULT_PREFIXES = prefixes;
         HELP_URL = help;
 
-        // ? By default use the IMisuseListener default implementation
-        misuseListener = new IMisuseListener(){};
+        // ? By default use the MisuseListener default implementation
+        misuseListener = new MisuseListener(){};
     }
 
     /**
@@ -119,7 +119,7 @@ public class Confiler<C, E, M> implements IConfiler<C, E, M> {
     }
 
     @Override
-    public IMisuseListener getMisuseListener() {
+    public MisuseListener getMisuseListener() {
         return misuseListener;
     }
 

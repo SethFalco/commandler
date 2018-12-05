@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Params.class)
+@Repeatable(Param.List.class)
 public @interface Param {
 
 	/**
@@ -21,4 +21,16 @@ public @interface Param {
 	 * A small description of what the parameter is.
 	 */
 	String help();
+
+	/**
+	 * Allows the {@link Param} annotiation to be repeatable
+	 * so we can specify multiple parameters per commands.
+	 *
+	 */
+	@Target(ElementType.METHOD)
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface List {
+		Param[] value();
+	}
 }
+

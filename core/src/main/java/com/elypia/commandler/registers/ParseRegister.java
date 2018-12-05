@@ -171,7 +171,7 @@ public class ParseRegister implements Iterable<IParser> {
                 Object o = parser.parse(event, componentType, item);
 
                 if (o == null) {
-                    event.invalidate(confiler.getMisuseListener().onParseFailure(event, param, componentType, item));
+                    event.invalidate(confiler.getMisuseListener().onParamParseFailure(event, param, componentType, item));
                     return null;
                 }
 
@@ -202,12 +202,12 @@ public class ParseRegister implements Iterable<IParser> {
             Object o = parser.parse(event, componentType, items.get(0));
 
             if (o == null)
-                event.invalidate(confiler.getMisuseListener().onParseFailure(event, param, type, items.get(0)));
+                event.invalidate(confiler.getMisuseListener().onParamParseFailure(event, param, type, items.get(0)));
 
             return o;
         }
 
-        event.invalidate(confiler.getMisuseListener().onUnsupportedList(event, param, items));
+        event.invalidate(confiler.getMisuseListener().onListNotSupported(event, param, items));
         return null;
     }
 

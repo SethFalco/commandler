@@ -6,7 +6,6 @@ import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.registers.*;
 import org.slf4j.*;
 
-import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
@@ -74,7 +73,7 @@ public abstract class Commandler<C, E, M> {
 
     protected BuildRegister<M> builder;
 
-    protected Validator validator;
+    protected CommandValidator commandValidator;
 
     /**
      * Creates an instance of the {@link Commandler} framework.
@@ -87,7 +86,7 @@ public abstract class Commandler<C, E, M> {
 
         parser = new ParseRegister(this);
         builder = new BuildRegister<>();
-        validator = new Validator(this);
+        commandValidator = new CommandValidator(this);
 
         handlers = new ArrayList<>();
         groups = new HashSet<>();
@@ -150,14 +149,6 @@ public abstract class Commandler<C, E, M> {
         this.builder.registerBuilder(builder, types);
     }
 
-    public <T extends Annotation> void registerValidator(Class<T> clazz, IParamValidator<?, ?, T> validator) {
-        this.validator.registerValidator(clazz, validator);
-    }
-
-    public <T extends Annotation> void registerValidator(Class<T> clazz, ICommandValidator<?, T> validator) {
-        this.validator.registerValidator(clazz, validator);
-    }
-
     public C getClient() {
         return client;
     }
@@ -198,8 +189,8 @@ public abstract class Commandler<C, E, M> {
         return builder;
     }
 
-    public Validator getValidator() {
-        return validator;
+    public CommandValidator getCommandValidator() {
+        return commandValidator;
     }
 
 }

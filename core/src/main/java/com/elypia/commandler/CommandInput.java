@@ -75,7 +75,7 @@ public class CommandInput<C, E, M> {
                         this.metaCommand = metaCommand.getOverload(getParameterCount());
 
                         if (this.metaCommand == null) {
-                            event.invalidate(confiler.getMisuseListener().onParameterCountMismatch(this, metaCommand));
+                            event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, metaCommand));
                             return false;
                         }
 
@@ -89,14 +89,14 @@ public class CommandInput<C, E, M> {
                 MetaCommand<C, E, M> defaultCommand = metaModule.getDefaultCommand();
 
                 if (defaultCommand == null) {
-                    event.invalidate(confiler.getMisuseListener().onNoDefault(event));
+                    event.invalidate(confiler.getMisuseListener().onDefaultNotFound(event));
                     return false;
                 }
 
                 this.metaCommand = defaultCommand.getOverload(getParameterCount());
 
                 if (this.metaCommand == null) {
-                    event.invalidate(confiler.getMisuseListener().onParameterCountMismatch(this, defaultCommand));
+                    event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, defaultCommand));
                     return false;
                 }
 
@@ -112,7 +112,7 @@ public class CommandInput<C, E, M> {
                     this.metaCommand = metaCommand.getOverload(getParameterCount());
 
                     if (this.metaCommand == null) {
-                        event.invalidate(confiler.getMisuseListener().onParameterCountMismatch(this, metaCommand));
+                        event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, metaCommand));
                         return false;
                     }
 

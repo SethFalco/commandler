@@ -49,24 +49,6 @@ public class MetaParam {
         commandler = metaCommand.getCommandler();
         isInput = !ICommandEvent.class.isAssignableFrom(parameter.getType());
         isList = parameter.getType().isArray();
-
-        parseAnnotations();
-    }
-
-    /**
-     * Parse all annotations on this parameter and collects any validation annotations
-     * associated with it.
-     */
-    private void parseAnnotations() {
-        validators = new HashMap<>();
-
-        for (Annotation annotation : parameter.getDeclaredAnnotations()) {
-            Class<? extends Annotation> type = annotation.annotationType();
-            IParamValidator validator = commandler.getValidator().getParamValidator(type);
-
-            if (validator != null)
-                validators.put(new MetaValidator(annotation), validator);
-        }
     }
 
     public Commandler getCommandler() {

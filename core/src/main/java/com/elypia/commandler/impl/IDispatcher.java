@@ -3,7 +3,7 @@ package com.elypia.commandler.impl;
 import com.elypia.commandler.*;
 import com.elypia.commandler.metadata.MetaCommand;
 
-import javax.validation.*;
+import java.lang.reflect.Method;
 
 /**
  * The {@link IDispatcher} is the event handler, and should recieve
@@ -31,19 +31,20 @@ public interface IDispatcher<C, E, M> {
         CommandInput<C, E, M> input = event.getInput();
 
         if (!getCommandler().getRoots().containsKey(input.getModule().toLowerCase()))
-            return event.reply(getConfiler().getMisuseListener().onNoModule(content));
+            return event.reply(getConfiler().getMisuseListener().onModuleNotFound(content));
 
         if (!input.normalize(event))
             return event.getError();
 
         MetaCommand<C, E, M> metaCommand = event.getInput().getMetaCommand();
+        Method method = metaCommand.getMethod();
 
-        if (!getCommandler().getValidator().validateCommand(event, metaCommand))
+        if (!getCommandler().getCommandValidator().validateCommand(event, metaCommand))
             return event.getError();
 
         Object[] params = getCommandler().getParser().processEvent(event, metaCommand);
 
-        if (params == null || !getCommandler().getValidator().validateParams(event, metaCommand, params))
+        if (params == null || !getCommandler().getCommandValidator().validateParams(event, params))
             return event.getError();
 
         if (!input.getCommand().equalsIgnoreCase("help") && !input.getMetaModule().getHandler().isEnabled()) {
@@ -57,7 +58,7 @@ public interface IDispatcher<C, E, M> {
             if (response != null && send)
                 return event.reply(response);
         } catch (Exception ex) {
-            event.invalidate(getConfiler().getMisuseListener().onExceptionFailure(ex));
+            event.invalidate(getConfiler().getMisuseListener().onException(ex));
             return event.getError();
         }
 

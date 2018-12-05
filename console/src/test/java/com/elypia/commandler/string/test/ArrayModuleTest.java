@@ -1,5 +1,6 @@
 package com.elypia.commandler.string.test;
 
+import com.elypia.commandler.*;
 import com.elypia.commandler.string.StringCommandler;
 import com.elypia.commandler.string.client.*;
 import com.elypia.commandler.string.modules.ArrayModule;

@@ -28,6 +28,16 @@ public class ValidationModuleTest {
     }
 
     @Test
+    public void testInvalidLength() {
+        StringEvent event = new StringEvent(">valid length an jenni");
+
+        String expected = "Invalid";
+        String actual = commandler.trigger(event, event.getContent());
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void testLimit() {
         StringEvent event = new StringEvent(">valid limit 100 150");
 
