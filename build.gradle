@@ -201,7 +201,7 @@ dependencies {
 }
 
 task jacocoMerge(type: JacocoMerge) {
-    executionData = files(subprojects.jacocoTestReport.executionData.findAll {it.asList() })
+    executionData = files(subprojects.jacocoTestReport.executionData.findAll { it.asList() })
 
     doFirst {
         executionData = files(executionData.findAll {
