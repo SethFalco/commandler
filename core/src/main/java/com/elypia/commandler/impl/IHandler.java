@@ -55,7 +55,7 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
     default Object help(ICommandEvent<C, E, M> event) {
         StringBuilder builder = new StringBuilder();
 
-        Module annotation = getModule().getModule();
+        Module annotation = getModule().getAnnotation();
         builder.append(annotation.name());
 
         StringJoiner commandAliasJoiner = new StringJoiner(", ");
@@ -71,10 +71,10 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
 
         builder.append("\n\n");
 
-        Iterator<CommandData<C, E, M>> metaCommandIt = getModule().getPublicCommands().iterator();
+        Iterator<CommandData> metaCommandIt = getModule().getPublicCommands().iterator();
 
         while (metaCommandIt.hasNext()) {
-            CommandData<C, E, M> commandData = metaCommandIt.next();
+            CommandData commandData = metaCommandIt.next();
             Command command = commandData.getCommand();
             builder.append(command.name());
 
@@ -89,7 +89,7 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
             List<ParamData> paramData = commandData.getInputParams();
 
             paramData.forEach(metaParam -> {
-                Param param = metaParam.getParamAnnotation();
+                Param param = metaParam.getAnnotation();
                 builder.append("\n" + param.name() + ": ");
                 builder.append(getConfiler().getScript(event.getSource(), param.help(), Map.of()));
             });

@@ -1,6 +1,6 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.CommandEvent;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.impl.*;
 import org.slf4j.*;
@@ -58,6 +58,11 @@ public class CommandData implements Comparable<CommandData> {
      * belongs to.
      */
     protected ModuleData moduleData;
+
+    /**
+     * The type of module this command belongs too.
+     */
+    protected Class<? extends IHandler> clazz;
 
     /**
      * The static data associated with this command.
@@ -126,6 +131,8 @@ public class CommandData implements Comparable<CommandData> {
         this.moduleData = Objects.requireNonNull(moduleData);
         this.method = Objects.requireNonNull(method);
 
+        clazz = moduleData.
+
         aliases = new HashSet<>();
         paramData = new ArrayList<>();
 
@@ -133,7 +140,7 @@ public class CommandData implements Comparable<CommandData> {
         isOverload = method.isAnnotationPresent(Overload.class);
 
         if (command != null && isOverload) {
-            String moduleName = moduleData.getModule().name();
+            String moduleName = moduleData.getAnnotation().name();
             String typeName = moduleData.getClass().getName();
             String message = String.format(COMMAND_OVERLOAD, moduleName, typeName);
 
@@ -176,7 +183,7 @@ public class CommandData implements Comparable<CommandData> {
             aliases.add(alias.toLowerCase());
 
         if (aliases.size() != commandAlliases.length) {
-            String moduleName = moduleData.getModule().name();
+            String moduleName = moduleData.getAnnotation().name();
             String handlerName = handler.getClass().getName();
 
             logger.warn(DUPLICATE_ALIAS, command.name(), moduleName, handlerName);
@@ -185,7 +192,7 @@ public class CommandData implements Comparable<CommandData> {
         if (isStatic) {
             if (!Collections.disjoint(commandler.getRoots().keySet(), aliases)) {
                 String commandName = command.name();
-                String moduleName = moduleData.getModule().name();
+                String moduleName = moduleData.getAnnotation().name();
                 String moduleType = moduleData.getHandler().getClass().getName();
 
                 throw new IllegalStateException(String.format(RECURSIVE_ALIAS, commandName, moduleName, moduleType));
@@ -260,7 +267,7 @@ public class CommandData implements Comparable<CommandData> {
      *
      * @param commandData The parent {@link CommandData} that found this {@link Overload}.
      */ // ? This command is very similar to our existing methods, see if we can use them?
-    protected void parseOverload(CommandData<C, E, M> commandData) {
+    protected void parseOverload(CommandData commandData) {
         command = commandData.command;
 
         List<ParamData> parentParams = commandData.paramData.stream().filter(o -> {
@@ -275,7 +282,7 @@ public class CommandData implements Comparable<CommandData> {
         if (inherit) {
             order.clear(); // ? Remove the inherit flag.
 
-            parentParams.forEach(o -> order.add(o.getParamAnnotation().name()));
+            parentParams.forEach(o -> order.add(o.getAnnotation().name()));
 
             for (Param param : params)
                 order.add(param.name());
@@ -323,7 +330,7 @@ public class CommandData implements Comparable<CommandData> {
 
         if (inputRequired != paramLength) {
             String commandName = command.name();
-            String moduleName = moduleData.getModule().name();
+            String moduleName = moduleData.getAnnotation().name();
             String typeName = handler.getClass().getName();
             String message = String.format(PARAM_COUNT_MISMATCH, commandName, moduleName, typeName);
 
@@ -336,7 +343,7 @@ public class CommandData implements Comparable<CommandData> {
     private void checkOffset(int offset) {
         if (offset == 2) {
             String commandName = command.name();
-            String moduleName = moduleData.getModule().name();
+            String moduleName = moduleData.getAnnotation().name();
             String typeName = handler.getClass().getName();
 
             logger.warn(DUPLICATE_EVENT_PARAM, commandName, moduleName, typeName);
@@ -353,7 +360,7 @@ public class CommandData implements Comparable<CommandData> {
         StringJoiner itemJoiner = new StringJoiner(", ");
 
         for (ParamData param : params) {
-            String name = param.getParamAnnotation().name();
+            String name = param.getAnnotation().name();
 
             if (param.isList())
                 itemJoiner.add("['" + name + "']");
@@ -372,16 +379,8 @@ public class CommandData implements Comparable<CommandData> {
         return aliases.contains(input.toLowerCase());
     }
 
-    public Commandler<C, E, M> getCommandler() {
-        return commandler;
-    }
-
-    public ModuleData<C, E, M> getModuleData() {
+    public ModuleData getModuleData() {
         return moduleData;
-    }
-
-    public IHandler<C, E, M> getHandler() {
-        return handler;
     }
 
     public Command getCommand() {
@@ -390,10 +389,6 @@ public class CommandData implements Comparable<CommandData> {
 
     public Method getMethod() {
         return method;
-    }
-
-    public Map<MetaValidator, ICommandValidator> getValidators() {
-        return validators;
     }
 
     public List<ParamData> getParamData() {
@@ -408,8 +403,8 @@ public class CommandData implements Comparable<CommandData> {
         return aliases;
     }
 
-    public CommandData<C, E, M> getOverload(int paramCount) {
-        for (CommandData<C, E, M> commandData : getOverloads(true)) {
+    public CommandData getOverload(int paramCount) {
+        for (CommandData commandData : getOverloads(true)) {
             if (commandData.inputRequired == paramCount)
                 return commandData;
         }
@@ -423,7 +418,7 @@ public class CommandData implements Comparable<CommandData> {
      * @throws UnsupportedOperationException If this instance of a {@link CommandData}
      *         is already of an {@link Overload}.
      */
-    public List<CommandData<C, E, M>> getOverloads() {
+    public List<CommandData> getOverloads() {
         return getOverloads(false);
     }
 
@@ -433,11 +428,11 @@ public class CommandData implements Comparable<CommandData> {
      * @throws UnsupportedOperationException If this instance of a {@link CommandData}
      *         is already of an {@link Overload}.
      */
-    public List<CommandData<C, E, M>> getOverloads(boolean includeCommand) {
+    public List<CommandData> getOverloads(boolean includeCommand) {
         if (isOverload)
             throw new UnsupportedOperationException("Can't retrieve overloads from an overload.");
 
-        List<CommandData<C, E, M>> list = new ArrayList<>(overloads);
+        List<CommandData> list = new ArrayList<>(overloads);
 
         if (includeCommand)
             list.add(0, this);

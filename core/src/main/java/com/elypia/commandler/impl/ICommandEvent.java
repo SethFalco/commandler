@@ -1,7 +1,6 @@
 package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.registers.BuildRegister;
 
 import java.util.Map;
 
@@ -31,17 +30,17 @@ public interface ICommandEvent<C, E, M> {
     }
 
     /**
-     * Send a reply using {@link Confiler#getScript(Object, String)}
+     * Send a reply using {@link Confiler#sendScript(Object, String)}
      * for obtaining a script through your implementation.
      *
      * @param key The key associated with the script to obtain.
      * @return A script associated with this key.
      */
-    default M replyScript(String key) {
-        return replyScript(key, Map.of());
+    default M sendScript(String key) {
+        return sendScript(key, Map.of());
     }
 
-    default <T> M replyScript(String key, Map<String, T> params) {
+    default <T> M sendScript(String key, Map<String, T> params) {
         return reply(getScript(key, params));
     }
 

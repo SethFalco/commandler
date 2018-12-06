@@ -1,6 +1,6 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.impl.ICommandEvent;
 import com.elypia.commandler.metadata.*;
 
 /**

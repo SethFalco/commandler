@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 /**
  * The Command annotiation is used to supply metadata
- * to a commands. This can be aliases, or the help string to
+ * to a commands. This can be aliases, or the help console to
  * let people know how to use this commands.
  *
  * All static data will be stored in an annotation, reserving the
@@ -51,7 +51,7 @@ public @interface Command {
 	String[] aliases();
 
 	/**
-	 * @return A help string to advise the user of what
+	 * @return A help console to advise the user of what
 	 * this commands does.
 	 *
 	 * If the help String is {@link #DEFAULT_HELP} then

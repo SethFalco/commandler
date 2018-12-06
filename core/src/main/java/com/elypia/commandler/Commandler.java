@@ -2,8 +2,8 @@ package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.impl.*;
+import com.elypia.commandler.interfaces.IBuilder;
 import com.elypia.commandler.metadata.*;
-import com.elypia.commandler.registers.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -24,6 +24,9 @@ public abstract class Commandler<C, E, M> {
 
     private ModulesContext context;
 
+    // ? This should be taking a list of multiple listeners.
+    private MisuseListener<C, E, M> listeners;
+
     /**
      * The client represents the platform you're chatting on
      * and where {@link E messages} are being receieved. <br>
@@ -33,20 +36,11 @@ public abstract class Commandler<C, E, M> {
     protected C client;
 
     /**
-     * This is the configuration for {@link Commandler} and
-     * must implement methods that will be used internally.
-     *
-     * @see Confiler for a default implementation
-     * of the Confiler.
-     */
-    protected IConfiler<C, E, M> confiler;
-
-    /**
      * The proxy between the {@link #client} event handler, and {@link Commandler}.
      * This will have an implementation to process the command into something
      * {@link Commandler} can interpret.
      */
-    protected IDispatcher<C, E, M> dispatcher;
+    protected Dispatcher<C, E, M> dispatcher;
 
     /**
      * All registered modules with this {@link Commandler}.
@@ -83,9 +77,7 @@ public abstract class Commandler<C, E, M> {
      * platform, and an {@link IDispatcher} to specify how to process the
      * {@link E event} and / or {@link M message} received from the {@link C client}.
      */
-    public Commandler(IConfiler<C, E, M> confiler) {
-        this.confiler = confiler;
-
+    public Commandler() {
         parser = new ParseRegister(this);
         builder = new BuildRegister<>();
         commandValidator = new CommandValidator(this);
@@ -98,7 +90,7 @@ public abstract class Commandler<C, E, M> {
         logger.info("New instance of {} succesfully initialised.", this.getClass().getName());
     }
 
-    public void setDispatcher(IDispatcher<C, E, M> dispatcher) {
+    public void setDispatcher(Dispatcher<C, E, M> dispatcher) {
         this.dispatcher = dispatcher;
     }
 
@@ -116,7 +108,7 @@ public abstract class Commandler<C, E, M> {
 
         Collections.sort(handlers);
 
-        groups.add(handler.getModule().getModule().group());
+        groups.add(handler.getModule().getAnnotation().group());
     }
 
     public void registerModules(IHandler<C, E, M>... handlers) {
@@ -159,11 +151,7 @@ public abstract class Commandler<C, E, M> {
         this.client = Objects.requireNonNull(client);
     }
 
-    public IConfiler<C, E, M> getConfiler() {
-        return confiler;
-    }
-
-    public IDispatcher getDispatcher() {
+    public Dispatcher getDispatcher() {
         return dispatcher;
     }
 
@@ -175,11 +163,11 @@ public abstract class Commandler<C, E, M> {
         return groups;
     }
 
-    public Map<String, ModuleData<C, E, M>> getRoots() {
+    public Map<String, ModuleData> getRoots() {
         return roots;
     }
 
-    public Map<Integer, CommandData<C, E, M>> getCommands() {
+    public Map<Integer, CommandData> getCommands() {
         return commands;
     }
 
@@ -195,4 +183,7 @@ public abstract class Commandler<C, E, M> {
         return commandValidator;
     }
 
+    public MisuseListener<C, E, M> getMisuseListener() {
+        return misuseListener;
+    }
 }

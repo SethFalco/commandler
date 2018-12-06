@@ -1,6 +1,6 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.ModulesContext;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.impl.IHandler;
@@ -28,23 +28,23 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
     private ModulesContext context;
 
     /**
-     * The class this module data belongs too.
+     * The class this annotation data belongs too.
      */
     private Class<H> clazz;
 
     /**
-     * The metadata associated with this module.
+     * The metadata associated with this annotation.
      */
-    private Module module;
+    private Module annotation;
 
     /**
-     * A list of collected aliases from this module. This is used to compare
+     * A list of collected aliases from this annotation. This is used to compare
      * any user input too as we convert all aliases to lower case in advance.
      */
     private Set<String> aliases;
 
     /**
-     * Does this module have a description. If the module doesn't specify a
+     * Does this annotation have a description. If the annotation doesn't specify a
      * description, it may be hidden from help commands and pages.
      */
     private boolean isPublic;
@@ -57,16 +57,16 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
     private List<CommandData> commandData;
 
     /**
-     * The {@link Default} command for this module. This value
+     * The {@link Default} command for this annotation. This value
      * can be null if no default command is specified.
      */
     private CommandData defaultCommand;
 
     public ModuleData(ModulesContext context, Class<H> clazz) {
         this.clazz = clazz;
-        module = clazz.getAnnotation(Module.class);
+        annotation = clazz.getAnnotation(Module.class);
 
-        if (module == null) {
+        if (annotation == null) {
             String className = clazz.getName();
             throw new IllegalStateException(String.format("Command handler %s isn't annotated with @Module.", className));
         }
@@ -77,33 +77,33 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
         parseAliases();
         parseMethods();
 
-        isPublic = !module.help().equals(Module.DEFAULT_HELP);
+        isPublic = !annotation.help().equals(Module.DEFAULT_HELP);
     }
 
     /**
-     * Parse aliases from this module, this creates a list of aliases.
-     * All aliases on the module are converted to lower case and added to this.
+     * Parse aliases from this annotation, this creates a list of aliases.
+     * All aliases on the annotation are converted to lower case and added to this.
      * If find duplicates, we continue filter them however warn the user as this
      * shouldn't be the case. <br>
-     * Should an alias be registered that was already registed by another module,
+     * Should an alias be registered that was already registed by another annotation,
      * we throw an exception as this is considered a malformed command.
      * If everything checks out alright, we add all the aliases to the list
-     * of {@link ModulesContext#rootAliases root aliases} and reserve these so other
+     * of {@link ModulesContext#getAliases()}  root aliases} and reserve these so other
      * modules of static commands can't try consume them.
      *
-     * @throws IllegalStateException If this module has an alias which was already registered by
-     * another module or static command.
+     * @throws IllegalStateException If this annotation has an alias which was already registered by
+     * another annotation or static command.
      */
     private void parseAliases() {
-        for (String alias : module.aliases()) {
+        for (String alias : annotation.aliases()) {
             alias = alias.toLowerCase();
 
-            ModuleData existing = commandler.getRoots().get(alias);
+            ModuleData existing = context.getAliases().get(alias);
 
             if (existing != null) {
-                String thisModule = module.name();
+                String thisModule = annotation.name();
                 String thisClass = handler.getClass().getName();
-                String existingModule = existing.module.name();
+                String existingModule = existing.annotation.name();
                 String existingClass = existing.handler.getClass().getName();
 
                 throw new IllegalStateException(String.format("Module %s (%s) contains an alias which has already been registered by %s (%s).", thisModule, thisClass, existingModule, existingClass));
@@ -112,8 +112,8 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
             aliases.add(alias.toLowerCase());
         }
 
-        if (aliases.size() != module.aliases().length)
-            logger.warn("Module {} ({}) contains multiple aliases that are identical.", module.name(), handler.getClass().getName());
+        if (aliases.size() != annotation.aliases().length)
+            logger.warn("Module {} ({}) contains multiple aliases that are identical.", annotation.name(), handler.getClass().getName());
 
         for (String alias : aliases)
             commandler.getRoots().put(alias, this);
@@ -122,12 +122,12 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
     /**
      * Parses the methods in this Module and creates {@link CommandData} instances
      * out of methods with the {@link Command} annotation. <br>
-     * This method ensures only one command in this module is a {@link Default default} command
+     * This method ensures only one command in this annotation is a {@link Default default} command
      * if any, and validates all the underlying Commands that are created before adding their aliases
      * to the global list and utlimatly adding the command as valid. <br>
-     * <strong>If <em>ANY</em> commands are invalid, the entire module will fail.</strong>
+     * <strong>If <em>ANY</em> commands are invalid, the entire annotation will fail.</strong>
      *
-     * @throws IllegalStateException When module specified more than one command with the {@link Default} annotation.
+     * @throws IllegalStateException When annotation specified more than one command with the {@link Default} annotation.
      */
     private void parseMethods() {
         Set<String> commandAliases = new HashSet<>();
@@ -135,14 +135,14 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
         methods = Arrays.stream(methods).filter(m -> m.isAnnotationPresent(Command.class)).toArray(Method[]::new);
 
         if (methods.length == 0)
-            logger.warn("Module {} ({}) contains no commands.", module.name(), handler.getClass().getName());
+            logger.warn("Module {} ({}) contains no commands.", annotation.name(), handler.getClass().getName());
 
         for (Method method : methods) {
             CommandData commandData = new CommandData(this, method);
 
             if (commandData.isDefault()) {
                 if (defaultCommand != null) {
-                    String moduleName = module.name();
+                    String moduleName = annotation.name();
                     String typeName = handler.getClass().getName();
 
                     throw new IllegalStateException(String.format("Module %s (%s) contains multiple default commands, modules may only have a single default.", moduleName, typeName));
@@ -153,10 +153,10 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
 
             if (!Collections.disjoint(commandAliases, commandData.getAliases())) {
                 String commandName = commandData.getCommand().name();
-                String moduleName = module.name();
+                String moduleName = annotation.name();
                 String moduleType = handler.getClass().getName();
 
-                throw new IllegalStateException(String.format("Command %s in module %s (%s) contains an alias which has already been registered by a previous command in this module.", commandName, moduleName, moduleType));
+                throw new IllegalStateException(String.format("Command %s in annotation %s (%s) contains an alias which has already been registered by a previous command in this annotation.", commandName, moduleName, moduleType));
             }
 
             commandAliases.addAll(commandData.getAliases());
@@ -167,17 +167,21 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
     }
 
     /**
-     * @param input The input module by the user.
-     * @return If this module contains an entry of that module.
+     * @param input The input annotation by the user.
+     * @return If this annotation contains an entry of that annotation.
      */
     public boolean performed(String input) {
         return aliases.contains(input.toLowerCase());
     }
 
+    public Class<? extends IHandler> getModuleClass() {
+        return clazz;
+    }
+
     /**
      * Return the command that was performed, or null if
      * the alias has no association with any commands in this
-     * module.
+     * annotation.
      *
      * @param input The input command by the user.
      * @return The command that was performed, else null.
@@ -193,8 +197,8 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
         return null;
     }
 
-    public Module getModule() {
-        return module;
+    public Module getAnnotation() {
+        return annotation;
     }
 
     public boolean isPublic() {
@@ -205,20 +209,20 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
         return List.copyOf(aliases);
     }
 
-    public List<CommandData> getCommandData() {
+    public List<CommandData> getCommands() {
         return List.copyOf(commandData);
     }
 
     /**
      * @return Return all {@link CommandData}s registered to this
-     *         module that are {@link CommandData#isPublic() public}.
+     *         annotation that are {@link CommandData#isPublic() public}.
      */
     public List<CommandData> getPublicCommands() {
         return commandData.stream().filter(CommandData::isPublic).collect(Collectors.toUnmodifiableList());
     }
 
     /**
-     * @return A list of all {@link Static} commands in the module.
+     * @return A list of all {@link Static} commands in the annotation.
      */
     public List<CommandData> getStaticCommands() {
         return commandData.stream().filter(CommandData::isStatic).collect(Collectors.toUnmodifiableList());
@@ -256,6 +260,6 @@ public class ModuleData<H extends IHandler> implements Comparable<ModuleData> {
 
     @Override
     public int compareTo(ModuleData o) {
-        return module.name().compareToIgnoreCase(o.module.name());
+        return annotation.name().compareToIgnoreCase(o.annotation.name());
     }
 }

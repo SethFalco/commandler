@@ -1,6 +1,7 @@
 package com.elypia.commandler.doc;
 
 import com.elypia.commandler.*;
+import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.metadata.ModuleData;
 import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
@@ -11,7 +12,6 @@ import org.slf4j.*;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class DocBuilder {
 
@@ -105,25 +105,32 @@ public class DocBuilder {
 
         Template template = engine.getTemplate("pages/template.vm", "utf-8");
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("name", name);
-        velocityContext.put("description", description);
-        velocityContext.put("logo", logo);
-        velocityContext.put("favicon", favicon);
-        velocityContext.put("modules", context.getModules().stream().filter(Predicate.not(ModuleData::isPublic)).map());
+        velocityContext.put("app-name", name);
+        velocityContext.put("app-description", description);
+        velocityContext.put("app-logo", logo);
+        velocityContext.put("app-favicon", favicon);
+        velocityContext.put("all-modules", context.getModules(false));
+        velocityContext.put("all-groups", context.getGroups(false));
 
         for (ModuleData module : context.getModules()) {
             if (!module.isPublic())
                 continue;
 
-            String outputName = module.getModule().name()
+            String outputName = module.getAnnotation().name()
                 .toLowerCase()
                 .replaceAll("[^a-z\\d_-]+", "-");
 
             while (fileNames.contains(outputName))
                 outputName += "_";
 
-            velocityContext.put("module", module);
-            velocityContext.put("output_name", outputName);
+            velocityContext.put("this-module", module);
+
+            Module annotation = module.getAnnotation();
+
+            velocityContext.put("this-anno", annotation);
+            velocityContext.put("this-name", annotation.name());
+            velocityContext.put("this-group", annotation.group());
+            velocityContext.put("this-id", outputName);
 
             String writePath = file.getAbsolutePath() + File.separator + outputName + ".html";
             File toWrite = new File(writePath);

@@ -7,9 +7,13 @@ import org.slf4j.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * Within the same {@link ModulesContext} a single {@link ModuleData}
+ * is only ever constructed once. All objects here are just various views
+ * or references of the data.
+ */
 public class ModulesContext {
 
     /**
@@ -26,7 +30,7 @@ public class ModulesContext {
     /**
      * A list of grouped modules.
      */
-    private Map<String, Set<Class<? extends IHandler>>> groups;
+    private Map<String, Set<ModuleData>> groups;
 
     /**
      * A list of all root aliases, this includes module aliases
@@ -43,11 +47,11 @@ public class ModulesContext {
     public void addModule(Class<? extends IHandler> clazz) {
         ModuleData data = new ModuleData<>(this, clazz);
 
-        Module module = data.getModule();
+        Module module = data.getAnnotation();
         String group = module.group();
 
         groups.putIfAbsent(group, new HashSet<>());
-        groups.get(group).add(clazz);
+        groups.get(group).add(data);
     }
 
     /**
@@ -106,7 +110,13 @@ public class ModulesContext {
         }
     }
 
-    public List<ModuleData> getModules() {
+    /**
+     * Get an unmodifiable list of all modules including
+     * private modules with no documentation.
+     *
+     * @return A list of all modules.
+     */
+    public Set<ModuleData> getModules() {
         return getModules(true);
     }
 
@@ -116,12 +126,50 @@ public class ModulesContext {
      * @param isPublic If to include public modules.
      * @return A list of modules.
      */
-    public List<ModuleData> getModules(boolean isPublic) {
+    public Set<ModuleData> getModules(boolean isPublic) {
         if (isPublic)
-            return List.copyOf(modules);
+            return Set.copyOf(modules);
 
         return modules.stream()
-            .filter(Predicate.not(ModuleData::isPublic))
-            .collect(Collectors.toUnmodifiableList());
+            .filter(ModuleData::isPublic)
+            .collect(Collectors.toUnmodifiableSet());
+    }
+
+    /**
+     * Get a group view of every module divided into their
+     * individual groups. Modules in this list will have the
+     * same reference as {@link #getModules()}.
+     *
+     * @return A unmodifiable map of modules and the groups they belong in.
+     */
+    public Map<String, Set<ModuleData>> getGroups() {
+        return getGroups(true);
+    }
+
+    /**
+     * Get a group view of all modules.
+     *
+     * @param isPublic If to include public modules in the result.
+     * @return A unmodifiable map of modules and the groups they belong in.
+     */
+    public Map<String, Set<ModuleData>> getGroups(boolean isPublic) {
+        if (isPublic)
+            return Map.copyOf(groups);
+
+        Map<String, Set<ModuleData>> groupsCopy = new HashMap<>();
+
+        groups.forEach((group, modules) -> {
+            Set<ModuleData> publicModules = modules.stream()
+                .filter(ModuleData::isPublic)
+                .collect(Collectors.toUnmodifiableSet());
+
+            groupsCopy.put(group, publicModules);
+        });
+
+        return Map.copyOf(groupsCopy);
+    }
+
+    public Set<String> getAliases() {
+        return Set.copyOf(rootAliases);
     }
 }

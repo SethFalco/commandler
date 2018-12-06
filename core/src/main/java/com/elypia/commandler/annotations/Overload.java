@@ -16,7 +16,7 @@ import java.lang.annotation.*;
 public @interface Overload {
 
     /**
-     * By setting a value to a single empty string,
+     * By setting a value to a single empty console,
      * {@link Commandler} will interpret this as inherit
      * all of the {@link Command}'s data.
      */

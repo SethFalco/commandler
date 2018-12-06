@@ -23,7 +23,7 @@ public @interface Module {
 	String DEFAULT_GROUP = "Miscellaneous";
 
 	/**
-	 * The default help string for modules. By leaving the
+	 * The default help console for modules. By leaving the
 	 * {@link #help()} as an empty {@link String} it is omitted
 	 * from the help commands and documentation. Assign this a value
 	 * to be displayed.

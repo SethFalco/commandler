@@ -10,15 +10,13 @@ public class CommandInput<C, E, M> {
 
     private Commandler<C, E, M> commandler;
 
-    private IConfiler<C, E, M> confiler;
-
     private String content;
 
-    private ModuleData<C, E, M> moduleData;
+    private ModuleData moduleData;
 
     private String module;
 
-    private CommandData<C, E, M> commandData;
+    private CommandData commandData;
 
     private String command;
 
@@ -30,8 +28,6 @@ public class CommandInput<C, E, M> {
         this.module = Objects.requireNonNull(module);
         this.command = command;
         this.parameters = Objects.requireNonNull(parameters);
-
-        confiler = commandler.getConfiler();
     }
 
     /**
@@ -63,19 +59,19 @@ public class CommandInput<C, E, M> {
      */
     public boolean normalize(ICommandEvent<C, E, M> event) {
         for (IHandler<C, E, M> handler : commandler.getHandlers()) {
-            ModuleData<C, E, M> moduleData = handler.getModule();
+            ModuleData moduleData = handler.getModule();
 
             if (moduleData.performed(module)) {
                 this.moduleData = moduleData;
 
                 if (command != null) {
-                    CommandData<C, E, M> commandData = moduleData.getCommand(command);
+                    CommandData commandData = moduleData.getCommand(command);
 
                     if (commandData != null) {
                         this.commandData = commandData.getOverload(getParameterCount());
 
                         if (this.commandData == null) {
-                            event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, commandData));
+                            event.invalidate(commandler.getMisuseListener().onParamCountMismatch(this, commandData));
                             return false;
                         }
 
@@ -86,17 +82,17 @@ public class CommandInput<C, E, M> {
                     parameters.add(0, Collections.singletonList(command));
                 }
 
-                CommandData<C, E, M> defaultCommand = moduleData.getDefaultCommand();
+                CommandData defaultCommand = moduleData.getDefaultCommand();
 
                 if (defaultCommand == null) {
-                    event.invalidate(confiler.getMisuseListener().onDefaultNotFound(event));
+                    event.invalidate(commandler.getMisuseListener().onDefaultNotFound(event));
                     return false;
                 }
 
                 this.commandData = defaultCommand.getOverload(getParameterCount());
 
                 if (this.commandData == null) {
-                    event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, defaultCommand));
+                    event.invalidate(commandler.getMisuseListener().onParamCountMismatch(this, defaultCommand));
                     return false;
                 }
 
@@ -104,7 +100,7 @@ public class CommandInput<C, E, M> {
                 return true;
             }
 
-            for (CommandData<C, E, M> commandData : moduleData.getStaticCommands()) {
+            for (CommandData commandData : moduleData.getStaticCommands()) {
                 if (commandData.performed(module)) {
                     if (command != null)
                         parameters.add(0, Collections.singletonList(command));
@@ -112,12 +108,12 @@ public class CommandInput<C, E, M> {
                     this.commandData = commandData.getOverload(getParameterCount());
 
                     if (this.commandData == null) {
-                        event.invalidate(confiler.getMisuseListener().onParamCountMismatch(this, commandData));
+                        event.invalidate(commandler.getMisuseListener().onParamCountMismatch(this, commandData));
                         return false;
                     }
 
                     this.command = commandData.getCommand().aliases()[0];
-                    this.module = moduleData.getModule().aliases()[0];
+                    this.module = moduleData.getAnnotation().aliases()[0];
                     this.moduleData = moduleData;
 
                     return true;
@@ -170,7 +166,7 @@ public class CommandInput<C, E, M> {
         this.module = module;
     }
 
-    public CommandData<C, E, M> getCommandData() {
+    public CommandData getCommandData() {
         return commandData;
     }
 
