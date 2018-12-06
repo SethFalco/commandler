@@ -137,7 +137,7 @@ subprojects { subproject ->
 
         else {
             // Configuration
-            implementation 'com.electronwill.night-config:core:3.4.2'
+            api 'com.electronwill.night-config:core:3.4.2'
 
             // Apache Commons
             implementation "org.apache.commons:commons-lang3:3.8.1"
@@ -149,7 +149,7 @@ subprojects { subproject ->
             implementation "org.glassfish:javax.el:3.0.0"
 
             // Logging
-            implementation "org.slf4j:slf4j-api:1.7.25"
+            api "org.slf4j:slf4j-api:1.7.25"
             testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
 
             // Testing

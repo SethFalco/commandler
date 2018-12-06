@@ -1,5 +1,4 @@
 rootProject.name = 'Commandler'
 
 include 'core'
-include 'console'
 include 'doc'
