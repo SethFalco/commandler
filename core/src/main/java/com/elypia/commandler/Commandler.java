@@ -1,6 +1,5 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.interfaces.IBuilder;
 import com.elypia.commandler.metadata.*;
@@ -22,10 +21,16 @@ public abstract class Commandler<C, E, M> {
 
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
 
+    /**
+     * The proxy between the {@link #client} event handler, and {@link Commandler}.
+     * This will have an implementation to process the command into something
+     * {@link Commandler} can interpret.
+     */
+    protected CommandProcessor<C, E, M> processor;
+
     private ModulesContext context;
 
-    // ? This should be taking a list of multiple listeners.
-    private MisuseListener<C, E, M> listeners;
+    private MisuseListener<C, E, M> listener;
 
     /**
      * The client represents the platform you're chatting on
@@ -36,34 +41,9 @@ public abstract class Commandler<C, E, M> {
     protected C client;
 
     /**
-     * The proxy between the {@link #client} event handler, and {@link Commandler}.
-     * This will have an implementation to process the command into something
-     * {@link Commandler} can interpret.
-     */
-    protected Dispatcher<C, E, M> dispatcher;
-
-    /**
      * All registered modules with this {@link Commandler}.
      */
     protected List<IHandler<C, E, M>> handlers;
-
-    protected Set<String> groups;
-
-    /**
-     * Any root alias, this could be a module alias or an alias to a
-     * static commmand. We need to keep track of a list to ensure a root
-     * alias isn't registered more than once, we also use this as a global
-     * reference to obtain the a module.
-     */
-    protected Map<String, ModuleData> roots;
-
-    /**
-     * Any commands with a non-zero {@link Command#id()}. This is a
-     * pool of commands for referencing whenever we need an
-     * {@link Overload} so we know what the parent {@link Command} is.
-     * This can also be reused for implementation to dictate more actions.
-     */
-    protected Map<Integer, CommandData> commands;
 
     protected ParseRegister parser;
 
@@ -73,9 +53,6 @@ public abstract class Commandler<C, E, M> {
 
     /**
      * Creates an instance of the {@link Commandler} framework.
-     * This requires an {@link IConfiler} to specify configuration for this
-     * platform, and an {@link IDispatcher} to specify how to process the
-     * {@link E event} and / or {@link M message} received from the {@link C client}.
      */
     public Commandler() {
         parser = new ParseRegister(this);
@@ -83,39 +60,8 @@ public abstract class Commandler<C, E, M> {
         commandValidator = new CommandValidator(this);
 
         handlers = new ArrayList<>();
-        groups = new HashSet<>();
-        roots = new HashMap<>();
-        commands = new HashMap<>();
 
         logger.info("New instance of {} succesfully initialised.", this.getClass().getName());
-    }
-
-    public void setDispatcher(Dispatcher<C, E, M> dispatcher) {
-        this.dispatcher = dispatcher;
-    }
-
-    /**
-     * Register a module with Commandler in order
-     * to execute commands in the module.
-     *
-     * @param handler The commands handler / module to register.
-     */
-    public void registerModule(IHandler<C, E, M> handler) {
-        boolean enabled = handler.init(this);
-
-        handler.setEnabled(enabled);
-        handlers.add(handler);
-
-        Collections.sort(handlers);
-
-        groups.add(handler.getModule().getAnnotation().group());
-    }
-
-    public void registerModules(IHandler<C, E, M>... handlers) {
-        for (IHandler<C, E, M> handler : handlers) {
-            registerModule(handler);
-            logger.debug("Registered handler: " + handler.getClass().getName());
-        }
     }
 
     public M trigger(E event, String input) {
@@ -123,9 +69,8 @@ public abstract class Commandler<C, E, M> {
     }
 
     public M trigger(E event, String input, boolean send) {
-        return dispatcher.processEvent(event, input, send);
+        return processor.dispatch(event, input, send);
     }
-
 
     /**
      * You can register custom parsers, this allows Commandler to know
@@ -141,6 +86,10 @@ public abstract class Commandler<C, E, M> {
 
     public void registerBuilder(IBuilder<?, ?, M> builder, Class...types) {
         this.builder.registerBuilder(builder, types);
+    }
+
+    public ModulesContext getContext() {
+        return context;
     }
 
     public C getClient() {
@@ -184,6 +133,6 @@ public abstract class Commandler<C, E, M> {
     }
 
     public MisuseListener<C, E, M> getMisuseListener() {
-        return misuseListener;
+        return listener;
     }
 }

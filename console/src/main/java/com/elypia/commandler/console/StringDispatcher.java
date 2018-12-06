@@ -1,6 +1,5 @@
 package com.elypia.commandler.console;
 
-import com.elypia.commandler.Dispatcher;
 import com.elypia.commandler.console.client.*;
 
 public class StringDispatcher extends Dispatcher<StringClient, StringEvent, String> implements StringListener {

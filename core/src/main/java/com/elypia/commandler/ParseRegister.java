@@ -24,19 +24,6 @@ import java.util.*;
 public class ParseRegister implements Iterable<IParser> {
 
     /**
-     * This is logged whenever a existing {@link IParser} for a
-     * particular data-type is replaced with a new one.
-     */
-    private static final String REPLACED_PARSER = "The parser, {}, for the data-type {} has been replaced with {}.";
-
-    /**
-     * This is thrown whenever a data-type is required however
-     * this {@link ParseRegister} doesn't have an {@link IParser}
-     * registered to know how to parse it.
-     */
-    private static final String PARSER_NOT_FOUND = "No parser was created for the data-type %s.";
-
-    /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
@@ -57,7 +44,6 @@ public class ParseRegister implements Iterable<IParser> {
         this.commandler = Objects.requireNonNull(commandler);
         parsers = new HashMap<>();
 
-        // ? Register default parsers provided by Commandler
         registerParser(new BooleanParser(), BooleanParser.TYPES);
         registerParser(new CharacterParser(), CharacterParser.TYPES);
         registerParser(new DurationParser(), Duration.class);
@@ -88,7 +74,7 @@ public class ParseRegister implements Iterable<IParser> {
                 String oldName = oldParser.getClass().getName();
                 String newName = newParser.getClass().getName();
 
-                logger.info(REPLACED_PARSER, oldName, type.getName(), newName);
+                logger.info("The parser, {}, for the data-type {} has been replaced with {}.", oldName, type.getName(), newName);
             }
         }
     }
@@ -152,7 +138,7 @@ public class ParseRegister implements Iterable<IParser> {
         IParser parser = getParser(componentType);
 
         if (parser == null)
-            throw new RuntimeException(String.format(PARSER_NOT_FOUND, componentType.getName()));
+            throw new RuntimeException(String.format("No parser was created for the data-type %s.", componentType.getName()));
 
         int size = items.size();
 

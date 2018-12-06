@@ -110,6 +110,15 @@ public class ModulesContext {
         }
     }
 
+    public ModuleData getModule(Class<? extends IHandler> clazz) {
+        for (ModuleData data : modules) {
+            if (data.getModuleClass() == clazz)
+                return data;
+        }
+
+        return null;
+    }
+
     /**
      * Get an unmodifiable list of all modules including
      * private modules with no documentation.

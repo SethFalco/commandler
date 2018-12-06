@@ -98,7 +98,7 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
                 builder.append("\n\n");
         }
 
-        String helpUrl = getConfiler().getHelpUrl(event.getSource());
+        String helpUrl = getCommandler().getHelpUrl(event.getSource());
 
         if (helpUrl != null)
             builder.append(helpUrl);
@@ -107,8 +107,6 @@ public interface IHandler<C, E, M> extends Comparable<IHandler<C, E, M>> {
     }
 
     Commandler<C, E, M> getCommandler();
-
-    IConfiler<C, E, M> getConfiler();
 
     ModuleData getModule();
 

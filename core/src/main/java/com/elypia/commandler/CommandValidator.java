@@ -21,14 +21,10 @@ public class CommandValidator {
      */
     private static final Logger logger = LoggerFactory.getLogger(CommandValidator.class);
 
-    private IConfiler confiler;
-
     private Validator validator;
     private ExecutableValidator exValidator;
 
     public CommandValidator(Commandler commandler) {
-        confiler = commandler.getConfiler();
-
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         exValidator = validator.forExecutables();
@@ -49,8 +45,8 @@ public class CommandValidator {
     }
 
     public <C, E, M> boolean validateParams(ICommandEvent<C, E, M> event, Object[] parameters) {
-        CommandData<C, E, M> command = event.getInput().getCommandData();
-        IHandler<C, E, M> handler = command.getHandler();
+        CommandData command = event.getInput().getCommandData();
+        IHandler<C, E, M> handler = event.ha;
         Method method = command.getMethod();
 
         var violations = exValidator.validateParameters(handler, method, parameters);

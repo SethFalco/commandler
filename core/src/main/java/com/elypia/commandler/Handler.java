@@ -6,8 +6,7 @@ import com.elypia.commandler.metadata.ModuleData;
 public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 
 	protected Commandler<C, E, M> commandler;
-	protected IConfiler<C, E, M> confiler;
-	protected ModuleData<C, E, M> module;
+	protected ModuleData module;
 
 	protected C client;
 
@@ -28,9 +27,8 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 	@Override
 	public boolean init(Commandler<C, E, M> commandler) {
 		this.commandler = commandler;
-		confiler = commandler.getConfiler();
 		client = commandler.getClient();
-		module = new ModuleData<>(commandler, this);
+		module = commandler.getContext().getModule(this.getClass());
 		return test();
 	}
 
@@ -59,15 +57,7 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 		this.commandler = commandler;
 	}
 
-	public IConfiler<C, E, M> getConfiler() {
-		return confiler;
-	}
-
-	public void setConfiler(IConfiler<C, E, M> confiler) {
-		this.confiler = confiler;
-	}
-
-	public ModuleData<C, E, M> getModule() {
+	public ModuleData getModule() {
 		return module;
 	}
 
