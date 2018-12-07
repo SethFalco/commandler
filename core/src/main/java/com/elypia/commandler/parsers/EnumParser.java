@@ -1,7 +1,7 @@
 package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.interfaces.*;
 
 /**
  * This is the generic {@link Enum} parser. This should be the fallback parser

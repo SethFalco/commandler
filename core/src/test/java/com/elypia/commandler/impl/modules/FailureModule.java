@@ -2,10 +2,10 @@ package com.elypia.commandler.impl.modules;
 
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.StringHandler;
+import com.elypia.commandler.impl.TestHandler;
 
 @Module(name = "Failure", aliases = "failure")
-public class FailureModule extends StringHandler {
+public class FailureModule extends TestHandler {
 
     @Override
     public boolean test() {

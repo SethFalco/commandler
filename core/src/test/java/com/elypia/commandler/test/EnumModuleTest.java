@@ -1,19 +1,21 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.console.StringCommandler;
-import com.elypia.commandler.console.modules.EnumModule;
+import com.elypia.commandler.impl.TestApp;
+import com.elypia.commandler.impl.modules.ValidationModule;
+import org.junit.jupiter.api.BeforeAll;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EnumModuleTest {
 
-    private static StringCommandler commandler;
+    private static TestApp app;
 
     @BeforeAll
     public static void beforeAll() {
-        commandler = new StringCommandler(new StringClient(), ">");
-        commandler.registerModule(new EnumModule());
+        app = new TestApp();
+        app.add(ValidationModule.class);
     }
+
 
     @Test
     public void testTimeUnit() {

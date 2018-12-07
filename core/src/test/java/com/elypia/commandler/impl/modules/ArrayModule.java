@@ -2,14 +2,12 @@ package com.elypia.commandler.impl.modules;
 
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.StringHandler;
+import com.elypia.commandler.impl.TestHandler;
 
 import java.util.stream.*;
 
 @Module(name = "Array", aliases = "array", help = "The array module!")
-public class ArrayModule extends StringHandler {
-
-    private static final String BOOL_COUNT = "%,d true, %,d false";
+public class ArrayModule extends TestHandler {
 
     @Command(name = "Boolean List", aliases = "boolsum")
     @Param(name = "bools", help = "A list of true/false.")
@@ -21,7 +19,7 @@ public class ArrayModule extends StringHandler {
                 trueCount++;
         }
 
-        return String.format(BOOL_COUNT, trueCount, bools.length - trueCount);
+        return String.format("%,d true, %,d false", trueCount, bools.length - trueCount);
     }
 
     @Command(name = "Char List", aliases = "chars")
@@ -74,8 +72,6 @@ public class ArrayModule extends StringHandler {
 
         return bytes;
     }
-
-    // ? Below we're just doing generic tests with integers
 
     @Command(id = 1, name = "Add Numbers", aliases = "sum", help = "I'll give you the total sum of a list of numbers!")
     @Param(name = "numbers", help = "A list of numbers!")

@@ -1,7 +1,6 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.impl.IHandler;
 import com.elypia.commandler.metadata.ModuleData;
 import org.slf4j.*;
 
@@ -44,14 +43,25 @@ public class ModulesContext {
         rootAliases = new HashSet<>();
     }
 
-    public void addModule(Class<? extends IHandler> clazz) {
-        ModuleData data = new ModuleData<>(this, clazz);
+    /**
+     * Parses data from the class in order to create the {@link ModuleData}
+     * entity which is a wrapper around the class, this also performs
+     * all validation required to ensure the class is a valid {@link Module}.<br>
+     * <strong>This does NOT instantiate the {@link Module}.</strong>
+     *
+     * @param classes The module to add to this context.
+     */
+    @SafeVarargs
+    final public void addModule(Class<? extends Handler>... classes) {
+        for (Class<? extends Handler> clazz : classes) {
+            ModuleData data = new ModuleData(this, clazz);
 
-        Module module = data.getAnnotation();
-        String group = module.group();
+            Module module = data.getAnnotation();
+            String group = module.group();
 
-        groups.putIfAbsent(group, new HashSet<>());
-        groups.get(group).add(data);
+            groups.putIfAbsent(group, new HashSet<>());
+            groups.get(group).add(data);
+        }
     }
 
     /**
@@ -97,11 +107,11 @@ public class ModulesContext {
                     String className = packageName + "." + fileName;
                     Class<?> clazz = Class.forName(className);
 
-                    if (!IHandler.class.isAssignableFrom(clazz))
-                        logger.warn("Package contains type {} which is not assignable to {}.", clazz.getName(), IHandler.class);
+                    if (!Handler.class.isAssignableFrom(clazz))
+                        logger.warn("Package contains type {} which is not assignable to {}.", clazz.getName(), Handler.class);
 
                     else
-                        addModule(clazz.asSubclass(IHandler.class));
+                        addModule(clazz.asSubclass(Handler.class));
 
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -110,7 +120,16 @@ public class ModulesContext {
         }
     }
 
-    public ModuleData getModule(Class<? extends IHandler> clazz) {
+    public ModuleData getModule(String alias) {
+        for (ModuleData data : modules) {
+            if (data.getAliases().contains(alias.toLowerCase()))
+                return null;
+        }
+
+        return null;
+    }
+
+    public ModuleData getModule(Class<? extends Handler> clazz) {
         for (ModuleData data : modules) {
             if (data.getModuleClass() == clazz)
                 return data;

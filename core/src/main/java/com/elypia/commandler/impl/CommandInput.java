@@ -1,4 +1,4 @@
-package com.elypia.commandler;
+package com.elypia.commandler.impl;
 
 import com.elypia.commandler.metadata.*;
 
@@ -6,23 +6,14 @@ import java.util.*;
 
 public class CommandInput<C, E, M> {
 
-    private Commandler<C, E, M> commandler;
-
-    private String content;
-
-    private ModuleData moduleData;
-
     private String module;
-
-    private CommandData commandData;
-
     private String command;
-
     private List<List<String>> parameters;
 
-    public CommandInput(Commandler<C, E, M> commandler, String content, String module, String command, List<List<String>> parameters) {
-        this.commandler = Objects.requireNonNull(commandler);
-        this.content = Objects.requireNonNull(content);
+    private ModuleData moduleData;
+    private CommandData commandData;
+
+    public CommandInput(String module, String command, List<List<String>> parameters) {
         this.module = Objects.requireNonNull(module);
         this.command = command;
         this.parameters = Objects.requireNonNull(parameters);
@@ -50,28 +41,12 @@ public class CommandInput<C, E, M> {
         return "(" + parameters.size() + ") " + parameterJoiner.toString();
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public ModuleData getModuleData() {
-        return moduleData;
-    }
-
     public String getModule() {
         return module;
     }
 
     public void setModule(String module) {
         this.module = module;
-    }
-
-    public CommandData getCommandData() {
-        return commandData;
     }
 
     public String getCommand() {
@@ -88,6 +63,22 @@ public class CommandInput<C, E, M> {
 
     public void setParameters(List<List<String>> parameters) {
         this.parameters = parameters;
+    }
+
+    public ModuleData getModuleData() {
+        return moduleData;
+    }
+
+    public void setModuleData(ModuleData moduleData) {
+        this.moduleData = moduleData;
+    }
+
+    public CommandData getCommandData() {
+        return commandData;
+    }
+
+    public void setCommandData(CommandData commandData) {
+        this.commandData = commandData;
     }
 
     public int getParameterCount() {

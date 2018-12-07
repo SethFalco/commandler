@@ -1,18 +1,19 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.console.StringCommandler;
-import com.elypia.commandler.console.modules.TestModule;
+import com.elypia.commandler.impl.TestApp;
+import org.junit.jupiter.api.BeforeAll;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestModuleTest {
 
-    private static StringCommandler commandler;
+    private static TestApp app;
 
     @BeforeAll
-    public static void beforeAll() {
-        commandler = new StringCommandler(new StringClient(), ">");
-        commandler.registerModule(new TestModule());
+    public static void beforeAll() throws IOException {
+        app = new TestApp();
     }
 
     @Test

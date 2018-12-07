@@ -1,19 +1,17 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.console.StringCommandler;
-import com.elypia.commandler.console.client.StringClient;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.elypia.commandler.impl.TestApp;
+import com.elypia.commandler.impl.modules.ValidationModule;
+import org.junit.jupiter.api.BeforeAll;
 
 public class DispatcherTest {
 
-    private static StringClient client;
-    private static StringCommandler commandler;
+    private static TestApp app;
 
     @BeforeAll
     public static void beforeAll() {
-        client = new StringClient();
-        commandler = new StringCommandler(client, ">");
+        app = new TestApp();
+        app.add(ValidationModule.class);
     }
 
     @Test

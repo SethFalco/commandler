@@ -1,4 +1,4 @@
-package com.elypia.commandler.impl;
+package com.elypia.commandler.interfaces;
 
 import com.elypia.commandler.Commandler;
 

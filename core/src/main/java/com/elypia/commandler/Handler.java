@@ -1,11 +1,16 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.impl.*;
-import com.elypia.commandler.metadata.ModuleData;
+import com.elypia.commandler.annotations.Module;
+import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.interfaces.ICommandEvent;
+import com.elypia.commandler.metadata.*;
 
-public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
+import java.util.*;
+
+public abstract class Handler<C, E, M> {
 
 	protected Commandler<C, E, M> commandler;
+
 	protected ModuleData module;
 
 	protected C client;
@@ -24,7 +29,6 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 	 * @param commandler Our parent Commandler class.
 	 * @return Returns if the {@link #test()} for this module passed.
 	 */
-	@Override
 	public boolean init(Commandler<C, E, M> commandler) {
 		this.commandler = commandler;
 		client = commandler.getClient();
@@ -40,9 +44,71 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 	 *
 	 * @return If the module should remain enabled.
 	 */
-	@Override
 	public boolean test() {
 		return true;
+	}
+
+	/**
+	 * The default help command for a {@link Handler},
+	 * this should use the {@link ModuleData} around
+	 * this {@link Handler} to display helpful information
+	 * to the user.
+	 *
+	 * @param event The {@link ICommandEvent event} produced by Commandler.
+	 * @return The message to send to the end user.
+	 */
+	public Object help(ICommandEvent<C, E, M> event) {
+		StringBuilder builder = new StringBuilder();
+
+		Module annotation = getModule().getAnnotation();
+		builder.append(annotation.name());
+
+		StringJoiner commandAliasJoiner = new StringJoiner(", ");
+
+		for (String alias : annotation.aliases())
+			commandAliasJoiner.add(alias);
+
+		builder.append(" (" + commandAliasJoiner.toString() + ")");
+		builder.append("\n" + annotation.help());
+
+		if (!isEnabled())
+			builder.append("\n" + getCommandler().getMisuseListener().onModuleDisabled(event));
+
+		builder.append("\n\n");
+
+		Iterator<CommandData> metaCommandIt = getModule().getPublicCommands().iterator();
+
+		while (metaCommandIt.hasNext()) {
+			CommandData commandData = metaCommandIt.next();
+			Command command = commandData.getCommand();
+			builder.append(command.name());
+
+			StringJoiner aliasJoiner = new StringJoiner(", ");
+
+			for (String string : command.aliases())
+				aliasJoiner.add(string);
+
+			builder.append(" (" + aliasJoiner.toString() + ")");
+			builder.append("\n" + command.help());
+
+			List<ParamData> paramData = commandData.getInputParams();
+
+			paramData.forEach(metaParam -> {
+				Param param = metaParam.getAnnotation();
+				builder.append("\n" + param.name() + ": ");
+				builder.append(commandler.getEngine().getScript(event.getSource(), param.help(), Map.of()));
+			});
+
+			if (metaCommandIt.hasNext())
+				builder.append("\n\n");
+		}
+
+		String helpUrl = commandler.getWebsite();
+
+		if (helpUrl != null)
+			builder.append(helpUrl);
+
+		return builder.toString();
 	}
 
 	public C getClient() {
@@ -53,10 +119,6 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 		return commandler;
 	}
 
-	public void setCommandler(Commandler<C, E, M> commandler) {
-		this.commandler = commandler;
-	}
-
 	public ModuleData getModule() {
 		return module;
 	}
@@ -65,12 +127,7 @@ public abstract class Handler<C, E, M> implements IHandler<C, E, M> {
 		return enabled;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	@Override
-	public int compareTo(IHandler<C, E, M> o) {
+	public int compareTo(Handler<C, E, M> o) {
 		return module.compareTo(o.getModule());
 	}
 }

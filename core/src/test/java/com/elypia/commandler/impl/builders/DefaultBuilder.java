@@ -1,14 +1,11 @@
 package com.elypia.commandler.impl.builders;
 
-import com.elypia.commandler.console.*;
 import com.elypia.commandler.impl.*;
-import com.elypia.commandler.test.impl.*;
-import console.*;
 
-public class DefaultBuilder implements IStringBuilder<String> {
+public class DefaultBuilder implements TestBuilder<String> {
 
     @Override
-    public String build(StringCommand event, String output) {
+    public String build(TestEvent event, String output) {
         return output;
     }
 }

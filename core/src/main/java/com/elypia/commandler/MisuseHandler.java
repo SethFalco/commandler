@@ -1,8 +1,8 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.impl.*;
-import com.elypia.commandler.interfaces.IMisuseListener;
+import com.elypia.commandler.impl.CommandInput;
+import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -10,11 +10,11 @@ import javax.validation.ConstraintViolation;
 import java.util.*;
 
 /**
- * A default implementation of {@link IMisuseListener}.
+ * A default implementation of {@link IMisuseHandler}.
  */
-public class MisuseListener<C, E, M> implements IMisuseListener<C, E, M> {
+public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
 
-    private static final Logger logger = LoggerFactory.getLogger(MisuseListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(MisuseHandler.class);
 
     @Override
     public Object onModuleNotFound(String content) {
@@ -69,13 +69,7 @@ public class MisuseListener<C, E, M> implements IMisuseListener<C, E, M> {
     }
 
     @Override
-    public Object onCommandInvalidated(ICommandEvent<C, E, M> event, CommandData commandData, ICommandValidator validator) {
-        String format = "Command failed; the command was invalidated.\nModule: %s\nCommand: %s";
-        return generateMessage(format, event);
-    }
-
-    @Override
-    public <H extends IHandler<C, E, M>> Object onParamInvalidated(ICommandEvent<C, E, M> event, Set<ConstraintViolation<H>> violations) {
+    public <H extends Handler<C, E, M>> Object onInvalidated(ICommandEvent<C, E, M> event, Set<ConstraintViolation<H>> violations) {
         String format = "Command failed; a parameter was invalidated.\nModule: %s\nCommand: %s";
         return generateMessage(format, event);
     }

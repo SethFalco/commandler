@@ -8,6 +8,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = Option.Validator.class)
 public @interface Option {
 
+    String message() default "{com.elypia.commandler.validation.Option.message}";
+
     /**
      * The available options for this console.
      */

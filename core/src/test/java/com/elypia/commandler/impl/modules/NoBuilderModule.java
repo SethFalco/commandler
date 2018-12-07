@@ -2,8 +2,7 @@ package com.elypia.commandler.impl.modules;
 
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.StringHandler;
-import com.elypia.commandler.impl.client.StringClient;
+import com.elypia.commandler.impl.TestHandler;
 import com.elypia.commandler.interfaces.IBuilder;
 
 /**
@@ -11,10 +10,10 @@ import com.elypia.commandler.interfaces.IBuilder;
  * that we don't have a {@link IBuilder} for.
  */
 @Module(name = "No Builder", aliases = "nb")
-public class NoBuilderModule extends StringHandler {
+public class NoBuilderModule extends TestHandler {
 
     @Command(name = "Client Info", aliases = "info", help = "I'll give you the total sum of a list of numbers!")
-    public StringClient info() {
-        return new StringClient();
+    public NoBuilderModule info() {
+        return new NoBuilderModule();
     }
 }

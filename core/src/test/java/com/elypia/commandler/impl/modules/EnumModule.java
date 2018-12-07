@@ -3,7 +3,7 @@ package com.elypia.commandler.impl.modules;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.StringHandler;
+import com.elypia.commandler.impl.TestHandler;
 import com.elypia.commandler.parsers.EnumParser;
 
 import java.util.concurrent.TimeUnit;
@@ -14,12 +14,11 @@ import java.util.concurrent.TimeUnit;
  * swapping to use the new implementation rather than the
  * generic one if added.
  */
+@Module(name = "Enum", aliases = "enum", help = "Does Commandler interact with enums correctly?")
+public class EnumModule extends TestHandler {
 
-@Module(name = "Enum", aliases = "enum", help = "The enum module!")
-public class EnumModule extends StringHandler {
-
-    @Command(name = "TimeUnit", aliases = "time", help = "I'll tell you if it's a valid unit of time!")
-    @Param(name = "unit", help = "A unit of time!")
+    @Command(name = "TimeUnit", aliases = "timeunit", help = "Can we validate against an enum with no annotations?")
+    @Param(name = "unit", help = "A unit of measuring time.")
     public String say(TimeUnit unit) {
         return unit.name();
     }

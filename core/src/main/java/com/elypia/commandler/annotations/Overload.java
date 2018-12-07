@@ -26,8 +26,8 @@ public @interface Overload {
      * Before you can use this you must ensure the command you are overloading
      * specified the {@link Command#id()} value. That is the unique reference to the
      * command and how Commandler knows what command this is overloading.
-     */
-    int value();
+            */
+    String value();
 
     /**
      * This dictates which parameters are copied from the parent {@link Command}

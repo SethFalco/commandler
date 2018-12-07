@@ -1,6 +1,7 @@
-package com.elypia.commandler.impl;
+package com.elypia.commandler.interfaces;
 
 import com.elypia.commandler.*;
+import com.elypia.commandler.impl.CommandInput;
 
 import java.util.Map;
 
@@ -25,32 +26,18 @@ public interface ICommandEvent<C, E, M> {
      * @param output The item to send to the {@link BuildRegister} to process.
      * @return The message that was built by the {@link BuildRegister}.
      */
-    default <T> M reply(T output) {
-        return getCommandler().getBuilder().build(this, output);
-    }
+    <T> M send(T output);
 
     /**
-     * Send a reply using {@link Confiler#sendScript(Object, String)}
+     * Send a reply using {@link LanguageEngine#getScript(String, Object)}
      * for obtaining a script through your implementation.
      *
      * @param key The key associated with the script to obtain.
      * @return A script associated with this key.
      */
-    default M sendScript(String key) {
-        return sendScript(key, Map.of());
-    }
+    M sendScript(String key);
 
-    default <T> M sendScript(String key, Map<String, T> params) {
-        return reply(getScript(key, params));
-    }
-
-    default String getScript(String key) {
-        return getScript(key, Map.of());
-    }
-
-    default <T> String getScript(String key, Map<String, T> params) {
-        return getCommandler().getConfiler().getScript(getSource(), key, params);
-    }
+    <T> M sendScript(String key, Map<String, T> params);
 
     default M trigger(String trigger) {
         return trigger(trigger, true);
@@ -80,6 +67,8 @@ public interface ICommandEvent<C, E, M> {
     Commandler<C, E, M> getCommandler();
 
     CommandInput<C, E, M> getInput();
+
+    Handler<C, E, M> getHandler();
 
     C getClient();
 

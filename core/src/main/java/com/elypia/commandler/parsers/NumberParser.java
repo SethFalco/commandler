@@ -1,6 +1,6 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.interfaces.*;
 
 public class NumberParser implements IParser<ICommandEvent, Number> {
 

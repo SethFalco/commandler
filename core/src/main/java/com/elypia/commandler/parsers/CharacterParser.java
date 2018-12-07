@@ -1,6 +1,6 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.interfaces.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class CharacterParser implements IParser<ICommandEvent, Character> {

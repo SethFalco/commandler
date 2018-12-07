@@ -13,6 +13,8 @@ public @interface Period {
     int DEFAULT_MIN = 0;
     int DEFAULT_MAX = Integer.MAX_VALUE;
 
+    String message() default "{com.elypia.commandler.validation.Period.message}";
+
     long min() default DEFAULT_MIN;
 
     long max() default DEFAULT_MAX;

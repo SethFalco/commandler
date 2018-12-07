@@ -1,7 +1,6 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.Commandler;
-import com.elypia.commandler.impl.IHandler;
+import com.elypia.commandler.*;
 
 import java.lang.annotation.*;
 
@@ -60,8 +59,8 @@ public @interface Module {
 	 * All {@link Module}s can assign themself a parent module recursively.
 	 * This is how submodules are created.
 	 *
-	 * @return The parent class this is a child of. Or {@link IHandler} if
+	 * @return The parent class this is a child of. Or {@link Handler} if
 	 * this has no parent module.
 	 */
-	Class<? extends IHandler> parent() default IHandler.class;
+	Class<? extends Handler> parent() default Handler.class;
 }

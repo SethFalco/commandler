@@ -1,8 +1,9 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.CommandEvent;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.impl.CommandEvent;
+import com.elypia.commandler.interfaces.ICommandEvent;
 import org.slf4j.*;
 
 import java.lang.annotation.Annotation;
@@ -13,45 +14,12 @@ import java.util.stream.Collectors;
 public class CommandData implements Comparable<CommandData> {
 
     /**
-     * This may occur when a {@link Static} command attempts to register
-     * an alias which has already been registered by a previous module or static command.
-     */
-    private static final String RECURSIVE_ALIAS = "Command %s in module %s (%s) contains a static alias which has already been registered by a previous module or static command.";
-
-    /**
-     * This may be logged if a command contains multiple aliases that
-     * are have the same value (non-case sensitive). There
-     * is no benefit to this as the other aliases are just ignored.
-     */
-    private static final String DUPLICATE_ALIAS = "Command {} in module {} ({}) contains multiple aliases which are identical.";
-
-    /**
-     * This may be thrown if the wrong number of {@link Param} annotations
-     * are found for the amount of input required for the command. Help
-     * should be defined for every argument in the {@link Command}.
-     */
-    private static final String PARAM_COUNT_MISMATCH = "Command %s in module %s (%s) doesn't contain the correct number of @Param annotations.";
-
-    /**
-     * This may be logged if the parameters contain multiple instances of the
-     * event. There is no benefit to this as it's just instances of the same
-     * event.
-     */
-    private static final String DUPLICATE_EVENT_PARAM = "Command {} in module {} ({}) contains multiple Event parameters, there is no benefit to this.";
-
-    /**
-     * This may be thrown if a method has both the {@link Command} and
-     * {@link Overload} annotation. This can not be the case as a method
-     * should either be a base {@link Command} or be an {@link Overload}
-     * to another command, not both.
-     */
-    private static final String COMMAND_OVERLOAD = "Command in module %s (%s) has both @Command and @Overload annotation. A command can only be one.";
-
-    /**
      * We use SLF4J for logging, be sure to include an implementation / binding
      * so you can configure warnings and other messages.
      */
     private static final Logger logger = LoggerFactory.getLogger(CommandData.class);
+
+    private ModulesContext context;
 
     /**
      * The parent {@link ModuleData} that this {@link CommandData}
@@ -62,7 +30,7 @@ public class CommandData implements Comparable<CommandData> {
     /**
      * The type of module this command belongs too.
      */
-    protected Class<? extends IHandler> clazz;
+    protected Class<? extends Handler> clazz;
 
     /**
      * The static data associated with this command.
@@ -130,8 +98,7 @@ public class CommandData implements Comparable<CommandData> {
     private CommandData(ModuleData moduleData, Method method, CommandData commandData) {
         this.moduleData = Objects.requireNonNull(moduleData);
         this.method = Objects.requireNonNull(method);
-
-        clazz = moduleData.
+        this.context = moduleData.getContext();
 
         aliases = new HashSet<>();
         paramData = new ArrayList<>();
@@ -142,20 +109,20 @@ public class CommandData implements Comparable<CommandData> {
         if (command != null && isOverload) {
             String moduleName = moduleData.getAnnotation().name();
             String typeName = moduleData.getClass().getName();
-            String message = String.format(COMMAND_OVERLOAD, moduleName, typeName);
+            String message = String.format("Command in module %s (%s) has both @Command and @Overload annotation. A command can only be one.", moduleName, typeName);
 
             throw new IllegalStateException(message);
         }
 
         if (command != null) {
             overloads = new ArrayList<>();
-            parseAnnotations(); // ? Parse annotations first as this can affect how we parse aliases.
+            parseAnnotations();
             parseAliases();
             parseParams();
 
             int id = command.id();
             if (id != Command.DEFAULT_ID) {
-                for (Method m : moduleData.getHandler().getClass().getMethods()) {
+                for (Method m : moduleData.getModuleClass().getMethods()) {
                     Overload overload = m.getAnnotation(Overload.class);
 
                     if (overload != null && overload.value() == id)
@@ -184,22 +151,22 @@ public class CommandData implements Comparable<CommandData> {
 
         if (aliases.size() != commandAlliases.length) {
             String moduleName = moduleData.getAnnotation().name();
-            String handlerName = handler.getClass().getName();
+            String handlerName = moduleData.getModuleClass().getName();
 
-            logger.warn(DUPLICATE_ALIAS, command.name(), moduleName, handlerName);
+            logger.warn("Command {} in module {} ({}) contains multiple aliases which are identical.", command.name(), moduleName, handlerName);
         }
 
         if (isStatic) {
-            if (!Collections.disjoint(commandler.getRoots().keySet(), aliases)) {
+            if (!Collections.disjoint(context.getAliases(), aliases)) {
                 String commandName = command.name();
                 String moduleName = moduleData.getAnnotation().name();
-                String moduleType = moduleData.getHandler().getClass().getName();
+                String moduleType = moduleData.getModuleClass().getName();
 
-                throw new IllegalStateException(String.format(RECURSIVE_ALIAS, commandName, moduleName, moduleType));
+                throw new IllegalStateException(String.format("Command %s in module %s (%s) contains a static alias which has already been registered by a previous module or static command.", commandName, moduleName, moduleType));
             }
 
             for (String in : aliases)
-                commandler.getRoots().put(in, moduleData);
+                context.getAliases().add(in);
         }
     }
 
@@ -210,7 +177,7 @@ public class CommandData implements Comparable<CommandData> {
      * If the annotation is {@link Static} that sets this as a static command. <br>
      * If the annotation is {@link Default} that sets this as a default command. <br>
      *
-     * Once the command is iterated, we search through any annotations on the {@link IHandler}
+     * Once the command is iterated, we search through any annotations on the {@link Handler}
      * to see if there are any default validation for commands in this module if not
      * specified at the command already.
      */
@@ -306,7 +273,7 @@ public class CommandData implements Comparable<CommandData> {
                 for (int ii = 0; ii < parentParams.size(); ii++) {
                     ParamData parentParam = parentParams.get(ii);
 
-                    if (name.equals(parentParam.getParamAnnotation().name())) {
+                    if (name.equals(parentParam.getAnnotation().name())) {
                         paramData.add(parentParams.remove(ii));
                         continue outer;
                     }
@@ -331,8 +298,8 @@ public class CommandData implements Comparable<CommandData> {
         if (inputRequired != paramLength) {
             String commandName = command.name();
             String moduleName = moduleData.getAnnotation().name();
-            String typeName = handler.getClass().getName();
-            String message = String.format(PARAM_COUNT_MISMATCH, commandName, moduleName, typeName);
+            String typeName = moduleData.getModuleClass().getName();
+            String message = String.format("Command %s in module %s (%s) doesn't contain the correct number of @Param annotations.", commandName, moduleName, typeName);
 
             throw new IllegalStateException(message);
         }
@@ -344,9 +311,9 @@ public class CommandData implements Comparable<CommandData> {
         if (offset == 2) {
             String commandName = command.name();
             String moduleName = moduleData.getAnnotation().name();
-            String typeName = handler.getClass().getName();
+            String typeName = moduleData.getModuleClass().getName();
 
-            logger.warn(DUPLICATE_EVENT_PARAM, commandName, moduleName, typeName);
+            logger.warn("Command {} in module {} ({}) contains multiple Event parameters, there is no benefit to this.", commandName, moduleName, typeName);
         }
     }
 

@@ -1,25 +1,19 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.console.StringCommandler;
-import com.elypia.commandler.console.client.StringClient;
-import com.elypia.commandler.console.modules.EnumModule;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.elypia.commandler.impl.TestApp;
+import com.elypia.commandler.impl.modules.ValidationModule;
+import org.junit.jupiter.api.BeforeAll;
 
 public class HandlerTest {
 
-    private static StringClient client;
-    private static StringCommandler commandler;
-    private static EnumModule module;
+    private static TestApp app;
 
     @BeforeAll
     public static void beforeAll() {
-        client = new StringClient();
-        commandler = new StringCommandler(client, ">");
-        module = new EnumModule();
-
-        commandler.registerModule(module);
+        app = new TestApp();
+        app.add(ValidationModule.class);
     }
+
 
     @Test
     public void clientInstance() {

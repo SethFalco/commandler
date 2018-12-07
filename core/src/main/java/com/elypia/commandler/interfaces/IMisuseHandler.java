@@ -3,7 +3,7 @@ package com.elypia.commandler.interfaces;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.impl.CommandInput;
 import com.elypia.commandler.metadata.*;
 
 import javax.validation.ConstraintViolation;
@@ -17,7 +17,7 @@ import java.util.*;
  * The return types are {@link Object} as we will use the {@link IBuilder}
  * internally to generate whatever should be sent.
  */
-public interface IMisuseListener<C, E, M> {
+public interface IMisuseHandler<C, E, M> {
 
     /**
      * This will occur when the user attempts to do a command
@@ -68,23 +68,16 @@ public interface IMisuseListener<C, E, M> {
     Object onListNotSupported(ICommandEvent event, ParamData paramData, List<String> items);
 
     /**
-     * This occurs when an {@link ICommandValidator} invalidates the event.
-     *
-     * @return
-     */
-    Object onCommandInvalidated(ICommandEvent<C, E, M> event, CommandData commandData, ICommandValidator validator);
-
-    /**
      * This occurs when the {@link ExecutableValidator} invalidates
      * one of the parameters provided by the user.
      *
      * @return The friendly error to send to the users in chat.
      */
-    <H extends IHandler<C, E, M>> Object onParamInvalidated(ICommandEvent<C, E, M> event, Set<ConstraintViolation<H>> violations);
+    <H extends Handler<C, E, M>> Object onInvalidated(ICommandEvent<C, E, M> event, Set<ConstraintViolation<H>> violations);
 
     /**
      * This may occur when a user attempts to perform a command
-     * which isn't the {@link IHandler#help(ICommandEvent)} command on
+     * which isn't the {@link Handler#help(ICommandEvent)} command on
      * a {@link Module} that has been disabled.
      *
      * @param event The event that caused this failure.

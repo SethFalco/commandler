@@ -1,14 +1,13 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.impl.ICommandEvent;
-import com.elypia.commandler.interfaces.IBuilder;
+import com.elypia.commandler.interfaces.*;
 import org.slf4j.*;
 
 import java.util.*;
 
 /**
  * The builder is used to build messages from returning commands
- * or the {@link CommandEvent#reply(Object)} method. Builders
+ * or the {@link ICommandEvent#send(Object)} method. Builders
  * that implement {@link IBuilder} can be registered via the
  * {@link #registerBuilder(IBuilder, Class[])} method, this tells
  * {@link Commandler} how to turn various types of Objects into
@@ -19,25 +18,6 @@ import java.util.*;
  *            platform expects us to send back to users.
  */
 public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
-
-    /**
-     * This is thrown with an {@link IllegalArgumentException} if there is no registered
-     * {@link IBuilder} with the data type of the object being built.
-     */
-    protected static final String NO_VALID_BUILDER = "No builder implementation registered for data type %s.";
-
-    /**
-     * This is thrown with a {@link IllegalStateException} when the
-     * {@link IBuilder#build(ICommandEvent, Object)} returns null. <br>
-     * The default build method is the fallback and should always return a value.
-     */
-    protected static final String NULL_DEFAULT_BUILDER = "String builder %s for data-type %s returned null.";
-
-    /**
-     * This is logged when an existing {@link IBuilder} is replaced with
-     * a new one. <br> This isn't bad, it's just a warning for the developer.
-     */
-    protected static final String REPLACED_REGISTERED = "Replaced registered builder for {} ({}) with {}.";
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
@@ -72,7 +52,7 @@ public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
                 String oldName = oldBuilder.getClass().getName();
                 String newName = newBuilder.getClass().getName();
 
-                logger.info(REPLACED_REGISTERED, oldName, type.getName(), newName);
+                logger.info("Replaced registered builder for {} ({}) with {}.", oldName, type.getName(), newName);
             }
         }
     }
@@ -97,7 +77,7 @@ public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
         if (content == null) {
             String builderName = builder.getClass().getName();
             String objectName = object.getClass().getName();
-            throw new IllegalStateException(String.format(NULL_DEFAULT_BUILDER, builderName, objectName));
+            throw new IllegalStateException(String.format("String builder %s for data-type %s returned null.", builderName, objectName));
         }
 
         return content;
@@ -122,7 +102,7 @@ public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
                 return entry.getValue();
         }
 
-        throw new IllegalArgumentException(String.format(NO_VALID_BUILDER, clazz.getName()));
+        throw new IllegalArgumentException(String.format("No builder implementation registered for data type %s.", clazz.getName()));
     }
 
     @Override

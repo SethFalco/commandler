@@ -1,14 +1,11 @@
 package com.elypia.commandler.impl.builders;
 
-import com.elypia.commandler.console.*;
 import com.elypia.commandler.impl.*;
-import com.elypia.commandler.test.impl.*;
-import console.*;
 
-public class NumberBuilder implements IStringBuilder<Number> {
+public class NumberBuilder implements TestBuilder<Number> {
 
     @Override
-    public String build(StringCommand event, Number output) {
+    public String build(TestEvent event, Number output) {
         return String.valueOf(output);
     }
 }

@@ -12,6 +12,8 @@ import java.lang.annotation.*;
 @Repeatable(Param.List.class)
 public @interface Param {
 
+	String DEFAULT_HELP = "";
+
 	/**
 	 * The name to display this parameter as.
 	 */
@@ -20,7 +22,7 @@ public @interface Param {
 	/**
 	 * A small description of what the parameter is.
 	 */
-	String help();
+	String help() default DEFAULT_HELP;
 
 	/**
 	 * Allows the {@link Param} annotiation to be repeatable

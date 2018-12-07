@@ -1,18 +1,21 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.console.StringCommandler;
-import com.elypia.commandler.console.client.StringClient;
+import com.elypia.commandler.impl.TestApp;
+import com.elypia.commandler.impl.modules.*;
+import org.junit.jupiter.api.BeforeAll;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MalformedModuleTest {
 
-    private StringCommandler commandler;
+    private static TestApp app;
 
-    @BeforeEach
-    public void beforeEach() {
-        commandler = new StringCommandler(new StringClient(), ">");
+    @BeforeAll
+    public static void beforeAll() {
+        app = new TestApp();
+        app.add(ValidationModule.class);
     }
+
 
     @Test
     public void noModuleAnnotation() {

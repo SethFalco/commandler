@@ -1,12 +1,6 @@
 package com.elypia.commandler.interfaces;
 
-import com.elypia.commandler.*;
-import com.elypia.commandler.annotations.Default;
-import com.elypia.commandler.impl.*;
-import com.elypia.commandler.metadata.*;
-
-import java.util.*;
-import java.util.regex.*;
+import com.elypia.commandler.Commandler;
 
 public interface ICommandProcessor<C, E, M> {
 
@@ -17,7 +11,7 @@ public interface ICommandProcessor<C, E, M> {
      * @param content The content of the message to parse.
      * @return The message that was sent to the client.
      */
-    public M dispatch(E source, String content, boolean send);
+    M dispatch(E source, String content, boolean send);
 
     /**
      * Break the command down into it's individual components.
@@ -26,5 +20,13 @@ public interface ICommandProcessor<C, E, M> {
      * @param content The content of the meessage.
      * @return The input the user provided or null if it's not a valid command.
      */
-    public CommandEvent process(Commandler<C, E, M> commandler, E event, String content);
+    ICommandEvent process(Commandler<C, E, M> commandler, E event, String content);
+
+    /**
+     * Return the accepted prefixes for this event.
+     *
+     * @param event
+     * @return
+     */
+    String[] getPrefixes(E event);
 }

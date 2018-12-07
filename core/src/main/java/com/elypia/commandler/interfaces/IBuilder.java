@@ -1,7 +1,5 @@
 package com.elypia.commandler.interfaces;
 
-import com.elypia.commandler.impl.*;
-
 /**
  * This should implement the default build method.
  * The default method should be the standard or minimal way
@@ -12,7 +10,7 @@ import com.elypia.commandler.impl.*;
  * @param <O> The object to build, this should be the ouput from a {@link IParser}.
  * @param <M> The message we're returning.
  */
-public interface IBuilder<C extends ICommandEvent, O, M> {
+public interface IBuilder<C extends ICommandEvent<?, ?, M>, O, M> {
 
     /**
      * The default build method, this builder should be the default

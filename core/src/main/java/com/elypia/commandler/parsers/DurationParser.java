@@ -1,10 +1,8 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.interfaces.*;
 
 import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.*;
 
 public class DurationParser implements IParser<ICommandEvent, Duration> {
@@ -35,58 +33,6 @@ public class DurationParser implements IParser<ICommandEvent, Duration> {
         }
 
         return null;
-    }
-
-    public static String forDisplay(Duration duration) {
-        List<String> result = new ArrayList<>();
-        TimeUnit base = TimeUnit.SECONDS;
-        long unit = duration.getSeconds();
-
-        long days = TimeUnit.DAYS.convert(unit, base);
-        if (days > 0) {
-            result.add(String.format("%,d %s", days, days == 1 ? "day" : "days"));
-            unit -= base.convert(days, TimeUnit.DAYS);
-        }
-
-        long hours = TimeUnit.HOURS.convert(unit, base);
-        if (hours > 0) {
-            result.add(String.format("%,d %s", hours, hours == 1 ? "hour" : "hours"));
-            unit -= base.convert(hours, TimeUnit.HOURS);
-        }
-
-        long minutes = TimeUnit.MINUTES.convert(unit, base);
-        if (minutes > 0) {
-            result.add(String.format("%,d %s", minutes, minutes == 1 ? "minute" : "minutes"));
-            unit -= base.convert(minutes, TimeUnit.MINUTES);
-        }
-
-        if (unit != 0)
-            result.add(String.format("%,d %s", unit, unit == 1 ? "second" : "seconds"));
-
-        if (result.size() == 1) {
-            String s = result.get(0);
-
-            if (s.startsWith("1 hour"))
-                s = s.replace("1 ", "an ");
-            else if (s.startsWith("1 "))
-                s = s.replace("1 ", "a ");
-
-            return s;
-        }
-
-        Iterator<String> iter = result.iterator();
-        StringJoiner joiner = new StringJoiner(", ");
-
-        while (iter.hasNext()) {
-            String it = iter.next();
-
-            if (iter.hasNext())
-                joiner.add(it);
-            else
-                joiner.add("and " + it);
-        }
-
-        return joiner.toString();
     }
 
     private Duration addDuration(Duration duration, long time, String unit) throws ArithmeticException {

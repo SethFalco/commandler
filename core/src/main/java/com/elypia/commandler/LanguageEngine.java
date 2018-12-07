@@ -1,12 +1,22 @@
 package com.elypia.commandler;
 
-public class LanguageEngine {
+import java.util.Map;
 
-    public String getScript(String string) {
-        return getScript(string, null);
+/**
+ * The {@link LanguageEngine} is used in order to get and display scripts
+ * whereever text may be required. This could be as a message, on a website
+ * or anything that doesn't have debugging intent.
+ */
+public class LanguageEngine<E> {
+
+    public <T> String getScript(E event, String script, Map<String, T> params) {
+        for (var entry : params.entrySet())
+            script = script.replace("${" + entry.getKey() + "}", entry.getValue().toString());
+
+        return script;
     }
 
-    public String getScript(String string, Object object) {
-        return null;
+    public String getScript(E event, String script, Object... args) {
+        return String.format(script, args);
     }
 }

@@ -1,13 +1,13 @@
-package com.elypia.commandler;
+package com.elypia.commandler.impl;
 
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.*;
+import com.elypia.commandler.interfaces.ICommandEvent;
 import com.elypia.commandler.metadata.CommandData;
 import org.slf4j.*;
 
 import javax.validation.*;
 import javax.validation.executable.ExecutableValidator;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * Vaidates annotations associated with commands and parameters to ensure
@@ -21,32 +21,22 @@ public class CommandValidator {
      */
     private static final Logger logger = LoggerFactory.getLogger(CommandValidator.class);
 
+    private Commandler commandler;
+
     private Validator validator;
     private ExecutableValidator exValidator;
 
     public CommandValidator(Commandler commandler) {
+        this.commandler = commandler;
+
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         exValidator = validator.forExecutables();
     }
 
-    public <C, E, M> boolean validateCommand(ICommandEvent<C, E, M> event, CommandData<C, E, M> commandData) {
-        for (Map.Entry<MetaValidator, ICommandValidator> entry : commandData.getValidators().entrySet()) {
-            MetaValidator metaValidator = entry.getKey();
-            ICommandValidator validator = entry.getValue();
-
-            if (!validator.validate(event, metaValidator.getValidator())) {
-                event.invalidate(confiler.getMisuseListener().onCommandInvalidated(event, commandData, validator));
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public <C, E, M> boolean validateParams(ICommandEvent<C, E, M> event, Object[] parameters) {
+    public <C, E, M> boolean validate(ICommandEvent<C, E, M> event, Object[] parameters) {
+        Handler<C, E, M> handler = event.getHandler();
         CommandData command = event.getInput().getCommandData();
-        IHandler<C, E, M> handler = event.ha;
         Method method = command.getMethod();
 
         var violations = exValidator.validateParameters(handler, method, parameters);
@@ -54,7 +44,7 @@ public class CommandValidator {
         if (violations.isEmpty())
             return true;
 
-        event.invalidate(confiler.getMisuseListener().onParamInvalidated(event, violations));
+        event.invalidate(commandler.getMisuseListener().onParamInvalidated(event, violations));
         return false;
     }
 }

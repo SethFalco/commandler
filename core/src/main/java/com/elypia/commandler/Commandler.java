@@ -1,8 +1,7 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.impl.*;
-import com.elypia.commandler.interfaces.IBuilder;
-import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.interfaces.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -17,20 +16,22 @@ import java.util.*;
  * @param <E> The type of event we're handling.
  * @param <M> The type of message we're expecting to send and receieve.
  */
-public abstract class Commandler<C, E, M> {
+public class Commandler<C, E, M> {
 
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
+
+    private ModulesContext context;
 
     /**
      * The proxy between the {@link #client} event handler, and {@link Commandler}.
      * This will have an implementation to process the command into something
      * {@link Commandler} can interpret.
      */
-    protected CommandProcessor<C, E, M> processor;
+    protected ICommandProcessor<C, E, M> processor;
 
-    private ModulesContext context;
+    private IMisuseHandler<C, E, M> listener;
 
-    private MisuseListener<C, E, M> listener;
+    private LanguageEngine<E> engine;
 
     /**
      * The client represents the platform you're chatting on
@@ -43,7 +44,7 @@ public abstract class Commandler<C, E, M> {
     /**
      * All registered modules with this {@link Commandler}.
      */
-    protected List<IHandler<C, E, M>> handlers;
+    protected List<Handler<C, E, M>> handlers;
 
     protected ParseRegister parser;
 
@@ -51,17 +52,19 @@ public abstract class Commandler<C, E, M> {
 
     protected CommandValidator commandValidator;
 
-    /**
-     * Creates an instance of the {@link Commandler} framework.
-     */
-    public Commandler() {
-        parser = new ParseRegister(this);
-        builder = new BuildRegister<>();
-        commandValidator = new CommandValidator(this);
+    private String prefix;
 
-        handlers = new ArrayList<>();
+    private String website;
 
-        logger.info("New instance of {} succesfully initialised.", this.getClass().getName());
+    public Commandler(CommandlerBuilder<C, E, M> builder) {
+        this.context = null;
+        this.processor = null;
+        this.listener = null;
+        this.engine = null;
+        this.client = null;
+
+
+        processor = new CommandProcessor<>(this);
     }
 
     public M trigger(E event, String input) {
@@ -100,24 +103,12 @@ public abstract class Commandler<C, E, M> {
         this.client = Objects.requireNonNull(client);
     }
 
-    public Dispatcher getDispatcher() {
-        return dispatcher;
+    public ICommandProcessor getProcessor() {
+        return processor;
     }
 
-    public Collection<IHandler<C, E, M>> getHandlers() {
+    public Collection<Handler<C, E, M>> getHandlers() {
         return handlers;
-    }
-
-    public Set<String> getGroups() {
-        return groups;
-    }
-
-    public Map<String, ModuleData> getRoots() {
-        return roots;
-    }
-
-    public Map<Integer, CommandData> getCommands() {
-        return commands;
     }
 
     public ParseRegister getParser() {
@@ -132,7 +123,19 @@ public abstract class Commandler<C, E, M> {
         return commandValidator;
     }
 
-    public MisuseListener<C, E, M> getMisuseListener() {
+    public IMisuseHandler<C, E, M> getMisuseListener() {
         return listener;
+    }
+
+    public LanguageEngine<E> getEngine() {
+        return engine;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getWebsite() {
+        return website;
     }
 }

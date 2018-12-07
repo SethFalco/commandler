@@ -1,8 +1,8 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.impl.ICommandEvent;
+import com.elypia.commandler.interfaces.ICommandEvent;
 
 import java.lang.reflect.Parameter;
 import java.util.Objects;
