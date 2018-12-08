@@ -1,4 +1,4 @@
-package com.elypia.commandler.validation;
+package com.elypia.commandler.impl.validation;
 
 import com.elypia.commandler.impl.TestEvent;
 
@@ -10,7 +10,11 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = Disabled.Validator.class)
 public @interface Disabled {
 
-    String message() default "{com.elypia.commandler.validation.Disabled.message}";
+    String message() default "{Disabled.message}";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 
     boolean value() default true;
 

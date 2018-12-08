@@ -16,11 +16,10 @@ implementation 'com.elypia.commandler:{ARTIFACT}:{VERSION}'
 ```
 
 ## **Artifacts**
-| Artifact        | Description                                                                                                                 |
-|-----------------|-------------------------------------------------------------------------------------------|
-| `core`          | The core of commandler, ready to implement with any service.                              |
-| `commandlerdoc` | The documentation tool to generate a static website based on existing modules.            |                                                              |
-| `console`       | A String/Console based implementation of Commandler for taking console input as commands. |
+| Artifact | Description                                                                                                                 |
+|----------|-------------------------------------------------------------------------------------------|
+| `core`   | The core of commandler, ready to implement with any service.                              |
+| `doc`    | The documentation tool to generate a static website based on existing modules.            |                                                              |
 
 ## About
 Commandler is a command handling framework for Java designed to have functional, reliable and flexible parsing and validation under the hood with a [Spring Boot](https://github.com/spring-projects/spring-boot) like syntax. This ensures _you_, the developer, can focus on making the functionality you want with a unified command handler already set up to allow you to manage things like permissions.

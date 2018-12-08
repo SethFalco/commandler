@@ -15,6 +15,10 @@ public @interface Period {
 
     String message() default "{com.elypia.commandler.validation.Period.message}";
 
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
+
     long min() default DEFAULT_MIN;
 
     long max() default DEFAULT_MAX;

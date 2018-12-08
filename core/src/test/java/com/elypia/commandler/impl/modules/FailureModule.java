@@ -4,7 +4,7 @@ import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.impl.TestHandler;
 
-@Module(name = "Failure", aliases = "failure")
+@Module(id = "Failure", aliases = "failure")
 public class FailureModule extends TestHandler {
 
     @Override

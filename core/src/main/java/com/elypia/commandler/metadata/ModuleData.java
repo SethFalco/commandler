@@ -100,9 +100,9 @@ public class ModuleData implements Comparable<ModuleData> {
             ModuleData existing = context.getModule(alias);
 
             if (existing != null) {
-                String thisModule = annotation.name();
+                String thisModule = annotation.id();
                 String thisClass = moduleClass.getName();
-                String existingModule = existing.annotation.name();
+                String existingModule = existing.annotation.id();
                 String existingClass = existing.getModuleClass().getName();
 
                 throw new IllegalStateException(String.format("Module %s (%s) contains an alias which has already been registered by %s (%s).", thisModule, thisClass, existingModule, existingClass));
@@ -112,7 +112,7 @@ public class ModuleData implements Comparable<ModuleData> {
         }
 
         if (aliases.size() != annotation.aliases().length)
-            logger.warn("Module {} ({}) contains multiple aliases that are identical.", annotation.name(), moduleClass.getName());
+            logger.warn("Module {} ({}) contains multiple aliases that are identical.", annotation.id(), moduleClass.getName());
     }
 
     /**
@@ -131,14 +131,14 @@ public class ModuleData implements Comparable<ModuleData> {
         methods = Arrays.stream(methods).filter(m -> m.isAnnotationPresent(Command.class)).toArray(Method[]::new);
 
         if (methods.length == 0)
-            logger.warn("Module {} ({}) contains no commands.", annotation.name(), moduleClass.getName());
+            logger.warn("Module {} ({}) contains no commands.", annotation.id(), moduleClass.getName());
 
         for (Method method : methods) {
             CommandData commandData = new CommandData(this, method);
 
             if (commandData.isDefault()) {
                 if (defaultCommand != null) {
-                    String moduleName = annotation.name();
+                    String moduleName = annotation.id();
                     String typeName = moduleClass.getName();
 
                     throw new IllegalStateException(String.format("Module %s (%s) contains multiple default commands, modules may only have a single default.", moduleName, typeName));
@@ -149,7 +149,7 @@ public class ModuleData implements Comparable<ModuleData> {
 
             if (!Collections.disjoint(commandAliases, commandData.getAliases())) {
                 String commandName = commandData.getCommand().name();
-                String moduleName = annotation.name();
+                String moduleName = annotation.id();
                 String moduleType = moduleClass.getName();
 
                 throw new IllegalStateException(String.format("Command %s in annotation %s (%s) contains an alias which has already been registered by a previous command in this annotation.", commandName, moduleName, moduleType));
@@ -258,6 +258,6 @@ public class ModuleData implements Comparable<ModuleData> {
 
     @Override
     public int compareTo(ModuleData o) {
-        return annotation.name().compareToIgnoreCase(o.annotation.name());
+        return annotation.id().compareToIgnoreCase(o.annotation.id());
     }
 }

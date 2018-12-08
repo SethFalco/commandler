@@ -2,8 +2,6 @@ package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
 
-import java.io.IOException;
-
 public class TestApp {
 
     private Commandler<Void, String, String> commandler;
@@ -22,10 +20,6 @@ public class TestApp {
 
     public String execute(String text) {
         return commandler.trigger(null, text);
-    }
-
-    public void addAll() throws IOException {
-        context.addPackage("com.elypia.commandler.impl.modules");
     }
 
     @SafeVarargs

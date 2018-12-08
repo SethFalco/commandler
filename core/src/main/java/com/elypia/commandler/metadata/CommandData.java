@@ -71,7 +71,7 @@ public class CommandData implements Comparable<CommandData> {
     /**
      * Is this a {@link Default} command. <br>
      * Default commands are what we assume if the user didn't specify a command
-     * or the next input after the module name doesn't fit the name requirement
+     * or the next input after the module id doesn't fit the id requirement
      * or alias of any commands in the alias.
      */
     private boolean isDefault;
@@ -107,7 +107,7 @@ public class CommandData implements Comparable<CommandData> {
         isOverload = method.isAnnotationPresent(Overload.class);
 
         if (command != null && isOverload) {
-            String moduleName = moduleData.getAnnotation().name();
+            String moduleName = moduleData.getAnnotation().id();
             String typeName = moduleData.getClass().getName();
             String message = String.format("Command in module %s (%s) has both @Command and @Overload annotation. A command can only be one.", moduleName, typeName);
 
@@ -120,14 +120,12 @@ public class CommandData implements Comparable<CommandData> {
             parseAliases();
             parseParams();
 
-            int id = command.id();
-            if (id != Command.DEFAULT_ID) {
-                for (Method m : moduleData.getModuleClass().getMethods()) {
-                    Overload overload = m.getAnnotation(Overload.class);
+            String id = command.id();
+            for (Method m : moduleData.getModuleClass().getMethods()) {
+                Overload overload = m.getAnnotation(Overload.class);
 
-                    if (overload != null && overload.value() == id)
-                        overloads.add(new CommandData(moduleData, m, this));
-                }
+                if (overload != null && overload.value().equals(id))
+                    overloads.add(new CommandData(moduleData, m, this));
             }
 
             isPublic = !command.help().equals(Command.DEFAULT_HELP);
@@ -150,16 +148,16 @@ public class CommandData implements Comparable<CommandData> {
             aliases.add(alias.toLowerCase());
 
         if (aliases.size() != commandAlliases.length) {
-            String moduleName = moduleData.getAnnotation().name();
+            String moduleName = moduleData.getAnnotation().id();
             String handlerName = moduleData.getModuleClass().getName();
 
-            logger.warn("Command {} in module {} ({}) contains multiple aliases which are identical.", command.name(), moduleName, handlerName);
+            logger.warn("Command {} in module {} ({}) contains multiple aliases which are identical.", command.id(), moduleName, handlerName);
         }
 
         if (isStatic) {
             if (!Collections.disjoint(context.getAliases(), aliases)) {
-                String commandName = command.name();
-                String moduleName = moduleData.getAnnotation().name();
+                String commandName = command.id();
+                String moduleName = moduleData.getAnnotation().id();
                 String moduleType = moduleData.getModuleClass().getName();
 
                 throw new IllegalStateException(String.format("Command %s in module %s (%s) contains a static alias which has already been registered by a previous module or static command.", commandName, moduleName, moduleType));
@@ -171,9 +169,7 @@ public class CommandData implements Comparable<CommandData> {
     }
 
     /**
-     * Parses the annotations on this command or the parent module if appropriate.
-     * Is the annotation is a commandValidator, adds it to the internal list of validators.
-     * This is determined by if the annotation if a {@link ICommandValidator} is registered for this type. <br>
+     * Parses the annotations on this command or the parent module if appropriate.<br>
      * If the annotation is {@link Static} that sets this as a static command. <br>
      * If the annotation is {@link Default} that sets this as a default command. <br>
      *
@@ -233,7 +229,7 @@ public class CommandData implements Comparable<CommandData> {
      * meta-data already defined in another {@link Command}.
      *
      * @param commandData The parent {@link CommandData} that found this {@link Overload}.
-     */ // ? This command is very similar to our existing methods, see if we can use them?
+     */
     protected void parseOverload(CommandData commandData) {
         command = commandData.command;
 
@@ -296,8 +292,8 @@ public class CommandData implements Comparable<CommandData> {
         }).count();
 
         if (inputRequired != paramLength) {
-            String commandName = command.name();
-            String moduleName = moduleData.getAnnotation().name();
+            String commandName = command.id();
+            String moduleName = moduleData.getAnnotation().id();
             String typeName = moduleData.getModuleClass().getName();
             String message = String.format("Command %s in module %s (%s) doesn't contain the correct number of @Param annotations.", commandName, moduleName, typeName);
 
@@ -309,8 +305,8 @@ public class CommandData implements Comparable<CommandData> {
 
     private void checkOffset(int offset) {
         if (offset == 2) {
-            String commandName = command.name();
-            String moduleName = moduleData.getAnnotation().name();
+            String commandName = command.id();
+            String moduleName = moduleData.getAnnotation().id();
             String typeName = moduleData.getModuleClass().getName();
 
             logger.warn("Command {} in module {} ({}) contains multiple Event parameters, there is no benefit to this.", commandName, moduleName, typeName);
@@ -429,6 +425,6 @@ public class CommandData implements Comparable<CommandData> {
 
     @Override
     public int compareTo(CommandData o) {
-        return command.name().compareToIgnoreCase(o.command.name());
+        return command.id().compareToIgnoreCase(o.command.id());
     }
 }

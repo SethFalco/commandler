@@ -86,7 +86,7 @@ public class ModulesContext {
      * Add all classes in the specified package recursivley.
      *
      * @param dir The directory we're loading from.
-     * @param packageName The name of the package we're loading.
+     * @param packageName The id of the package we're loading.
      */
     private void addClasses(File dir, String packageName) {
         File[] files = dir.listFiles();

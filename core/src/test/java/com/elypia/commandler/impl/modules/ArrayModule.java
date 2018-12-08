@@ -6,10 +6,10 @@ import com.elypia.commandler.impl.TestHandler;
 
 import java.util.stream.*;
 
-@Module(name = "Array", aliases = "array", help = "The array module!")
+@Module(id = "Array", aliases = "array", help = "Testing if parses are parsing and using arrays correctly.")
 public class ArrayModule extends TestHandler {
 
-    @Command(name = "Boolean List", aliases = "boolsum")
+    @Command(id = "True Bools", aliases = "bools")
     @Param(name = "bools", help = "A list of true/false.")
     public String bools(boolean[] bools) {
         int trueCount = 0;
@@ -22,20 +22,20 @@ public class ArrayModule extends TestHandler {
         return String.format("%,d true, %,d false", trueCount, bools.length - trueCount);
     }
 
-    @Command(name = "Char List", aliases = "chars")
-    @Param(name = "chars", help = "A list of chars.")
+    @Command(id = "Spell a Word", aliases = "spell")
+    @Param(name = "letters", help = "The letters that spell a word.")
     public String chars(char[] chars) {
         return new String(chars);
     }
 
-    @Command(name = "Add Doubles", aliases = "doubles")
-    @Param(name = "numbers", help = "A list of numbers!")
+    @Command(id = "Add Doubles", aliases = "doubles")
+    @Param(name = "numbers", help = "A list of numbers to sum.")
     public String doubles(double[] numbers) {
         return String.format("%,.0f", DoubleStream.of(numbers).sum());
     }
 
-    @Command(name = "Add Floats", aliases = "floats")
-    @Param(name = "numbers", help = "A list of numbers!")
+    @Command(id = "Add Floats", aliases = "floats")
+    @Param(name = "numbers", help = "A list of numbers to sum.")
     public long floats(float[] numbers) {
         int floats = 0;
 
@@ -45,14 +45,14 @@ public class ArrayModule extends TestHandler {
         return floats;
     }
 
-    @Command(name = "Add Longs", aliases = "longs")
-    @Param(name = "numbers", help = "A list of numbers!")
+    @Command(id = "Add Longs", aliases = "longs")
+    @Param(name = "numbers", help = "A list of numbers to sum.")
     public long longs(long[] numbers) {
         return LongStream.of(numbers).sum();
     }
 
-    @Command(name = "Add Shorts", aliases = "shorts")
-    @Param(name = "numbers", help = "A list of numbers!")
+    @Command(id = "Add Shorts", aliases = "shorts")
+    @Param(name = "numbers", help = "A list of numbers to sum.")
     public long shorts(short[] numbers) {
         int shorts = 0;
 
@@ -62,8 +62,8 @@ public class ArrayModule extends TestHandler {
         return shorts;
     }
 
-    @Command(name = "Add Bytes", aliases = "bytes")
-    @Param(name = "numbers", help = "A list of numbers!")
+    @Command(id = "Add Bytes", aliases = "bytes")
+    @Param(name = "numbers", help = "A list of numbers to sum.")
     public long bytes(byte[] numbers) {
         int bytes = 0;
 
@@ -73,20 +73,14 @@ public class ArrayModule extends TestHandler {
         return bytes;
     }
 
-    @Command(id = 1, name = "Add Numbers", aliases = "sum", help = "I'll give you the total sum of a list of numbers!")
-    @Param(name = "numbers", help = "A list of numbers!")
+    @Command(id = "Add Numbers", aliases = "sum", help = "I'll give you the total sum of a list of numbers!")
+    @Param(name = "numbers", help = "A list of numbers to sum.")
     public int sum(int[] numbers) {
         return sum(numbers, 1);
     }
 
-    @Overload(1)
-    @Param(name = "multiplier", help = "The muliplier to multiply the result by!")
-    public int sum(int[] numbers, int multipler) {
-        return IntStream.of(numbers).sum() * multipler;
-    }
-
-    @Command(name = "Add Numbers", aliases = "sumo", help = "I'll give you the total sum of a list of numbers!")
-    @Param(name = "numbers", help = "A list of numbers!")
+    @Command(id = "Add Numbers", aliases = "sumo", help = "I'll give you the total sum of a list of numbers!")
+    @Param(name = "numbers", help = "A list of numbers to sum.")
     public int sum(Integer[] numbers) {
         int total = 0;
 
@@ -94,5 +88,11 @@ public class ArrayModule extends TestHandler {
             total += i;
 
         return total;
+    }
+
+    @Overload("Add Numbers")
+    @Param(name = "multiplier", help = "The muliplier to multiply the result by!")
+    public int sum(int[] numbers, int multipler) {
+        return IntStream.of(numbers).sum() * multipler;
     }
 }

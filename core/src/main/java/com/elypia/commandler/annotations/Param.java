@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * The parameter annotation allows us to give parameters for commands
- * a name and short description for what the parameter is or
+ * a id and short description for what the parameter is or
  * what you need.
  */
 @Target(ElementType.METHOD)
@@ -15,7 +15,7 @@ public @interface Param {
 	String DEFAULT_HELP = "";
 
 	/**
-	 * The name to display this parameter as.
+	 * The id to display this parameter as.
 	 */
 	String name();
 

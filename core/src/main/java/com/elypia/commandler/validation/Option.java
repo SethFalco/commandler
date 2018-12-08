@@ -10,6 +10,10 @@ public @interface Option {
 
     String message() default "{com.elypia.commandler.validation.Option.message}";
 
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
+
     /**
      * The available options for this console.
      */

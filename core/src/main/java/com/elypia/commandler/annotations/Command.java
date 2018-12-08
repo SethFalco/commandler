@@ -17,11 +17,6 @@ import java.lang.annotation.*;
 public @interface Command {
 
 	/**
-	 * The default value for {@link #id()}.
-	 */
-	int DEFAULT_ID = -1;
-
-	/**
 	 * The default value for {@link #help()}. By
 	 * assigning this to {@link String#isEmpty() an empty
 	 * String}, {@link Commandler} will omit this {@link Command}
@@ -31,17 +26,10 @@ public @interface Command {
 	String DEFAULT_HELP = "";
 
 	/**
-	 * @return The unique ID of the command, this must be used to specify
-	 * relational methods with this command, for example {@link Overload}.
-	 * <strong>Note:</strong> If the ID is {@link #DEFAULT_ID} Commandler assumes there are
-	 * no associations.
+	 * @return The id of the commands as it appears in help / documentation.
+	 * 		   This also acts as a reference for other commands to refer to it.
 	 */
-	int id() default DEFAULT_ID;
-
-	/**
-	 * @return The name of the commands as it appears in help / documentation.
-	 */
-	String name();
+	String id();
 
 	/**
 	 * @return A list of all the alises that allow users

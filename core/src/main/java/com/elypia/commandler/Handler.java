@@ -61,7 +61,7 @@ public abstract class Handler<C, E, M> {
 		StringBuilder builder = new StringBuilder();
 
 		Module annotation = getModule().getAnnotation();
-		builder.append(annotation.name());
+		builder.append(annotation.id());
 
 		StringJoiner commandAliasJoiner = new StringJoiner(", ");
 

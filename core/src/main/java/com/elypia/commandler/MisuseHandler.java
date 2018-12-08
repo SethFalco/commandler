@@ -30,7 +30,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
             commandJoiner.add(command.toString());
 
         String commandName = commandData.getCommand().name();
-        String moduleName = commandData.getModuleData().getAnnotation().name();
+        String moduleName = commandData.getModuleData().getAnnotation().id();
         return String.format(format, moduleName, commandName, input.toString(), commandJoiner.toString());
     }
 
@@ -38,7 +38,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
     public Object onDefaultNotFound(ICommandEvent event) {
         String format = "Command failed; this module has no default command.\nModule: %s\n\nPossibilities:\n%s\n\nSee the help command for more information.";
         ModuleData module = event.getInput().getModuleData();
-        return String.format(format, module.getAnnotation().name(), module);
+        return String.format(format, module.getAnnotation().id(), module);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
 
         CommandInput input = event.getInput();
         Param param = paramData.getAnnotation();
-        String module = input.getModuleData().getAnnotation().name();
+        String module = input.getModuleData().getAnnotation().id();
         CommandData command = input.getCommandData();
 
         return String.format(format, item, param.name(), param.help(), module, command.getCommand().name(), command);
@@ -62,7 +62,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
 
         CommandInput input = event.getInput();
         Param param = paramData.getAnnotation();
-        String module = input.getModuleData().getAnnotation().name();
+        String module = input.getModuleData().getAnnotation().id();
         CommandData command = input.getCommandData();
 
         return String.format(format, joiner, param.name(), module, command.getCommand().name(), command);
@@ -76,7 +76,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
 
     private Object generateMessage(String format, ICommandEvent<C, E, M> event) {
         CommandInput input = event.getInput();
-        String module = input.getModuleData().getAnnotation().name();
+        String module = input.getModuleData().getAnnotation().id();
         String command = input.getCommandData().getCommand().name();
 
         return String.format(format, module, command);
@@ -85,7 +85,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
     @Override
     public Object onModuleDisabled(ICommandEvent<C, E, M> event) {
         String format = "Command failed; this module is currently disabled due to live issues.\nModule: %s";
-        return String.format(format, event.getInput().getModuleData().getAnnotation().name());
+        return String.format(format, event.getInput().getModuleData().getAnnotation().id());
     }
 
     @Override

@@ -38,13 +38,4 @@ public @interface Overload {
      * is passed, no parameters is inherited.
      */
     String[] params() default INHERIT;
-
-    /**
-     * This dictates which validators are copied from the parent {@link Command}.
-     * This copies each commandValidator by class. <br>
-     * If an empty array is passed, no validators are copied. <br>
-     * If {@link Overload} is passed (default), all validators are copied
-     * unless otherwise overridden by the overloading method.
-     */
-    Class<? extends Annotation>[] validation() default Overload.class;
 }

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * swapping to use the new implementation rather than the
  * generic one if added.
  */
-@Module(name = "Enum", aliases = "enum", help = "Does Commandler interact with enums correctly?")
+@Module(id = "Enum", aliases = "enum", help = "Does Commandler interact with enums correctly?")
 public class EnumModule extends TestHandler {
 
     @Command(name = "TimeUnit", aliases = "timeunit", help = "Can we validate against an enum with no annotations?")

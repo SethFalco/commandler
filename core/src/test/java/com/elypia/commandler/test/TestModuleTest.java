@@ -3,8 +3,6 @@ package com.elypia.commandler.test;
 import com.elypia.commandler.impl.TestApp;
 import org.junit.jupiter.api.BeforeAll;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestModuleTest {
@@ -12,8 +10,9 @@ public class TestModuleTest {
     private static TestApp app;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    public static void beforeAll() {
         app = new TestApp();
+
     }
 
     @Test

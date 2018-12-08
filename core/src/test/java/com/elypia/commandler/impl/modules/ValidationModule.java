@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
  * This is testing if using the javax.validation and custom
  * built in custom validators in {@link Commandler} work correctly.
  */
-@Module(name = "Validation", aliases = "valid")
+@Module(id = "Validation", aliases = "valid")
 public class ValidationModule extends TestHandler {
 
     @Command(name = "Concatenate", aliases = "concat")
@@ -41,7 +41,7 @@ public class ValidationModule extends TestHandler {
     }
 
     @Command(name = "Sethi or Jenni", aliases = "panda")
-    @Param(name = "name", help = "The better panda, Sethi or Jenni.")
+    @Param(name = "id", help = "The better panda, Sethi or Jenni.")
     public String selectBetterPanda(@Option({"seth", "jen"}) String name) {
         return "You selected " + StringUtils.capitalize(name) + ".";
     }

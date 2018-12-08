@@ -21,7 +21,7 @@ public class DocBuilder {
 
     /**
      * All file names created by Commandlerdoc to ensure
-     * there are no file name conflicts.
+     * there are no file id conflicts.
      */
     private Set<String> fileNames;
 
@@ -41,7 +41,7 @@ public class DocBuilder {
     private DocData data;
 
     /**
-     * The name of the application.
+     * The id of the application.
      */
     private String name;
 
@@ -105,7 +105,7 @@ public class DocBuilder {
 
         Template template = engine.getTemplate("pages/template.vm", "utf-8");
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("app-name", name);
+        velocityContext.put("app-id", name);
         velocityContext.put("app-description", description);
         velocityContext.put("app-logo", logo);
         velocityContext.put("app-favicon", favicon);
@@ -116,7 +116,7 @@ public class DocBuilder {
             if (!module.isPublic())
                 continue;
 
-            String outputName = module.getAnnotation().name()
+            String outputName = module.getAnnotation().id()
                 .toLowerCase()
                 .replaceAll("[^a-z\\d_-]+", "-");
 
@@ -128,7 +128,7 @@ public class DocBuilder {
             Module annotation = module.getAnnotation();
 
             velocityContext.put("this-anno", annotation);
-            velocityContext.put("this-name", annotation.name());
+            velocityContext.put("this-id", annotation.id());
             velocityContext.put("this-group", annotation.group());
             velocityContext.put("this-id", outputName);
 

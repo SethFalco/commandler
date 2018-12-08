@@ -33,7 +33,7 @@ public @interface Module {
 	 * @return Name of the module as it should appear at the top
 	 * of the help commands. This is not the alias of the module.
 	 */
-	String name();
+	String id();
 
 	/**
 	 * @return The group this module belongs too, this is used for
