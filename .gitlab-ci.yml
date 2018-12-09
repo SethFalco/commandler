@@ -10,7 +10,6 @@ build:
     key: $CI_PROJECT_ID
     paths:
       - .gradle
-      - build
 
 test:
   stage: test
@@ -33,7 +32,6 @@ bintray:
     policy: pull
     paths:
       - .gradle
-      - build
 
 pages:
   only:

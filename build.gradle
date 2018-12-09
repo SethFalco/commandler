@@ -136,9 +136,6 @@ subprojects { subproject ->
             implementation project(":core")
 
         else {
-            // Configuration
-            api 'com.electronwill.night-config:core:3.4.2'
-
             // Apache Commons
             implementation "org.apache.commons:commons-lang3:3.8.1"
 
