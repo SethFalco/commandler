@@ -1,6 +1,8 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Module;
+import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.ModuleData;
 import org.slf4j.*;
 
@@ -20,11 +22,13 @@ public class ModulesContext {
      */
     private static final Logger logger = LoggerFactory.getLogger(ModulesContext.class);
 
+    private Commandler commandler;
+
     /**
      * A collection of data for each module within this
      * module context.
      */
-    private Set<ModuleData> modules;
+    private Map<Class<? extends Handler>, ModuleData> modules;
 
     /**
      * A list of grouped modules.
@@ -37,8 +41,10 @@ public class ModulesContext {
      */
     private Set<String> rootAliases;
 
-    public ModulesContext() {
-        modules = new HashSet<>();
+    public ModulesContext(Commandler commandler) {
+        this.commandler = commandler;
+
+        modules = new HashMap<>();
         groups = new HashMap<>();
         rootAliases = new HashSet<>();
     }
@@ -53,14 +59,30 @@ public class ModulesContext {
      */
     @SafeVarargs
     final public void addModule(Class<? extends Handler>... classes) {
+        if (!Collections.disjoint(modules.keySet(), List.of(classes)))
+            throw new IllegalStateException("Can't register a Handler that has already been registered.");
+
         for (Class<? extends Handler> clazz : classes) {
             ModuleData data = new ModuleData(this, clazz);
-
             Module module = data.getAnnotation();
             String group = module.group();
 
+            modules.put(clazz, data);
+
             groups.putIfAbsent(group, new HashSet<>());
             groups.get(group).add(data);
+
+            rootAliases.addAll(data.getAliases());
+
+            data.getStaticCommands().forEach(commandData -> {
+                rootAliases.addAll(commandData.getAliases());
+            });
+
+            Class<? extends IBuilder>[] builders = data.getModuleClass().getAnnotation(Builders.class).value();
+            commandler.getBuilder().add(builders);
+
+            Class<? extends IParser>[] parsers = data.getModuleClass().getAnnotation(Parsers.class).value();
+            commandler.getParser().add(parsers);
         }
     }
 
@@ -121,8 +143,8 @@ public class ModulesContext {
     }
 
     public ModuleData getModule(String alias) {
-        for (ModuleData data : modules) {
-            if (data.getAliases().contains(alias.toLowerCase()))
+        for (ModuleData data : modules.values()) {
+            if (data.performed(alias))
                 return null;
         }
 
@@ -130,12 +152,7 @@ public class ModulesContext {
     }
 
     public ModuleData getModule(Class<? extends Handler> clazz) {
-        for (ModuleData data : modules) {
-            if (data.getModuleClass() == clazz)
-                return data;
-        }
-
-        return null;
+        return modules.get(clazz);
     }
 
     /**
@@ -156,9 +173,9 @@ public class ModulesContext {
      */
     public Set<ModuleData> getModules(boolean isPublic) {
         if (isPublic)
-            return Set.copyOf(modules);
+            return Set.copyOf(modules.values());
 
-        return modules.stream()
+        return modules.values().stream()
             .filter(ModuleData::isPublic)
             .collect(Collectors.toUnmodifiableSet());
     }

@@ -68,7 +68,7 @@ public interface ICommandEvent<C, E, M> {
 
     CommandInput getInput();
 
-    Handler<C, E, M> getHandler();
+    M getError();
 
     C getClient();
 

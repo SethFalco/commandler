@@ -1,5 +1,7 @@
 package com.elypia.commandler.annotations;
 
+import com.elypia.commandler.Commandler;
+
 import java.lang.annotation.*;
 
 /**
@@ -12,7 +14,13 @@ import java.lang.annotation.*;
 @Repeatable(Param.List.class)
 public @interface Param {
 
-	String DEFAULT_HELP = "";
+	/**
+	 * If the {@link #help()} is set to the default
+	 * then {@link Commandler} will check a global list
+	 * if a default there is a default help message for the
+	 * data type of the parameter.
+	 */
+	String DEFAULT = "";
 
 	/**
 	 * The id to display this parameter as.
@@ -22,16 +30,20 @@ public @interface Param {
 	/**
 	 * A small description of what the parameter is.
 	 */
-	String help() default DEFAULT_HELP;
+	String help() default DEFAULT;
 
 	/**
 	 * Allows the {@link Param} annotiation to be repeatable
 	 * so we can specify multiple parameters per commands.
-	 *
 	 */
 	@Target(ElementType.METHOD)
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface List {
+
+		/**
+		 * @return Allows us to have multiple {@link Param}s
+		 * per method.
+		 */
 		Param[] value();
 	}
 }

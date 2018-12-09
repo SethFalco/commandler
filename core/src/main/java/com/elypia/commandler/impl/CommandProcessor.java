@@ -62,18 +62,22 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
 
         CommandData commandData = event.getInput().getCommandData();
 
+        Object response;
+
         try {
             Object[] params = commandler.getParser().processEvent(event, commandData);
 
-            if (params == null || !commandler.getValidator().validate(event, params))
+            Handler<C, E, M> handler = commandler.getHandler(commandData.getModuleData().getModuleClass());
+
+            if (params == null || !commandler.getValidator().validate(event, handler, params))
                 return event.getError();
 
-            if (!input.getCommand().equalsIgnoreCase("help") && !event.getHandler().isEnabled()) {
+            if (!input.getCommand().equalsIgnoreCase("help") && !handler.isEnabled()) {
                 event.invalidate(misuseHandler.onModuleDisabled(event));
                 return event.getError();
             }
 
-            Object response = commandData.getMethod().invoke(event.getHandler(), params);
+            response = commandData.getMethod().invoke(handler, params);
 
             if (response != null && send)
                 return event.send(response);
@@ -82,7 +86,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
             return event.getError();
         }
 
-        return null;
+        return commandler.getBuilder().build(event, response);
     }
 
     @Override

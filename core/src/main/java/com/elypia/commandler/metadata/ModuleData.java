@@ -72,7 +72,7 @@ public class ModuleData implements Comparable<ModuleData> {
         if (annotation == null)
             throw new IllegalStateException(String.format("%s isn't annotated with %s.", moduleClass.getName(), Module.class.getName()));
 
-        isPublic = !annotation.help().equals(Module.DEFAULT_HELP);
+        isPublic = !annotation.help().equals(Module.HIDEEN);
 
         aliases = new HashSet<>();
         commands = new ArrayList<>();

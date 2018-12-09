@@ -42,7 +42,22 @@ public class MiscTest {
 
     @Test
     public void testHelp() {
-        String expected = "Test (test)\nMy test module.\n\nPing! (ping)\nCheck if the bot is alive!\n\nRepeat (repeat)\nRepeat some text multiple times.\ninput: What you want me to say!\ncount: The number of times I should say it!\n\nSay (say)\nI'll repeat something you say!\ninput: What you want me to say!";
+        String expected =
+            "Miscellaneous (misc)\n" +
+            "Test generic functionality and if it works.\n" +
+            "\n" +
+            "Ping! (ping)\n" +
+            "Check if I am alive.\n" +
+            "\n" +
+            "Repeat (repeat)\n" +
+            "Repeat some text multiple times.\n" +
+            "input: What you want me to say.\n" +
+            "count: The number of times I should say it.\n" +
+            "\n" +
+            "Say (say)\n" +
+            "I'll repeat something you say.\n" +
+            "input: What you want me to say.";
+
         String actual = app.execute(">misc help");
 
         assertEquals(expected, actual);

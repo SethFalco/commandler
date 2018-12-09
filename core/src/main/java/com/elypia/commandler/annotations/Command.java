@@ -5,8 +5,8 @@ import com.elypia.commandler.Commandler;
 import java.lang.annotation.*;
 
 /**
- * The Command annotiation is used to supply metadata
- * to a commands. This can be aliases, or the help to
+ * The Command annotation is used to supply metadata
+ * to commands. This can be aliases, or the help to
  * let people know how to use this commands.
  *
  * All static data will be stored in an annotation, reserving the
@@ -23,7 +23,7 @@ public @interface Command {
 	 * in the help and documentation. Assign it a value for it
 	 * to be displayed.
 	 */
-	String DEFAULT_HELP = "";
+	String HIDDEN = "";
 
 	/**
 	 * @return The id of the commands as it appears in help / documentation.
@@ -42,8 +42,8 @@ public @interface Command {
 	 * @return The help text to advise the user of what
 	 * this commands does.
 	 *
-	 * If the help String is {@link #DEFAULT_HELP} then
+	 * If the help String is {@link #HIDDEN} then
 	 * it will be hidden from the help docs.
 	 */
-	String help() default DEFAULT_HELP;
+	String help() default HIDDEN;
 }

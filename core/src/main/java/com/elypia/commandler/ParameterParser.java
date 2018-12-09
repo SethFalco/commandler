@@ -194,13 +194,11 @@ public class ParameterParser {
             Class<?>[] compatibleTypes = parserType.getAnnotation(Compatible.class).value();
 
             for (Class<?> type : compatibleTypes) {
-                if (type == typeRequired) {
-                    var value = parser.getValue();
-
-                    if (value == null)
+                if (type == typeRequired || type.isAssignableFrom(typeRequired)) {
+                    if (parser.getValue() == null)
                         parser.setValue(parserType.getConstructor().newInstance());
 
-                    return value;
+                    return parser.getValue();
                 }
             }
         }

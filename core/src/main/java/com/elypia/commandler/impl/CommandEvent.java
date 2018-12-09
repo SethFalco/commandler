@@ -109,11 +109,6 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
         return error;
     }
 
-    @Override
-    public Handler<C, E, M> getHandler() {
-        return null;
-    }
-
     public C getClient() {
         return client;
     }

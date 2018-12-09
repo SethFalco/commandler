@@ -19,39 +19,68 @@ public class ValidationTest {
     @Test
     public void testLength() {
         String expected = "ajenni";
-        String actual = app.execute(">valid length a jenni");
+        String actual = app.execute(">valid concat a jenni");
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void testInvalidLength() {
-        String expected = "Invalid";
-        String actual = app.execute(">valid length an jenni");
+        String expected =
+            "Command failed; a parameter was invalidated.\n" +
+            "Module: Validation\n" +
+            "Command: Concatenate\n" +
+            "\n" +
+            "Violations:\n" +
+            "first: Size must be between 0 and 1. (an)";
+
+        String actual = app.execute(">valid concat an jenni");
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void testLimit() {
-        String expected = "250";
-        String actual = app.execute(">valid limit 100 150");
+        String expected =
+            "Command failed; a parameter was invalidated.\n" +
+            "Module: Validation\n" +
+            "Command: Min & Max\n" +
+            "\n" +
+            "Violations:\n" +
+            "y: Must be less than or equal to 10. (150)";
+
+        String actual = app.execute(">valid sum 100 150");
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void testOption() {
-        String expected = "seth";
-        String actual = app.execute(">valid option seth");
+        String expected = "You selected Seth.";
+        String actual = app.execute(">valid panda seth");
 
         assertEquals(expected, actual);
     }
 
     @Test
-    public void testPeriod() {
-        String expected = "8 minutes, and 20 seconds";
-        String actual = app.execute("valid period \"500 seconds\"");
+    public void testValidPeriod() {
+        String expected = "3723 seconds";
+        String actual = app.execute(">valid period 1h2m3s");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testInvalidPeriod() {
+        String expected =
+            "Command failed; a parameter was invalidated.\n" +
+            "Module: Validation\n" +
+            "Command: Period\n" +
+            "\n" +
+            "Violations:\n" +
+            "duration: Must be between 0 and 2 days. (PT84H20S)";
+
+        String actual = app.execute(">valid period 3d12h20s");
 
         assertEquals(expected, actual);
     }

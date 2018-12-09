@@ -31,15 +31,15 @@ public class ValidationModule extends Handler<Void, String, String> {
 
     @Command(id = "Min & Max", aliases = "sum")
     @Param(id = "numbers", help = "A list of all numbers to sum together.")
-    public long sumArray(@Max(100) int... numbers) {
+    public long sumArray(@Max(100) int[] numbers) {
         return IntStream.of(numbers).sum();
     }
 
-    @Overload("Min & Max")
+    @Overload(value = "Min & Max", params = {"x", "y"})
     @Param(id = "x", help = "The first number to sum.")
     @Param(id = "y", help = "The second number to sum.")
-    public long sumTwoNumbers(@Min(1) int one, @Min(1) @Max(10) int two) {
-        return sumArray(one, two);
+    public long sumTwoNumbers(@Min(1) int x, @Min(1) @Max(10) int y) {
+        return sumArray(new int[] {x, y});
     }
 
     @Command(id = "Sethi or Jenni", aliases = "panda")
@@ -49,8 +49,8 @@ public class ValidationModule extends Handler<Void, String, String> {
     }
 
     @Command(id = "Period", aliases = "period")
-    @Param(id = "time", help = "Any period of time under two days.")
+    @Param(id = "duration", help = "Any period of time under two days.")
     public String getTime(@Period(max = 2, unit = TimeUnit.DAYS) Duration duration) {
-        return String.valueOf(duration.toSeconds());
+        return duration.toSeconds() + " seconds";
     }
 }

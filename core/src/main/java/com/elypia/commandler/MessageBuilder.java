@@ -1,15 +1,17 @@
 package com.elypia.commandler;
 
+import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
 import org.slf4j.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
  * The builder is used to build messages from returning commands
  * or the {@link ICommandEvent#send(Object)} method. Builders
  * that implement {@link IBuilder} can be registered via the
- * {@link #registerBuilder(IBuilder, Class[])} method, this tells
+ * {@link #add method, this tells
  * {@link Commandler} how to turn various types of Objects into
  * messages to be sent in chat.
  *
@@ -17,7 +19,7 @@ import java.util.*;
  *            should be the data-type the client of our integrating
  *            platform expects us to send back to users.
  */
-public class MessageBuilder<M> implements Iterable<IBuilder<?, ?, M>> {
+public class MessageBuilder<M> {
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
@@ -29,7 +31,7 @@ public class MessageBuilder<M> implements Iterable<IBuilder<?, ?, M>> {
      * All registered {@link IBuilder} instances mapped
      * to the data type it builds for.
      */
-    private Map<Class<?>, IBuilder<?, ?, M>> builders;
+    private Map<Class<? extends IBuilder<?, ?, M>>, IBuilder<?, ?, M>> builders;
 
     public MessageBuilder() {
         builders = new HashMap<>();
@@ -41,20 +43,12 @@ public class MessageBuilder<M> implements Iterable<IBuilder<?, ?, M>> {
      * If a {@link IBuilder} for this type is already registered
      * then it is replaced with the new {@link IBuilder}.
      *
-     * @param newBuilder The {@link IBuilder} that builds an object into a message.
      * @param types The data types this builder can build.
      */
-    public void registerBuilder(IBuilder<?, ?, M> newBuilder, Class...types) {
-        for (Class type : types) {
-            IBuilder<?, ?, M> oldBuilder = builders.put(type, newBuilder);
-
-            if (oldBuilder != null) {
-                String oldName = oldBuilder.getClass().getName();
-                String newName = newBuilder.getClass().getName();
-
-                logger.info("Replaced registered builder for {} ({}) with {}.", oldName, type.getName(), newName);
-            }
-        }
+    @SafeVarargs
+    final public void add(Class<? extends IBuilder<?, ?, M>>... types) {
+        for (Class<? extends IBuilder<?, ?, M>> type : types)
+            builders.put(type, null);
     }
 
     /**
@@ -88,25 +82,31 @@ public class MessageBuilder<M> implements Iterable<IBuilder<?, ?, M>> {
      * if one is available for building an message from this
      * data-type.
      *
-     * @param clazz The data-type we need to build from.
+     * @param typeRequired The data-type we need to build from.
      * @return The builder to convert this to a message.
      * @throws IllegalArgumentException If no {@link IBuilder} is
      *         registered for this data-type.
      */
-    protected IBuilder<?, ?, M> getBuilder(Class<?> clazz) {
-        if (builders.containsKey(clazz))
-            return builders.get(clazz);
+    private IBuilder<?, ?, M> getBuilder(Class<?> typeRequired) {
+        for (var builder : builders.entrySet()) {
+            Class<? extends IBuilder<?, ?, M>> builderType = builder.getKey();
+            Class<?>[] compatibleTypes = builderType.getAnnotation(Compatible.class).value();
 
-        for (Map.Entry<Class<?>, IBuilder<?, ?, M>> entry : builders.entrySet()) {
-            if (entry.getKey().isAssignableFrom(clazz))
-                return entry.getValue();
+            for (Class<?> type : compatibleTypes) {
+                if (type == typeRequired || type.isAssignableFrom(typeRequired)) {
+                    if (builder.getValue() == null) {
+                        try {
+                            builder.setValue(builderType.getConstructor().newInstance());
+                        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
+                            throw new IllegalStateException("No default constructor.");
+                        }
+                    }
+
+                    return builder.getValue();
+                }
+            }
         }
 
-        throw new IllegalArgumentException(String.format("No builder implementation registered for data type %s.", clazz.getName()));
-    }
-
-    @Override
-    public Iterator<IBuilder<?, ?, M>> iterator() {
-        return builders.values().iterator();
+        throw new IllegalArgumentException(String.format("No builder implementation registered for data type %s.", typeRequired.getName()));
     }
 }

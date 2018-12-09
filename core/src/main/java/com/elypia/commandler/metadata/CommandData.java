@@ -128,7 +128,7 @@ public class CommandData implements Comparable<CommandData> {
                     overloads.add(new CommandData(moduleData, m, this));
             }
 
-            isPublic = !command.help().equals(Command.DEFAULT_HELP);
+            isPublic = !command.help().equals(Command.HIDDEN);
         } else {
             parseOverload(commandData);
         }
@@ -162,9 +162,6 @@ public class CommandData implements Comparable<CommandData> {
 
                 throw new IllegalStateException(String.format("Command %s in module %s (%s) contains a static alias which has already been registered by a previous module or static command.", commandName, moduleName, moduleType));
             }
-
-            for (String in : aliases)
-                context.getAliases().add(in);
         }
     }
 
@@ -313,27 +310,6 @@ public class CommandData implements Comparable<CommandData> {
         }
     }
 
-    @Override
-    public String toString() {
-        List<ParamData> params = getInputParams();
-
-        if (params.isEmpty())
-            return "(0) None";
-
-        StringJoiner itemJoiner = new StringJoiner(", ");
-
-        for (ParamData param : params) {
-            String name = param.getAnnotation().id();
-
-            if (param.isList())
-                itemJoiner.add("['" + name + "']");
-            else
-                itemJoiner.add("'" + name + "'");
-        }
-
-        return "(" + params.size() + ") " + itemJoiner.toString();
-    }
-
     /**
      * @param input The input module by the user.
      * @return If this command contains an entry of that command.
@@ -421,6 +397,30 @@ public class CommandData implements Comparable<CommandData> {
 
     public int getInputRequired() {
         return inputRequired;
+    }
+
+    @Override
+    public String toString() {
+        if (paramData == null)
+            return "Uninitializsed";
+
+        List<ParamData> params = getInputParams();
+
+        if (params.isEmpty())
+            return "(0) None";
+
+        StringJoiner itemJoiner = new StringJoiner(", ");
+
+        for (ParamData param : params) {
+            String name = param.getAnnotation().id();
+
+            if (param.isList())
+                itemJoiner.add("['" + name + "']");
+            else
+                itemJoiner.add("'" + name + "'");
+        }
+
+        return "(" + params.size() + ") " + itemJoiner.toString();
     }
 
     @Override

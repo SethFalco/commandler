@@ -34,7 +34,7 @@ public class ArrayTest {
 
     @Test
     public void testSumParamCountMismatch() {
-        String expected = "Command failed; you provided the wrong number of parameters.\nModule: Array\nCommand: Add Numbers\n\nProvided:\n(3) ['1', '2', '3', '4'], '4', '4'\n\nPossibilities:\n(1) ['numbers']\n(2) ['numbers'], 'multiplier'";
+        String expected = "Command failed; you provided the wrong number of parameters.\nModule: Array\nCommand: Add Ints\n\nProvided:\n(3) ['1', '2', '3', '4'], '4', '4'\n\nPossibilities:\n(1) ['numbers']\n(2) ['numbers'], 'multiplier'";
         String actual = app.execute(">array sum 1, 2, 3, 4 4 4");
 
         assertEquals(expected, actual);

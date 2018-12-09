@@ -18,15 +18,34 @@ public class MisuseTest {
 
     @Test
     public void onParamCountMismatch() {
-        String expected = "Command failed; you provided the wrong number of parameters.\nModule: Enum\nCommand: TimeUnit\n\nProvided:\n(2) 'seconds', 'extra'\n\nPossibilities:\n(1) 'unit'";
-        String actual = app.execute(">enum time seconds extra");
+        String expected =
+            "Command failed; you provided the wrong number of parameters.\n" +
+            "Module: Enum\n" +
+            "Command: TimeUnit\n" +
+            "\n" +
+            "Provided:\n" +
+            "(2) 'seconds', 'extra'\n" +
+            "\n" +
+            "Possibilities:\n" +
+            "(1) 'unit'";
+
+        String actual = app.execute(">enum timeunit seconds extra");
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void onNoDefault() {
-        String expected = "Command failed; this module has no default command.\nModule: Enum\n\nPossibilities:\nTimeUnit ('time')\n\nSee the help command for more information.";
+        String expected =
+            "Command failed; this module has no default command.\n" +
+            "Module: Enum\n" +
+            "\n" +
+            "Possibilities:\n" +
+            "TimeUnit ('timeunit')\n" +
+            "Top YouTuber ('top')\n" +
+            "\n" +
+            "See the help command for more information.";
+
         String actual = app.execute(">enum");
 
         assertEquals(expected, actual);
@@ -34,8 +53,15 @@ public class MisuseTest {
 
     @Test
     public void onUnsupportedList() {
-        String expected = "Command failed; the input, ['seconds', 'minutes', 'hours'], for parameter 'unit' can't be a list.\nModule: Enum\nCommand: TimeUnit\n\nRequired:\n(1) 'unit'";
-        String actual = app.execute(">enum time seconds, minutes, hours");
+        String expected =
+            "Command failed; the input, ['seconds', 'minutes', 'hours'], for parameter 'unit' can't be a list.\n" +
+            "Module: Enum\n" +
+            "Command: TimeUnit\n" +
+            "\n" +
+            "Required:\n" +
+            "(1) 'unit'";
+
+        String actual = app.execute(">enum timeunit seconds, minutes, hours");
 
         assertEquals(expected, actual);
     }

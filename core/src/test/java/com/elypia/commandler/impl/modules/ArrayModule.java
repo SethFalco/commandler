@@ -34,8 +34,8 @@ public class ArrayModule extends Handler<Void, String, String> {
 
     @Command(id = "Add Doubles", aliases = "doubles")
     @Param(id = "numbers", help = "A list of numbers to sum.")
-    public String doubles(double[] numbers) {
-        return String.format("%,.0f", DoubleStream.of(numbers).sum());
+    public double doubles(double[] numbers) {
+        return DoubleStream.of(numbers).sum();
     }
 
     @Command(id = "Add Floats", aliases = "floats")

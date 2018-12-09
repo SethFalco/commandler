@@ -19,13 +19,13 @@ public class EnumTest {
     @Test
     public void testTimeUnit() {
         String expected = "SECONDS";
-        String actual = app.execute(">enum time seconds");
+        String actual = app.execute(">enum timeunit seconds");
 
         assertEquals(expected, actual);
     }
 
     @Test
-    public void testTimeUnitInvalid() {
+    public void testInvalidEnum() {
         String expected = "Command failed; I couldn't interpret 'pyrocynical', as the parameter 'youtuber' (The number one YouTuber.).\nModule: Enum\nCommand: Top YouTuber\n\nRequired:\n(1) 'youtuber'";
         String actual = app.execute(">enum top pyrocynical");
 

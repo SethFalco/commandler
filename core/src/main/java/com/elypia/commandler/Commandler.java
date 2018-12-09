@@ -3,37 +3,55 @@ package com.elypia.commandler;
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.interfaces.*;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+
 public class Commandler<C, E, M> {
 
     private C client;
 
     private String prefix;
     private String website;
-    private ModulesContext context;
     private IMisuseHandler<C, E, M> misuseHandler;
     private LanguageEngine<E> engine;
 
+    private ModulesContext context;
     private ICommandProcessor<C, E, M> processor;
     private CommandValidator validator;
     private ParameterParser parser;
     private MessageBuilder builder;
 
+    private Map<Class<? extends Handler>, Handler<C, E, M>> handlers;
+
     private Commandler(Builder<C, E, M> commandlerBuilder) {
         client = commandlerBuilder.client;
         prefix = commandlerBuilder.prefix;
         website = commandlerBuilder.website;
-        context = commandlerBuilder.context;
         misuseHandler = commandlerBuilder.misuseHandler;
         engine = commandlerBuilder.engine;
 
+        context = new ModulesContext(this);
         processor = new CommandProcessor<>(this);
         validator = new CommandValidator(this);
         parser = new ParameterParser(misuseHandler);
         builder = new MessageBuilder();
+
+        handlers = new HashMap<>();
     }
 
     public M execute(E event, String content, boolean send) {
         return processor.dispatch(event, content, send);
+    }
+
+    public Handler<C, E, M> getHandler(Class<? extends Handler> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        if (!handlers.containsKey(handler)) {
+            Handler<C, E, M> handlerInstance = handler.getConstructor().newInstance();
+            handlerInstance.init(this);
+
+            handlers.put(handler, handlerInstance);
+        }
+
+        return handlers.get(handler);
     }
 
     public C getClient() {
@@ -82,7 +100,6 @@ public class Commandler<C, E, M> {
 
         private String prefix;
         private String website;
-        private ModulesContext context;
         private IMisuseHandler<C, E, M> misuseHandler;
         private LanguageEngine<E> engine;
 
@@ -94,9 +111,6 @@ public class Commandler<C, E, M> {
         private void initializeDefaults() {
             if (prefix == null)
                 prefix = "!";
-
-            if (context == null)
-                context = new ModulesContext();
 
             if (misuseHandler == null)
                 misuseHandler = new MisuseHandler<>();
@@ -129,15 +143,6 @@ public class Commandler<C, E, M> {
 
         public Builder<C, E, M> setWebsite(String website) {
             this.website = website;
-            return this;
-        }
-
-        public ModulesContext getContext() {
-            return context;
-        }
-
-        public Builder<C, E, M> setContext(ModulesContext context) {
-            this.context = context;
             return this;
         }
 

@@ -34,7 +34,7 @@ public class ParamData {
 
     ParamData(CommandData commandData, Param annotation, Parameter parameter) {
         this.commandData = Objects.requireNonNull(commandData);
-        this.annotation = Objects.requireNonNull(annotation);
+        this.annotation = annotation;
         this.parameter = Objects.requireNonNull(parameter);
 
         isInput = !ICommandEvent.class.isAssignableFrom(parameter.getType());

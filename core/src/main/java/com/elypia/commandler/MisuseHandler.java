@@ -4,9 +4,10 @@ import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.impl.CommandInput;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
 
-import javax.validation.ConstraintViolation;
+import javax.validation.*;
 import java.util.*;
 
 /**
@@ -70,7 +71,29 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
 
     @Override
     public <H extends Handler<C, E, M>> Object onInvalidated(ICommandEvent<C, E, M> event, Set<ConstraintViolation<H>> violations) {
-        String format = "Command failed; a parameter was invalidated.\nModule: %s\nCommand: %s";
+        String format =
+            "Command failed; a parameter was invalidated.\n" +
+            "Module: %s\n" +
+            "Command: %s\n" +
+            "\n" +
+            "Violations:";
+
+        for (var in : violations) {
+            String message = StringUtils.capitalize(in.getMessage());
+
+            if (message.indexOf(message.length() - 1) != '.')
+                message += ".";
+
+            for (ParamData paramData : event.getInput().getCommandData().getInputParams()) {
+                Path.Node violatedParam = CommandlerUtils.getLastElement(in.getPropertyPath().iterator());
+
+                if (paramData.getParameter().getName().equals(violatedParam.getName()))
+                    message = paramData.getAnnotation().id() + ": " + message;
+            }
+
+            format += "\n" + message + " (" + in.getInvalidValue() + ")";
+        }
+
         return generateMessage(format, event);
     }
 
@@ -84,7 +107,10 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
 
     @Override
     public Object onModuleDisabled(ICommandEvent<C, E, M> event) {
-        String format = "Command failed; this module is currently disabled due to live issues.\nModule: %s";
+        String format =
+            "Command failed; this module is currently disabled due to live issues.\n" +
+            "Module: %s";
+
         return String.format(format, event.getInput().getModuleData().getAnnotation().id());
     }
 

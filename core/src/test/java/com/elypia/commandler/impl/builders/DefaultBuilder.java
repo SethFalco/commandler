@@ -7,7 +7,7 @@ import com.elypia.commandler.impl.*;
 public class DefaultBuilder implements TestBuilder<String> {
 
     @Override
-    public String build(TestEvent event, String output) {
+    public String build(CommandEvent<Void, String, String> event, String output) {
         return output;
     }
 }

@@ -11,7 +11,7 @@ import com.elypia.commandler.impl.modules.BuilderModule;
 public class BuilderModuleBuilder implements TestBuilder<BuilderModule> {
 
     @Override
-    public String build(TestEvent event, BuilderModule output) {
+    public String build(CommandEvent<Void, String, String> event, BuilderModule output) {
         return null;
     }
 }

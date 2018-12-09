@@ -33,7 +33,9 @@ public abstract class Handler<C, E, M> {
 		this.commandler = commandler;
 		client = commandler.getClient();
 		module = commandler.getContext().getModule(this.getClass());
-		return test();
+		enabled = test();
+
+		return enabled;
 	}
 
 	/**
@@ -57,6 +59,7 @@ public abstract class Handler<C, E, M> {
 	 * @param event The {@link ICommandEvent event} produced by Commandler.
 	 * @return The message to send to the end user.
 	 */
+	@Command(id = "Help", aliases = "help")
 	public Object help(ICommandEvent<C, E, M> event) {
 		StringBuilder builder = new StringBuilder();
 
