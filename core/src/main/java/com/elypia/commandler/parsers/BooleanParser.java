@@ -1,14 +1,12 @@
 package com.elypia.commandler.parsers;
 
+import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
 
 import java.util.*;
 
+@Compatible({Boolean.class, boolean.class})
 public class BooleanParser implements IParser<ICommandEvent, Boolean> {
-
-    public static final Class[] TYPES = {
-        Boolean.class, boolean.class
-    };
 
     private static final Collection<String> TRUE = List.of(
         "true", "t", "yes", "y", "1", "one", "✔"

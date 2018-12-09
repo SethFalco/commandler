@@ -7,51 +7,48 @@ import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.parsers.*;
 import org.slf4j.*;
 
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.time.Duration;
+import java.lang.reflect.*;
 import java.util.*;
 
 /**
  * The {@link Param paramter} parser which is used to interpret
  * parameters specified in the {@link Command command} arguments.
  * Before a data-type can be used as an argument a {@link IParser parser}
- * must be specified and registered to the {@link ParseRegister} via the
- * {@link Commandler#registerParser(IParser, Class[])} method. <br>
- * The {@link ParseRegister} is how {@link String} input provided
+ * must be specified and registered to the {@link ParameterParser} via the
+ * the {@link Parsers} annotation on {@link Handler handlers}. <br>
+ * The {@link ParameterParser} is how {@link String} input provided
  * by the chat client is converted into the respective object and passed
  * to the method associated with the {@link Command}.
  */
-public class ParseRegister implements Iterable<IParser> {
+public class ParameterParser {
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ParseRegister.class);
+    private static final Logger logger = LoggerFactory.getLogger(ParameterParser.class);
 
-    /**
-     * Our parent Commandler instance which receives and manages the events.
-     */
-    protected Commandler commandler;
+    private IMisuseHandler handler;
 
     /**
      * The registered parsers which allow us to use particular data-types
      * as {@link Command} {@link Param parameters}.
      */
-    protected Map<Class<?>, IParser> parsers;
+    protected Map<Class<? extends IParser>, IParser> parsers;
 
-    public ParseRegister(Commandler commandler) {
-        this.commandler = Objects.requireNonNull(commandler);
+    public ParameterParser(IMisuseHandler handler) {
+        this.handler = Objects.requireNonNull(handler);
         parsers = new HashMap<>();
 
-        registerParser(new BooleanParser(), BooleanParser.TYPES);
-        registerParser(new CharacterParser(), CharacterParser.TYPES);
-        registerParser(new DurationParser(), Duration.class);
-        registerParser(new EnumParser(), Enum.class);
-        registerParser(new NumberParser(), NumberParser.TYPES);
-        registerParser(new StringParser(), String.class);
-        registerParser(new UrlParser(), URL.class);
+        add(
+            BooleanParser.class,
+            CharacterParser.class,
+            DurationParser.class,
+            EnumParser.class,
+            NumberParser.class,
+            StringParser.class,
+            UrlParser.class
+        );
     }
 
     /**
@@ -61,23 +58,13 @@ public class ParseRegister implements Iterable<IParser> {
      * {@link Commandler} may register a few {@link IParser parsers} by default for
      * common types and primitives.
      *
-     * @param newParser The parser we're registering.
-     * @param types The types of objects we wish to use this parser for.
-     *              (When selecting a parser, we look a {@link IParser} of
-     *              the same type first, else an
-     *              {@link Class#isAssignableFrom(Class) assignable} type.
+     * @param types The type of parsers to register.
+     *              These will be initalizes lazily as required.
      */
-    public void registerParser(IParser newParser, Class...types) {
-        for (Class type : types) {
-            IParser oldParser = parsers.put(type, newParser);
-
-            if (oldParser != null) {
-                String oldName = oldParser.getClass().getName();
-                String newName = newParser.getClass().getName();
-
-                logger.info("The parser, {}, for the data-type {} has been replaced with {}.", oldName, type.getName(), newName);
-            }
-        }
+    @SafeVarargs
+    final public void add(Class<? extends IParser>... types) {
+        for (var type : types)
+            parsers.put(type, null);
     }
 
     /**
@@ -88,7 +75,7 @@ public class ParseRegister implements Iterable<IParser> {
      * @param commandData The method to imitate the fields of.
      * @return An Object[] array of all parameters parsed as required for the given method.
      */
-    public Object[] processEvent(ICommandEvent<?, ?, ?> event, CommandData commandData) {
+    public Object[] processEvent(ICommandEvent<?, ?, ?> event, CommandData commandData) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         List<ParamData> paramData = commandData.getParamData();
         List<List<String>> inputs = event.getInput().getParameters();
 
@@ -133,7 +120,7 @@ public class ParseRegister implements Iterable<IParser> {
      * @return      The parsed object as required for the command, or null
      *              if we failed to parse the input. (Usually user misuse.)
      */
-    protected Object parseParameter(ICommandEvent<?, ?, ?> event, ParamData param, List<String> items) {
+    protected Object parseParameter(ICommandEvent<?, ?, ?> event, ParamData param, List<String> items) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
         IParser parser = getParser(componentType);
@@ -151,7 +138,7 @@ public class ParseRegister implements Iterable<IParser> {
                 Object o = parser.parse(event, componentType, item);
 
                 if (o == null) {
-                    event.invalidate(commandler.getMisuseListener().onParamParseFailure(event, param, componentType, item));
+                    event.invalidate(handler.onParamParseFailure(event, param, componentType, item));
                     return null;
                 }
 
@@ -182,12 +169,12 @@ public class ParseRegister implements Iterable<IParser> {
             Object o = parser.parse(event, componentType, items.get(0));
 
             if (o == null)
-                event.invalidate(commandler.getMisuseListener().onParamParseFailure(event, param, type, items.get(0)));
+                event.invalidate(handler.onParamParseFailure(event, param, type, items.get(0)));
 
             return o;
         }
 
-        event.invalidate(commandler.getMisuseListener().onListNotSupported(event, param, items));
+        event.invalidate(handler.onListNotSupported(event, param, items));
         return null;
     }
 
@@ -198,23 +185,26 @@ public class ParseRegister implements Iterable<IParser> {
      * by {@link Class#isAssignableFrom(Class)} instead. This will return
      * null if no {@link IParser} is found for this type.
      *
-     * @param clazz The class to obtain a parser for.
+     * @param typeRequired The type that needs parsing.
      * @return The parser to can parse this data into this data-type.
      */
-    protected IParser<?, ?> getParser(Class<?> clazz) {
-        if (parsers.containsKey(clazz))
-            return parsers.get(clazz);
+    private IParser<?, ?> getParser(Class<?> typeRequired) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        for (var parser : parsers.entrySet()) {
+            Class<? extends IParser> parserType = parser.getKey();
+            Class<?>[] compatibleTypes = parserType.getAnnotation(Compatible.class).value();
 
-        for (Map.Entry<Class<?>, IParser> entry : parsers.entrySet()) {
-            if (entry.getKey().isAssignableFrom(clazz))
-                return entry.getValue();
+            for (Class<?> type : compatibleTypes) {
+                if (type == typeRequired) {
+                    var value = parser.getValue();
+
+                    if (value == null)
+                        parser.setValue(parserType.getConstructor().newInstance());
+
+                    return value;
+                }
+            }
         }
 
         return null;
-    }
-
-    @Override
-    public Iterator<IParser> iterator() {
-        return parsers.values().iterator();
     }
 }

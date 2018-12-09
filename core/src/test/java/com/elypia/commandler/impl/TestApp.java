@@ -10,20 +10,23 @@ public class TestApp {
     public TestApp() {
         context = new ModulesContext();
 
-        var builder = new CommandlerBuilder<Void, String, String>()
+        var builder = new Commandler.Builder<Void, String, String>()
             .setContext(context)
-            .setPrefix("!")
-            .setWebsite("https://commandler.elypia.com/");
+            .setPrefix(">");
 
         commandler = builder.build();
     }
 
     public String execute(String text) {
-        return commandler.trigger(null, text);
+        return commandler.execute(null, text, false);
     }
 
     @SafeVarargs
-    final public void add(Class<? extends TestHandler>... clazz) {
+    final public void add(Class<? extends Handler<Void, String, String>>... clazz) {
         context.addModule(clazz);
+    }
+
+    public Commandler<Void, String, String> getCommandler() {
+        return commandler;
     }
 }

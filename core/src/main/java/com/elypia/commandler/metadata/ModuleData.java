@@ -148,7 +148,7 @@ public class ModuleData implements Comparable<ModuleData> {
             }
 
             if (!Collections.disjoint(commandAliases, commandData.getAliases())) {
-                String commandName = commandData.getCommand().name();
+                String commandName = commandData.getAnnotation().id();
                 String moduleName = annotation.id();
                 String moduleType = moduleClass.getName();
 
@@ -236,7 +236,7 @@ public class ModuleData implements Comparable<ModuleData> {
         StringJoiner commandJoiner = new StringJoiner("\n");
 
         for (CommandData commandData : getPublicCommands()) {
-            String name = commandData.command.name();
+            String name = commandData.command.id();
             StringJoiner aliasJoiner = new StringJoiner(", ");
 
             for (String alias : commandData.getAliases())

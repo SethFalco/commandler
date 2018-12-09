@@ -1,12 +1,10 @@
 package com.elypia.commandler.parsers;
 
+import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
 
+@Compatible({Number.class, double.class, float.class, long.class, int.class, short.class, byte.class})
 public class NumberParser implements IParser<ICommandEvent, Number> {
-
-    public static Class[] TYPES = {
-        Number.class, double.class, float.class, long.class, int.class, short.class, byte.class
-    };
 
     @Override
     public Number parse(ICommandEvent event, Class<? extends Number> type, String input) {

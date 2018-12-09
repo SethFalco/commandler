@@ -17,13 +17,13 @@ import java.util.*;
  *            should be the data-type the client of our integrating
  *            platform expects us to send back to users.
  */
-public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
+public class MessageBuilder<M> implements Iterable<IBuilder<?, ?, M>> {
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
-    protected static final Logger logger = LoggerFactory.getLogger(BuildRegister.class);
+    protected static final Logger logger = LoggerFactory.getLogger(MessageBuilder.class);
 
     /**
      * All registered {@link IBuilder} instances mapped
@@ -31,7 +31,7 @@ public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
      */
     private Map<Class<?>, IBuilder<?, ?, M>> builders;
 
-    public BuildRegister() {
+    public MessageBuilder() {
         builders = new HashMap<>();
     }
 
@@ -65,7 +65,7 @@ public class BuildRegister<M> implements Iterable<IBuilder<?, ?, M>> {
      * method to accomodate platform specific requirements.
      *
      * @param event The source event that triggered this.
-     * @param object The user input after already being parsed by the {@link ParseRegister}.
+     * @param object The user input after already being parsed by the {@link ParameterParser}.
      * @return A built message ready to send to the client.
      */
     public M build(ICommandEvent<?, ?, M> event, Object object) {

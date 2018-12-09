@@ -23,14 +23,13 @@ public class CommandValidator {
 
     private Commandler commandler;
 
-    private Validator validator;
     private ExecutableValidator exValidator;
 
     public CommandValidator(Commandler commandler) {
         this.commandler = commandler;
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        Validator validator = factory.getValidator();
         exValidator = validator.forExecutables();
     }
 
@@ -44,7 +43,7 @@ public class CommandValidator {
         if (violations.isEmpty())
             return true;
 
-        event.invalidate(commandler.getMisuseListener().onParamInvalidated(event, violations));
+        event.invalidate(commandler.getMisuseHandler().onInvalidated(event, violations));
         return false;
     }
 }

@@ -21,17 +21,21 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
 
     private M error;
 
-    private CommandInput<C, E, M> input;
+    private CommandInput input;
 
     private C client;
 
     private E source;
 
+    private Commandler<C, E, M> commandler;
+
     private LanguageEngine<E> engine;
 
-    public CommandEvent(LanguageEngine<E> engine, CommandInput<C, E, M> input) {
-        this.engine = engine;
+    public CommandEvent(Commandler<C, E, M> commandler, CommandInput input) {
+        this.commandler = commandler;
         this.input = input;
+
+        engine = commandler.getEngine();
     }
 
     /**
@@ -40,8 +44,8 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      * by the client because this allows us to utilise our builders
      * and implementation around it.
      *
-     * @param output The item to send to the {@link BuildRegister} to process.
-     * @return The message that was built by the {@link BuildRegister}.
+     * @param output The item to send to the {@link MessageBuilder} to process.
+     * @return The message that was built by the {@link MessageBuilder}.
      */
     @Override
     public <T> M send(T output) {
@@ -75,7 +79,7 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
      * @param trigger The new commands to process instead.
      */
     public M trigger(String trigger, boolean send) {
-        return getCommandler().trigger(getSource(), trigger, send);
+        return getCommandler().execute(getSource(), trigger, send);
     }
 
     /**
@@ -94,10 +98,10 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
     }
 
     public Commandler<C, E, M> getCommandler() {
-        return null;
+        return commandler;
     }
 
-    public CommandInput<C, E, M> getInput() {
+    public CommandInput getInput() {
         return input;
     }
 

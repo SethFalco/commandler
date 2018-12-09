@@ -1,9 +1,8 @@
 package com.elypia.commandler.test;
 
 import com.elypia.commandler.impl.TestApp;
-import org.junit.jupiter.api.BeforeAll;
-
-import java.io.IOException;
+import com.elypia.commandler.impl.modules.EnumModule;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,46 +11,31 @@ public class MisuseTest {
     private static TestApp app;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    public static void beforeAll() {
         app = new TestApp();
+        app.add(EnumModule.class);
     }
 
     @Test
     public void onParamCountMismatch() {
-        StringEvent event = new StringEvent(">enum time seconds extra");
-
         String expected = "Command failed; you provided the wrong number of parameters.\nModule: Enum\nCommand: TimeUnit\n\nProvided:\n(2) 'seconds', 'extra'\n\nPossibilities:\n(1) 'unit'";
-        String actual = commandler.trigger(event, event.getContent());
+        String actual = app.execute(">enum time seconds extra");
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void onNoDefault() {
-        StringEvent event = new StringEvent(">enum");
-
         String expected = "Command failed; this module has no default command.\nModule: Enum\n\nPossibilities:\nTimeUnit ('time')\n\nSee the help command for more information.";
-        String actual = commandler.trigger(event, event.getContent());
+        String actual = app.execute(">enum");
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void onUnsupportedList() {
-        StringEvent event = new StringEvent(">enum time seconds, minutes, hours");
-
         String expected = "Command failed; the input, ['seconds', 'minutes', 'hours'], for parameter 'unit' can't be a list.\nModule: Enum\nCommand: TimeUnit\n\nRequired:\n(1) 'unit'";
-        String actual = commandler.trigger(event, event.getContent());
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void onModuleDisabled() {
-        StringEvent event = new StringEvent(">failure failure");
-
-        String expected = "Command failed; this module is currently disabled due to live issues.\nModule: Failure";
-        String actual = commandler.trigger(event, event.getContent());
+        String actual = app.execute(">enum time seconds, minutes, hours");
 
         assertEquals(expected, actual);
     }

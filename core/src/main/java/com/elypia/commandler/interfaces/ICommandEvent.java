@@ -23,13 +23,13 @@ public interface ICommandEvent<C, E, M> {
      * by the client because this allows us to utilise our builders
      * and implementation around it.
      *
-     * @param output The item to send to the {@link BuildRegister} to process.
-     * @return The message that was built by the {@link BuildRegister}.
+     * @param output The item to send to the {@link MessageBuilder} to process.
+     * @return The message that was built by the {@link MessageBuilder}.
      */
     <T> M send(T output);
 
     /**
-     * Send a reply using {@link LanguageEngine#getScript(String, Object)}
+     * Send a reply using {@link LanguageEngine#getScript(Object, String, Object...)}
      * for obtaining a script through your implementation.
      *
      * @param key The key associated with the script to obtain.
@@ -51,7 +51,7 @@ public interface ICommandEvent<C, E, M> {
      * @param trigger The new commands to process instead.
      */
     default M trigger(String trigger, boolean send) {
-        return getCommandler().trigger(getSource(), trigger, send);
+        return getCommandler().execute(getSource(), trigger, send);
     }
 
     /**
@@ -66,7 +66,7 @@ public interface ICommandEvent<C, E, M> {
 
     Commandler<C, E, M> getCommandler();
 
-    CommandInput<C, E, M> getInput();
+    CommandInput getInput();
 
     Handler<C, E, M> getHandler();
 

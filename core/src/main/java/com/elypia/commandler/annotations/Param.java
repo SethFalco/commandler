@@ -17,7 +17,7 @@ public @interface Param {
 	/**
 	 * The id to display this parameter as.
 	 */
-	String name();
+	String id();
 
 	/**
 	 * A small description of what the parameter is.

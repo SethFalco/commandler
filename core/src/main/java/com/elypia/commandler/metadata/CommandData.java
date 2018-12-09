@@ -245,10 +245,10 @@ public class CommandData implements Comparable<CommandData> {
         if (inherit) {
             order.clear(); // ? Remove the inherit flag.
 
-            parentParams.forEach(o -> order.add(o.getAnnotation().name()));
+            parentParams.forEach(o -> order.add(o.getAnnotation().id()));
 
             for (Param param : params)
-                order.add(param.name());
+                order.add(param.id());
         }
 
         Parameter[] parameters = method.getParameters();
@@ -269,14 +269,14 @@ public class CommandData implements Comparable<CommandData> {
                 for (int ii = 0; ii < parentParams.size(); ii++) {
                     ParamData parentParam = parentParams.get(ii);
 
-                    if (name.equals(parentParam.getAnnotation().name())) {
+                    if (name.equals(parentParam.getAnnotation().id())) {
                         paramData.add(parentParams.remove(ii));
                         continue outer;
                     }
                 }
 
                 for (Param p : params) {
-                    if (name.equals(p.name()))
+                    if (name.equals(p.id()))
                         param = p;
                 }
             }
@@ -323,7 +323,7 @@ public class CommandData implements Comparable<CommandData> {
         StringJoiner itemJoiner = new StringJoiner(", ");
 
         for (ParamData param : params) {
-            String name = param.getAnnotation().name();
+            String name = param.getAnnotation().id();
 
             if (param.isList())
                 itemJoiner.add("['" + name + "']");
@@ -346,7 +346,7 @@ public class CommandData implements Comparable<CommandData> {
         return moduleData;
     }
 
-    public Command getCommand() {
+    public Command getAnnotation() {
         return command;
     }
 

@@ -2,7 +2,7 @@ package com.elypia.commandler.impl;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.CommandData;
+import com.elypia.commandler.metadata.*;
 
 import java.util.*;
 import java.util.regex.*;
@@ -27,13 +27,13 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
      */
     protected static final Pattern ITEM_PATTERN = Pattern.compile("\"(?<quote>(?:\\\\\"|[^\"])*)\"|(?<word>[^\\s,]+)");
 
-    protected Commandler commandler;
+    protected Commandler<C, E, M> commandler;
 
     protected ModulesContext context;
 
     protected LanguageEngine<E> engine;
 
-    protected IMisuseHandler handler;
+    protected IMisuseHandler misuseHandler;
 
     protected String prefix;
 
@@ -41,7 +41,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
         this.commandler = commandler;
         this.context = commandler.getContext();
         this.engine = commandler.getEngine();
-        this.handler = commandler.getMisuseListener();
+        this.misuseHandler = commandler.getMisuseHandler();
         this.prefix = commandler.getPrefix();
     }
 
@@ -52,33 +52,33 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
         if (event == null)
             return null;
 
-        CommandInput<C, E, M> input = event.getInput();
+        CommandInput input = event.getInput();
 
         if (!context.getAliases().contains(input.getModule().toLowerCase()))
-            return event.send(handler.onModuleNotFound(content));
+            return event.send(misuseHandler.onModuleNotFound(content));
 
-//        if (!normalize(event, input))
-//            return event.getError();
+        if (!normalize(event, input))
+            return event.getError();
 
         CommandData commandData = event.getInput().getCommandData();
 
-        Object[] params = commandler.getParser().processEvent(event, commandData);
-
-        if (params == null || !commandler.getCommandValidator().validate(event, params))
-            return event.getError();
-
-        if (!input.getCommand().equalsIgnoreCase("help") && !event.getHandler().isEnabled()) {
-            event.invalidate(handler.onModuleDisabled(event));
-            return event.getError();
-        }
-
         try {
+            Object[] params = commandler.getParser().processEvent(event, commandData);
+
+            if (params == null || !commandler.getValidator().validate(event, params))
+                return event.getError();
+
+            if (!input.getCommand().equalsIgnoreCase("help") && !event.getHandler().isEnabled()) {
+                event.invalidate(misuseHandler.onModuleDisabled(event));
+                return event.getError();
+            }
+
             Object response = commandData.getMethod().invoke(event.getHandler(), params);
 
             if (response != null && send)
                 return event.send(response);
         } catch (Exception ex) {
-            event.invalidate(handler.onException(ex));
+            event.invalidate(misuseHandler.onException(ex));
             return event.getError();
         }
 
@@ -123,8 +123,8 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
             }
         }
 
-        CommandInput<C, E, M> input = new CommandInput<>(module, command, parameters);
-        return new CommandEvent<>(engine, input);
+        CommandInput input = new CommandInput(module, command, parameters);
+        return new CommandEvent<>(commandler, input);
     }
 
     @Override
@@ -132,67 +132,66 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
         return new String[] {prefix};
     }
 
-//    public boolean normalize(ICommandEvent<C, E, M> event, CommandInput input) {
-//        for (ModuleData moduleData : context.getModules()) {
-//            if (moduleData.performed(input.getModule())) {
-//                input.setModuleData(moduleData);
-//
-//                if (input.getCommand() != null) {
-//                    CommandData commandData = moduleData.getCommand(input.getCommand());
-//
-//                    if (commandData != null) {
-//                        CommandData overload = commandData.getOverload(input.getParameterCount());
-//
-//                        if (overload == null) {
-//                            event.invalidate(commandler.getMisuseListener().onParamCountMismatch(input, commandData));
-//                            return false;
-//                        }
-//
-//                        return true;
-//                    }
-//
-//                    input.getParameters().add(0, List.of(input.getCommand()));
-//                }
-//
-//                CommandData defaultCommand = moduleData.getDefaultCommand();
-//
-//                if (defaultCommand == null) {
-//                    event.invalidate(commandler.getMisuseListener().onDefaultNotFound(event));
-//                    return false;
-//                }
-//
-//                input.setCommandData(defaultCommand.getOverload(input.getParameterCount()));
-//
-//                if (input.getCommandData() == null) {
-//                    event.invalidate(commandler.getMisuseListener().onParamCountMismatch(this, defaultCommand));
-//                    return false;
-//                }
-//
-//                command = commandData.getCommand().aliases()[0];
-//                return true;
-//            }
-//
-//            for (CommandData commandData : moduleData.getStaticCommands()) {
-//                if (commandData.performed(module)) {
-//                    if (command != null)
-//                        parameters.add(0, Collections.singletonList(command));
-//
-//                    this.commandData = commandData.getOverload(getParameterCount());
-//
-//                    if (this.commandData == null) {
-//                        event.invalidate(commandler.getMisuseListener().onParamCountMismatch(this, commandData));
-//                        return false;
-//                    }
-//
-//                    this.command = commandData.getCommand().aliases()[0];
-//                    this.module = moduleData.getAnnotation().aliases()[0];
-//                    this.moduleData = moduleData;
-//
-//                    return true;
-//                }
-//            }
-//        }
-//
-//        return false;
-//    }
+    public boolean normalize(ICommandEvent<C, E, M> event, CommandInput input) {
+        for (ModuleData moduleData : context.getModules()) {
+            if (moduleData.performed(input.getModule())) {
+                input.setModuleData(moduleData);
+
+                if (input.getCommand() != null) {
+                    CommandData commandData = moduleData.getCommand(input.getCommand());
+
+                    if (commandData != null) {
+                        CommandData overload = commandData.getOverload(input.getParameterCount());
+
+                        if (overload == null) {
+                            event.invalidate(misuseHandler.onParamCountMismatch(input, commandData));
+                            return false;
+                        }
+
+                        input.setCommandData(overload);
+                        return true;
+                    }
+
+                    input.getParameters().add(0, List.of(input.getCommand()));
+                }
+
+                CommandData defaultCommand = moduleData.getDefaultCommand();
+
+                if (defaultCommand == null) {
+                    event.invalidate(misuseHandler.onDefaultNotFound(event));
+                    return false;
+                }
+
+                CommandData defaultOverload = defaultCommand.getOverload(input.getParameterCount());
+
+                if (defaultOverload == null) {
+                    event.invalidate(misuseHandler.onParamCountMismatch(input, defaultCommand));
+                    return false;
+                }
+
+                input.setCommandData(defaultOverload);
+                return true;
+            }
+
+            for (CommandData commandData : moduleData.getStaticCommands()) {
+                if (commandData.performed(input.getModule())) {
+                    if (input.getCommand() != null)
+                        input.getParameters().add(0, List.of(input.getCommand()));
+
+                    CommandData defaultOverload = commandData.getOverload(input.getParameterCount());
+
+                    if (defaultOverload == null) {
+                        event.invalidate(misuseHandler.onParamCountMismatch(input, commandData));
+                        return false;
+                    }
+
+                    input.setCommandData(defaultOverload);
+                    input.setModuleData(moduleData);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

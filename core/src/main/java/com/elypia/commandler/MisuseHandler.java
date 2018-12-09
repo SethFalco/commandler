@@ -29,7 +29,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
         for (CommandData command : commandData.getOverloads(true))
             commandJoiner.add(command.toString());
 
-        String commandName = commandData.getCommand().name();
+        String commandName = commandData.getAnnotation().id();
         String moduleName = commandData.getModuleData().getAnnotation().id();
         return String.format(format, moduleName, commandName, input.toString(), commandJoiner.toString());
     }
@@ -50,7 +50,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
         String module = input.getModuleData().getAnnotation().id();
         CommandData command = input.getCommandData();
 
-        return String.format(format, item, param.name(), param.help(), module, command.getCommand().name(), command);
+        return String.format(format, item, param.id(), param.help(), module, command.getAnnotation().id(), command);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
         String module = input.getModuleData().getAnnotation().id();
         CommandData command = input.getCommandData();
 
-        return String.format(format, joiner, param.name(), module, command.getCommand().name(), command);
+        return String.format(format, joiner, param.id(), module, command.getAnnotation().id(), command);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
     private Object generateMessage(String format, ICommandEvent<C, E, M> event) {
         CommandInput input = event.getInput();
         String module = input.getModuleData().getAnnotation().id();
-        String command = input.getCommandData().getCommand().name();
+        String command = input.getCommandData().getAnnotation().id();
 
         return String.format(format, module, command);
     }

@@ -1,6 +1,5 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.interfaces.ICommandEvent;
 

@@ -1,10 +1,12 @@
 package com.elypia.commandler.parsers;
 
+import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
 
 import java.time.Duration;
 import java.util.regex.*;
 
+@Compatible(Duration.class)
 public class DurationParser implements IParser<ICommandEvent, Duration> {
 
     private Pattern matchPattern = Pattern.compile("(?i)\\A(?:\\d+\\s*[A-Z]+(?:\\s*,\\s*|\\s*)?)+\\Z");

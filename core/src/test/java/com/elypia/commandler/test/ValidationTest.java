@@ -51,7 +51,7 @@ public class ValidationTest {
     @Test
     public void testPeriod() {
         String expected = "8 minutes, and 20 seconds";
-        String actual = app.execute("pvalid period \"500 seconds\"");
+        String actual = app.execute("valid period \"500 seconds\"");
 
         assertEquals(expected, actual);
     }

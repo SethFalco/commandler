@@ -4,7 +4,7 @@ import com.elypia.commandler.metadata.*;
 
 import java.util.*;
 
-public class CommandInput<C, E, M> {
+public class CommandInput {
 
     private String module;
     private String command;
@@ -71,6 +71,7 @@ public class CommandInput<C, E, M> {
 
     public void setModuleData(ModuleData moduleData) {
         this.moduleData = moduleData;
+        this.module = moduleData.getAnnotation().aliases()[0];
     }
 
     public CommandData getCommandData() {
@@ -79,6 +80,7 @@ public class CommandInput<C, E, M> {
 
     public void setCommandData(CommandData commandData) {
         this.commandData = commandData;
+        this.command = commandData.getAnnotation().aliases()[0];
     }
 
     public int getParameterCount() {

@@ -1,6 +1,6 @@
 package com.elypia.commandler.parsers;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
 
 /**
@@ -11,6 +11,7 @@ import com.elypia.commandler.interfaces.*;
  * spaces, under scores, and converting to lower case.
  */
 
+@Compatible(Enum.class)
 public class EnumParser implements IParser<ICommandEvent, Enum> {
 
     @Override

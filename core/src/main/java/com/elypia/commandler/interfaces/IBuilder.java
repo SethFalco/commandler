@@ -7,6 +7,7 @@ package com.elypia.commandler.interfaces;
  * Platform specific implementations may append more
  * methods according to the different types of messages.
  *
+ * @param <C> The Commandler managed event entity.
  * @param <O> The object to build, this should be the ouput from a {@link IParser}.
  * @param <M> The message we're returning.
  */

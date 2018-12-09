@@ -1,13 +1,11 @@
 package com.elypia.commandler.parsers;
 
+import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
+@Compatible({Character.class, char.class})
 public class CharacterParser implements IParser<ICommandEvent, Character> {
-
-    public static final Class[] TYPES = {
-        Character.class, char.class
-    };
 
     @Override
     public Character parse(ICommandEvent event, Class<? extends Character> type, String input) {

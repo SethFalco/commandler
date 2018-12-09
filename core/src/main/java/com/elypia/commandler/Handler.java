@@ -72,7 +72,7 @@ public abstract class Handler<C, E, M> {
 		builder.append("\n" + annotation.help());
 
 		if (!isEnabled())
-			builder.append("\n" + getCommandler().getMisuseListener().onModuleDisabled(event));
+			builder.append("\n" + getCommandler().getMisuseHandler().onModuleDisabled(event));
 
 		builder.append("\n\n");
 
@@ -80,8 +80,8 @@ public abstract class Handler<C, E, M> {
 
 		while (metaCommandIt.hasNext()) {
 			CommandData commandData = metaCommandIt.next();
-			Command command = commandData.getCommand();
-			builder.append(command.name());
+			Command command = commandData.getAnnotation();
+			builder.append(command.id());
 
 			StringJoiner aliasJoiner = new StringJoiner(", ");
 
@@ -95,7 +95,7 @@ public abstract class Handler<C, E, M> {
 
 			paramData.forEach(metaParam -> {
 				Param param = metaParam.getAnnotation();
-				builder.append("\n" + param.name() + ": ");
+				builder.append("\n" + param.id() + ": ");
 				builder.append(commandler.getEngine().getScript(event.getSource(), param.help(), Map.of()));
 			});
 

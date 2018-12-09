@@ -1,9 +1,11 @@
 package com.elypia.commandler.parsers;
 
+import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
 
 import java.net.*;
 
+@Compatible(URL.class)
 public class UrlParser implements IParser<ICommandEvent, URL> {
 
     @Override
