@@ -1,38 +1,45 @@
 <!doctype html>
 <html>
     <head>
-        <title>$app-name | $this-name</title>
+        <title>$app_name | $this_name</title>
         <meta charset="UTF-8"/>
         <link rel="icon" type="image/x-icon" href="$app-favicon"/>
         <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="reset.css"/>
-        <link href="https://fonts.googleapis.com/css?family=Wire+One|Raleway" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
-        #if($font-awesome)
+        #if($module_page)
             <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+        #else
+            <link rel="stylesheet" href="darcula.css">
+            <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+            <script>hljs.initHighlightingOnLoad();</script>
         #end
 
-        <meta property="og:site_name" content="$app-name"/>
-        <meta property="og:title" content="$app-name | Help"/>
-        <meta property="og:description" content="$app-description"/>
-        <meta property="og:image" content="$app-logo"/>
+        <meta property="og:site_name" content="$app_name"/>
+        <meta property="og:title" content="$app_name | Help"/>
+        <meta property="og:description" content="$app_description"/>
+        <meta property="og:image" content="$app_logo"/>
     </head>
     <body>
-        <nav>
+        <nav class="left">
             <div id="app-info">
-                <h1>$this-name</h1>
-                <img src=$app-logo alt="Logo representing the application."/>
+                <a href="index.html">
+                    <h1 id="title">$app_name</h1>
+                    <img id="logo" src=$app_logo alt="Logo representing the application."/>
+                </a>
             </div>
             <ul>
-                #foreach($entry in $all-groups)
+                #foreach($entry in $all_groups.entrySet())
                     #set($group = $entry.key)
-                    #set($group-modules = $entry.value)
-                    <li class="group #if($group.equals($this-group)) selected #end">
+                    #set($group_modules = $entry.value)
+                    <li class="group #if($group.equals($this_group)) selected #end">
+                        <h2>$group</h2>
                         <ul class="module">
-                            #foreach($module in $entry.value)
-                                #set($module-name = $module.getModule().name())
-                                <li class="module #if($module-name.equals($this-name)) selected #end">
-                                    $module-name
+                            #foreach($module in $group_modules)
+                                #set($module_name = $module.getAnnotation().id())
+                                <li class="module #if($module_name.equals($this_name)) selected #end">
+                                    <a href="${module_name.toLowerCase().replaceAll("[^a-z\\d_-]+", "-")}.html"><h3>$module_name</h3></a>
                                 </li>
                             #end
                         </ul>
@@ -40,6 +47,12 @@
                 #end
             </ul>
         </nav>
-        <!-- INSERT CONTENT HERE -->
+        <div id="right-panel">
+            #if($module_page)
+                #parse("module_template.vm")
+            #else
+                $content
+            #end
+        </div>
     </body>
 </html>

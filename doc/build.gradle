@@ -1,5 +1,12 @@
+ext {
+    commonmarkVersion = "0.12.1"
+}
+
 dependencies {
     implementation "org.apache.velocity:velocity-engine-core:2.0"
     implementation "org.jsoup:jsoup:1.11.3"
-    implementation "com.atlassian.commonmark:commonmark:0.12.1"
+
+    // Markdown to HTML
+    implementation "com.atlassian.commonmark:commonmark:${commonmarkVersion}"
+    implementation "com.atlassian.commonmark:commonmark-ext-gfm-tables:${commonmarkVersion}"
 }

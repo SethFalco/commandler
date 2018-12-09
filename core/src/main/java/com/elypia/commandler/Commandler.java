@@ -30,7 +30,7 @@ public class Commandler<C, E, M> {
         misuseHandler = commandlerBuilder.misuseHandler;
         engine = commandlerBuilder.engine;
 
-        context = new ModulesContext(this);
+        context = new ModulesContext();
         processor = new CommandProcessor<>(this);
         validator = new CommandValidator(this);
         parser = new ParameterParser(misuseHandler);

@@ -48,7 +48,7 @@ public class MessageBuilder<M> {
     @SafeVarargs
     final public void add(Class<? extends IBuilder<?, ?, M>>... types) {
         for (Class<? extends IBuilder<?, ?, M>> type : types)
-            builders.put(type, null);
+            builders.putIfAbsent(type, null);
     }
 
     /**

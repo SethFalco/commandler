@@ -19,6 +19,6 @@ public class TestApp {
 
     @SafeVarargs
     final public void add(Class<? extends Handler<Void, String, String>>... clazz) {
-        commandler.getContext().addModule(clazz);
+        commandler.getContext().addModules(clazz);
     }
 }

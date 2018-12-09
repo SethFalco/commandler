@@ -64,7 +64,7 @@ public class ParameterParser {
     @SafeVarargs
     final public void add(Class<? extends IParser>... types) {
         for (var type : types)
-            parsers.put(type, null);
+            parsers.putIfAbsent(type, null);
     }
 
     /**

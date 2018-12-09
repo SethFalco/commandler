@@ -132,10 +132,9 @@ subprojects { subproject ->
     }
 
     dependencies {
-        if (subproject.name != "core")
+        if (subproject.name != "core") {
             implementation project(":core")
-
-        else {
+        } else {
             // Apache Commons
             implementation "org.apache.commons:commons-lang3:3.8.1"
 
@@ -148,12 +147,12 @@ subprojects { subproject ->
             // Logging
             api "org.slf4j:slf4j-api:1.7.25"
             testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
-
-            // Testing
-            testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-            testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-            testRuntimeOnly "org.junit.platform:junit-platform-runner:1.3.2"
         }
+
+        // Testing
+        implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+        testRuntimeOnly "org.junit.platform:junit-platform-runner:1.3.2"
     }
 
     test {

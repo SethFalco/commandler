@@ -1,8 +1,6 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.ModuleData;
 import org.slf4j.*;
 
@@ -22,8 +20,6 @@ public class ModulesContext {
      */
     private static final Logger logger = LoggerFactory.getLogger(ModulesContext.class);
 
-    private Commandler commandler;
-
     /**
      * A collection of data for each module within this
      * module context.
@@ -33,7 +29,7 @@ public class ModulesContext {
     /**
      * A list of grouped modules.
      */
-    private Map<String, Set<ModuleData>> groups;
+    private Map<String, List<ModuleData>> groups;
 
     /**
      * A list of all root aliases, this includes module aliases
@@ -41,11 +37,9 @@ public class ModulesContext {
      */
     private Set<String> rootAliases;
 
-    public ModulesContext(Commandler commandler) {
-        this.commandler = commandler;
-
+    public ModulesContext() {
         modules = new HashMap<>();
-        groups = new HashMap<>();
+        groups = new TreeMap<>();
         rootAliases = new HashSet<>();
     }
 
@@ -58,7 +52,7 @@ public class ModulesContext {
      * @param classes The module to add to this context.
      */
     @SafeVarargs
-    final public void addModule(Class<? extends Handler>... classes) {
+    final public void addModules(Class<? extends Handler>... classes) {
         if (!Collections.disjoint(modules.keySet(), List.of(classes)))
             throw new IllegalStateException("Can't register a Handler that has already been registered.");
 
@@ -69,7 +63,7 @@ public class ModulesContext {
 
             modules.put(clazz, data);
 
-            groups.putIfAbsent(group, new HashSet<>());
+            groups.putIfAbsent(group, new ArrayList<>());
             groups.get(group).add(data);
 
             rootAliases.addAll(data.getAliases());
@@ -78,11 +72,11 @@ public class ModulesContext {
                 rootAliases.addAll(commandData.getAliases());
             });
 
-            Class<? extends IBuilder>[] builders = data.getModuleClass().getAnnotation(Builders.class).value();
-            commandler.getBuilder().add(builders);
-
-            Class<? extends IParser>[] parsers = data.getModuleClass().getAnnotation(Parsers.class).value();
-            commandler.getParser().add(parsers);
+//            Class<? extends IBuilder>[] builders = data.getModuleClass().getAnnotation(Builders.class).value();
+//            commandler.getBuilder().add(builders);
+//
+//            Class<? extends IParser>[] parsers = data.getModuleClass().getAnnotation(Parsers.class).value();
+//            commandler.getParser().add(parsers);
         }
     }
 
@@ -133,7 +127,7 @@ public class ModulesContext {
                         logger.warn("Package contains type {} which is not assignable to {}.", clazz.getName(), Handler.class);
 
                     else
-                        addModule(clazz.asSubclass(Handler.class));
+                        addModules(clazz.asSubclass(Handler.class));
 
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -161,23 +155,24 @@ public class ModulesContext {
      *
      * @return A list of all modules.
      */
-    public Set<ModuleData> getModules() {
+    public List<ModuleData> getModules() {
         return getModules(true);
     }
 
     /**
      * Get a list of all modules within the context.
      *
-     * @param isPublic If to include public modules.
+     * @param includePrivate If to include private modules.
      * @return A list of modules.
      */
-    public Set<ModuleData> getModules(boolean isPublic) {
-        if (isPublic)
-            return Set.copyOf(modules.values());
+    public List<ModuleData> getModules(boolean includePrivate) {
+        if (includePrivate)
+            return List.copyOf(modules.values());
 
         return modules.values().stream()
             .filter(ModuleData::isPublic)
-            .collect(Collectors.toUnmodifiableSet());
+            .sorted()
+            .collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -187,31 +182,32 @@ public class ModulesContext {
      *
      * @return A unmodifiable map of modules and the groups they belong in.
      */
-    public Map<String, Set<ModuleData>> getGroups() {
+    public Map<String, List<ModuleData>> getGroups() {
         return getGroups(true);
     }
 
     /**
      * Get a group view of all modules.
      *
-     * @param isPublic If to include public modules in the result.
+     * @param includePrivate If to include public modules in the result.
      * @return A unmodifiable map of modules and the groups they belong in.
      */
-    public Map<String, Set<ModuleData>> getGroups(boolean isPublic) {
-        if (isPublic)
+    public Map<String, List<ModuleData>> getGroups(boolean includePrivate) {
+        if (includePrivate)
             return Map.copyOf(groups);
 
-        Map<String, Set<ModuleData>> groupsCopy = new HashMap<>();
+        Map<String, List<ModuleData>> groupsCopy = new TreeMap<>();
 
         groups.forEach((group, modules) -> {
-            Set<ModuleData> publicModules = modules.stream()
+            List<ModuleData> publicModules = modules.stream()
                 .filter(ModuleData::isPublic)
-                .collect(Collectors.toUnmodifiableSet());
+                .sorted()
+                .collect(Collectors.toUnmodifiableList());
 
             groupsCopy.put(group, publicModules);
         });
 
-        return Map.copyOf(groupsCopy);
+        return Collections.unmodifiableMap(groupsCopy);
     }
 
     public Set<String> getAliases() {

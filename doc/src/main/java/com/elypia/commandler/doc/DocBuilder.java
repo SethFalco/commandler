@@ -6,6 +6,11 @@ import com.elypia.commandler.metadata.ModuleData;
 import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.commonmark.Extension;
+import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.jsoup.Jsoup;
 import org.slf4j.*;
 
@@ -65,7 +70,12 @@ public class DocBuilder {
     }
 
     public DocBuilder(String name) {
+        this(name, null);
+    }
+
+    public DocBuilder(String name, ModulesContext context) {
         this.name = name;
+        this.context = context;
 
         fileNames = new HashSet<>();
     }
@@ -103,60 +113,78 @@ public class DocBuilder {
 
         VelocityEngine engine = getVelocityEngine();
 
-        Template template = engine.getTemplate("pages/template.vm", "utf-8");
+        Template template = engine.getTemplate("template.vm", "utf-8");
+
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("app-id", name);
-        velocityContext.put("app-description", description);
-        velocityContext.put("app-logo", logo);
-        velocityContext.put("app-favicon", favicon);
-        velocityContext.put("all-modules", context.getModules(false));
-        velocityContext.put("all-groups", context.getGroups(false));
+        velocityContext.put("app_name", name);
+        velocityContext.put("app_description", description);
+        velocityContext.put("app_logo", logo);
+        velocityContext.put("app_favicon", favicon);
+        velocityContext.put("all_modules", context.getModules(false));
+        velocityContext.put("all_groups", context.getGroups(false));
+        velocityContext.put("this_name", "Home");
+
+        List<Extension> extensions = List.of(TablesExtension.create());
+        Parser parser = Parser.builder().extensions(extensions).build();
+        Node document = parser.parseReader(new FileReader("./README.md"));
+        HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
+
+        String homepage = renderer.render(document);
+        velocityContext.put("content", homepage);
+
+        outputFile(file.getAbsoluteFile(), "index", template, velocityContext);
+
+        velocityContext.put("module_page", true);
 
         for (ModuleData module : context.getModules()) {
             if (!module.isPublic())
                 continue;
 
             String outputName = module.getAnnotation().id()
-                .toLowerCase()
-                .replaceAll("[^a-z\\d_-]+", "-");
+                    .toLowerCase()
+                    .replaceAll("[^a-z\\d_-]+", "-");
 
             while (fileNames.contains(outputName))
                 outputName += "_";
 
-            velocityContext.put("this-module", module);
+            velocityContext.put("this_module", module);
 
             Module annotation = module.getAnnotation();
 
-            velocityContext.put("this-anno", annotation);
-            velocityContext.put("this-id", annotation.id());
-            velocityContext.put("this-group", annotation.group());
-            velocityContext.put("this-id", outputName);
+            velocityContext.put("this_name", module.getAnnotation().id());
+            velocityContext.put("this_anno", annotation);
+            velocityContext.put("this_group", annotation.group());
+            velocityContext.put("this_id", outputName);
 
-            String writePath = file.getAbsolutePath() + File.separator + outputName + ".html";
-            File toWrite = new File(writePath);
-            file.mkdirs();
-
-            try (StringWriter stringWriter = new StringWriter()) {
-                try (FileWriter fileWriter = new FileWriter(toWrite)) {
-                    template.merge(velocityContext, stringWriter);
-
-                    String cleanHtml = Jsoup.parse(stringWriter.toString()).html();
-                    fileWriter.write(cleanHtml);
-                }
-            }
+            outputFile(file.getAbsoluteFile(), outputName, template, velocityContext);
         }
 
-        copyFiles("./pages", ".");
+        copyFiles(path, "/include", "include");
     }
 
-    private void copyFiles(String output, String path) {
-        File file = new File(output + "/" + path);
+    private void outputFile(File file, String outputName, Template template, VelocityContext velocityContext) throws IOException {
+        String writePath = file.getAbsolutePath() + File.separator + outputName + ".html";
+        File toWrite = new File(writePath);
+        file.mkdirs();
+
+        try (StringWriter stringWriter = new StringWriter()) {
+            try (FileWriter fileWriter = new FileWriter(toWrite)) {
+                template.merge(velocityContext, stringWriter);
+
+                String cleanHtml = Jsoup.parse(stringWriter.toString()).html();
+                fileWriter.write(cleanHtml);
+            }
+        }
+    }
+
+    private void copyFiles(String output, String path, String name) {
+        File file = new File(output + "/");
         file.mkdirs();
 
         try (InputStream inputStream = this.getClass().getResourceAsStream("" + path)) {
             if (inputStream != null) {
                 if (path.matches(".+\\..+")) {
-                    Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(inputStream, Path.of(file.getAbsolutePath(), name), StandardCopyOption.REPLACE_EXISTING);
                 } else {
                     StringBuilder builder = new StringBuilder();
 
@@ -165,12 +193,21 @@ public class DocBuilder {
                         builder.append((char)c);
 
                     for (String string : builder.toString().split("\\s*\n\\s*"))
-                        copyFiles(output, path + "/" + string);
+                        copyFiles(output, path + "/" + string, string);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ModulesContext getContext() {
+        return context;
+    }
+
+    public DocBuilder setContext(ModulesContext context) {
+        this.context = context;
+        return this;
     }
 
     public DocBuilder setName(String name) {

@@ -1,0 +1,113 @@
+/*
+	Whole Page
+ */
+
+html, body, nav {
+	--pri-color: #202020;
+	--sec-color: #282828;
+	--tir-color: #3B3B3B;
+	--text-color: white;
+
+	height: 100%;
+}
+
+body  {
+	background-color: var(--pri-color);
+	color: var(--text-color);
+
+	font-family: sans-serif;
+	font-size: large;
+}
+
+h1, h2, h3, h4, h5, h6, a {
+	font-family: Raleway, sans-serif;
+	color: var(--text-color);
+}
+
+code {
+	font-family: monospace;
+}
+
+a {
+	text-decoration: none;
+}
+
+/*
+	Left Panel
+ */
+
+nav {
+	float: left;
+	max-width: 256px;
+	background-color: var(--sec-color);
+	border-right: 4px solid var(--tir-color);
+}
+
+#title {
+	font-size: 3vw;
+}
+
+#logo {
+	width: 90%;
+	max-width: 256px;
+}
+
+#app-info {
+	text-align: center;
+}
+
+.bot-title  {
+	text-align: center;
+	margin: 0;
+}
+
+nav ul {
+	padding-bottom: 16px;
+	padding-left: 16px;
+	list-style: none;
+	cursor: pointer;
+}
+
+nav ul li {
+	opacity: .75;
+}
+
+nav ul li:hover {
+	opacity: 1;
+}
+
+/*
+	Right Panel
+ */
+
+#right-panel {
+	margin-left: 12px;
+	float: left;
+	width: calc(100% - 284px);
+}
+
+.command-info {
+	margin-top: 12px;
+	padding: 12px;
+	border-radius: 12px;
+	border: 2px solid var(--tir-color);
+}
+
+.command-info:hover {
+	background-color: var(--sec-color);
+}
+
+.inline, .inline li {
+	display: inline-block;
+}
+
+.highlight {
+	color: lightpink;
+	background: var(--sec-color);
+	padding: 2px;
+	border-radius: 4px;
+}
+
+.parameter-info li {
+	list-style-type: none;
+}
