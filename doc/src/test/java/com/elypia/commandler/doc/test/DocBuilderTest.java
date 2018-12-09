@@ -9,17 +9,17 @@ import java.io.IOException;
 
 public class DocBuilderTest {
 
+    private static ModulesContext context;
     private static DocBuilder builder;
 
     @BeforeAll
     public static void beforeAll() {
-        builder = new DocBuilder("TestApp");
+        context = new ModulesContext();
+        builder = new DocBuilder("Commandler", context);
     }
 
     @Test
     public void testAll() throws IOException {
-        ModulesContext context = new ModulesContext();
-
         context.addModules(
             MiscModule.class,
             OsuModule.class,
@@ -27,8 +27,10 @@ public class DocBuilderTest {
             YouTubeModule.class
         );
 
-        builder.setContext(context);
-        builder.setLogo("https://elypia.com/resources/logo_pic.png");
-        builder.build();
+        builder
+            .setDescription("A Test static website compiled from Commandler.")
+            .setLogo("https://elypia.com/resources/logo_pic.png")
+            .setFavicon("png", builder.getLogo())
+            .build();
     }
 }

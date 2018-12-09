@@ -1,16 +1,16 @@
 <div id="module-info">
-    <h1>$this_name</h1>
+    <h1><a href="/groups/${builder.toOutputFriendlyName($module_group)}.html">$module_group</a> &gt; $module_id</h1>
     <p class="inline">Aliases: </p>
     <ul class="highlight inline">
-        #foreach($alias in $this_anno.aliases())
+        #foreach($alias in $module_anno.aliases())
             <li>$alias</li>
         #end
     </ul>
-    <p>$this_anno.help()</p>
-    #foreach($command in $this_module.getCommands())
+    <p>$module_anno.help()</p>
+    #foreach($command in $module.getCommands())
         #if($command.isPublic())
             #set($command_anno = $command.getAnnotation())
-            <div class="command-info">
+            <div class="info-item">
                 <h2>$command_anno.id()</h2>
                 <p class="inline">Aliases: </p>
                 <ul class="highlight inline">

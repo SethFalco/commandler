@@ -25,12 +25,6 @@ public class DocBuilder {
     private VelocityEngine engine;
 
     /**
-     * All file names created by Commandlerdoc to ensure
-     * there are no file id conflicts.
-     */
-    private Set<String> fileNames;
-
-    /**
      * The modules parsed as {@link ModuleData}.
      */
     private ModulesContext context;
@@ -65,6 +59,8 @@ public class DocBuilder {
      */
     private String favicon;
 
+    private String favionType;
+
     public DocBuilder() {
         this("Documentation");
     }
@@ -76,8 +72,6 @@ public class DocBuilder {
     public DocBuilder(String name, ModulesContext context) {
         this.name = name;
         this.context = context;
-
-        fileNames = new HashSet<>();
     }
 
     /**
@@ -112,60 +106,74 @@ public class DocBuilder {
             throw new IllegalArgumentException("Path must be a directory.");
 
         VelocityEngine engine = getVelocityEngine();
-
         Template template = engine.getTemplate("template.vm", "utf-8");
+        Map<String, List<ModuleData>> groups = context.getGroups(false);
 
-        VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("app_name", name);
-        velocityContext.put("app_description", description);
-        velocityContext.put("app_logo", logo);
-        velocityContext.put("app_favicon", favicon);
-        velocityContext.put("all_modules", context.getModules(false));
-        velocityContext.put("all_groups", context.getGroups(false));
-        velocityContext.put("this_name", "Home");
+        VelocityContext globalContext = new VelocityContext();
+        globalContext.put("builder", this);
+        globalContext.put("app_name", name);
+        globalContext.put("app_description", description);
+        globalContext.put("app_logo", logo);
+        globalContext.put("app_icon", favicon);
+        globalContext.put("app_icon_type", favionType);
+        globalContext.put("all_modules", context.getModules(false));
+        globalContext.put("all_groups", groups);
 
         List<Extension> extensions = List.of(TablesExtension.create());
         Parser parser = Parser.builder().extensions(extensions).build();
         Node document = parser.parseReader(new FileReader("./README.md"));
         HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
 
-        String homepage = renderer.render(document);
-        velocityContext.put("content", homepage);
+        VelocityContext homeContext = new VelocityContext(globalContext);
+        homeContext.put("page_name", "Home");
+        homeContext.put("content", renderer.render(document));
 
-        outputFile(file.getAbsoluteFile(), "index", template, velocityContext);
+        outputFile(file.getAbsoluteFile(), "index", template, homeContext);
 
-        velocityContext.put("module_page", true);
+        for (var group : groups.entrySet()) {
+            String groupName = group.getKey();
+            List<ModuleData> modules = group.getValue();
+            String outputName = "groups/" + toOutputFriendlyName(groupName);
+
+            VelocityContext groupContext = new VelocityContext(globalContext);
+            groupContext.put("page_name", "Group | " + groupName);
+            groupContext.put("group_name", groupName);
+            groupContext.put("group_modules", modules);
+            groupContext.put("content", "group_template.vm");
+
+            outputFile(file.getAbsoluteFile(), outputName, template, groupContext);
+        }
 
         for (ModuleData module : context.getModules()) {
             if (!module.isPublic())
                 continue;
 
-            String outputName = module.getAnnotation().id()
-                    .toLowerCase()
-                    .replaceAll("[^a-z\\d_-]+", "-");
+            Module moduleAnno = module.getAnnotation();
+            String moduleName = moduleAnno.id();
+            String outputName = "modules/" + toOutputFriendlyName(moduleName);
 
-            while (fileNames.contains(outputName))
-                outputName += "_";
+            VelocityContext moduleContext = new VelocityContext(globalContext);
+            moduleContext.put("page_name", "Module | " + moduleName);
+            moduleContext.put("module", module);
+            moduleContext.put("module_anno", moduleAnno);
+            moduleContext.put("module_id", moduleAnno.id());
+            moduleContext.put("module_group", moduleAnno.group());
+            moduleContext.put("content", "module_template.vm");
 
-            velocityContext.put("this_module", module);
-
-            Module annotation = module.getAnnotation();
-
-            velocityContext.put("this_name", module.getAnnotation().id());
-            velocityContext.put("this_anno", annotation);
-            velocityContext.put("this_group", annotation.group());
-            velocityContext.put("this_id", outputName);
-
-            outputFile(file.getAbsoluteFile(), outputName, template, velocityContext);
+            outputFile(file.getAbsoluteFile(), outputName, template, moduleContext);
         }
 
-        copyFiles(path, "/include", "include");
+        copyFiles(path, "/include");
+    }
+
+    public String toOutputFriendlyName(String id) {
+        return id.toLowerCase().replaceAll("[^a-z\\d_-]+", "-");
     }
 
     private void outputFile(File file, String outputName, Template template, VelocityContext velocityContext) throws IOException {
-        String writePath = file.getAbsolutePath() + File.separator + outputName + ".html";
+        String writePath = file.getAbsolutePath() + "/" + outputName + ".html";
         File toWrite = new File(writePath);
-        file.mkdirs();
+        toWrite.getParentFile().mkdirs();
 
         try (StringWriter stringWriter = new StringWriter()) {
             try (FileWriter fileWriter = new FileWriter(toWrite)) {
@@ -177,24 +185,32 @@ public class DocBuilder {
         }
     }
 
-    private void copyFiles(String output, String path, String name) {
-        File file = new File(output + "/");
-        file.mkdirs();
+    private void copyFiles(String ouput, String path) {
+        copyFiles(ouput, path, path);
+    }
 
-        try (InputStream inputStream = this.getClass().getResourceAsStream("" + path)) {
-            if (inputStream != null) {
-                if (path.matches(".+\\..+")) {
-                    Files.copy(inputStream, Path.of(file.getAbsolutePath(), name), StandardCopyOption.REPLACE_EXISTING);
-                } else {
-                    StringBuilder builder = new StringBuilder();
+    private void copyFiles(String output, String path, String start) {
+        try (InputStream inputStream = this.getClass().getResourceAsStream(path)) {
+            if (inputStream == null)
+                return;
 
-                    int c;
-                    while ((c = inputStream.read()) != -1)
-                        builder.append((char)c);
+            if (path.matches(".+\\..+")) {
+                if (!output.endsWith("/"))
+                    output += "/";
 
-                    for (String string : builder.toString().split("\\s*\n\\s*"))
-                        copyFiles(output, path + "/" + string, string);
-                }
+                File file = new File(output + path.substring(start.length() + 1));
+                file.mkdirs();
+
+                Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                StringBuilder builder = new StringBuilder();
+
+                int c;
+                while ((c = inputStream.read()) != -1)
+                    builder.append((char)c);
+
+                for (String string : builder.toString().split("\\s*\n\\s*"))
+                    copyFiles(output, path + File.separator + string, start);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -237,12 +253,17 @@ public class DocBuilder {
         return logo;
     }
 
-    public DocBuilder setFavicon(String favicon) {
+    public DocBuilder setFavicon(String favionType, String favicon) {
+        this.favionType = favionType;
         this.favicon = favicon;
         return this;
     }
 
     public String getFavicon() {
         return favicon;
+    }
+
+    public String getFavionType() {
+        return favionType;
     }
 }

@@ -1,0 +1,26 @@
+<div id="group-info">
+    <h1>$group_name</h1>
+    #foreach($module in $group_modules)
+        #set($module_anno = $module.getAnnotation())
+        <a href="/modules/${builder.toOutputFriendlyName($module_anno.id())}.html">
+            <div class="info-item">
+                    <h2>$module_anno.id()</h2>
+                    <p class="inline">Aliases: </p>
+                    <ul class="highlight inline">
+                        #foreach($alias in $module_anno.aliases())
+                            <li>$alias</li>
+                        #end
+                    </ul>
+                    <p>$module_anno.help()</p>
+                    <br>
+                    <p>Commands: </p>
+                    <ul class="module-command-info">
+                        #foreach($command in $module.getPublicCommands())
+                            #set($command_anno = $command.getAnnotation())
+                            <li><span class="highlight">${command_anno.id()}</span>: ${command_anno.help()}</li>
+                        #end
+                    </ul>
+            </div>
+        </a>
+    #end
+</div>

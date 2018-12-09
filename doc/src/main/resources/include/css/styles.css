@@ -7,11 +7,9 @@ html, body, nav {
 	--sec-color: #282828;
 	--tir-color: #3B3B3B;
 	--text-color: white;
-
-	height: 100%;
 }
 
-body  {
+body {
 	background-color: var(--pri-color);
 	color: var(--text-color);
 
@@ -20,7 +18,6 @@ body  {
 }
 
 h1, h2, h3, h4, h5, h6, a {
-	font-family: Raleway, sans-serif;
 	color: var(--text-color);
 }
 
@@ -44,7 +41,7 @@ nav {
 }
 
 #title {
-	font-size: 3vw;
+	font-size: 2vw;
 }
 
 #logo {
@@ -65,10 +62,9 @@ nav ul {
 	padding-bottom: 16px;
 	padding-left: 16px;
 	list-style: none;
-	cursor: pointer;
 }
 
-nav ul li {
+nav ul li:not(.selected) {
 	opacity: .75;
 }
 
@@ -86,14 +82,14 @@ nav ul li:hover {
 	width: calc(100% - 284px);
 }
 
-.command-info {
+.info-item {
 	margin-top: 12px;
 	padding: 12px;
 	border-radius: 12px;
 	border: 2px solid var(--tir-color);
 }
 
-.command-info:hover {
+.info-item:hover {
 	background-color: var(--sec-color);
 }
 
@@ -108,6 +104,6 @@ nav ul li:hover {
 	border-radius: 4px;
 }
 
-.parameter-info li {
+.info-item li {
 	list-style-type: none;
 }
