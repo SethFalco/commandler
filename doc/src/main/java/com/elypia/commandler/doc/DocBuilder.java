@@ -122,7 +122,7 @@ public class DocBuilder {
         globalContext.put("app_icon_type", favionType);
         globalContext.put("social_links", socialLinks);
         globalContext.put("all_modules", context.getModules(false));
-        globalContext.put("all_groups", groups);
+        globalContext.put("groups", groups);
         globalContext.put("example_class", Example.class);
         globalContext.put("icon_class", Icon.class);
 

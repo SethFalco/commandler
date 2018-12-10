@@ -35,20 +35,16 @@ a {
 	Misc
  */
 
-.js {
-	display: none;
-}
-
 .hover:not(.selected) {
 	opacity: 0.75;
 }
 
 .hover:hover {
-	opacity: 1.00;
+    opacity: 1.00;
 }
 
-.icon {
-	padding-right: 8px;
+.inline, .inline li, #all-commands-title * {
+    display: inline-block;
 }
 
 /*
@@ -56,14 +52,13 @@ a {
  */
 
 header {
-	display: flex;
 	background-color: var(--sec-color);
 	border-bottom: 4px solid var(--tir-color);
+    margin: 16px;
 }
 
 header * {
-	display:inline-block;
-	margin: 8px;
+	display: inline-block;
 	font-size: 32px;
 }
 
@@ -84,13 +79,13 @@ nav {
 	border-right: 4px solid var(--tir-color);
 }
 
-#app-info {
-	text-align: center;
-}
-
 .bot-title  {
 	text-align: center;
 	margin: 0;
+}
+
+nav h1 {
+    padding: 16px 0 16px 16px;
 }
 
 nav ul {
@@ -104,9 +99,13 @@ nav ul {
  */
 
 #right-panel {
-	margin-left: 12px;
+	margin: 16px 0 0 16px;
 	float: left;
 	width: calc(100% - 400px);
+}
+
+#right-panel h1 {
+    padding: 0 0 16px 0;
 }
 
 .info-item {
@@ -114,6 +113,10 @@ nav ul {
 	padding: 12px;
 	border-radius: 12px;
 	border: 2px solid var(--tir-color);
+}
+
+.icon {
+    padding-right: 8px;
 }
 
 .info-item.command-info {
@@ -129,17 +132,35 @@ nav ul {
 	background-color: var(--sec-color);
 }
 
-.inline, .inline li {
-	display: inline-block;
-}
-
 .highlight {
-	color: lightpink;
-	background: var(--sec-color);
-	padding: 4px;
+	background-color: var(--sec-color);
+    color: lightpink;
+
+    padding: 4px;
+
 	border-radius: 4px;
 }
 
 .info-item li {
 	list-style-type: none;
+}
+
+#search {
+    background-color: var(--sec-color);
+    color: var(--text-color);
+    font-size: 28px;
+
+    margin-left: 16px;
+    padding: 8px;
+
+    border: 2px solid var(--tir-color);
+    border-radius: 8px;
+}
+
+/*
+    Other
+ */
+
+.js {
+    display: none;
 }

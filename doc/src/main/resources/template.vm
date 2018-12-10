@@ -31,35 +31,33 @@
     </head>
     <body>
         <header>
-            <div id="app-info">
-                <a href="/">
-                    #if($app_logo)
-                        <img id="logo" src=$app_logo alt="Logo representing the application."/>
-                    #end
+            <a href="/">
+                #if($app_logo)
+                    <img id="logo" src=$app_logo alt="Logo representing the application."/>
+                #end
 
-                    <h1 id="title">$app_name</h1>
-                </a>
-            </div>
-            <ul class="social-links">
+                <h1 class="hover">$app_name</h1>
+            </a>
+            <ul>
                 #foreach($social_link in $social_links)
                     <li class="hover"><a href="$social_link.getLink()" target="_blank"><span class="$social_link.getIcon()"></span></a></li>
                 #end
             </ul>
         </header>
         <nav class="left">
-            <a class="group hover" href="/all-commands.html"><h1>All Commands</h1></a>
+            <a href="/all-commands.html"><h1 class="hover">All Commands</h1></a>
             <ul>
-                #foreach($entry in $all_groups.entrySet())
-                    #set($group_iter = $entry.key)
-                    #set($group_iter_modules = $entry.value)
-                    <li class="group hover #if($group_iter.equals($this_group)) selected #end">
-                        <a href="/groups/${builder.toOutputFriendlyName($group_iter)}.html"><h2>$group_iter</h2></a>
+                #foreach($entry in $groups.entrySet())
+                    #set($_group_name = $entry.key)
+                    #set($_group_modules = $entry.value)
+                    <li class="hover #if($_group_name.equals($module_group)) selected #end">
+                        <a href="/groups/${builder.toOutputFriendlyName($_group_name)}.html"><h2>$_group_name</h2></a>
                         <ul class="module">
-                            #foreach($module in $group_iter_modules)
-                                #set($module_name = $module.getAnnotation().id())
-                                <a href="/modules/${builder.toOutputFriendlyName($module_name)}.html">
-                                    <li class="module hover #if($module_name.equals($this_name)) selected #end">
-                                        <span class="icon $module.getModuleClass().getAnnotation($icon_class).icon()"></span><h3 class="inline">$module_name</h3>
+                            #foreach($_group_module in $_group_modules)
+                                #set($_group_module_name = $_group_module.getAnnotation().id())
+                                <a href="/modules/${builder.toOutputFriendlyName($_group_module_name)}.html">
+                                    <li class="module hover #if($_group_module_name.equals($module_id)) selected #end">
+                                        <span class="icon $_group_module.getModuleClass().getAnnotation($icon_class).icon()"></span><h3 class="inline">$_group_module_name</h3>
                                     </li>
                                 </a>
                             #end

@@ -1,23 +1,23 @@
 <div id="group-info">
     <h1>$group_name</h1>
-    #foreach($module in $group_modules)
-        #set($module_anno = $module.getAnnotation())
-        <a href="/modules/${builder.toOutputFriendlyName($module_anno.id())}.html">
+    #foreach($gi_group_module in $group_modules)
+        #set($gi_group_module_anno = $gi_group_module.getAnnotation())
+        <a href="/modules/${builder.toOutputFriendlyName($gi_group_module_anno.id())}.html">
             <div class="info-item module-info">
-                <h2>$module_anno.id()</h2>
+                <h2>$gi_group_module_anno.id()</h2>
                 <p class="inline">Aliases: </p>
                 <ul class="highlight inline">
-                    #foreach($alias in $module_anno.aliases())
+                    #foreach($alias in $gi_group_module_anno.aliases())
                         <li>$alias</li>
                     #end
                 </ul>
-                <p>$module_anno.help()</p>
+                <p>$gi_group_module_anno.help()</p>
                 <br>
-                <p>Commands: </p>
+                <p>Commands:</p>
                 <ul class="module-command-info">
-                    #foreach($command in $module.getPublicCommands())
-                        #set($command_anno = $command.getAnnotation())
-                        <li><span class="highlight">${command_anno.id()}</span>: ${command_anno.help()}</li>
+                    #foreach($gi_command in $gi_group_module.getPublicCommands())
+                        #set($gi_command_anno = $gi_command.getAnnotation())
+                        <li><span class="highlight">${gi_command_anno.id()}</span>: ${gi_command_anno.help()}</li>
                     #end
                 </ul>
             </div>
