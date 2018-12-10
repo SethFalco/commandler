@@ -1,0 +1,9 @@
+<div id="all-commands">
+    <div id="flex">
+        <h1>All Commands</h1>
+        <form class="js">
+            <input id="search" type="text" placeholder="Search..." name="search">
+        </form>
+    </div>
+    #parse("commands_template.vm")
+</div>

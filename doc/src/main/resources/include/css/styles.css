@@ -7,13 +7,15 @@ html, body, nav {
 	--sec-color: #282828;
 	--tir-color: #3B3B3B;
 	--text-color: white;
+
+	height: 100%;
 }
 
 body {
 	background-color: var(--pri-color);
 	color: var(--text-color);
 
-	font-family: sans-serif;
+	font-family: Raleway, sans-serif;
 	font-size: large;
 }
 
@@ -21,7 +23,7 @@ h1, h2, h3, h4, h5, h6, a {
 	color: var(--text-color);
 }
 
-code {
+pre, code {
 	font-family: monospace;
 }
 
@@ -30,23 +32,56 @@ a {
 }
 
 /*
+	Misc
+ */
+
+.js {
+	display: none;
+}
+
+.hover:not(.selected) {
+	opacity: 0.75;
+}
+
+.hover:hover {
+	opacity: 1.00;
+}
+
+.icon {
+	padding-right: 8px;
+}
+
+/*
+	Header
+ */
+
+header {
+	display: flex;
+	background-color: var(--sec-color);
+	border-bottom: 4px solid var(--tir-color);
+}
+
+header * {
+	display:inline-block;
+	margin: 8px;
+	font-size: 32px;
+}
+
+#logo {
+	width: 64px;
+	margin: 0;
+}
+
+/*
 	Left Panel
  */
 
 nav {
 	float: left;
-	max-width: 256px;
+	width: 16%;
+	min-width: 256px;
 	background-color: var(--sec-color);
 	border-right: 4px solid var(--tir-color);
-}
-
-#title {
-	font-size: 2vw;
-}
-
-#logo {
-	width: 90%;
-	max-width: 256px;
 }
 
 #app-info {
@@ -64,14 +99,6 @@ nav ul {
 	list-style: none;
 }
 
-nav ul li:not(.selected) {
-	opacity: .75;
-}
-
-nav ul li:hover {
-	opacity: 1;
-}
-
 /*
 	Right Panel
  */
@@ -79,7 +106,7 @@ nav ul li:hover {
 #right-panel {
 	margin-left: 12px;
 	float: left;
-	width: calc(100% - 284px);
+	width: calc(100% - 400px);
 }
 
 .info-item {
@@ -87,6 +114,15 @@ nav ul li:hover {
 	padding: 12px;
 	border-radius: 12px;
 	border: 2px solid var(--tir-color);
+}
+
+.info-item.command-info {
+	display: flex;
+}
+
+.info-item div {
+	justify-content: left;
+	width: 50%;
 }
 
 .info-item:hover {
@@ -100,7 +136,7 @@ nav ul li:hover {
 .highlight {
 	color: lightpink;
 	background: var(--sec-color);
-	padding: 2px;
+	padding: 4px;
 	border-radius: 4px;
 }
 

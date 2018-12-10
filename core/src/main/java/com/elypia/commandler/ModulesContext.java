@@ -1,7 +1,7 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.metadata.ModuleData;
+import com.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
 import java.io.*;
@@ -212,5 +212,23 @@ public class ModulesContext {
 
     public Set<String> getAliases() {
         return Set.copyOf(rootAliases);
+    }
+
+    public List<CommandData> getCommands() {
+        return getCommands(true);
+    }
+
+    public List<CommandData> getCommands(boolean includePrivate) {
+        List<CommandData> commands = new ArrayList<>();
+        List<ModuleData> modules = getModules(includePrivate);
+
+        modules.forEach((data) -> {
+            if (includePrivate)
+                commands.addAll(data.getCommands());
+            else
+                commands.addAll(data.getPublicCommands());
+        });
+
+        return List.copyOf(commands);
     }
 }

@@ -3,9 +3,15 @@
     <head>
         <title>$app_name | $page_name</title>
         <meta charset="UTF-8"/>
-        <link rel="icon" type="image/${app_icon_type}" href="$app_icon"/>
+
+        #if($app_icon_type && $app_icon)
+            <link rel="icon" type="image/${app_icon_type}" href="$app_icon"/>
+        #end
+
         <link rel="stylesheet" type="text/css" href="/css/styles.css">
         <link rel="stylesheet" type="text/css" href="/css/reset.css"/>
+
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
         ## We only ever use this on the homepage, no lead to load it for others.
@@ -15,31 +21,45 @@
             <script>hljs.initHighlightingOnLoad();</script>
         #end
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="/js/scripts.js"></script>
+
         <meta property="og:site_name" content="$app_name"/>
         <meta property="og:title" content="$app_name | Help"/>
         <meta property="og:description" content="$app_description"/>
         <meta property="og:image" content="$app_logo"/>
     </head>
     <body>
-        <nav class="left">
+        <header>
             <div id="app-info">
                 <a href="/">
+                    #if($app_logo)
+                        <img id="logo" src=$app_logo alt="Logo representing the application."/>
+                    #end
+
                     <h1 id="title">$app_name</h1>
-                    <img id="logo" src=$app_logo alt="Logo representing the application."/>
                 </a>
             </div>
+            <ul class="social-links">
+                #foreach($social_link in $social_links)
+                    <li class="hover"><a href="$social_link.getLink()" target="_blank"><span class="$social_link.getIcon()"></span></a></li>
+                #end
+            </ul>
+        </header>
+        <nav class="left">
+            <a class="group hover" href="/all-commands.html"><h1>All Commands</h1></a>
             <ul>
                 #foreach($entry in $all_groups.entrySet())
                     #set($group_iter = $entry.key)
                     #set($group_iter_modules = $entry.value)
-                    <li class="group #if($group_iter.equals($this_group)) selected #end">
+                    <li class="group hover #if($group_iter.equals($this_group)) selected #end">
                         <a href="/groups/${builder.toOutputFriendlyName($group_iter)}.html"><h2>$group_iter</h2></a>
                         <ul class="module">
                             #foreach($module in $group_iter_modules)
                                 #set($module_name = $module.getAnnotation().id())
                                 <a href="/modules/${builder.toOutputFriendlyName($module_name)}.html">
-                                    <li class="module #if($module_name.equals($this_name)) selected #end">
-                                        <h3>$module_name</h3>
+                                    <li class="module hover #if($module_name.equals($this_name)) selected #end">
+                                        <span class="icon $module.getModuleClass().getAnnotation($icon_class).icon()"></span><h3 class="inline">$module_name</h3>
                                     </li>
                                 </a>
                             #end

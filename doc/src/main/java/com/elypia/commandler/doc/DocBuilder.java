@@ -2,15 +2,12 @@ package com.elypia.commandler.doc;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
+import com.elypia.commandler.doc.annotations.*;
 import com.elypia.commandler.metadata.ModuleData;
 import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
 import org.jsoup.Jsoup;
 import org.slf4j.*;
 
@@ -38,6 +35,10 @@ public class DocBuilder {
      * the application documentation.
      */
     private DocData data;
+
+    private List<SocialLink> socialLinks;
+
+    private MarkdownParser parser;
 
     /**
      * The id of the application.
@@ -72,6 +73,8 @@ public class DocBuilder {
     public DocBuilder(String name, ModulesContext context) {
         this.name = name;
         this.context = context;
+
+        parser = new MarkdownParser(TablesExtension.create());
     }
 
     /**
@@ -111,24 +114,30 @@ public class DocBuilder {
 
         VelocityContext globalContext = new VelocityContext();
         globalContext.put("builder", this);
+        globalContext.put("parser", parser);
         globalContext.put("app_name", name);
         globalContext.put("app_description", description);
         globalContext.put("app_logo", logo);
         globalContext.put("app_icon", favicon);
         globalContext.put("app_icon_type", favionType);
+        globalContext.put("social_links", socialLinks);
         globalContext.put("all_modules", context.getModules(false));
         globalContext.put("all_groups", groups);
-
-        List<Extension> extensions = List.of(TablesExtension.create());
-        Parser parser = Parser.builder().extensions(extensions).build();
-        Node document = parser.parseReader(new FileReader("./README.md"));
-        HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
+        globalContext.put("example_class", Example.class);
+        globalContext.put("icon_class", Icon.class);
 
         VelocityContext homeContext = new VelocityContext(globalContext);
         homeContext.put("page_name", "Home");
-        homeContext.put("content", renderer.render(document));
+        homeContext.put("content", parser.parseFile("./README.md"));
 
         outputFile(file.getAbsoluteFile(), "index", template, homeContext);
+
+        VelocityContext allCommandsContext = new VelocityContext(globalContext);
+        allCommandsContext.put("page_name", "All Commands");
+        allCommandsContext.put("commands", context.getCommands(false));
+        allCommandsContext.put("content", "all_commands_template.vm");
+
+        outputFile(file.getAbsoluteFile(), "all-commands", template, allCommandsContext);
 
         for (var group : groups.entrySet()) {
             String groupName = group.getKey();
@@ -158,6 +167,7 @@ public class DocBuilder {
             moduleContext.put("module_anno", moduleAnno);
             moduleContext.put("module_id", moduleAnno.id());
             moduleContext.put("module_group", moduleAnno.group());
+            moduleContext.put("commands", module.getPublicCommands());
             moduleContext.put("content", "module_template.vm");
 
             outputFile(file.getAbsoluteFile(), outputName, template, moduleContext);
@@ -265,5 +275,14 @@ public class DocBuilder {
 
     public String getFavionType() {
         return favionType;
+    }
+
+    public List<SocialLink> getSocialLinks() {
+        return socialLinks;
+    }
+
+    public DocBuilder setSocialLinks(List<SocialLink> socialLinks) {
+        this.socialLinks = socialLinks;
+        return this;
     }
 }

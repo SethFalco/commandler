@@ -3,9 +3,11 @@ package com.elypia.commandler.doc.impl;
 import com.elypia.commandler.Handler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.doc.annotations.Icon;
 
 import javax.validation.constraints.Size;
 
+@Icon(icon = "fas fa-gamepad", color = "silver")
 @Module(id = "RuneScape", group = "Gaming", aliases = {"runescape", "rs"}, help = "RuneScape, the popular MMORPG!")
 public class RuneScapeModule extends Handler {
 

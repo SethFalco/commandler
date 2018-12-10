@@ -7,30 +7,5 @@
         #end
     </ul>
     <p>$module_anno.help()</p>
-    #foreach($command in $module.getCommands())
-        #if($command.isPublic())
-            #set($command_anno = $command.getAnnotation())
-            <div class="info-item">
-                <h2>$command_anno.id()</h2>
-                <p class="inline">Aliases: </p>
-                <ul class="highlight inline">
-                    #foreach($alias in $command_anno.aliases())
-                        <li>$alias</li>
-                    #end
-                </ul>
-                <p>$command_anno.help()</p>
-                #set($params = $command.getInputParams())
-                #if(!$params.isEmpty())
-                    <br>
-                    <p>Parameters:</p>
-                    <ul class="parameter-info">
-                        #foreach($param in $params)
-                            #set($param_anno = $param.getAnnotation())
-                            <li><span class="highlight">${param_anno.id()}</span>: ${param_anno.help()}</li>
-                        #end
-                    </ul>
-                #end
-            </div>
-        #end
-    #end
+    #parse("commands_template.vm")
 </div>

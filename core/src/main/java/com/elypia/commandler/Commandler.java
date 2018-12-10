@@ -12,10 +12,10 @@ public class Commandler<C, E, M> {
 
     private String prefix;
     private String website;
+    private ModulesContext context;
     private IMisuseHandler<C, E, M> misuseHandler;
     private LanguageEngine<E> engine;
 
-    private ModulesContext context;
     private ICommandProcessor<C, E, M> processor;
     private CommandValidator validator;
     private ParameterParser parser;
@@ -26,11 +26,11 @@ public class Commandler<C, E, M> {
     private Commandler(Builder<C, E, M> commandlerBuilder) {
         client = commandlerBuilder.client;
         prefix = commandlerBuilder.prefix;
+        context = commandlerBuilder.context;
         website = commandlerBuilder.website;
         misuseHandler = commandlerBuilder.misuseHandler;
         engine = commandlerBuilder.engine;
 
-        context = new ModulesContext();
         processor = new CommandProcessor<>(this);
         validator = new CommandValidator(this);
         parser = new ParameterParser(misuseHandler);
@@ -100,6 +100,7 @@ public class Commandler<C, E, M> {
 
         private String prefix;
         private String website;
+        private ModulesContext context;
         private IMisuseHandler<C, E, M> misuseHandler;
         private LanguageEngine<E> engine;
 
@@ -143,6 +144,15 @@ public class Commandler<C, E, M> {
 
         public Builder<C, E, M> setWebsite(String website) {
             this.website = website;
+            return this;
+        }
+
+        public ModulesContext getContext() {
+            return context;
+        }
+
+        public Builder<C, E, M> setContext(ModulesContext context) {
+            this.context = context;
             return this;
         }
 
