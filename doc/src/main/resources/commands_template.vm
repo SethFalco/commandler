@@ -3,23 +3,28 @@
     <div class="info-item command-info">
         <div>
             <h2>$command_anno.id()</h2>
-            <p class="inline">Aliases: </p>
-            <ul class="highlight inline">
-                #foreach($alias in $command_anno.aliases())
-                    <li>$alias</li>
-                #end
-            </ul>
+            <div class="aliases">
+                <p>Aliases:</p>
+                <ul class="highlight">
+                    #foreach($alias in $command_anno.aliases())
+                        <li>$alias</li>
+                    #end
+                </ul>
+            </div>
             <p>$command_anno.help()</p>
             #set($params = $command.getInputParams())
             #if(!$params.isEmpty())
                 <br>
                 <p>Parameters:</p>
-                <ul class="parameter-info">
+                <table class="parameter-info">
                     #foreach($param in $params)
                         #set($param_anno = $param.getAnnotation())
-                        <li><span class="highlight">${param_anno.id()}</span>: ${param_anno.help()}</li>
+                        <tr>
+                            <td class="highlight">$param_anno.id()</td>
+                            <td>$param_anno.help()</td>
+                        </tr>
                     #end
-                </ul>
+                </table>
             #end
         </div>
         #set($example = $command.getMethod().getAnnotation($example_class))

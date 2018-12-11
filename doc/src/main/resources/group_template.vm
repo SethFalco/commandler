@@ -5,21 +5,26 @@
         <a href="/modules/${builder.toOutputFriendlyName($gi_group_module_anno.id())}.html">
             <div class="info-item module-info">
                 <h2>$gi_group_module_anno.id()</h2>
-                <p class="inline">Aliases: </p>
-                <ul class="highlight inline">
-                    #foreach($alias in $gi_group_module_anno.aliases())
-                        <li>$alias</li>
-                    #end
-                </ul>
+                <div class="aliases">
+                    <p>Aliases: </p>
+                    <ul class="highlight">
+                        #foreach($alias in $gi_group_module_anno.aliases())
+                            <li>$alias</li>
+                        #end
+                    </ul>
+                </div>
                 <p>$gi_group_module_anno.help()</p>
                 <br>
                 <p>Commands:</p>
-                <ul class="module-command-info">
+                <table>
                     #foreach($gi_command in $gi_group_module.getPublicCommands())
                         #set($gi_command_anno = $gi_command.getAnnotation())
-                        <li><span class="highlight">${gi_command_anno.id()}</span>: ${gi_command_anno.help()}</li>
+                        <tr>
+                            <td class="command-id highlight">$gi_command_anno.id()</td>
+                            <td>$gi_command_anno.help()</td>
+                        </tr>
                     #end
-                </ul>
+                </table>
             </div>
         </a>
     #end

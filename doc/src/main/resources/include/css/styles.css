@@ -1,12 +1,15 @@
+@import "reset.css";
+
 /*
 	Whole Page
  */
 
-html, body, nav {
+html, body {
 	--pri-color: #202020;
 	--sec-color: #282828;
 	--tir-color: #3B3B3B;
 	--text-color: white;
+	--lowlight: 0.75;
 
 	height: 100%;
 }
@@ -36,15 +39,34 @@ a {
  */
 
 .hover:not(.selected) {
-	opacity: 0.75;
+	opacity: var(--lowlight);
 }
 
 .hover:hover {
-    opacity: 1.00;
+	opacity: 1.00;
 }
 
-.inline, .inline li, #all-commands-title * {
-    display: inline-block;
+.inline {
+	display: inline-block;
+}
+
+li {
+	list-style-type: none;
+}
+
+.aliases * {
+	display: inline-block;
+}
+
+.highlight, .highlight * {
+	background-color: var(--sec-color);
+	color: lightpink;
+	padding: 2px;
+	border-radius: 4px;
+}
+
+.command-id {
+	padding: 0 4px 0 0;
 }
 
 /*
@@ -52,19 +74,40 @@ a {
  */
 
 header {
-	background-color: var(--sec-color);
-	border-bottom: 4px solid var(--tir-color);
-    margin: 16px;
+	--header-height: 64px;
+
+	height: var(--header-height);
+	line-height: var(--header-height);
+
+	background-color: var(--tir-color);
+	padding: calc(var(--header-height) / 4);
 }
 
 header * {
-	display: inline-block;
-	font-size: 32px;
+	height: 100%;
+	vertical-align: middle;
+	display: inline;
+	font-size: calc(var(--header-height) / 1.5);
+}
+
+header h1, header li {
+	margin: 0 4px;
+}
+
+form {
+	float: right;
 }
 
 #logo {
-	width: 64px;
-	margin: 0;
+	height: var(--header-height);
+}
+
+/*
+	Panels
+ */
+
+#content {
+	height: 100%;
 }
 
 /*
@@ -73,10 +116,9 @@ header * {
 
 nav {
 	float: left;
-	width: 16%;
 	min-width: 256px;
 	background-color: var(--sec-color);
-	border-right: 4px solid var(--tir-color);
+	height: 100%;
 }
 
 .bot-title  {
@@ -85,7 +127,7 @@ nav {
 }
 
 nav h1 {
-    padding: 16px 0 16px 16px;
+	padding: 16px 0 16px 16px;
 }
 
 nav ul {
@@ -98,14 +140,14 @@ nav ul {
 	Right Panel
  */
 
-#right-panel {
+main {
 	margin: 16px 0 0 16px;
 	float: left;
 	width: calc(100% - 400px);
 }
 
-#right-panel h1 {
-    padding: 0 0 16px 0;
+main h1 {
+	padding: 0 0 16px 0;
 }
 
 .info-item {
@@ -116,7 +158,7 @@ nav ul {
 }
 
 .icon {
-    padding-right: 8px;
+	padding-right: 8px;
 }
 
 .info-item.command-info {
@@ -132,29 +174,19 @@ nav ul {
 	background-color: var(--sec-color);
 }
 
-.highlight {
-	background-color: var(--sec-color);
-    color: lightpink;
-
-    padding: 4px;
-
-	border-radius: 4px;
-}
-
-.info-item li {
-	list-style-type: none;
-}
-
 #search {
-    background-color: var(--sec-color);
-    color: var(--text-color);
-    font-size: 28px;
+	outline: none;
 
-    margin-left: 16px;
-    padding: 8px;
+	background-color: var(--sec-color);
+	color: rgba(var(--text-color), var(--lowlight));
+	height: 50%;
+	font-size: 28px;
 
-    border: 2px solid var(--tir-color);
-    border-radius: 8px;
+	margin-left: 16px;
+	padding: 8px;
+
+	border: 2px solid var(--tir-color);
+	border-radius: 8px;
 }
 
 /*
@@ -162,5 +194,5 @@ nav ul {
  */
 
 .js {
-    display: none;
+	display: none;
 }

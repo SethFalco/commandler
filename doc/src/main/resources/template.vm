@@ -8,10 +8,8 @@
             <link rel="icon" type="image/${app_icon_type}" href="$app_icon"/>
         #end
 
-        <link rel="stylesheet" type="text/css" href="/css/styles.css">
-        <link rel="stylesheet" type="text/css" href="/css/reset.css"/>
-
-        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+        <link rel="stylesheet" href="/css/styles.css" type="text/css" >
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
         ## We only ever use this on the homepage, no lead to load it for others.
@@ -43,35 +41,40 @@
                     <li class="hover"><a href="$social_link.getLink()" target="_blank"><span class="$social_link.getIcon()"></span></a></li>
                 #end
             </ul>
+            <form class="js" action="/all-commands.html">
+                <input id="search" type="text" placeholder="Search Commands..." name="search">
+            </form>
         </header>
-        <nav class="left">
-            <a href="/all-commands.html"><h1 class="hover">All Commands</h1></a>
-            <ul>
-                #foreach($entry in $groups.entrySet())
-                    #set($_group_name = $entry.key)
-                    #set($_group_modules = $entry.value)
-                    <li class="hover #if($_group_name.equals($module_group)) selected #end">
-                        <a href="/groups/${builder.toOutputFriendlyName($_group_name)}.html"><h2>$_group_name</h2></a>
-                        <ul class="module">
-                            #foreach($_group_module in $_group_modules)
-                                #set($_group_module_name = $_group_module.getAnnotation().id())
-                                <a href="/modules/${builder.toOutputFriendlyName($_group_module_name)}.html">
-                                    <li class="module hover #if($_group_module_name.equals($module_id)) selected #end">
-                                        <span class="icon $_group_module.getModuleClass().getAnnotation($icon_class).icon()"></span><h3 class="inline">$_group_module_name</h3>
-                                    </li>
-                                </a>
-                            #end
-                        </ul>
-                    </li>
+        <div id="content">
+            <nav>
+                <a href="/all-commands.html"><h1 class="hover">All Commands</h1></a>
+                <ul>
+                    #foreach($entry in $groups.entrySet())
+                        #set($_group_name = $entry.key)
+                        #set($_group_modules = $entry.value)
+                        <li class="hover #if($_group_name.equals($module_group)) selected #end">
+                            <a href="/groups/${builder.toOutputFriendlyName($_group_name)}.html"><h2>$_group_name</h2></a>
+                            <ul class="module">
+                                #foreach($_group_module in $_group_modules)
+                                    #set($_group_module_name = $_group_module.getAnnotation().id())
+                                    <a href="/modules/${builder.toOutputFriendlyName($_group_module_name)}.html">
+                                        <li class="module hover #if($_group_module_name.equals($module_id)) selected #end">
+                                            <span class="icon $_group_module.getModuleClass().getAnnotation($icon_class).icon()"></span><h3 class="inline">$_group_module_name</h3>
+                                        </li>
+                                    </a>
+                                #end
+                            </ul>
+                        </li>
+                    #end
+                </ul>
+            </nav>
+            <main>
+                #if($content.endsWith(".vm"))
+                    #parse($content)
+                #else
+                    $content
                 #end
-            </ul>
-        </nav>
-        <div id="right-panel">
-            #if($content.endsWith(".vm"))
-                #parse($content)
-            #else
-                $content
-            #end
+            </main>
         </div>
     </body>
 </html>

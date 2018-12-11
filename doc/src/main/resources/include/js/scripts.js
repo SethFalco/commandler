@@ -1,30 +1,31 @@
-const pattern = /[^a-z\d]/g;
+const pattern = /[^a-z\d]+/g;
 
 $(document).ready(function () {
-    const search = $("#search");
+    const query = new URLSearchParams(window.location.search);
+    const field = $("#search");
 
     $(".js").css("display", "inline");
 
-    search.on("input", function() {
-        let input = $(this).val();
-        let commands = $(".command-info");
-
-        if (!input)
-            return commands.css("display", "");
-
-        commands.each(function() {
-            let content = $(this).text().toLowerCase().replace(pattern, "");
-            input = input.toLowerCase().replace(pattern, "");
-
-            if (content.includes(input))
-                return $(this).css("display", "");
-
-            $(this).css("display", "none");
-        });
+    field.on("input", function() {
+        search($(this).val())
     });
 
-    search.keypress(function(event) {
-        if (event.keyCode === 13)
-            event.preventDefault();
-    })
+    if (query.has("search")) {
+        let input = query.get("search");
+        field.val(input);
+        search(input);
+    }
 });
+
+function search(content) {
+    let input = searchable(content);
+
+    $(".command-info").each(function() {
+        let content = searchable($(this).text());
+        $(this).css("display", content.includes(input) ? "" : "none");
+    });
+}
+
+function searchable(input) {
+    return input.toLowerCase().replace(pattern, "");
+}

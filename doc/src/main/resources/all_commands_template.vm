@@ -1,9 +1,4 @@
 <div id="all-commands">
-    <div id="all-commands-title">
-        <h1>All Commands</h1>
-        <form class="js">
-            <input id="search" type="text" placeholder="Search..." name="search">
-        </form>
-    </div>
+    <h1>All Commands</h1>
     #parse("commands_template.vm")
 </div>
