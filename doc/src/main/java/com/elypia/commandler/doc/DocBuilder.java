@@ -3,6 +3,7 @@ package com.elypia.commandler.doc;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.doc.annotations.*;
+import com.elypia.commandler.doc.entities.AppData;
 import com.elypia.commandler.metadata.ModuleData;
 import org.apache.velocity.*;
 import org.apache.velocity.app.VelocityEngine;
@@ -18,8 +19,10 @@ import java.util.*;
 public class DocBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DocBuilder.class);
+    private static final DocUtils UTILS = new DocUtils();
 
     private VelocityEngine engine;
+
 
     /**
      * The modules parsed as {@link ModuleData}.
@@ -34,66 +37,24 @@ public class DocBuilder {
      * {@link Commandler} at runtime, but can be useful for
      * the application documentation.
      */
-    private DocData data;
-
-    private List<SocialLink> socialLinks;
+    private AppData data;
 
     private MarkdownParser parser;
 
-    /**
-     * The id of the application.
-     */
-    private String name;
-
-    /**
-     * The description of the application.
-     */
-    private String description;
-
-    /**
-     * The logo for the application.
-     */
-    private String logo;
-
-    /**
-     * The favicon for the generated website.
-     */
-    private String favicon;
-
-    private String favionType;
-
     public DocBuilder() {
-        this("Documentation");
+        this(new ModulesContext());
     }
 
-    public DocBuilder(String name) {
-        this(name, null);
-    }
-
-    public DocBuilder(String name, ModulesContext context) {
-        this.name = name;
+    public DocBuilder(ModulesContext context) {
         this.context = context;
-
         parser = new MarkdownParser(TablesExtension.create());
-    }
 
-    /**
-     * Get and return the velocity engine, initializing it
-     * if it hasn't been initialized already.
-     *
-     * @return The velocity engine to build pages with.
-     */
-    private VelocityEngine getVelocityEngine() {
-        if (engine == null) {
-            Properties velocityProperties = new Properties();
-            velocityProperties.setProperty(VelocityEngine.RESOURCE_LOADER, "class");
-            velocityProperties.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+        Properties velocityProperties = new Properties();
+        velocityProperties.setProperty(VelocityEngine.RESOURCE_LOADER, "class");
+        velocityProperties.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
 
-            engine = new VelocityEngine(velocityProperties);
-            engine.init();
-        }
-
-        return engine;
+        engine = new VelocityEngine(velocityProperties);
+        engine.init();
     }
 
     public void build() throws IOException {
@@ -108,19 +69,13 @@ public class DocBuilder {
         if (file.exists() && !file.isDirectory())
             throw new IllegalArgumentException("Path must be a directory.");
 
-        VelocityEngine engine = getVelocityEngine();
         Template template = engine.getTemplate("template.vm", "utf-8");
         Map<String, List<ModuleData>> groups = context.getGroups(false);
 
         VelocityContext globalContext = new VelocityContext();
-        globalContext.put("builder", this);
+        globalContext.put("utils", UTILS);
+        globalContext.put("data", data);
         globalContext.put("parser", parser);
-        globalContext.put("app_name", name);
-        globalContext.put("app_description", description);
-        globalContext.put("app_logo", logo);
-        globalContext.put("app_icon", favicon);
-        globalContext.put("app_icon_type", favionType);
-        globalContext.put("social_links", socialLinks);
         globalContext.put("all_modules", context.getModules(false));
         globalContext.put("groups", groups);
         globalContext.put("example_class", Example.class);
@@ -142,7 +97,7 @@ public class DocBuilder {
         for (var group : groups.entrySet()) {
             String groupName = group.getKey();
             List<ModuleData> modules = group.getValue();
-            String outputName = "groups/" + toOutputFriendlyName(groupName);
+            String outputName = "groups/" + UTILS.toOutput(groupName);
 
             VelocityContext groupContext = new VelocityContext(globalContext);
             groupContext.put("page_name", "Group | " + groupName);
@@ -159,7 +114,7 @@ public class DocBuilder {
 
             Module moduleAnno = module.getAnnotation();
             String moduleName = moduleAnno.id();
-            String outputName = "modules/" + toOutputFriendlyName(moduleName);
+            String outputName = "modules/" + UTILS.toOutput(moduleName);
 
             VelocityContext moduleContext = new VelocityContext(globalContext);
             moduleContext.put("page_name", "Module | " + moduleName);
@@ -176,9 +131,7 @@ public class DocBuilder {
         copyFiles(path, "/include");
     }
 
-    public String toOutputFriendlyName(String id) {
-        return id.toLowerCase().replaceAll("[^a-z\\d_-]+", "-");
-    }
+
 
     private void outputFile(File file, String outputName, Template template, VelocityContext velocityContext) throws IOException {
         String writePath = file.getAbsolutePath() + "/" + outputName + ".html";
@@ -236,53 +189,12 @@ public class DocBuilder {
         return this;
     }
 
-    public DocBuilder setName(String name) {
-        this.name = name;
-        return this;
+    public AppData getData() {
+        return data;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public DocBuilder setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public DocBuilder setLogo(String logo) {
-        this.logo = logo;
-        return this;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public DocBuilder setFavicon(String favionType, String favicon) {
-        this.favionType = favionType;
-        this.favicon = favicon;
-        return this;
-    }
-
-    public String getFavicon() {
-        return favicon;
-    }
-
-    public String getFavionType() {
-        return favionType;
-    }
-
-    public List<SocialLink> getSocialLinks() {
-        return socialLinks;
-    }
-
-    public DocBuilder setSocialLinks(List<SocialLink> socialLinks) {
-        this.socialLinks = socialLinks;
+    public DocBuilder setData(AppData data) {
+        this.data = data;
         return this;
     }
 }

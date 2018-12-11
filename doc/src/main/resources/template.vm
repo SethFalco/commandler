@@ -1,15 +1,33 @@
 <!doctype html>
 <html>
     <head>
-        <title>$app_name | $page_name</title>
+        <title>$data.getName() | $page_name</title>
         <meta charset="UTF-8"/>
 
-        #if($app_icon_type && $app_icon)
-            <link rel="icon" type="image/${app_icon_type}" href="$app_icon"/>
+        #set($icon = $data.getFavicon())
+        #if($icon)
+            <link rel="icon" type="image/${icon.getType()}" href="$icon.getIcon()"/>
+        #end
+
+        #set($style = $data.getStyle())
+        #set($font = $style.getFont())
+        <style>
+            html {
+                #set($colors = $style.getColors())
+                --pri-color: $utils.toRgba($colors.getPrimary());
+                --sec-color: $utils.toRgba($colors.getSecondary());
+                --ter-color: $utils.toRgba($colors.getTertiary());
+                --text-color: $utils.toRgba($colors.getText());
+
+                --font: $font.getName();
+            }
+        </style>
+
+        #if($font.getLocation())
+            <link rel="stylesheet" href="$font.getLocation()">
         #end
 
         <link rel="stylesheet" href="/css/styles.css" type="text/css" >
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
         ## We only ever use this on the homepage, no lead to load it for others.
@@ -22,23 +40,26 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script type="text/javascript" src="/js/scripts.js"></script>
 
-        <meta property="og:site_name" content="$app_name"/>
-        <meta property="og:title" content="$app_name | Help"/>
-        <meta property="og:description" content="$app_description"/>
-        <meta property="og:image" content="$app_logo"/>
+        <meta property="og:site_name" content="$data.getName()"/>
+        <meta property="og:title" content="$data.getName() | Help"/>
+        <meta property="og:description" content="$data.getDescription()"/>
+
+        #if($data.getLogo())
+            <meta property="og:image" content="$data.getLogo()"/>
+        #end
     </head>
     <body>
         <header>
             <a href="/">
-                #if($app_logo)
-                    <img id="logo" src=$app_logo alt="Logo representing the application."/>
+                #if($data.getLogo())
+                    <img id="logo" src=$data.getLogo() alt="Logo representing the application."/>
                 #end
 
-                <h1 class="hover">$app_name</h1>
+                <h1 class="hover">$data.getName()</h1>
             </a>
             <ul>
-                #foreach($social_link in $social_links)
-                    <li class="hover"><a href="$social_link.getLink()" target="_blank"><span class="$social_link.getIcon()"></span></a></li>
+                #foreach($social in $data.getSocial())
+                    <li class="hover"><a href="$social.getLink()" target="_blank"><span class="$social.getIcon()"></span></a></li>
                 #end
             </ul>
             <form class="js" action="/all-commands.html">
@@ -53,11 +74,11 @@
                         #set($_group_name = $entry.key)
                         #set($_group_modules = $entry.value)
                         <li class="hover #if($_group_name.equals($module_group)) selected #end">
-                            <a href="/groups/${builder.toOutputFriendlyName($_group_name)}.html"><h2>$_group_name</h2></a>
+                            <a href="/groups/${utils.toOutput($_group_name)}.html"><h2>$_group_name</h2></a>
                             <ul class="module">
                                 #foreach($_group_module in $_group_modules)
                                     #set($_group_module_name = $_group_module.getAnnotation().id())
-                                    <a href="/modules/${builder.toOutputFriendlyName($_group_module_name)}.html">
+                                    <a href="/modules/${utils.toOutput($_group_module_name)}.html">
                                         <li class="module hover #if($_group_module_name.equals($module_id)) selected #end">
                                             <span class="icon $_group_module.getModuleClass().getAnnotation($icon_class).icon()"></span><h3 class="inline">$_group_module_name</h3>
                                         </li>

@@ -2,7 +2,7 @@
     <h1>$group_name</h1>
     #foreach($gi_group_module in $group_modules)
         #set($gi_group_module_anno = $gi_group_module.getAnnotation())
-        <a href="/modules/${builder.toOutputFriendlyName($gi_group_module_anno.id())}.html">
+        <a href="/modules/${utils.toOutput($gi_group_module_anno.id())}.html">
             <div class="info-item module-info">
                 <h2>$gi_group_module_anno.id()</h2>
                 <div class="aliases">

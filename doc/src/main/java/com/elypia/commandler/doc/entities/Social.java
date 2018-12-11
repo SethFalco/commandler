@@ -1,12 +1,23 @@
-package com.elypia.commandler.doc;
+package com.elypia.commandler.doc.entities;
 
-public class SocialLink {
+import com.electronwill.nightconfig.core.conversion.Path;
 
+public class Social {
+
+    @Path("icon")
     private String icon;
+
+    @Path("link")
     private String link;
+
+    @Path("color")
     private String color;
 
-    public SocialLink(String icon, String link, String color) {
+    public Social() {
+        // Do nothing
+    }
+
+    public Social(String icon, String link, String color) {
         this.icon = icon;
         this.link = link;
         this.color = color;
