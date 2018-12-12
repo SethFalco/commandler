@@ -3,6 +3,7 @@ package com.elypia.commandler.metadata;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.interfaces.*;
 import org.slf4j.*;
 
 import java.lang.reflect.Method;
@@ -63,6 +64,9 @@ public class ModuleData implements Comparable<ModuleData> {
 
     private CommandData defaultCommand;
 
+    private Class<? extends IParser>[] parsers;
+    private Class<? extends IBuilder>[] builders;
+
     public ModuleData(ModulesContext context, Class<? extends Handler> moduleClass) {
         this.context = Objects.requireNonNull(context);
         this.moduleClass = Objects.requireNonNull(moduleClass);
@@ -71,6 +75,12 @@ public class ModuleData implements Comparable<ModuleData> {
 
         if (annotation == null)
             throw new IllegalStateException(String.format("%s isn't annotated with %s.", moduleClass.getName(), Module.class.getName()));
+
+        if (moduleClass.isAnnotationPresent(Parsers.class))
+            parsers = moduleClass.getAnnotation(Parsers.class).value();
+
+        if (moduleClass.isAnnotationPresent(Builders.class))
+            builders = moduleClass.getAnnotation(Builders.class).value();
 
         isPublic = !annotation.help().equals(Module.HIDEEN);
 
@@ -228,6 +238,14 @@ public class ModuleData implements Comparable<ModuleData> {
 
     public CommandData getDefaultCommand() {
         return defaultCommand;
+    }
+
+    public Class<? extends IParser>[] getParsers() {
+        return parsers;
+    }
+
+    public Class<? extends IBuilder>[] getBuilders() {
+        return builders;
     }
 
     @Override

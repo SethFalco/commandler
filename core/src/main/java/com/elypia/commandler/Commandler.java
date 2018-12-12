@@ -21,7 +21,7 @@ public class Commandler<C, E, M> {
     private ParameterParser parser;
     private MessageBuilder builder;
 
-    private Map<Class<? extends Handler>, Handler<C, E, M>> handlers;
+    private Map<Class<? extends Handler<C, E, M>>, Handler<C, E, M>> handlers;
 
     private Commandler(Builder<C, E, M> commandlerBuilder) {
         client = commandlerBuilder.client;
@@ -43,7 +43,7 @@ public class Commandler<C, E, M> {
         return processor.dispatch(event, content, send);
     }
 
-    public Handler<C, E, M> getHandler(Class<? extends Handler> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public Handler<C, E, M> getHandler(Class<? extends Handler<C, E, M>> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (!handlers.containsKey(handler)) {
             Handler<C, E, M> handlerInstance = handler.getConstructor().newInstance();
             handlerInstance.init(this);
@@ -112,6 +112,9 @@ public class Commandler<C, E, M> {
         private void initializeDefaults() {
             if (prefix == null)
                 prefix = "!";
+
+            if (context == null)
+                context = new ModulesContext();
 
             if (misuseHandler == null)
                 misuseHandler = new MisuseHandler<>();

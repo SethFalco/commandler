@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 public class DocBuilderTest {
@@ -53,14 +54,14 @@ public class DocBuilderTest {
             .build();
     }
 
-//    @Test
-//    public void testFromConfig() throws IOException {
-//        URL url = this.getClass().getResource("/testapp.toml");
-//        AppData data = new AppData(url);
-//
-//        builder
-//            .setData(data)
-//            .setContext(context)
-//            .build();
-//    }
+    @Test
+    public void testFromConfig() throws IOException {
+        URL url = this.getClass().getResource("/testapp.toml");
+        AppData data = new AppData(url);
+
+        builder
+            .setData(data)
+            .setContext(context)
+            .build();
+    }
 }

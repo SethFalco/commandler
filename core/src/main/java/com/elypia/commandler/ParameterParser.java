@@ -123,7 +123,7 @@ public class ParameterParser {
     protected Object parseParameter(ICommandEvent<?, ?, ?> event, ParamData param, List<String> items) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
-        IParser parser = getParser(componentType);
+        IParser parser = getParser(event, componentType);
 
         if (parser == null)
             throw new RuntimeException(String.format("No parser was created for the data-type %s.", componentType.getName()));
@@ -188,17 +188,16 @@ public class ParameterParser {
      * @param typeRequired The type that needs parsing.
      * @return The parser to can parse this data into this data-type.
      */
-    private IParser<?, ?> getParser(Class<?> typeRequired) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        for (var parser : parsers.entrySet()) {
-            Class<? extends IParser> parserType = parser.getKey();
-            Class<?>[] compatibleTypes = parserType.getAnnotation(Compatible.class).value();
+    private IParser<?, ?> getParser(ICommandEvent event, Class<?> typeRequired) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        for (var parser : event.getInput().getModuleData().getParsers()) {
+            Class<?>[] compatibleTypes = parser.getAnnotation(Compatible.class).value();
 
             for (Class<?> type : compatibleTypes) {
                 if (type == typeRequired || type.isAssignableFrom(typeRequired)) {
-                    if (parser.getValue() == null)
-                        parser.setValue(parserType.getConstructor().newInstance());
+                    if (parsers.containsKey(parser))
+                        parsers.put(parser, parser.getConstructor().newInstance());
 
-                    return parser.getValue();
+                    return parsers.get(parser);
                 }
             }
         }

@@ -64,7 +64,7 @@ public class MessageBuilder<M> {
      */
     public M build(ICommandEvent<?, ?, M> event, Object object) {
         Objects.requireNonNull(object);
-        IBuilder builder = getBuilder(object.getClass());
+        IBuilder builder = getBuilder(event, object.getClass());
 
         M content = (M)builder.build(event, object);
 
@@ -87,22 +87,21 @@ public class MessageBuilder<M> {
      * @throws IllegalArgumentException If no {@link IBuilder} is
      *         registered for this data-type.
      */
-    private IBuilder<?, ?, M> getBuilder(Class<?> typeRequired) {
-        for (var builder : builders.entrySet()) {
-            Class<? extends IBuilder<?, ?, M>> builderType = builder.getKey();
-            Class<?>[] compatibleTypes = builderType.getAnnotation(Compatible.class).value();
+    private IBuilder<?, ?, M> getBuilder(ICommandEvent<?, ?, M> event, Class<?> typeRequired) {
+        for (var builder : event.getInput().getModuleData().getBuilders()) {
+            Class<?>[] compatibleTypes = builder.getAnnotation(Compatible.class).value();
 
             for (Class<?> type : compatibleTypes) {
                 if (type == typeRequired || type.isAssignableFrom(typeRequired)) {
-                    if (builder.getValue() == null) {
+                    if (!builders.containsKey(builder)) {
                         try {
-                            builder.setValue(builderType.getConstructor().newInstance());
+                            builders.put((Class<IBuilder<?, ?, M>>)builder, builder.getConstructor().newInstance());
                         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
                             throw new IllegalStateException("No default constructor.");
                         }
                     }
 
-                    return builder.getValue();
+                    return builders.get(builder);
                 }
             }
         }

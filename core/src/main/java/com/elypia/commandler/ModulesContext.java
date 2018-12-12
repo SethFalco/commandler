@@ -71,12 +71,6 @@ public class ModulesContext {
             data.getStaticCommands().forEach(commandData -> {
                 rootAliases.addAll(commandData.getAliases());
             });
-
-//            Class<? extends IBuilder>[] builders = data.getModuleClass().getAnnotation(Builders.class).value();
-//            commandler.getBuilder().add(builders);
-//
-//            Class<? extends IParser>[] parsers = data.getModuleClass().getAnnotation(Parsers.class).value();
-//            commandler.getParser().add(parsers);
         }
     }
 

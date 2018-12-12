@@ -67,7 +67,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
         try {
             Object[] params = commandler.getParser().processEvent(event, commandData);
 
-            Handler<C, E, M> handler = commandler.getHandler(commandData.getModuleData().getModuleClass());
+            Handler<C, E, M> handler = commandler.getHandler((Class<Handler<C, E, M>>)commandData.getModuleData().getModuleClass());
 
             if (params == null || !commandler.getValidator().validate(event, handler, params))
                 return event.getError();
