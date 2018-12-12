@@ -76,7 +76,7 @@ public class DocBuilder {
         globalContext.put("utils", UTILS);
         globalContext.put("data", data);
         globalContext.put("parser", parser);
-        globalContext.put("all_modules", context.getModules(false));
+        globalContext.put("modules", context.getModules(false));
         globalContext.put("groups", groups);
         globalContext.put("example_class", Example.class);
         globalContext.put("icon_class", Icon.class);
@@ -130,8 +130,6 @@ public class DocBuilder {
 
         copyFiles(path, "/include");
     }
-
-
 
     private void outputFile(File file, String outputName, Template template, VelocityContext velocityContext) throws IOException {
         String writePath = file.getAbsolutePath() + "/" + outputName + ".html";

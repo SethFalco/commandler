@@ -7,7 +7,7 @@ import com.elypia.commandler.doc.annotations.Icon;
 
 import javax.validation.constraints.Size;
 
-@Icon(icon = "fas fa-gamepad", color = "silver")
+@Icon(icon = "fas fa-gamepad", color = "#E3EBEA")
 @Module(id = "RuneScape", group = "Gaming", aliases = {"runescape", "rs"}, help = "RuneScape, the popular MMORPG!")
 public class RuneScapeModule extends Handler {
 

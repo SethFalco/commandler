@@ -21,6 +21,19 @@
 
                 --font: $font.getName();
             }
+
+            #foreach($social in $data.getSocial())
+                #${social.getId()} {
+                    color: ${utils.toRgba($social.getColor())};
+                }
+            #end
+
+            #foreach($module in $modules)
+                #set($icon = $module.getModuleClass().getAnnotation($icon_class))
+                .${utils.genId($icon.color())} {
+                     color: $icon.color();
+                }
+            #end
         </style>
 
         #if($font.getLocation())
@@ -59,7 +72,7 @@
             </a>
             <ul>
                 #foreach($social in $data.getSocial())
-                    <li class="hover"><a href="$social.getLink()" target="_blank"><span class="$social.getIcon()"></span></a></li>
+                    <li class="hover"><a href="$social.getLink()" target="_blank"><span id="$social.getId()" class="$social.getIcon()"></span></a></li>
                 #end
             </ul>
             <form class="js" action="/all-commands.html">
@@ -79,8 +92,10 @@
                                 #foreach($_group_module in $_group_modules)
                                     #set($_group_module_name = $_group_module.getAnnotation().id())
                                     <a href="/modules/${utils.toOutput($_group_module_name)}.html">
+                                        #set($icon = $_group_module.getModuleClass().getAnnotation($icon_class))
+                                        #set($iconId = $utils.genId($icon.color()))
                                         <li class="module hover #if($_group_module_name.equals($module_id)) selected #end">
-                                            <span class="icon $_group_module.getModuleClass().getAnnotation($icon_class).icon()"></span><h3 class="inline">$_group_module_name</h3>
+                                            <span class="icon $iconId $icon.icon()"></span><h3 class="inline $iconId">$_group_module_name</h3>
                                         </li>
                                     </a>
                                 #end

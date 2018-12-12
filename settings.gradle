@@ -2,3 +2,4 @@ rootProject.name = 'Commandler'
 
 include 'core'
 include 'doc'
+include 'json'

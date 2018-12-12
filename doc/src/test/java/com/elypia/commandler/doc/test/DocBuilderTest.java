@@ -6,6 +6,7 @@ import com.elypia.commandler.doc.entities.*;
 import com.elypia.commandler.doc.impl.*;
 import org.junit.jupiter.api.*;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -41,9 +42,9 @@ public class DocBuilderTest {
                 new FontFamily("Raleway", "https://fonts.googleapis.com/css?family=Raleway")
             ))
             .setSocial(List.of(
-                new Social("fab fa-discord", "https://discord.gg/hprGMaM", "purple"),
-                new Social( "fab fa-gitlab", "https://gitlab.com/Elypia", "orange"),
-                new Social("fab fa-twitter", "https://twitter.com/Elypia", "blue")
+                new Social("fab fa-discord", "https://discord.gg/hprGMaM", new Color(114, 137, 218)),
+                new Social( "fab fa-gitlab", "https://gitlab.com/Elypia", new Color(226, 67, 41)),
+                new Social("fab fa-twitter", "https://twitter.com/Elypia", new Color(21, 161, 242))
             ));
 
         builder

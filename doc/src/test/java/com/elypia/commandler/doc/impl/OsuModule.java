@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 
-@Icon(icon = "fas fa-gamepad", color = "pink")
+@Icon(icon = "fas fa-gamepad", color = "#EF6DA7")
 @Module(id = "osu!", group = "Gaming", aliases = "osu", help = "osu! is a super cool rhythm game everyone plays!")
 public class OsuModule extends Handler {
 

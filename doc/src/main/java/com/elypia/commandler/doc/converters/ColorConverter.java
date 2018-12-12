@@ -1,18 +1,17 @@
 package com.elypia.commandler.doc.converters;
 
 import com.electronwill.nightconfig.core.conversion.Converter;
-import com.elypia.commandler.doc.DocUtils;
 
 import java.awt.*;
 import java.util.regex.*;
 
 public class ColorConverter implements Converter<Color, String> {
-    
-    private static final Pattern RGB = Pattern.compile("rgb\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)");
-    private static final Pattern RGBA = Pattern.compile("rgba\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)");
 
     @Override
-    public Color convertToField(String value) {
+    public Color convertToField(final String value) {
+        final Pattern RGB = Pattern.compile("rgb\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)");
+        final Pattern RGBA = Pattern.compile("rgba\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)");
+
         Matcher rgbMatcher = RGB.matcher(value);
 
         if (rgbMatcher.find())
@@ -36,7 +35,16 @@ public class ColorConverter implements Converter<Color, String> {
     }
 
     @Override
-    public String convertFromField(Color value) {
-        return DocUtils.toRgba(value);
+    public String convertFromField(final Color value) {
+        final String RGBA = "rgba(%s, %s, %s, %s)";
+
+        Object[] values = {
+            value.getRed(),
+            value.getGreen(),
+            value.getBlue(),
+            value.getAlpha()
+        };
+
+        return String.format(RGBA, values);
     }
 }
