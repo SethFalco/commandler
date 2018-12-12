@@ -39,7 +39,7 @@ public class DocBuilderTest {
             .setLogo(logo)
             .setFavicon(new Favicon("png", logo))
             .setStyle(new Style(
-                ColorScheme.DARK_SCHEME,
+                ColorScheme.getDarkSceme(),
                 new FontFamily("Raleway", "https://fonts.googleapis.com/css?family=Raleway")
             ))
             .setSocial(List.of(

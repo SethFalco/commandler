@@ -10,7 +10,9 @@ public class FontFamily {
     @Path("link")
     private String location;
 
-    public static final FontFamily SANS_SERFIF = new FontFamily("sans-serif");
+    public static FontFamily getSansSerif() {
+        return new FontFamily("sans-serif");
+    }
 
     public FontFamily() {
         // Do nothing

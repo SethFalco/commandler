@@ -23,19 +23,23 @@ public class ColorScheme {
     @Path("text")
     private Color text;
 
-    public static final ColorScheme LIGHT_SCHEME = new ColorScheme(
-        new Color(150, 150, 150),
-        new Color(200, 200,200),
-        new Color(250, 250, 250),
-        new Color(20, 20, 20)
-    );
+    public static ColorScheme getLightScheme() {
+        return new ColorScheme(
+            new Color(150, 150, 150),
+            new Color(200, 200,200),
+            new Color(250, 250, 250),
+            new Color(20, 20, 20)
+        );
+    }
 
-    public static final ColorScheme DARK_SCHEME = new ColorScheme(
-        new Color(32, 32, 32),
-        new Color(40, 40,40),
-        new Color(59, 59, 59),
-        new Color(255, 255, 255)
-    );
+    public static ColorScheme getDarkSceme() {
+        return new ColorScheme(
+            new Color(32, 32, 32),
+            new Color(40, 40,40),
+            new Color(59, 59, 59),
+            new Color(255, 255, 255)
+        );
+    }
 
     public ColorScheme() {
         // Do nothing

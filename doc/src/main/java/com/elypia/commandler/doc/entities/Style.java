@@ -11,7 +11,7 @@ public class Style {
     private FontFamily font;
 
     public static Style getDefaultStyle() {
-        return new Style(ColorScheme.DARK_SCHEME, FontFamily.SANS_SERFIF);
+        return new Style(ColorScheme.getDarkSceme(), FontFamily.getSansSerif());
     }
 
     public Style() {
