@@ -93,24 +93,24 @@ subprojects { subproject ->
 
     publishing {
         def details = {
-            licenses = {
-                license = {
-                    name = "The Apache Software License, Version 2.0"
-                    url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                    distribution = this.name
+            licenses {
+                license {
+                    name "The Apache Software License, Version 2.0"
+                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    distribution this.name
                 }
             }
 
-            developers = {
-                developer = {
-                    id = "Seth"
-                    name = "Seth"
-                    email = "seth@elypia.com"
+            developers {
+                developer {
+                    id "Seth"
+                    name "Seth"
+                    email "seth@elypia.com"
                 }
             }
 
-            scm = {
-                url = projectGit
+            scm {
+                url projectGit
             }
         }
 
