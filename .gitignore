@@ -1,6 +1,5 @@
 # Configuration
 *.json
-*.toml
 
 # IntelliJ
 /.idea/
