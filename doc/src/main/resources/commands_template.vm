@@ -1,0 +1,39 @@
+#foreach($command in $commands)
+    #set($command_anno = $command.getAnnotation())
+    <div class="info-item command-info">
+        <div>
+            <h2>$command_anno.id()</h2>
+            <div class="aliases">
+                <p>Aliases:</p>
+                <ul class="highlight">
+                    #foreach($alias in $command_anno.aliases())
+                        <li>$alias</li>
+                    #end
+                </ul>
+            </div>
+            <p>$command_anno.help()</p>
+            #set($params = $command.getInputParams())
+            #if(!$params.isEmpty())
+                <br>
+                <p>Parameters:</p>
+                <table class="parameter-info">
+                    #foreach($param in $params)
+                        #set($param_anno = $param.getAnnotation())
+                        <tr>
+                            <td class="highlight">$param_anno.id()</td>
+                            <td>$param_anno.help()</td>
+                        </tr>
+                    #end
+                </table>
+            #end
+        </div>
+        #set($example = $command.getMethod().getAnnotation($example_class))
+        #if($example)
+            <div>
+                <h2 class="inline">Example: $example.command()</h2>
+                <br><br>
+                <p>$parser.parse($example.response())</p>
+            </div>
+        #end
+    </div>
+#end
