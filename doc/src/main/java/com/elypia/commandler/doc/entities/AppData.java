@@ -6,7 +6,7 @@ import com.electronwill.nightconfig.core.file.FileConfig;
 import java.io.File;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.List;
 
 public class AppData {
 
@@ -28,6 +28,9 @@ public class AppData {
     @Path("style")
     private Style style;
 
+    @Path("readme")
+    private String readme;
+
     public AppData(URL url) {
         this(new File(URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8)));
     }
@@ -44,6 +47,7 @@ public class AppData {
         this.favicon = data.favicon;
         this.social = data.social;
         this.style = data.style;
+        this.readme = data.readme;
     }
 
     public AppData() {
@@ -59,15 +63,8 @@ public class AppData {
     }
 
     public AppData(String name, String description, Style style) {
-        this(name, description, null, null, new ArrayList<>(), style);
-    }
-
-    public AppData(String name, String description, String logo, Favicon favicon, List<Social> social, Style style) {
         this.name = name;
         this.description = description;
-        this.logo = logo;
-        this.favicon = favicon;
-        this.social = social;
         this.style = style;
     }
 
@@ -122,6 +119,15 @@ public class AppData {
 
     public AppData setStyle(Style style) {
         this.style = style;
+        return this;
+    }
+
+    public String getReadme() {
+        return readme;
+    }
+
+    public AppData setReadme(String readme) {
+        this.readme = readme;
         return this;
     }
 }

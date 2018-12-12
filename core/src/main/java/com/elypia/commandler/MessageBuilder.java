@@ -11,8 +11,8 @@ import java.util.*;
  * The builder is used to build messages from returning commands
  * or the {@link ICommandEvent#send(Object)} method. Builders
  * that implement {@link IBuilder} can be registered via the
- * {@link #add method, this tells
- * {@link Commandler} how to turn various types of Objects into
+ * {@link #add} method, this tells {@link Commandler} how to
+ * turn various types of Objects into
  * messages to be sent in chat.
  *
  * @param <M> The data-type we're building messages into, this

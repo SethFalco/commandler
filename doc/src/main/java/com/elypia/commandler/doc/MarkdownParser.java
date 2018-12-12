@@ -26,7 +26,9 @@ public class MarkdownParser {
     }
 
     public String parseFile(String path) throws IOException {
-        Node node = parser.parseReader(new FileReader(path));
-        return renderer.render(node);
+        try (FileReader reader = new FileReader(path)) {
+            Node node = parser.parseReader(reader);
+            return renderer.render(node);
+        }
     }
 }

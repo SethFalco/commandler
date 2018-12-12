@@ -19,10 +19,8 @@ import java.util.*;
 public class DocBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DocBuilder.class);
-    private static final DocUtils UTILS = new DocUtils();
 
     private VelocityEngine engine;
-
 
     /**
      * The modules parsed as {@link ModuleData}.
@@ -73,7 +71,7 @@ public class DocBuilder {
         Map<String, List<ModuleData>> groups = context.getGroups(false);
 
         VelocityContext globalContext = new VelocityContext();
-        globalContext.put("utils", UTILS);
+        globalContext.put("utils", new DocUtils());
         globalContext.put("data", data);
         globalContext.put("parser", parser);
         globalContext.put("modules", context.getModules(false));
@@ -81,23 +79,27 @@ public class DocBuilder {
         globalContext.put("example_class", Example.class);
         globalContext.put("icon_class", Icon.class);
 
-        VelocityContext homeContext = new VelocityContext(globalContext);
-        homeContext.put("page_name", "Home");
-        homeContext.put("content", parser.parseFile("./README.md"));
-
-        outputFile(file.getAbsoluteFile(), "index", template, homeContext);
-
         VelocityContext allCommandsContext = new VelocityContext(globalContext);
         allCommandsContext.put("page_name", "All Commands");
         allCommandsContext.put("commands", context.getCommands(false));
         allCommandsContext.put("content", "all_commands_template.vm");
 
-        outputFile(file.getAbsoluteFile(), "all-commands", template, allCommandsContext);
+        if (data.getReadme() != null) {
+            VelocityContext homeContext = new VelocityContext(globalContext);
+            homeContext.put("page_name", "Home");
+            homeContext.put("content", parser.parseFile(data.getReadme()));
+            outputFile(file.getAbsoluteFile(), "index", template, homeContext);
+
+            outputFile(file.getAbsoluteFile(), "all-commands", template, allCommandsContext);
+        } else {
+            globalContext.put("no_readme", true);
+            outputFile(file.getAbsoluteFile(), "index", template, allCommandsContext);
+        }
 
         for (var group : groups.entrySet()) {
             String groupName = group.getKey();
             List<ModuleData> modules = group.getValue();
-            String outputName = "groups/" + UTILS.toOutput(groupName);
+            String outputName = "groups/" + DocUtils.toOutput(groupName);
 
             VelocityContext groupContext = new VelocityContext(globalContext);
             groupContext.put("page_name", "Group | " + groupName);
@@ -114,7 +116,7 @@ public class DocBuilder {
 
             Module moduleAnno = module.getAnnotation();
             String moduleName = moduleAnno.id();
-            String outputName = "modules/" + UTILS.toOutput(moduleName);
+            String outputName = "modules/" + DocUtils.toOutput(moduleName);
 
             VelocityContext moduleContext = new VelocityContext(globalContext);
             moduleContext.put("page_name", "Module | " + moduleName);

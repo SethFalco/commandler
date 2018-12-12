@@ -81,7 +81,7 @@
         </header>
         <div id="content">
             <nav>
-                <a href="/all-commands.html"><h1 class="hover">All Commands</h1></a>
+                <a href="#if($no_readme)/#else/all-commands.html) #end"><h1 class="hover">All Commands</h1></a>
                 <ul>
                     #foreach($entry in $groups.entrySet())
                         #set($_group_name = $entry.key)

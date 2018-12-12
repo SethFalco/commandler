@@ -1,5 +1,7 @@
 package com.elypia.commandler.interfaces;
 
+import com.elypia.commandler.Commandler;
+
 /**
  * Parsers are what allow {@link Commandler} to know how
  * to interpret an object from the text a chat service provides us.

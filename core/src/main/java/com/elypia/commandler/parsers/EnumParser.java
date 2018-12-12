@@ -1,5 +1,6 @@
 package com.elypia.commandler.parsers;
 
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
 
