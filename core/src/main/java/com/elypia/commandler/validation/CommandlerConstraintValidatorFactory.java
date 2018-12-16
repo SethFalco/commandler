@@ -20,18 +20,22 @@ public class CommandlerConstraintValidatorFactory implements ConstraintValidator
             Constructor<?>[] constructors = key.getConstructors();
 
             for (Constructor<?> constructor : constructors) {
-                if (constructor.getParameterCount() == 1) {
+                int count = constructor.getParameterCount();
+
+                if (count == 0)
+                    return key.cast(constructor.newInstance());
+
+                if (count == 1) {
                     if (ICommandEvent.class.isAssignableFrom(constructor.getParameterTypes()[0]))
                         return key.cast(constructor.newInstance(validator.event));
                 }
             }
-
-            return key.cast(key.getConstructor().newInstance());
-        } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        throw new IllegalStateException();
+        String format = "%s must have a no parameter or single parameter constructor only.";
+        throw new IllegalStateException(String.format(format, key.getName()));
     }
 
     @Override
