@@ -7,11 +7,11 @@ package com.elypia.commandler.interfaces;
  * Platform specific implementations may append more
  * methods according to the different types of messages.
  *
- * @param <C> The Commandler managed event entity.
+ * @param <E> The Commandler managed event entity.
  * @param <O> The object to build, this should be the ouput from a {@link IParser}.
  * @param <M> The message we're returning.
  */
-public interface IBuilder<C extends ICommandEvent<?, M>, O, M> {
+public interface IBuilder<E extends ICommandEvent<?, M>, O, M> {
 
     /**
      * The default build method, this builder should be the default
@@ -25,5 +25,5 @@ public interface IBuilder<C extends ICommandEvent<?, M>, O, M> {
      * @param output The output from the {@link IParser} when parsing the input.
      * @return The message to response to the user.
      */
-    M build(C event, O output);
+    M build(E event, O output);
 }

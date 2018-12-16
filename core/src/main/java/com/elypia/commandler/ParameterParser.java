@@ -1,7 +1,6 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.CommandInput;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.parsers.*;

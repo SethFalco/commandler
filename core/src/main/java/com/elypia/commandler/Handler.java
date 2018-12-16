@@ -2,16 +2,18 @@ package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.interfaces.ICommandEvent;
+import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
 
 import java.util.*;
 
-public abstract class Handler<E, M> {
+public abstract class Handler<S, M> {
 
-	protected Commandler<E, M> commandler;
+	protected Commandler<S, M> commandler;
 
 	protected ModuleData module;
+
+	protected IScriptEngine<S> scripts;
 
 	/**
 	 * If this module is enabled or out of service.
@@ -27,11 +29,11 @@ public abstract class Handler<E, M> {
 	 * @param commandler Our parent Commandler class.
 	 * @return Returns if the {@link #test()} for this module passed.
 	 */
-	public boolean init(Commandler<E, M> commandler) {
+	public boolean init(Commandler<S, M> commandler) {
 		this.commandler = commandler;
 		module = commandler.getContext().getModule(this.getClass());
+		scripts = commandler.getEngine();
 		enabled = test();
-
 		return enabled;
 	}
 
@@ -57,7 +59,7 @@ public abstract class Handler<E, M> {
 	 * @return The message to send to the end user.
 	 */
 	@Command(id = "Help", aliases = "help")
-	public Object help(ICommandEvent<E, M> event) {
+	public Object help(ICommandEvent<S, M> event) {
 		StringBuilder builder = new StringBuilder();
 
 		Module annotation = getModule().getAnnotation();
@@ -96,7 +98,7 @@ public abstract class Handler<E, M> {
 			paramData.forEach(metaParam -> {
 				Param param = metaParam.getAnnotation();
 				builder.append("\n" + param.id() + ": ");
-				builder.append(commandler.getEngine().getScript(event.getSource(), param.help(), Map.of()));
+				builder.append(scripts.get(event.getSource(), param.help()));
 			});
 
 			if (metaCommandIt.hasNext())
@@ -111,7 +113,7 @@ public abstract class Handler<E, M> {
 		return builder.toString();
 	}
 
-	public Commandler<E, M> getCommandler() {
+	public Commandler<S, M> getCommandler() {
 		return commandler;
 	}
 
@@ -123,7 +125,7 @@ public abstract class Handler<E, M> {
 		return enabled;
 	}
 
-	public int compareTo(Handler<E, M> o) {
+	public int compareTo(Handler<S, M> o) {
 		return module.compareTo(o.getModule());
 	}
 }

@@ -106,23 +106,28 @@ public class ModuleData implements Comparable<ModuleData> {
      * another annotation or static command.
      */
     private void parseAliases() {
-        for (String alias : annotation.aliases()) {
+        String[] annoAliases = annotation.aliases();
+        Arrays.stream(annoAliases).map(String::toLowerCase).forEach(aliases::add);
+
+        if (aliases.size() != annoAliases.length)
+            logger.warn("Module {} ({}) contains repetitive aliases.", annotation.id(), moduleClass.getName());
+
+        aliases.forEach(alias -> {
             ModuleData existing = context.getModule(alias);
 
-            if (existing != null) {
-                String thisModule = annotation.id();
-                String thisClass = moduleClass.getName();
-                String existingModule = existing.annotation.id();
-                String existingClass = existing.getModuleClass().getName();
+            if (existing == null)
+                return;
 
-                throw new IllegalStateException(String.format("Module %s (%s) contains an alias which has already been registered by %s (%s).", thisModule, thisClass, existingModule, existingClass));
-            }
+            String format = "Module %s (%s) contains an alias which has already been registered by %s (%s).";
+            String thisModule = annotation.id();
+            String thisClass = moduleClass.getName();
+            String existingModule = existing.annotation.id();
+            String existingClass = existing.getModuleClass().getName();
 
-            aliases.add(alias.toLowerCase());
-        }
+            String ex = String.format(format, thisModule, thisClass, existingModule, existingClass);
 
-        if (aliases.size() != annotation.aliases().length)
-            logger.warn("Module {} ({}) contains multiple aliases that are identical.", annotation.id(), moduleClass.getName());
+            throw new IllegalStateException(ex);
+        });
     }
 
     /**
@@ -186,23 +191,6 @@ public class ModuleData implements Comparable<ModuleData> {
 
     public Class<? extends Handler> getModuleClass() {
         return moduleClass;
-    }
-
-    /**
-     * Return the command that was performed, or null if
-     * the alias has no association with any commands in this
-     * annotation.
-     *
-     * @param input The input command by the user.
-     * @return The command that was performed, else null.
-     */
-    public CommandData getCommand(String input) {
-        for (CommandData commandData : this.commands) {
-            if (commandData.performed(input))
-                return commandData;
-        }
-
-        return null;
     }
 
     public Module getAnnotation() {

@@ -53,13 +53,4 @@ public @interface Module {
 	 * then the module is hidden from any help commands or documentation.
 	 */
 	String help() default HIDDEN;
-
-	/**
-	 * All {@link Module}s can assign themself a parent module recursively.
-	 * This is how submodules are created.
-	 *
-	 * @return The parent class this is a child of. Or {@link Handler} if
-	 * this has no parent module.
-	 */
-	Class<? extends Handler> parent() default Handler.class;
 }

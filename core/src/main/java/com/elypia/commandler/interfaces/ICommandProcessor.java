@@ -2,20 +2,36 @@ package com.elypia.commandler.interfaces;
 
 import com.elypia.commandler.Commandler;
 
-import java.util.regex.Matcher;
-
-public interface ICommandProcessor<E, M> {
+/**
+ * The {@link ICommandProcessor} has the role of processing an event
+ * from your respective platform into something that can be interperted
+ * by Commandler, this should be used to verify if it's a command as well
+ * parse it into an input and event object to be used internally.
+ *
+ * @param <S> The (S)ource event that triggered this.
+ * @param <M> The (M)essage type.
+ */
+public interface ICommandProcessor<S, M> {
 
     /**
-     * This should process the event.
+     * Receieve and handles the event.
      *
      * @param source The event spawned by the client.
      * @param content The content of the message to parse.
-     * @return The message that was sent to the client.
+     * @param send If we should send this message.
+     * @return The response to this command, or null
+     * if this wasn't a command at all.
      */
-    M dispatch(E source, String content, boolean send);
+    M dispatch(S source, String content, boolean send);
 
-    Matcher isCommand(E source, String content);
+    /**
+     * Check if this event is a command at all.
+     *
+     * @param source The source event.
+     * @param content The message to check.
+     * @return If this was a command.
+     */
+    boolean isCommand(S source, String content);
 
     /**
      * Break the command down into it's individual components.
@@ -24,7 +40,7 @@ public interface ICommandProcessor<E, M> {
      * @param content The content of the meessage.
      * @return The input the user provided or null if it's not a valid command.
      */
-    ICommandEvent process(Commandler<E, M> commandler, E event, String content);
+    ICommandEvent process(Commandler<S, M> commandler, S event, String content);
 
     /**
      * Return the accepted prefixes for this event.
@@ -32,5 +48,5 @@ public interface ICommandProcessor<E, M> {
      * @param event
      * @return
      */
-    String[] getPrefixes(E event);
+    String[] getPrefixes(S event);
 }

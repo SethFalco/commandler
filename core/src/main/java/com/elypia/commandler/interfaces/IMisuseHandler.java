@@ -3,7 +3,6 @@ package com.elypia.commandler.interfaces;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.CommandInput;
 import com.elypia.commandler.metadata.*;
 
 import javax.validation.ConstraintViolation;
@@ -17,7 +16,7 @@ import java.util.*;
  * The return types are {@link Object} as we will use the {@link IBuilder}
  * internally to generate whatever should be sent.
  */
-public interface IMisuseHandler<E, M> {
+public interface IMisuseHandler<S, M> {
 
     /**
      * This will occur when the user attempts to do a command
@@ -26,7 +25,7 @@ public interface IMisuseHandler<E, M> {
      *
      * @return The friendly error to send to the user.
      */
-    Object onModuleNotFound(String content);
+    String onModuleNotFound(String content);
 
     /**
      * This may occur when we've found the command the user wanted to perform
@@ -34,7 +33,7 @@ public interface IMisuseHandler<E, M> {
      *
      * @return The friendly error to send to users in chat.
      */
-    Object onParamCountMismatch(CommandInput input, CommandData commandData);
+    String onParamCountMismatch(CommandInput input, CommandData commandData);
 
     /**
      * This occurs when it looks like the user had attempted to perform a
@@ -43,7 +42,7 @@ public interface IMisuseHandler<E, M> {
      *
      * @return The friendly error to send to users in chat.
      */
-    Object onDefaultNotFound(ICommandEvent event);
+    String onDefaultNotFound(ICommandEvent event);
 
     /**
      * This may occur whenever user input fails to parse as into
@@ -54,7 +53,7 @@ public interface IMisuseHandler<E, M> {
      * @param item The input the user provided.
      * @return The friendly error to send to users in chat.
      */
-    Object onParamParseFailure(ICommandEvent event, ParamData paramData, Class<?> type, String item);
+    String onParamParseFailure(ICommandEvent event, ParamData paramData, Class<?> type, String item);
 
     /**
      * This may occur whenever the user has specified list
@@ -65,7 +64,7 @@ public interface IMisuseHandler<E, M> {
      * @param items
      * @return
      */
-    Object onListNotSupported(ICommandEvent event, ParamData paramData, List<String> items);
+    String onListNotSupported(ICommandEvent event, ParamData paramData, List<String> items);
 
     /**
      * This occurs when the {@link ExecutableValidator} invalidates
@@ -73,7 +72,7 @@ public interface IMisuseHandler<E, M> {
      *
      * @return The friendly error to send to the users in chat.
      */
-    <H extends Handler<E, M>> Object onInvalidated(ICommandEvent<E, M> event, Set<ConstraintViolation<H>> violations);
+    <H extends Handler<S, M>> String onInvalidated(ICommandEvent<S, M> event, Set<ConstraintViolation<H>> violations);
 
     /**
      * This may occur when a user attempts to perform a command
@@ -83,7 +82,7 @@ public interface IMisuseHandler<E, M> {
      * @param event The event that caused this failure.
      * @return The friendly error to send to users in chat.
      */
-    Object onModuleDisabled(ICommandEvent<E, M> event);
+    String onModuleDisabled(ICommandEvent<S, M> event);
 
     /**
      * This will occur if an {@link Exception exception} occurs
@@ -91,12 +90,8 @@ public interface IMisuseHandler<E, M> {
      * module having an uncaught exception but is also a fall back in case
      * there is a bug in {@link Commandler}.
      *
-     * It is <strong>NOT</strong> recommended to print raw exceptions
-     * to users, this is a terrible idea and if you planned on doing that
-     * you are bad and you should feel bad.
-     *
      * @param ex The exception that occured.
      * @return The friendly error to send to users in chat.
      */
-     <X extends Exception> Object onException(X ex);
+     <X extends Exception> String onException(X ex);
 }

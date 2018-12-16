@@ -1,4 +1,4 @@
-package com.elypia.commandler.impl;
+package com.elypia.commandler;
 
 import com.elypia.commandler.metadata.*;
 
@@ -10,6 +10,8 @@ import java.util.*;
  * populated.
  */
 public class CommandInput {
+
+    private String content;
 
     /**
      * The module alias the user referred to.
@@ -40,14 +42,20 @@ public class CommandInput {
     /**
      * The raw user input as is.
      *
+     * @param content The original message content.
      * @param module The module accessed.
      * @param command The command performed.
      * @param parameters Any parameters specified.
      */
-    public CommandInput(String module, String command, List<List<String>> parameters) {
+    public CommandInput(String content, String module, String command, List<List<String>> parameters) {
+        this.content = content;
         this.module = Objects.requireNonNull(module);
         this.command = command;
         this.parameters = Objects.requireNonNull(parameters);
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public String getModule() {
@@ -94,7 +102,11 @@ public class CommandInput {
      */
     public void setModuleData(ModuleData moduleData) {
         this.moduleData = moduleData;
-        this.module = moduleData.getAnnotation().aliases()[0];
+    }
+
+    public void setModuleData(ModuleData moduleData, String module) {
+        this.moduleData = moduleData;
+        this.module = module;
     }
 
     public CommandData getCommandData() {
@@ -111,6 +123,11 @@ public class CommandInput {
     public void setCommandData(CommandData commandData) {
         this.commandData = commandData;
         this.command = commandData.getAnnotation().aliases()[0];
+    }
+
+    public void setCommandData(CommandData commandData, String command) {
+        this.commandData = commandData;
+        this.command = command;
     }
 
     @Override

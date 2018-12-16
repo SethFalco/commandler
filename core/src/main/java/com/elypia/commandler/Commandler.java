@@ -6,22 +6,22 @@ import com.elypia.commandler.interfaces.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public class Commandler<E, M> {
+public class Commandler<S, M> {
 
     private String prefix;
     private String website;
     private ModulesContext context;
-    private IMisuseHandler<E, M> misuseHandler;
-    private LanguageEngine<E> engine;
+    private IMisuseHandler<S, M> misuseHandler;
+    private IScriptEngine<S> engine;
 
-    private ICommandProcessor<E, M> processor;
+    private ICommandProcessor<S, M> processor;
     private CommandValidator validator;
     private ParameterParser parser;
     private MessageBuilder builder;
 
-    private Map<Class<? extends Handler<E, M>>, Handler<E, M>> handlers;
+    private Map<Class<? extends Handler<S, M>>, Handler<S, M>> handlers;
 
-    protected Commandler(Builder<E, M> commandlerBuilder) {
+    protected Commandler(Builder<S, M> commandlerBuilder) {
         prefix = commandlerBuilder.prefix;
         context = commandlerBuilder.context;
         website = commandlerBuilder.website;
@@ -36,17 +36,17 @@ public class Commandler<E, M> {
         handlers = new HashMap<>();
     }
 
-    public M execute(E event, String content, boolean send) {
+    public M execute(S event, String content, boolean send) {
         return processor.dispatch(event, content, send);
     }
 
-    public void addInstance(Handler<E, M> handler) {
+    public void addInstance(Handler<S, M> handler) {
 
     }
 
-    public Handler<E, M> getHandler(Class<? extends Handler<E, M>> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public Handler<S, M> getHandler(Class<? extends Handler<S, M>> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (!handlers.containsKey(handler)) {
-            Handler<E, M> handlerInstance = handler.getConstructor().newInstance();
+            Handler<S, M> handlerInstance = handler.getConstructor().newInstance();
             handlerInstance.init(this);
 
             handlers.put(handler, handlerInstance);
@@ -67,15 +67,15 @@ public class Commandler<E, M> {
         return context;
     }
 
-    public ICommandProcessor<E, M> getProcessor() {
+    public ICommandProcessor<S, M> getProcessor() {
         return processor;
     }
 
-    public IMisuseHandler<E, M> getMisuseHandler() {
+    public IMisuseHandler<S, M> getMisuseHandler() {
         return misuseHandler;
     }
 
-    public LanguageEngine<E> getEngine() {
+    public IScriptEngine<S> getEngine() {
         return engine;
     }
 
@@ -91,15 +91,15 @@ public class Commandler<E, M> {
         return builder;
     }
 
-    public static class Builder<E, M> {
+    public static class Builder<S, M> {
 
         private String prefix;
         private String website;
         private ModulesContext context;
-        private IMisuseHandler<E, M> misuseHandler;
-        private LanguageEngine<E> engine;
+        private IMisuseHandler<S, M> misuseHandler;
+        private IScriptEngine<S> engine;
 
-        public Commandler<E, M> build() {
+        public Commandler<S, M> build() {
             initializeDefaults();
             return new Commandler<>(this);
         }
@@ -115,14 +115,14 @@ public class Commandler<E, M> {
                 misuseHandler = new MisuseHandler<>();
 
             if (engine == null)
-                engine = new LanguageEngine<>();
+                engine = new ScriptEngine<>();
         }
 
         public String getPrefix() {
             return prefix;
         }
 
-        public Builder<E, M> setPrefix(String prefix) {
+        public Builder<S, M> setPrefix(String prefix) {
             this.prefix = prefix;
             return this;
         }
@@ -131,7 +131,7 @@ public class Commandler<E, M> {
             return website;
         }
 
-        public Builder<E, M> setWebsite(String website) {
+        public Builder<S, M> setWebsite(String website) {
             this.website = website;
             return this;
         }
@@ -140,25 +140,25 @@ public class Commandler<E, M> {
             return context;
         }
 
-        public Builder<E, M> setContext(ModulesContext context) {
+        public Builder<S, M> setContext(ModulesContext context) {
             this.context = context;
             return this;
         }
 
-        public IMisuseHandler<E, M> getMisuseHandler() {
+        public IMisuseHandler<S, M> getMisuseHandler() {
             return misuseHandler;
         }
 
-        public Builder<E, M> setMisuseHandler(IMisuseHandler<E, M> misuseHandler) {
+        public Builder<S, M> setMisuseHandler(IMisuseHandler<S, M> misuseHandler) {
             this.misuseHandler = misuseHandler;
             return this;
         }
 
-        public LanguageEngine<E> getEngine() {
+        public IScriptEngine<S> getEngine() {
             return engine;
         }
 
-        public Builder<E, M> setEngine(LanguageEngine<E> engine) {
+        public Builder<S, M> setEngine(IScriptEngine<S> engine) {
             this.engine = engine;
             return this;
         }

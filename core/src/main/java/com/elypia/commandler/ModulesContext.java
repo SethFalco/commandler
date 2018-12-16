@@ -133,7 +133,12 @@ public class ModulesContext {
     public ModuleData getModule(String alias) {
         for (ModuleData data : modules.values()) {
             if (data.performed(alias))
-                return null;
+                return data;
+
+            for (CommandData command : data.getStaticCommands()) {
+                if (command.performed(alias))
+                    return data;
+            }
         }
 
         return null;

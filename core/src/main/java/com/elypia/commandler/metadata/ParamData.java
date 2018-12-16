@@ -1,5 +1,6 @@
 package com.elypia.commandler.metadata;
 
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.interfaces.ICommandEvent;
 
@@ -12,14 +13,14 @@ public class ParamData {
 
     /**
      * The method paramater this is for. This could be any object including
-     * {@link CommandEvent}.
+     * {@link ICommandEvent}.
      */
     private Parameter parameter;
 
     /**
      * The param annotation associated with this {@link #parameter} which gives us more
      * information to generate things like the help command. <br>
-     * Note: This <strong>WILL</strong> be null if the {@link #parameter} is {@link CommandEvent}.
+     * Note: This <strong>WILL</strong> be null if the {@link #parameter} is {@link ICommandEvent}.
      */
     private Param annotation;
 

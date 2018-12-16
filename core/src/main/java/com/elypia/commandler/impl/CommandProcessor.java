@@ -7,13 +7,23 @@ import com.elypia.commandler.metadata.*;
 import java.util.*;
 import java.util.regex.*;
 
-public class CommandProcessor<E, M> implements ICommandProcessor<E, M> {
+/**
+ * The default implementation of the CommandProcessor, this implementation
+ * heavily relies on regular expression to match content and map the tokens
+ * to command input. This assumes a standard formatted command:<br>
+ * <code>{prefix}{module} {command} {params}</code>
+ * With exceptional circumstances.
+ *
+ * @param <S> The (S)ource event.
+ * @param <M> The (M)essage sent a received by the client.
+ */
+public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
 
     /**
      * The default commands regex, this matches the commands to see if its
      * valid and returns the matches as groups.
      */
-    protected static final String COMMAND_REGEX = "(?i)\\A(?:%s)(?<module>[A-Z\\d]+)(?:\\s+(?<command>[A-Z\\d]+))?(?:\\s+(?<params>.+))?\\Z";
+    protected static final String COMMAND_REGEX = "(?i)\\A(?:\\Q%s\\E)(?<module>[A-Z\\d]+)(?:\\s+(?<command>[A-Z\\d]+)(?<list>\\s*,\\s*)?)?(?:\\s+(?<params>.+))?\\Z";
 
     /**
      * The default params regex, this matches every argument in the commands,
@@ -27,74 +37,124 @@ public class CommandProcessor<E, M> implements ICommandProcessor<E, M> {
      */
     protected static final Pattern ITEM_PATTERN = Pattern.compile("\"(?<quote>(?:\\\\\"|[^\"])*)\"|(?<word>[^\\s,]+)");
 
-    protected Commandler<E, M> commandler;
+    protected Commandler<S, M> commandler;
 
     protected ModulesContext context;
 
-    protected LanguageEngine<E> engine;
+    protected IMisuseHandler<S, M> misuseHandler;
 
-    protected IMisuseHandler misuseHandler;
-
-    protected String prefix;
-
-    public CommandProcessor(Commandler<E, M> commandler) {
+    public CommandProcessor(Commandler<S, M> commandler) {
         this.commandler = commandler;
         this.context = commandler.getContext();
-        this.engine = commandler.getEngine();
         this.misuseHandler = commandler.getMisuseHandler();
-        this.prefix = commandler.getPrefix();
     }
 
     @Override
-    public M dispatch(E source, String content, boolean send) {
-        CommandEvent<E, M> event = process(commandler, source, content);
-
-        if (event == null)
-            return null;
-
-        CommandInput input = event.getInput();
-
-        if (!context.getAliases().contains(input.getModule().toLowerCase()))
-            return event.send(misuseHandler.onModuleNotFound(content));
-
-        if (!normalize(event, input))
-            return event.getError();
-
-        CommandData commandData = event.getInput().getCommandData();
-
+    public M dispatch(S source, String content, boolean send) {
         Object response;
+        ICommandEvent<S, M> event = process(commandler, source, content);
 
-        try {
-            Object[] params = commandler.getParser().processEvent(event, commandData);
+        if (!event.isValid())
+            response = event.getError();
 
-            Handler<E, M> handler = commandler.getHandler((Class<Handler<E, M>>)commandData.getModuleData().getModuleClass());
+        else {
+            CommandInput input = event.getInput();
 
-            if (params == null || !commandler.getValidator().validate(event, handler, params))
-                return event.getError();
+            CommandData commandData = event.getInput().getCommandData();
 
-            if (!input.getCommand().equalsIgnoreCase("help") && !handler.isEnabled()) {
-                event.invalidate(misuseHandler.onModuleDisabled(event));
-                return event.getError();
+            try {
+                Object[] params = commandler.getParser().processEvent(event, commandData);
+
+                Handler<S, M> handler = commandler.getHandler((Class<Handler<S, M>>)commandData.getModuleData().getModuleClass());
+
+                if (params == null || !commandler.getValidator().validate(event, handler, params))
+                    response = event.getError();
+
+                else {
+                    if (!input.getCommand().equalsIgnoreCase("help") && !handler.isEnabled()) {
+                        event.invalidate(misuseHandler.onModuleDisabled(event));
+                        response = event.getError();
+                    } else {
+                        response = commandData.getMethod().invoke(handler, params);
+                    }
+                }
+
+            } catch (Exception ex) {
+                event.invalidate(misuseHandler.onException(ex));
+                response = event.getError();
             }
-
-            response = commandData.getMethod().invoke(handler, params);
-
-            if (response != null && send)
-                return event.send(response);
-        } catch (Exception ex) {
-            event.invalidate(misuseHandler.onException(ex));
-            return event.getError();
         }
 
-        return commandler.getBuilder().build(event, response);
+        if (response == null)
+            return null;
+
+        M message = commandler.getBuilder().build(event, response);
+
+        if (send)
+            event.send(message);
+
+        return message;
     }
 
     @Override
-    public Matcher isCommand(E source, String content) {
+    public ICommandEvent process(Commandler<S, M> commandler, S source, String content) {
+        Matcher commandMatcher = matchCommand(source, content);
+
+        if (commandMatcher == null)
+            return null;
+
+        String module = commandMatcher.group("module");
+        String command = commandMatcher.group("command");
+        String params = commandMatcher.group("params");
+
+        List<List<String>> parameters = new ArrayList<>();
+
+        if (params != null) {
+            Matcher paramMatcher = PARAM_PATTERN.matcher(params);
+
+            while (paramMatcher.find()) {
+                String group = paramMatcher.group();
+                Matcher splitMatcher = ITEM_PATTERN.matcher(group);
+
+                List<String> list = new ArrayList<>();
+                while (splitMatcher.find()) {
+                    String quote = splitMatcher.group("quote");
+                    list.add(quote != null ? quote : splitMatcher.group("word"));
+                }
+
+                parameters.add(list);
+            }
+        }
+
+        CommandInput input = new CommandInput(content, module, command, parameters);
+
+        ICommandEvent event = new CommandEvent<>(commandler, source, input) {
+
+            @Override
+            public <T> M send(T output) {
+                return null;
+            }
+
+            @Override
+            public <T> String send(String key, Map<String, T> params) {
+                return null;
+            }
+        };
+
+        normalize(event, commandMatcher.group("list") != null);
+        return event;
+    }
+
+    @Override
+    public boolean isCommand(S source, String content) {
+        return matchCommand(source, content) != null;
+    }
+
+    private Matcher matchCommand(S source, String content) {
         StringJoiner joiner = new StringJoiner("|");
 
         for (String prefix : getPrefixes(source))
-            joiner.add("\\Q" + prefix + "\\E");
+            joiner.add(prefix);
 
         String pattern = String.format(COMMAND_REGEX, joiner.toString());
         Pattern commandPattern = Pattern.compile(pattern);
@@ -105,65 +165,30 @@ public class CommandProcessor<E, M> implements ICommandProcessor<E, M> {
     }
 
     @Override
-    public CommandEvent process(Commandler<E, M> commandler, E source, String content) {
-        Matcher matcher = isCommand(source, content);
-
-        if (matcher == null)
-            return null;
-
-        String module = matcher.group("module");
-        String command = matcher.group("command");
-        List<List<String>> parameters = new ArrayList<>();
-
-        String params = matcher.group("params");
-
-        if (params != null) {
-            matcher = PARAM_PATTERN.matcher(params);
-
-            while (matcher.find()) {
-                String group = matcher.group();
-                Matcher splitMatcher = ITEM_PATTERN.matcher(group);
-
-                List<String> list = new ArrayList<>();
-                while (splitMatcher.find()) {
-                    String quote = splitMatcher.group("quote");
-                    list.add(quote != null ?  quote : splitMatcher.group("word"));
-                }
-
-                parameters.add(list);
-            }
-        }
-
-        CommandInput input = new CommandInput(module, command, parameters);
-        return new CommandEvent<>(commandler, source, input);
+    public String[] getPrefixes(S event) {
+        return new String[] { commandler.getPrefix() };
     }
 
-    @Override
-    public String[] getPrefixes(E event) {
-        return new String[] {prefix};
-    }
+    public boolean normalize(ICommandEvent<S, M> event, boolean firstList) {
+        CommandInput input = event.getInput();
 
-    public boolean normalize(ICommandEvent<E, M> event, CommandInput input) {
+        String module = input.getModule();
+        String command = input.getCommand();
+
         for (ModuleData moduleData : context.getModules()) {
-            if (moduleData.performed(input.getModule())) {
+            if (moduleData.performed(module)) {
                 input.setModuleData(moduleData);
 
-                if (input.getCommand() != null) {
-                    CommandData commandData = moduleData.getCommand(input.getCommand());
-
-                    if (commandData != null) {
-                        CommandData overload = commandData.getOverload(input.getParameterCount());
-
-                        if (overload == null) {
-                            event.invalidate(misuseHandler.onParamCountMismatch(input, commandData));
-                            return false;
-                        }
-
-                        input.setCommandData(overload);
-                        return true;
+                if (command != null) {
+                    for (CommandData commandData : moduleData.getCommands()) {
+                        if (commandData.performed(command))
+                            return getDefaultOverload(event, commandData, input);
                     }
 
-                    input.getParameters().add(0, List.of(input.getCommand()));
+                    if (firstList)
+                        input.getParameters().get(0).add(0, command);
+                    else
+                        input.getParameters().add(0, List.of(command));
                 }
 
                 CommandData defaultCommand = moduleData.getDefaultCommand();
@@ -173,36 +198,35 @@ public class CommandProcessor<E, M> implements ICommandProcessor<E, M> {
                     return false;
                 }
 
-                CommandData defaultOverload = defaultCommand.getOverload(input.getParameterCount());
-
-                if (defaultOverload == null) {
-                    event.invalidate(misuseHandler.onParamCountMismatch(input, defaultCommand));
-                    return false;
-                }
-
-                input.setCommandData(defaultOverload);
-                return true;
+                return getDefaultOverload(event, defaultCommand, input);
             }
 
             for (CommandData commandData : moduleData.getStaticCommands()) {
-                if (commandData.performed(input.getModule())) {
-                    if (input.getCommand() != null)
-                        input.getParameters().add(0, List.of(input.getCommand()));
+                if (commandData.performed(module)) {
+                    if (command != null)
+                        input.getParameters().add(0, List.of(command));
 
-                    CommandData defaultOverload = commandData.getOverload(input.getParameterCount());
-
-                    if (defaultOverload == null) {
-                        event.invalidate(misuseHandler.onParamCountMismatch(input, commandData));
-                        return false;
+                    if (getDefaultOverload(event, commandData, input)) {
+                        input.setModuleData(moduleData);
+                        return true;
                     }
-
-                    input.setCommandData(defaultOverload);
-                    input.setModuleData(moduleData);
-                    return true;
                 }
             }
         }
 
+        event.invalidate(misuseHandler.onModuleNotFound(input.getContent()));
         return false;
+    }
+
+    private boolean getDefaultOverload(ICommandEvent<S, M> event, CommandData command, CommandInput input) {
+        CommandData defaultOverload = command.getOverload(input.getParameterCount());
+
+        if (defaultOverload == null) {
+            event.invalidate(misuseHandler.onParamCountMismatch(input, command));
+            return false;
+        }
+
+        input.setCommandData(defaultOverload);
+        return true;
     }
 }

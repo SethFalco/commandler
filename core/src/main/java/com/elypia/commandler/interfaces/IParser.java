@@ -13,7 +13,7 @@ import com.elypia.commandler.metadata.ParamData;
  *
  * @param <O> The type of data we want to parse our input as.
  */
-public interface IParser<C extends ICommandEvent, O> {
+public interface IParser<E extends ICommandEvent, O> {
 
     /**
      * This method should parse our input provides
@@ -26,5 +26,5 @@ public interface IParser<C extends ICommandEvent, O> {
      * @param input The input from the user.
      * @return The parsed data-type, or null if we're unable to parse the input.
      */
-    O parse(C event, ParamData param, Class<? extends O> type, String input);
+    O parse(E event, ParamData param, Class<? extends O> type, String input);
 }

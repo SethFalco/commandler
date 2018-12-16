@@ -1,7 +1,6 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.impl.CommandInput;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
 import org.apache.commons.lang3.StringUtils;
@@ -13,17 +12,17 @@ import java.util.*;
 /**
  * A default implementation of {@link IMisuseHandler}.
  */
-public class MisuseHandler<E, M> implements IMisuseHandler<E, M> {
+public class MisuseHandler<S, M> implements IMisuseHandler<S, M> {
 
     private static final Logger logger = LoggerFactory.getLogger(MisuseHandler.class);
 
     @Override
-    public Object onModuleNotFound(String content) {
+    public String onModuleNotFound(String content) {
         return null;
     }
 
     @Override
-    public Object onParamCountMismatch(CommandInput input, CommandData commandData) {
+    public String onParamCountMismatch(CommandInput input, CommandData commandData) {
         String format = "Command failed; you provided the wrong number of parameters.\nModule: %s\nCommand: %s\n\nProvided:\n%s\n\nPossibilities:\n%s";
         StringJoiner commandJoiner = new StringJoiner("\n");
 
@@ -36,14 +35,14 @@ public class MisuseHandler<E, M> implements IMisuseHandler<E, M> {
     }
 
     @Override
-    public Object onDefaultNotFound(ICommandEvent event) {
+    public String onDefaultNotFound(ICommandEvent event) {
         String format = "Command failed; this module has no default command.\nModule: %s\n\nPossibilities:\n%s\n\nSee the help command for more information.";
         ModuleData module = event.getInput().getModuleData();
         return String.format(format, module.getAnnotation().id(), module);
     }
 
     @Override
-    public Object onParamParseFailure(ICommandEvent event, ParamData paramData, Class<?> type, String item) {
+    public String onParamParseFailure(ICommandEvent event, ParamData paramData, Class<?> type, String item) {
         String format = "Command failed; I couldn't interpret '%s', as the parameter '%s' (%s).\nModule: %s\nCommand: %s\n\nRequired:\n%s";
 
         CommandInput input = event.getInput();
@@ -55,7 +54,7 @@ public class MisuseHandler<E, M> implements IMisuseHandler<E, M> {
     }
 
     @Override
-    public Object onListNotSupported(ICommandEvent event, ParamData paramData, List<String> items) {
+    public String onListNotSupported(ICommandEvent event, ParamData paramData, List<String> items) {
         String format = "Command failed; the input, [%s], for parameter '%s' can't be a list.\nModule: %s\nCommand: %s\n\nRequired:\n%s";
 
         StringJoiner joiner = new StringJoiner(", ");
@@ -70,7 +69,7 @@ public class MisuseHandler<E, M> implements IMisuseHandler<E, M> {
     }
 
     @Override
-    public <H extends Handler<E, M>> Object onInvalidated(ICommandEvent<E, M> event, Set<ConstraintViolation<H>> violations) {
+    public <H extends Handler<S, M>> String onInvalidated(ICommandEvent<S, M> event, Set<ConstraintViolation<H>> violations) {
         String format =
             "Command failed; a parameter was invalidated.\n" +
             "Module: %s\n" +
@@ -91,7 +90,7 @@ public class MisuseHandler<E, M> implements IMisuseHandler<E, M> {
         return generateMessage(format, event);
     }
 
-    private Object generateMessage(String format, ICommandEvent<E, M> event) {
+    private String generateMessage(String format, ICommandEvent<S, M> event) {
         CommandInput input = event.getInput();
         String module = input.getModuleData().getAnnotation().id();
         String command = input.getCommandData().getAnnotation().id();
@@ -100,7 +99,7 @@ public class MisuseHandler<E, M> implements IMisuseHandler<E, M> {
     }
 
     @Override
-    public Object onModuleDisabled(ICommandEvent<E, M> event) {
+    public String onModuleDisabled(ICommandEvent<S, M> event) {
         String format =
             "Command failed; this module is currently disabled due to live issues.\n" +
             "Module: %s";
@@ -109,7 +108,7 @@ public class MisuseHandler<E, M> implements IMisuseHandler<E, M> {
     }
 
     @Override
-    public <X extends Exception> Object onException(X ex) {
+    public <X extends Exception> String onException(X ex) {
         String text = "An unknown error occured.";
         logger.error(text, ex);
         return text;
