@@ -3,6 +3,7 @@ package com.elypia.commandler.impl;
 import com.elypia.commandler.*;
 import com.elypia.commandler.interfaces.ICommandEvent;
 import com.elypia.commandler.metadata.CommandData;
+import com.elypia.commandler.validation.*;
 import org.slf4j.*;
 
 import javax.validation.*;
@@ -25,10 +26,17 @@ public class CommandValidator {
 
     private ExecutableValidator exValidator;
 
+    public ICommandEvent event;
+
     public CommandValidator(Commandler commandler) {
         this.commandler = commandler;
 
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        ValidatorFactory factory = Validation.byDefaultProvider()
+            .configure()
+            .constraintValidatorFactory(new CommandlerConstraintValidatorFactory(this))
+            .parameterNameProvider(new CommandParamNameProvider(commandler.getContext()))
+            .buildValidatorFactory();
+
         Validator validator = factory.getValidator();
         exValidator = validator.forExecutables();
     }
@@ -37,6 +45,7 @@ public class CommandValidator {
         CommandData command = event.getInput().getCommandData();
         Method method = command.getMethod();
 
+        this.event = event;
         var violations = exValidator.validateParameters(handler, method, parameters);
 
         if (violations.isEmpty())

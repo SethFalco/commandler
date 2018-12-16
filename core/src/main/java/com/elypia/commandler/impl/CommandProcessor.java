@@ -90,10 +90,10 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
     }
 
     @Override
-    public CommandEvent process(Commandler<C, E, M> commandler, E event, String content) {
+    public Matcher isCommand(E source, String content) {
         StringJoiner joiner = new StringJoiner("|");
 
-        for (String prefix : getPrefixes(event))
+        for (String prefix : getPrefixes(source))
             joiner.add("\\Q" + prefix + "\\E");
 
         String pattern = String.format(COMMAND_REGEX, joiner.toString());
@@ -101,7 +101,14 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
 
         Matcher matcher = commandPattern.matcher(content);
 
-        if (!matcher.matches())
+        return matcher.matches() ? matcher : null;
+    }
+
+    @Override
+    public CommandEvent process(Commandler<C, E, M> commandler, E source, String content) {
+        Matcher matcher = isCommand(source, content);
+
+        if (matcher == null)
             return null;
 
         String module = matcher.group("module");
@@ -128,7 +135,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
         }
 
         CommandInput input = new CommandInput(module, command, parameters);
-        return new CommandEvent<>(commandler, input);
+        return new CommandEvent<>(commandler, source, input);
     }
 
     @Override

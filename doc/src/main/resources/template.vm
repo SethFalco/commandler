@@ -17,6 +17,7 @@
                 --pri-color: $utils.toRgba($colors.getPrimary());
                 --sec-color: $utils.toRgba($colors.getSecondary());
                 --ter-color: $utils.toRgba($colors.getTertiary());
+
                 --text-color: $utils.toRgba($colors.getText());
 
                 --font: $font.getName();

@@ -24,10 +24,10 @@ logo = "https://elypia.com/resources/logo_pic.png"
 
 [style]
     [style.color_scheme]
-    primary = "rgb(150, 150, 150)"
-    secondary = "rgb(200, 200, 200)"
-    tertiary = "rgb(250, 250, 250)"
-    text = "rgb(20, 20, 20)"
+    primary = "rgb(32, 32, 32)"
+    secondary = "rgb(40, 40, 40)"
+    tertiary = "rgb(59, 59, 59)"
+    text = "rgb(255, 255, 255)"
 
     [style.font]
     name = "Roboto"

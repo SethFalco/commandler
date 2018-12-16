@@ -35,9 +35,9 @@ public interface ICommandEvent<C, E, M> {
      * @param key The key associated with the script to obtain.
      * @return A script associated with this key.
      */
-    M sendScript(String key);
+    M send(String key);
 
-    <T> M sendScript(String key, Map<String, T> params);
+    <T> M send(String key, Map<String, T> params);
 
     default M trigger(String trigger) {
         return trigger(trigger, true);
@@ -69,8 +69,6 @@ public interface ICommandEvent<C, E, M> {
     CommandInput getInput();
 
     M getError();
-
-    C getClient();
 
     E getSource();
 }

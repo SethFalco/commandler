@@ -21,4 +21,8 @@ public class TestApp {
     final public void add(Class<? extends Handler<Void, String, String>>... clazz) {
         commandler.getContext().addModules(clazz);
     }
+
+    public Commandler<Void, String, String> getCommandler() {
+        return commandler;
+    }
 }

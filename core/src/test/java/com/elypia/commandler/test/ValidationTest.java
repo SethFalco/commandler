@@ -31,7 +31,6 @@ public class ValidationTest {
             "Module: Validation\n" +
             "Command: Concatenate\n" +
             "\n" +
-            "Violations:\n" +
             "first: Size must be between 0 and 1. (an)";
 
         String actual = app.execute(">valid concat an jenni");
@@ -46,7 +45,6 @@ public class ValidationTest {
             "Module: Validation\n" +
             "Command: Min & Max\n" +
             "\n" +
-            "Violations:\n" +
             "y: Must be less than or equal to 10. (150)";
 
         String actual = app.execute(">valid sum 100 150");
@@ -77,7 +75,6 @@ public class ValidationTest {
             "Module: Validation\n" +
             "Command: Period\n" +
             "\n" +
-            "Violations:\n" +
             "duration: Must be between 0 and 2 days. (PT84H20S)";
 
         String actual = app.execute(">valid period 3d12h20s");

@@ -2,6 +2,8 @@ package com.elypia.commandler.interfaces;
 
 import com.elypia.commandler.Commandler;
 
+import java.util.regex.Matcher;
+
 public interface ICommandProcessor<C, E, M> {
 
     /**
@@ -12,6 +14,8 @@ public interface ICommandProcessor<C, E, M> {
      * @return The message that was sent to the client.
      */
     M dispatch(E source, String content, boolean send);
+
+    Matcher isCommand(E source, String content);
 
     /**
      * Break the command down into it's individual components.

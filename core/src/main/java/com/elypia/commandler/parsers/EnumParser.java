@@ -3,6 +3,7 @@ package com.elypia.commandler.parsers;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.metadata.ParamData;
 
 /**
  * This is the generic {@link Enum} parser. This should be the fallback parser
@@ -16,7 +17,7 @@ import com.elypia.commandler.interfaces.*;
 public class EnumParser implements IParser<ICommandEvent, Enum> {
 
     @Override
-    public Enum parse(ICommandEvent event, Class<? extends Enum> type, String input) {
+    public Enum parse(ICommandEvent event, ParamData data, Class<? extends Enum> type, String input) {
         input = input.toLowerCase().replace(" ", "");
 
         for (Enum e : type.getEnumConstants()) {

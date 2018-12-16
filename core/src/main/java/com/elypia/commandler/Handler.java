@@ -13,8 +13,6 @@ public abstract class Handler<C, E, M> {
 
 	protected ModuleData module;
 
-	protected C client;
-
 	/**
 	 * If this module is enabled or out of service.
 	 */
@@ -31,7 +29,6 @@ public abstract class Handler<C, E, M> {
 	 */
 	public boolean init(Commandler<C, E, M> commandler) {
 		this.commandler = commandler;
-		client = commandler.getClient();
 		module = commandler.getContext().getModule(this.getClass());
 		enabled = test();
 
@@ -112,10 +109,6 @@ public abstract class Handler<C, E, M> {
 			builder.append(helpUrl);
 
 		return builder.toString();
-	}
-
-	public C getClient() {
-		return client;
 	}
 
 	public Commandler<C, E, M> getCommandler() {

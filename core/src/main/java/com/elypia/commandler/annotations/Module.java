@@ -26,7 +26,7 @@ public @interface Module {
 	 * from the help commands and documentation. Assign this a value
 	 * to be displayed.
 	 */
-	String HIDEEN = "";
+	String HIDDEN = "";
 
 	/**
 	 * @return Name of the module as it should appear at the top
@@ -52,7 +52,7 @@ public @interface Module {
 	 * the module is for, if this is {@link String#isEmpty()}
 	 * then the module is hidden from any help commands or documentation.
 	 */
-	String help() default HIDEEN;
+	String help() default HIDDEN;
 
 	/**
 	 * All {@link Module}s can assign themself a parent module recursively.

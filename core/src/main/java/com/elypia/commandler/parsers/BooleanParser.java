@@ -2,6 +2,7 @@ package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.metadata.ParamData;
 
 import java.util.*;
 
@@ -17,7 +18,7 @@ public class BooleanParser implements IParser<ICommandEvent, Boolean> {
     );
 
     @Override
-    public Boolean parse(ICommandEvent event, Class<? extends Boolean> type, String input) {
+    public Boolean parse(ICommandEvent event, ParamData data, Class<? extends Boolean> type, String input) {
         input = input.toLowerCase();
 
         if (TRUE.contains(input))

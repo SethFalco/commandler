@@ -8,8 +8,6 @@ import java.util.*;
 
 public class Commandler<C, E, M> {
 
-    private C client;
-
     private String prefix;
     private String website;
     private ModulesContext context;
@@ -23,8 +21,7 @@ public class Commandler<C, E, M> {
 
     private Map<Class<? extends Handler<C, E, M>>, Handler<C, E, M>> handlers;
 
-    private Commandler(Builder<C, E, M> commandlerBuilder) {
-        client = commandlerBuilder.client;
+    protected Commandler(Builder<C, E, M> commandlerBuilder) {
         prefix = commandlerBuilder.prefix;
         context = commandlerBuilder.context;
         website = commandlerBuilder.website;
@@ -43,6 +40,10 @@ public class Commandler<C, E, M> {
         return processor.dispatch(event, content, send);
     }
 
+    public void addInstance(Handler<C, E, M> handler) {
+
+    }
+
     public Handler<C, E, M> getHandler(Class<? extends Handler<C, E, M>> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (!handlers.containsKey(handler)) {
             Handler<C, E, M> handlerInstance = handler.getConstructor().newInstance();
@@ -52,10 +53,6 @@ public class Commandler<C, E, M> {
         }
 
         return handlers.get(handler);
-    }
-
-    public C getClient() {
-        return client;
     }
 
     public String getPrefix() {
@@ -96,8 +93,6 @@ public class Commandler<C, E, M> {
 
     public static class Builder<C, E, M> {
 
-        private C client;
-
         private String prefix;
         private String website;
         private ModulesContext context;
@@ -109,7 +104,7 @@ public class Commandler<C, E, M> {
             return new Commandler<>(this);
         }
 
-        private void initializeDefaults() {
+        protected void initializeDefaults() {
             if (prefix == null)
                 prefix = "!";
 
@@ -121,15 +116,6 @@ public class Commandler<C, E, M> {
 
             if (engine == null)
                 engine = new LanguageEngine<>();
-        }
-
-        public C getClient() {
-            return client;
-        }
-
-        public Builder<C, E, M> setClient(C client) {
-            this.client = client;
-            return this;
         }
 
         public String getPrefix() {

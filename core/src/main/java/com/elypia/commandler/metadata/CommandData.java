@@ -343,7 +343,7 @@ public class CommandData implements Comparable<CommandData> {
     }
 
     public CommandData getOverload(int paramCount) {
-        for (CommandData commandData : getOverloads(true)) {
+        for (CommandData commandData : getOverloads()) {
             if (commandData.inputRequired == paramCount)
                 return commandData;
         }
@@ -358,7 +358,7 @@ public class CommandData implements Comparable<CommandData> {
      *         is already of an {@link Overload}.
      */
     public List<CommandData> getOverloads() {
-        return getOverloads(false);
+        return getOverloads(true);
     }
 
     /**

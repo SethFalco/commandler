@@ -82,7 +82,7 @@ public class ModuleData implements Comparable<ModuleData> {
         if (moduleClass.isAnnotationPresent(Builders.class))
             builders = moduleClass.getAnnotation(Builders.class).value();
 
-        isPublic = !annotation.help().equals(Module.HIDEEN);
+        isPublic = !annotation.help().equals(Module.HIDDEN);
 
         aliases = new HashSet<>();
         commands = new ArrayList<>();

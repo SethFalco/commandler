@@ -135,7 +135,7 @@ public class ParameterParser {
 
             for (int i = 0; i < size; i++) {
                 String item = items.get(i);
-                Object o = parser.parse(event, componentType, item);
+                Object o = parser.parse(event, param, componentType, item);
 
                 if (o == null) {
                     event.invalidate(handler.onParamParseFailure(event, param, componentType, item));
@@ -166,7 +166,7 @@ public class ParameterParser {
         }
 
         if (size == 1) {
-            Object o = parser.parse(event, componentType, items.get(0));
+            Object o = parser.parse(event, param, componentType, items.get(0));
 
             if (o == null)
                 event.invalidate(handler.onParamParseFailure(event, param, type, items.get(0)));

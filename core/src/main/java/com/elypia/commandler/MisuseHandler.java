@@ -27,7 +27,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
         String format = "Command failed; you provided the wrong number of parameters.\nModule: %s\nCommand: %s\n\nProvided:\n%s\n\nPossibilities:\n%s";
         StringJoiner commandJoiner = new StringJoiner("\n");
 
-        for (CommandData command : commandData.getOverloads(true))
+        for (CommandData command : commandData.getOverloads())
             commandJoiner.add(command.toString());
 
         String commandName = commandData.getAnnotation().id();
@@ -74,24 +74,18 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
         String format =
             "Command failed; a parameter was invalidated.\n" +
             "Module: %s\n" +
-            "Command: %s\n" +
-            "\n" +
-            "Violations:";
+            "Command: %s\n";
 
-        for (var in : violations) {
-            String message = StringUtils.capitalize(in.getMessage());
+        for (var violation : violations) {
+            String message = StringUtils.capitalize(violation.getMessage());
 
             if (message.indexOf(message.length() - 1) != '.')
                 message += ".";
 
-            for (ParamData paramData : event.getInput().getCommandData().getInputParams()) {
-                Path.Node violatedParam = CommandlerUtils.getLastElement(in.getPropertyPath().iterator());
+            Path.Node violatedParam = CommandlerUtils.getLastElement(violation.getPropertyPath().iterator());
+            message = violatedParam.getName() + ": " + message;
 
-                if (paramData.getParameter().getName().equals(violatedParam.getName()))
-                    message = paramData.getAnnotation().id() + ": " + message;
-            }
-
-            format += "\n" + message + " (" + in.getInvalidValue() + ")";
+            format += "\n" + message + " (" + violation.getInvalidValue() + ")";
         }
 
         return generateMessage(format, event);

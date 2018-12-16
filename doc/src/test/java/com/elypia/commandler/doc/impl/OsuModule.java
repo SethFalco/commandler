@@ -23,7 +23,7 @@ public class OsuModule extends Handler {
         "Play Count: 21,918\n\n" +
         "https://osu.ppy.sh/u/4185808"
     )
-    @Command(id = "Player Stats", aliases = "get", help = "Get stats on osu! players.")
+    @Command(id = "Player Stats", aliases = "get", help = "Get stats of osu! players.")
     @Param(id = "players", help = "The players usernames you want to retrieve.")
     public void getPlayers(@Length(min = 3, max = 15) String username) {
         // Stub

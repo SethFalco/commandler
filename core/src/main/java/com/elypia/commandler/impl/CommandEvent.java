@@ -17,22 +17,21 @@ import java.util.Map;
  */
 public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
 
-    private boolean invalidated;
+    protected boolean invalidated;
 
-    private M error;
+    protected M error;
 
-    private CommandInput input;
+    protected CommandInput input;
 
-    private C client;
+    protected E source;
 
-    private E source;
+    protected Commandler<C, E, M> commandler;
 
-    private Commandler<C, E, M> commandler;
+    protected LanguageEngine<E> engine;
 
-    private LanguageEngine<E> engine;
-
-    public CommandEvent(Commandler<C, E, M> commandler, CommandInput input) {
+    public CommandEvent(Commandler<C, E, M> commandler, E source, CommandInput input) {
         this.commandler = commandler;
+        this.source = source;
         this.input = input;
 
         engine = commandler.getEngine();
@@ -50,6 +49,16 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
     @Override
     public <T> M send(T output) {
         return getCommandler().getBuilder().build(this, output);
+    }
+
+    @Override
+    public M send(String key) {
+        return null;
+    }
+
+    @Override
+    public <T> M send(String key, Map<String, T> params) {
+        return null;
     }
 
     /**
@@ -107,10 +116,6 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
 
     public M getError() {
         return error;
-    }
-
-    public C getClient() {
-        return client;
     }
 
     public E getSource() {
