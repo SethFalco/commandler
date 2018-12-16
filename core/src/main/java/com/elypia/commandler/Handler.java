@@ -7,9 +7,9 @@ import com.elypia.commandler.metadata.*;
 
 import java.util.*;
 
-public abstract class Handler<C, E, M> {
+public abstract class Handler<E, M> {
 
-	protected Commandler<C, E, M> commandler;
+	protected Commandler<E, M> commandler;
 
 	protected ModuleData module;
 
@@ -27,7 +27,7 @@ public abstract class Handler<C, E, M> {
 	 * @param commandler Our parent Commandler class.
 	 * @return Returns if the {@link #test()} for this module passed.
 	 */
-	public boolean init(Commandler<C, E, M> commandler) {
+	public boolean init(Commandler<E, M> commandler) {
 		this.commandler = commandler;
 		module = commandler.getContext().getModule(this.getClass());
 		enabled = test();
@@ -57,7 +57,7 @@ public abstract class Handler<C, E, M> {
 	 * @return The message to send to the end user.
 	 */
 	@Command(id = "Help", aliases = "help")
-	public Object help(ICommandEvent<C, E, M> event) {
+	public Object help(ICommandEvent<E, M> event) {
 		StringBuilder builder = new StringBuilder();
 
 		Module annotation = getModule().getAnnotation();
@@ -111,7 +111,7 @@ public abstract class Handler<C, E, M> {
 		return builder.toString();
 	}
 
-	public Commandler<C, E, M> getCommandler() {
+	public Commandler<E, M> getCommandler() {
 		return commandler;
 	}
 
@@ -123,7 +123,7 @@ public abstract class Handler<C, E, M> {
 		return enabled;
 	}
 
-	public int compareTo(Handler<C, E, M> o) {
+	public int compareTo(Handler<E, M> o) {
 		return module.compareTo(o.getModule());
 	}
 }

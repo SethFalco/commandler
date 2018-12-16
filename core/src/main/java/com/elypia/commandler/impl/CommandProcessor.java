@@ -7,7 +7,7 @@ import com.elypia.commandler.metadata.*;
 import java.util.*;
 import java.util.regex.*;
 
-public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
+public class CommandProcessor<E, M> implements ICommandProcessor<E, M> {
 
     /**
      * The default commands regex, this matches the commands to see if its
@@ -27,7 +27,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
      */
     protected static final Pattern ITEM_PATTERN = Pattern.compile("\"(?<quote>(?:\\\\\"|[^\"])*)\"|(?<word>[^\\s,]+)");
 
-    protected Commandler<C, E, M> commandler;
+    protected Commandler<E, M> commandler;
 
     protected ModulesContext context;
 
@@ -37,7 +37,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
 
     protected String prefix;
 
-    public CommandProcessor(Commandler<C, E, M> commandler) {
+    public CommandProcessor(Commandler<E, M> commandler) {
         this.commandler = commandler;
         this.context = commandler.getContext();
         this.engine = commandler.getEngine();
@@ -47,7 +47,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
 
     @Override
     public M dispatch(E source, String content, boolean send) {
-        CommandEvent<C, E, M> event = process(commandler, source, content);
+        CommandEvent<E, M> event = process(commandler, source, content);
 
         if (event == null)
             return null;
@@ -67,7 +67,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
         try {
             Object[] params = commandler.getParser().processEvent(event, commandData);
 
-            Handler<C, E, M> handler = commandler.getHandler((Class<Handler<C, E, M>>)commandData.getModuleData().getModuleClass());
+            Handler<E, M> handler = commandler.getHandler((Class<Handler<E, M>>)commandData.getModuleData().getModuleClass());
 
             if (params == null || !commandler.getValidator().validate(event, handler, params))
                 return event.getError();
@@ -105,7 +105,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
     }
 
     @Override
-    public CommandEvent process(Commandler<C, E, M> commandler, E source, String content) {
+    public CommandEvent process(Commandler<E, M> commandler, E source, String content) {
         Matcher matcher = isCommand(source, content);
 
         if (matcher == null)
@@ -143,7 +143,7 @@ public class CommandProcessor<C, E, M> implements ICommandProcessor<C, E, M> {
         return new String[] {prefix};
     }
 
-    public boolean normalize(ICommandEvent<C, E, M> event, CommandInput input) {
+    public boolean normalize(ICommandEvent<E, M> event, CommandInput input) {
         for (ModuleData moduleData : context.getModules()) {
             if (moduleData.performed(input.getModule())) {
                 input.setModuleData(moduleData);

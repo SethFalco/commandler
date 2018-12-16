@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 @Parsers({StringParser.class, NumberParser.class, DurationParser.class})
 @Builders({DefaultBuilder.class, NumberBuilder.class})
 @Module(id = "Validation", aliases = "valid")
-public class ValidationModule extends Handler<Void, String, String> {
+public class ValidationModule extends Handler<String, String> {
 
     @Command(id = "Concatenate", aliases = "concat")
     @Param(id = "first", help = "The text that's prepended to the next.")

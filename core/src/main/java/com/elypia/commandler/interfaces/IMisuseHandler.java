@@ -17,7 +17,7 @@ import java.util.*;
  * The return types are {@link Object} as we will use the {@link IBuilder}
  * internally to generate whatever should be sent.
  */
-public interface IMisuseHandler<C, E, M> {
+public interface IMisuseHandler<E, M> {
 
     /**
      * This will occur when the user attempts to do a command
@@ -73,7 +73,7 @@ public interface IMisuseHandler<C, E, M> {
      *
      * @return The friendly error to send to the users in chat.
      */
-    <H extends Handler<C, E, M>> Object onInvalidated(ICommandEvent<C, E, M> event, Set<ConstraintViolation<H>> violations);
+    <H extends Handler<E, M>> Object onInvalidated(ICommandEvent<E, M> event, Set<ConstraintViolation<H>> violations);
 
     /**
      * This may occur when a user attempts to perform a command
@@ -83,7 +83,7 @@ public interface IMisuseHandler<C, E, M> {
      * @param event The event that caused this failure.
      * @return The friendly error to send to users in chat.
      */
-    Object onModuleDisabled(ICommandEvent<C, E, M> event);
+    Object onModuleDisabled(ICommandEvent<E, M> event);
 
     /**
      * This will occur if an {@link Exception exception} occurs

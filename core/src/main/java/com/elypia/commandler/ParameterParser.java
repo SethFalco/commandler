@@ -75,7 +75,7 @@ public class ParameterParser {
      * @param commandData The method to imitate the fields of.
      * @return An Object[] array of all parameters parsed as required for the given method.
      */
-    public Object[] processEvent(ICommandEvent<?, ?, ?> event, CommandData commandData) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    public Object[] processEvent(ICommandEvent event, CommandData commandData) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         List<ParamData> paramData = commandData.getParamData();
         List<List<String>> inputs = event.getInput().getParameters();
 
@@ -120,7 +120,7 @@ public class ParameterParser {
      * @return      The parsed object as required for the command, or null
      *              if we failed to parse the input. (Usually user misuse.)
      */
-    protected Object parseParameter(ICommandEvent<?, ?, ?> event, ParamData param, List<String> items) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    protected Object parseParameter(ICommandEvent event, ParamData param, List<String> items) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
         IParser parser = getParser(event, componentType);
@@ -188,9 +188,9 @@ public class ParameterParser {
      * @param typeRequired The type that needs parsing.
      * @return The parser to can parse this data into this data-type.
      */
-    private IParser<?, ?> getParser(ICommandEvent event, Class<?> typeRequired) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private IParser getParser(ICommandEvent event, Class typeRequired) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         for (var parser : event.getInput().getModuleData().getParsers()) {
-            Class<?>[] compatibleTypes = parser.getAnnotation(Compatible.class).value();
+            Class[] compatibleTypes = parser.getAnnotation(Compatible.class).value();
 
             for (Class<?> type : compatibleTypes) {
                 if (type == typeRequired || type.isAssignableFrom(typeRequired)) {

@@ -7,7 +7,7 @@ import com.elypia.commandler.impl.builders.BuilderModuleBuilder;
 
 @Builders(BuilderModuleBuilder.class)
 @Module(id = "Builders", aliases = "builder", help = "Module for testing if builders are performing correctly.")
-public class BuilderModule extends Handler<Void, String, String> {
+public class BuilderModule extends Handler<String, String> {
 
     /**
      * @return Returns a new {@link BuilderModule} instance

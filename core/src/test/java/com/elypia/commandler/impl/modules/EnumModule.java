@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Parsers(EnumParser.class)
 @Builders(DefaultBuilder.class)
 @Module(id = "Enum", aliases = "enum", help = "Does Commandler interact with enums correctly?")
-public class EnumModule extends Handler<Void, String, String> {
+public class EnumModule extends Handler<String, String> {
 
     enum YouTuber {
         PEWDIEPIE,

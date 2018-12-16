@@ -6,22 +6,22 @@ import com.elypia.commandler.interfaces.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public class Commandler<C, E, M> {
+public class Commandler<E, M> {
 
     private String prefix;
     private String website;
     private ModulesContext context;
-    private IMisuseHandler<C, E, M> misuseHandler;
+    private IMisuseHandler<E, M> misuseHandler;
     private LanguageEngine<E> engine;
 
-    private ICommandProcessor<C, E, M> processor;
+    private ICommandProcessor<E, M> processor;
     private CommandValidator validator;
     private ParameterParser parser;
     private MessageBuilder builder;
 
-    private Map<Class<? extends Handler<C, E, M>>, Handler<C, E, M>> handlers;
+    private Map<Class<? extends Handler<E, M>>, Handler<E, M>> handlers;
 
-    protected Commandler(Builder<C, E, M> commandlerBuilder) {
+    protected Commandler(Builder<E, M> commandlerBuilder) {
         prefix = commandlerBuilder.prefix;
         context = commandlerBuilder.context;
         website = commandlerBuilder.website;
@@ -40,13 +40,13 @@ public class Commandler<C, E, M> {
         return processor.dispatch(event, content, send);
     }
 
-    public void addInstance(Handler<C, E, M> handler) {
+    public void addInstance(Handler<E, M> handler) {
 
     }
 
-    public Handler<C, E, M> getHandler(Class<? extends Handler<C, E, M>> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public Handler<E, M> getHandler(Class<? extends Handler<E, M>> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (!handlers.containsKey(handler)) {
-            Handler<C, E, M> handlerInstance = handler.getConstructor().newInstance();
+            Handler<E, M> handlerInstance = handler.getConstructor().newInstance();
             handlerInstance.init(this);
 
             handlers.put(handler, handlerInstance);
@@ -67,11 +67,11 @@ public class Commandler<C, E, M> {
         return context;
     }
 
-    public ICommandProcessor<C, E, M> getProcessor() {
+    public ICommandProcessor<E, M> getProcessor() {
         return processor;
     }
 
-    public IMisuseHandler<C, E, M> getMisuseHandler() {
+    public IMisuseHandler<E, M> getMisuseHandler() {
         return misuseHandler;
     }
 
@@ -91,15 +91,15 @@ public class Commandler<C, E, M> {
         return builder;
     }
 
-    public static class Builder<C, E, M> {
+    public static class Builder<E, M> {
 
         private String prefix;
         private String website;
         private ModulesContext context;
-        private IMisuseHandler<C, E, M> misuseHandler;
+        private IMisuseHandler<E, M> misuseHandler;
         private LanguageEngine<E> engine;
 
-        public Commandler<C, E, M> build() {
+        public Commandler<E, M> build() {
             initializeDefaults();
             return new Commandler<>(this);
         }
@@ -122,7 +122,7 @@ public class Commandler<C, E, M> {
             return prefix;
         }
 
-        public Builder<C, E, M> setPrefix(String prefix) {
+        public Builder<E, M> setPrefix(String prefix) {
             this.prefix = prefix;
             return this;
         }
@@ -131,7 +131,7 @@ public class Commandler<C, E, M> {
             return website;
         }
 
-        public Builder<C, E, M> setWebsite(String website) {
+        public Builder<E, M> setWebsite(String website) {
             this.website = website;
             return this;
         }
@@ -140,16 +140,16 @@ public class Commandler<C, E, M> {
             return context;
         }
 
-        public Builder<C, E, M> setContext(ModulesContext context) {
+        public Builder<E, M> setContext(ModulesContext context) {
             this.context = context;
             return this;
         }
 
-        public IMisuseHandler<C, E, M> getMisuseHandler() {
+        public IMisuseHandler<E, M> getMisuseHandler() {
             return misuseHandler;
         }
 
-        public Builder<C, E, M> setMisuseHandler(IMisuseHandler<C, E, M> misuseHandler) {
+        public Builder<E, M> setMisuseHandler(IMisuseHandler<E, M> misuseHandler) {
             this.misuseHandler = misuseHandler;
             return this;
         }
@@ -158,7 +158,7 @@ public class Commandler<C, E, M> {
             return engine;
         }
 
-        public Builder<C, E, M> setEngine(LanguageEngine<E> engine) {
+        public Builder<E, M> setEngine(LanguageEngine<E> engine) {
             this.engine = engine;
             return this;
         }

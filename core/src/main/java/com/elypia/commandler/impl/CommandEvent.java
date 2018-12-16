@@ -8,14 +8,13 @@ import java.util.Map;
 /**
  * The {@link CommandEvent} is the event object produced and used
  * by {@link Commandler} using the the {@link E event} spawned from the
- * {@link C client}. This should contain convnience methods for the event
+ * client. This should contain convnience methods for the event
  * as well as manage any platform specific implementations.
  *
- * @param <C> The client we're integrating with.
  * @param <E> The event that the client spawns.
  * @param <M> The message type that users send and receieve.
  */
-public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
+public class CommandEvent<E, M> implements ICommandEvent<E, M> {
 
     protected boolean invalidated;
 
@@ -25,11 +24,11 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
 
     protected E source;
 
-    protected Commandler<C, E, M> commandler;
+    protected Commandler<E, M> commandler;
 
     protected LanguageEngine<E> engine;
 
-    public CommandEvent(Commandler<C, E, M> commandler, E source, CommandInput input) {
+    public CommandEvent(Commandler<E, M> commandler, E source, CommandInput input) {
         this.commandler = commandler;
         this.source = source;
         this.input = input;
@@ -106,7 +105,7 @@ public class CommandEvent<C, E, M> implements ICommandEvent<C, E, M> {
             error = send(reason);
     }
 
-    public Commandler<C, E, M> getCommandler() {
+    public Commandler<E, M> getCommandler() {
         return commandler;
     }
 

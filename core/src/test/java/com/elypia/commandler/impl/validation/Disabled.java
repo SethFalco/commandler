@@ -18,7 +18,7 @@ public @interface Disabled {
 
     boolean value() default true;
 
-    class Validator implements ConstraintValidator<Disabled, CommandEvent<Void, String, String>> {
+    class Validator implements ConstraintValidator<Disabled, CommandEvent<String, String>> {
 
         private boolean isDisabled;
 
@@ -28,7 +28,7 @@ public @interface Disabled {
         }
 
         @Override
-        public boolean isValid(CommandEvent<Void, String, String> value, ConstraintValidatorContext context) {
+        public boolean isValid(CommandEvent<String, String> value, ConstraintValidatorContext context) {
             return isDisabled;
         }
     }

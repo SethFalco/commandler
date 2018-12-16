@@ -11,7 +11,7 @@ import java.util.stream.*;
 @Parsers({NumberParser.class, BooleanParser.class, CharacterParser.class})
 @Builders({DefaultBuilder.class, NumberBuilder.class})
 @Module(id = "Array", aliases = "array", help = "Testing if parsers are parsing and using arrays correctly.")
-public class ArrayModule extends Handler<Void, String, String> {
+public class ArrayModule extends Handler<String, String> {
 
     @Command(id = "Collect Bools", aliases = "bools")
     @Param(id = "bools", help = "A list of true/false.")

@@ -41,7 +41,7 @@ public class CommandValidator {
         exValidator = validator.forExecutables();
     }
 
-    public <C, E, M> boolean validate(ICommandEvent<C, E, M> event, Handler<C, E, M> handler, Object[] parameters) {
+    public <E, M> boolean validate(ICommandEvent<E, M> event, Handler<E, M> handler, Object[] parameters) {
         CommandData command = event.getInput().getCommandData();
         Method method = command.getMethod();
 

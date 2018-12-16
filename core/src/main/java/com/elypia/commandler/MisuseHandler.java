@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * A default implementation of {@link IMisuseHandler}.
  */
-public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
+public class MisuseHandler<E, M> implements IMisuseHandler<E, M> {
 
     private static final Logger logger = LoggerFactory.getLogger(MisuseHandler.class);
 
@@ -70,7 +70,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
     }
 
     @Override
-    public <H extends Handler<C, E, M>> Object onInvalidated(ICommandEvent<C, E, M> event, Set<ConstraintViolation<H>> violations) {
+    public <H extends Handler<E, M>> Object onInvalidated(ICommandEvent<E, M> event, Set<ConstraintViolation<H>> violations) {
         String format =
             "Command failed; a parameter was invalidated.\n" +
             "Module: %s\n" +
@@ -91,7 +91,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
         return generateMessage(format, event);
     }
 
-    private Object generateMessage(String format, ICommandEvent<C, E, M> event) {
+    private Object generateMessage(String format, ICommandEvent<E, M> event) {
         CommandInput input = event.getInput();
         String module = input.getModuleData().getAnnotation().id();
         String command = input.getCommandData().getAnnotation().id();
@@ -100,7 +100,7 @@ public class MisuseHandler<C, E, M> implements IMisuseHandler<C, E, M> {
     }
 
     @Override
-    public Object onModuleDisabled(ICommandEvent<C, E, M> event) {
+    public Object onModuleDisabled(ICommandEvent<E, M> event) {
         String format =
             "Command failed; this module is currently disabled due to live issues.\n" +
             "Module: %s";

@@ -4,10 +4,10 @@ import com.elypia.commandler.*;
 
 public class TestApp {
 
-    private Commandler<Void, String, String> commandler;
+    private Commandler<String, String> commandler;
 
     public TestApp() {
-        var builder = new Commandler.Builder<Void, String, String>()
+        var builder = new Commandler.Builder<String, String>()
             .setPrefix(">");
 
         commandler = builder.build();
@@ -18,11 +18,11 @@ public class TestApp {
     }
 
     @SafeVarargs
-    final public void add(Class<? extends Handler<Void, String, String>>... clazz) {
+    final public void add(Class<? extends Handler<String, String>>... clazz) {
         commandler.getContext().addModules(clazz);
     }
 
-    public Commandler<Void, String, String> getCommandler() {
+    public Commandler<String, String> getCommandler() {
         return commandler;
     }
 }

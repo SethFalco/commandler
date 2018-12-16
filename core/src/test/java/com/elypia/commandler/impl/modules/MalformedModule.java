@@ -11,7 +11,7 @@ import com.elypia.commandler.impl.builders.DefaultBuilder;
  * except it's missing the {@link Module} annotation.
  */
 @Builders(DefaultBuilder.class)
-public class MalformedModule extends Handler<Void, String, String> {
+public class MalformedModule extends Handler<String, String> {
 
     @Command(id = "No Annotation", aliases = "anno", help = "A command that can never be triggered.")
     public String nomodule() {

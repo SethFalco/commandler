@@ -11,7 +11,7 @@ package com.elypia.commandler.interfaces;
  * @param <O> The object to build, this should be the ouput from a {@link IParser}.
  * @param <M> The message we're returning.
  */
-public interface IBuilder<C extends ICommandEvent<?, ?, M>, O, M> {
+public interface IBuilder<C extends ICommandEvent<?, M>, O, M> {
 
     /**
      * The default build method, this builder should be the default

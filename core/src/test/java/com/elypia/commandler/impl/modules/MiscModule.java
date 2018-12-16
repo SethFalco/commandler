@@ -13,7 +13,7 @@ import com.elypia.commandler.parsers.*;
 @Parsers({StringParser.class, NumberParser.class})
 @Builders(DefaultBuilder.class)
 @Module(id = "Miscellaneous", aliases = "misc", help = "Test generic functionality and if it works.")
-public class MiscModule extends Handler<Void, String, String> {
+public class MiscModule extends Handler<String, String> {
 
     @Command(id = "Say", aliases = "say", help = "I'll repeat something you say.")
     @Param(id = "input", help = "What you want me to say.")

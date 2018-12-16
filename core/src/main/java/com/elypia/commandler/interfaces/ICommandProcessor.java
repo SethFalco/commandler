@@ -4,7 +4,7 @@ import com.elypia.commandler.Commandler;
 
 import java.util.regex.Matcher;
 
-public interface ICommandProcessor<C, E, M> {
+public interface ICommandProcessor<E, M> {
 
     /**
      * This should process the event.
@@ -24,7 +24,7 @@ public interface ICommandProcessor<C, E, M> {
      * @param content The content of the meessage.
      * @return The input the user provided or null if it's not a valid command.
      */
-    ICommandEvent process(Commandler<C, E, M> commandler, E event, String content);
+    ICommandEvent process(Commandler<E, M> commandler, E event, String content);
 
     /**
      * Return the accepted prefixes for this event.

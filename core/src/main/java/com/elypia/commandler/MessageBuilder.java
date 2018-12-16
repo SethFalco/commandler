@@ -62,7 +62,7 @@ public class MessageBuilder<M> {
      * @param object The user input after already being parsed by the {@link ParameterParser}.
      * @return A built message ready to send to the client.
      */
-    public M build(ICommandEvent<?, ?, M> event, Object object) {
+    public M build(ICommandEvent<?, M> event, Object object) {
         Objects.requireNonNull(object);
         IBuilder builder = getBuilder(event, object.getClass());
 
@@ -87,7 +87,7 @@ public class MessageBuilder<M> {
      * @throws IllegalArgumentException If no {@link IBuilder} is
      *         registered for this data-type.
      */
-    private IBuilder<?, ?, M> getBuilder(ICommandEvent<?, ?, M> event, Class<?> typeRequired) {
+    private IBuilder<?, ?, M> getBuilder(ICommandEvent<?, M> event, Class<?> typeRequired) {
         for (var builder : event.getInput().getModuleData().getBuilders()) {
             Class<?>[] compatibleTypes = builder.getAnnotation(Compatible.class).value();
 
