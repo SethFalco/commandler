@@ -1,9 +1,9 @@
-package com.elypia.commandler.impl.modules;
+package com.elypia.commandler.test.impl.modules;
 
 import com.elypia.commandler.Handler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.builders.BuilderModuleBuilder;
+import com.elypia.commandler.test.impl.builders.BuilderModuleBuilder;
 
 @Builders(BuilderModuleBuilder.class)
 @Module(id = "Builders", aliases = "builder", help = "Module for testing if builders are performing correctly.")

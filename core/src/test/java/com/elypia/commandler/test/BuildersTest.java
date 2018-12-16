@@ -1,7 +1,7 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.impl.TestApp;
-import com.elypia.commandler.impl.modules.BuilderModule;
+import com.elypia.commandler.test.impl.TestApp;
+import com.elypia.commandler.test.impl.modules.BuilderModule;
 import org.junit.jupiter.api.BeforeAll;
 
 public class BuildersTest {

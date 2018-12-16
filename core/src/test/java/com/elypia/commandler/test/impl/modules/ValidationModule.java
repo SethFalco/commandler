@@ -1,10 +1,10 @@
-package com.elypia.commandler.impl.modules;
+package com.elypia.commandler.test.impl.modules;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.builders.*;
 import com.elypia.commandler.parsers.*;
+import com.elypia.commandler.test.impl.builders.*;
 import com.elypia.commandler.validation.*;
 import org.apache.commons.lang3.StringUtils;
 

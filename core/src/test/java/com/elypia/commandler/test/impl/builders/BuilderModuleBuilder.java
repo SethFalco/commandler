@@ -1,8 +1,9 @@
-package com.elypia.commandler.impl.builders;
+package com.elypia.commandler.test.impl.builders;
 
 import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.impl.*;
-import com.elypia.commandler.impl.modules.BuilderModule;
+import com.elypia.commandler.impl.CommandEvent;
+import com.elypia.commandler.test.impl.TestBuilder;
+import com.elypia.commandler.test.impl.modules.BuilderModule;
 
 /**
  * This builder intentionally returns null on build.

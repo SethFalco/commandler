@@ -1,9 +1,9 @@
-package com.elypia.commandler.impl.modules;
+package com.elypia.commandler.test.impl;
 
 import com.elypia.commandler.Handler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.builders.DefaultBuilder;
+import com.elypia.commandler.test.impl.builders.DefaultBuilder;
 
 /**
  * This is for testing if Commandler will correctly

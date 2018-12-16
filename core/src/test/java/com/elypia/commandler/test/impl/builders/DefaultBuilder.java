@@ -1,7 +1,8 @@
-package com.elypia.commandler.impl.builders;
+package com.elypia.commandler.test.impl.builders;
 
 import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.impl.CommandEvent;
+import com.elypia.commandler.test.impl.TestBuilder;
 
 @Compatible(String.class)
 public class DefaultBuilder implements TestBuilder<String> {

@@ -1,7 +1,7 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.impl.TestApp;
-import com.elypia.commandler.impl.modules.*;
+import com.elypia.commandler.test.impl.*;
+import com.elypia.commandler.test.impl.modules.ArrayModule;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

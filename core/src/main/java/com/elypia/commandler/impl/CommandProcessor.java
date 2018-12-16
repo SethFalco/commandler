@@ -97,7 +97,7 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
     }
 
     @Override
-    public ICommandEvent process(Commandler<S, M> commandler, S source, String content) {
+    public ICommandEvent<S, M> process(Commandler<S, M> commandler, S source, String content) {
         Matcher commandMatcher = matchCommand(source, content);
 
         if (commandMatcher == null)
@@ -128,7 +128,7 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
 
         CommandInput input = new CommandInput(content, module, command, parameters);
 
-        ICommandEvent event = new CommandEvent<>(commandler, source, input) {
+        ICommandEvent<S, M> event = new CommandEvent<>(commandler, source, input) {
 
             @Override
             public <T> M send(T output) {

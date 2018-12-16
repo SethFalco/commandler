@@ -5,6 +5,7 @@ import com.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,18 +78,23 @@ public class ModulesContext {
     /**
      * Add data for all modules found in the packages specified.
      *
-     * @param packageNames A list of packages to load modules from.
-     * @throws IOException If the package provided doesn't exist.
+     * @param packageName A list of packages to load modules from.
      */
-    public void addPackage(String... packageNames) throws IOException {
-        for (String packageName : packageNames) {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            String path = packageName.replace('.', File.separatorChar);
+    public void addPackage(String packageName) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        String path = packageName.replace('.', File.separatorChar);
 
+        try {
             loader.getResources(path).asIterator().forEachRemaining((url) -> {
-                File dir = new File(url.getFile());
-                addClasses(dir, packageName);
+                try {
+                    File dir = new File(url.toURI());
+                    addClasses(dir, packageName);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
             });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

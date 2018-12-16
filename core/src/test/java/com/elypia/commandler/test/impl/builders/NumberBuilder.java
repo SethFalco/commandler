@@ -1,7 +1,8 @@
-package com.elypia.commandler.impl.builders;
+package com.elypia.commandler.test.impl.builders;
 
 import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.impl.*;
+import com.elypia.commandler.impl.CommandEvent;
+import com.elypia.commandler.test.impl.TestBuilder;
 
 @Compatible({Number.class, double.class, float.class, long.class, int.class, short.class, byte.class})
 public class NumberBuilder implements TestBuilder<Number> {
