@@ -5,7 +5,7 @@ import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.doc.annotations.Icon;
 
-@Icon(icon = "fab fa-youtube", color = "rgb(255, 0, 0)")
+@Icon(value = "fab fa-youtube", color = "rgb(255, 0, 0)")
 @Module(id = "YouTube", group = "Media", aliases = {"youtube", "yt"}, help = "Search for videos on YouTube.")
 public class YouTubeModule extends Handler {
 

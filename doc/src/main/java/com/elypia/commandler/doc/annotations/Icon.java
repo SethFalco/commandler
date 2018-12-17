@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Icon {
 
-    String icon();
+    String value();
 
     String color() default "#FFFFFF";
 }

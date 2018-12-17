@@ -5,7 +5,7 @@ import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.doc.annotations.*;
 
-@Icon(icon = "fas fa-toolbox")
+@Icon("fas fa-toolbox")
 @Module(id = "Miscellaneous", aliases = "misc", help = "Miscellaneous module with random commands.")
 public class MiscModule extends Handler {
 

@@ -130,7 +130,7 @@ public class DocBuilder {
             outputFile(file.getAbsoluteFile(), outputName, template, moduleContext);
         }
 
-        copyFiles(path, "/include");
+        copyFiles(path, "include");
     }
 
     private void outputFile(File file, String outputName, Template template, VelocityContext velocityContext) throws IOException {
@@ -153,7 +153,7 @@ public class DocBuilder {
     }
 
     private void copyFiles(String output, String path, String start) {
-        try (InputStream inputStream = this.getClass().getResourceAsStream(path)) {
+        try (InputStream inputStream = this.getClass().getClassLoader() .getResourceAsStream(path)) {
             if (inputStream == null)
                 return;
 
