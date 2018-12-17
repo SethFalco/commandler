@@ -8,18 +8,18 @@ import java.util.*;
 
 public class Commandler<S, M> {
 
-    private String prefix;
-    private String website;
-    private ModulesContext context;
-    private IMisuseHandler<S, M> misuseHandler;
-    private IScriptEngine<S> engine;
+    protected String prefix;
+    protected String website;
+    protected ModulesContext context;
+    protected IMisuseHandler<S, M> misuseHandler;
+    protected IScripts<S> engine;
 
-    private ICommandProcessor<S, M> processor;
-    private CommandValidator validator;
-    private ParameterParser parser;
-    private MessageBuilder builder;
+    protected ICommandProcessor<S, M> processor;
+    protected CommandValidator validator;
+    protected ParameterParser parser;
+    protected MessageBuilder builder;
 
-    private Map<Class<? extends Handler<S, M>>, Handler<S, M>> handlers;
+    protected Map<Class<? extends Handler<S, M>>, Handler<S, M>> handlers;
 
     protected Commandler(Builder<S, M> commandlerBuilder) {
         prefix = commandlerBuilder.prefix;
@@ -75,7 +75,7 @@ public class Commandler<S, M> {
         return misuseHandler;
     }
 
-    public IScriptEngine<S> getEngine() {
+    public IScripts<S> getEngine() {
         return engine;
     }
 
@@ -93,11 +93,11 @@ public class Commandler<S, M> {
 
     public static class Builder<S, M> {
 
-        private String prefix;
-        private String website;
-        private ModulesContext context;
-        private IMisuseHandler<S, M> misuseHandler;
-        private IScriptEngine<S> engine;
+        protected String prefix;
+        protected String website;
+        protected ModulesContext context;
+        protected IMisuseHandler<S, M> misuseHandler;
+        protected IScripts<S> engine;
 
         public Commandler<S, M> build() {
             initializeDefaults();
@@ -115,7 +115,7 @@ public class Commandler<S, M> {
                 misuseHandler = new MisuseHandler<>();
 
             if (engine == null)
-                engine = new ScriptEngine<>();
+                engine = new Scripts<>();
         }
 
         public String getPrefix() {
@@ -154,11 +154,11 @@ public class Commandler<S, M> {
             return this;
         }
 
-        public IScriptEngine<S> getEngine() {
+        public IScripts<S> getEngine() {
             return engine;
         }
 
-        public Builder<S, M> setEngine(IScriptEngine<S> engine) {
+        public Builder<S, M> setEngine(IScripts<S> engine) {
             this.engine = engine;
             return this;
         }

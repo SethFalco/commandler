@@ -4,7 +4,6 @@ import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.parsers.EnumParser;
-import com.elypia.commandler.test.impl.builders.DefaultBuilder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,8 +13,6 @@ import java.util.concurrent.TimeUnit;
  * swapping to use the new implementation rather than the
  * generic one if added.
  */
-@Parsers(EnumParser.class)
-@Builders(DefaultBuilder.class)
 @Module(id = "Enum", aliases = "enum", help = "Does Commandler interact with enums correctly?")
 public class EnumModule extends Handler<String, String> {
 

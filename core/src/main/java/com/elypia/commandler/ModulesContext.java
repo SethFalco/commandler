@@ -4,8 +4,6 @@ import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
-import java.io.*;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,59 +79,8 @@ public class ModulesContext {
      * @param packageName A list of packages to load modules from.
      */
     public void addPackage(String packageName) {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        String path = packageName.replace('.', File.separatorChar);
-
-        try {
-            loader.getResources(path).asIterator().forEachRemaining((url) -> {
-                try {
-                    File dir = new File(url.toURI());
-                    addClasses(dir, packageName);
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Add all classes in the specified package recursivley.
-     *
-     * @param dir The directory we're loading from.
-     * @param packageName The id of the package we're loading.
-     */
-    private void addClasses(File dir, String packageName) {
-        File[] files = dir.listFiles();
-
-        if (files == null)
-            return;
-
-        for (File file : files) {
-            String fileFullName = file.getName();
-
-            if (file.isDirectory())
-                addClasses(file, packageName + "." + fileFullName);
-
-            else if (fileFullName.endsWith(".class")) {
-                String fileName = fileFullName.substring(0, fileFullName.length() - 6);
-
-                try {
-                    String className = packageName + "." + fileName;
-                    Class<?> clazz = Class.forName(className);
-
-                    if (!Handler.class.isAssignableFrom(clazz))
-                        logger.warn("Package contains type {} which is not assignable to {}.", clazz.getName(), Handler.class);
-
-                    else
-                        addModules(clazz.asSubclass(Handler.class));
-
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        var modules = CommandlerUtils.getClasses(packageName, Handler.class);
+        modules.forEach(this::addModules);
     }
 
     public ModuleData getModule(String alias) {

@@ -3,15 +3,11 @@ package com.elypia.commandler.test.impl.modules;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.parsers.*;
-import com.elypia.commandler.test.impl.builders.DefaultBuilder;
 
 /**
  * This is just a really basic test module with the bare minimum
  * when it comes to testing {@link Commandler}.
  */
-@Parsers({StringParser.class, NumberParser.class})
-@Builders(DefaultBuilder.class)
 @Module(id = "Miscellaneous", aliases = "misc", help = "Test generic functionality and if it works.")
 public class MiscModule extends Handler<String, String> {
 

@@ -3,8 +3,6 @@ package com.elypia.commandler.test.impl.modules;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.parsers.*;
-import com.elypia.commandler.test.impl.builders.*;
 import com.elypia.commandler.validation.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,8 +15,6 @@ import java.util.stream.IntStream;
  * This is testing if using the javax.validation and custom
  * built in custom validators in {@link Commandler} work correctly.
  */
-@Parsers({StringParser.class, NumberParser.class, DurationParser.class})
-@Builders({DefaultBuilder.class, NumberBuilder.class})
 @Module(id = "Validation", aliases = "valid")
 public class ValidationModule extends Handler<String, String> {
 

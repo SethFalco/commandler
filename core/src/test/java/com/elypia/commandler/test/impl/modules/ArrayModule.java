@@ -3,13 +3,9 @@ package com.elypia.commandler.test.impl.modules;
 import com.elypia.commandler.Handler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.parsers.*;
-import com.elypia.commandler.test.impl.builders.*;
 
 import java.util.stream.*;
 
-@Parsers({NumberParser.class, BooleanParser.class, CharacterParser.class})
-@Builders({DefaultBuilder.class, NumberBuilder.class})
 @Module(id = "Array", aliases = "array", help = "Testing if parsers are parsing and using arrays correctly.")
 public class ArrayModule extends Handler<String, String> {
 

@@ -13,8 +13,7 @@ import java.util.*;
  * The {@link Param paramter} parser which is used to interpret
  * parameters specified in the {@link Command command} arguments.
  * Before a data-type can be used as an argument a {@link IParser parser}
- * must be specified and registered to the {@link ParameterParser} via the
- * the {@link Parsers} annotation on {@link Handler handlers}. <br>
+ * must be specified and registered to the {@link ParameterParser}. <br>
  * The {@link ParameterParser} is how {@link String} input provided
  * by the chat client is converted into the respective object and passed
  * to the method associated with the {@link Command}.
@@ -62,8 +61,20 @@ public class ParameterParser {
      */
     @SafeVarargs
     final public void add(Class<? extends IParser>... types) {
-        for (var type : types)
+        for (var type : types) {
+            if (!type.isAnnotationPresent(Compatible.class))
+                throw new IllegalStateException(String.format("Parser %s must have @Compatible annotations to define compatible types.", type.getName()));
+
+            if (type.getAnnotation(Compatible.class).value().length == 0)
+                throw new IllegalStateException(String.format("Parser %s has no defined data-types in it's @Compatible annotation.", type.getName()));
+
             parsers.putIfAbsent(type, null);
+        }
+    }
+
+    public void addPackage(String packageName) {
+        var parsers = CommandlerUtils.getClasses(packageName, IParser.class);
+        parsers.forEach(this::add);
     }
 
     /**
@@ -187,20 +198,39 @@ public class ParameterParser {
      * @param typeRequired The type that needs parsing.
      * @return The parser to can parse this data into this data-type.
      */
-    private IParser getParser(ICommandEvent event, Class typeRequired) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        for (var parser : event.getInput().getModuleData().getParsers()) {
-            Class[] compatibleTypes = parser.getAnnotation(Compatible.class).value();
+    private IParser getParser(ICommandEvent event, Class typeRequired) {
+        for (var entry : parsers.entrySet()) {
+            var clazz = entry.getKey();
+            var parser = entry.getValue();
+
+            Class[] compatibleTypes = clazz.getAnnotation(Compatible.class).value();
 
             for (Class<?> type : compatibleTypes) {
-                if (type == typeRequired || type.isAssignableFrom(typeRequired)) {
-                    if (parsers.containsKey(parser))
-                        parsers.put(parser, parser.getConstructor().newInstance());
+                if (type != typeRequired && !type.isAssignableFrom(typeRequired))
+                    continue;
 
-                    return parsers.get(parser);
+                if (parser != null)
+                    return parser;
+
+                Optional<Constructor<?>> optConstructor = Arrays.stream(clazz.getConstructors())
+                    .filter(c -> c.getParameterCount() == 0)
+                    .findAny();
+
+                if (optConstructor.isEmpty())
+                    throw new IllegalStateException(String.format("Parser %s has no default constructor.", clazz.getName()));
+
+                Constructor<?> constructor = optConstructor.get();
+
+                try {
+                    parsers.put(clazz, (IParser) constructor.newInstance());
+                } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+                    e.printStackTrace();
                 }
+
+                return parsers.get(clazz);
             }
         }
 
-        return null;
+        throw new IllegalArgumentException(String.format("No parser implementation registered for data type %s.", typeRequired.getName()));
     }
 }

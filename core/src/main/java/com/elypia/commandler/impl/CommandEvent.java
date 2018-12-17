@@ -3,6 +3,8 @@ package com.elypia.commandler.impl;
 import com.elypia.commandler.*;
 import com.elypia.commandler.interfaces.*;
 
+import java.util.Map;
+
 /**
  * The {@link CommandEvent} is the event object produced and used
  * by {@link Commandler} using the the {@link S event} spawned from the
@@ -16,7 +18,7 @@ public abstract class CommandEvent<S, M> implements ICommandEvent<S, M> {
 
     protected Commandler<S, M> commandler;
     protected MessageBuilder<M> builder;
-    protected IScriptEngine<S> scripts;
+    protected IScripts<S> scripts;
 
     protected S source;
 
@@ -30,6 +32,10 @@ public abstract class CommandEvent<S, M> implements ICommandEvent<S, M> {
 
         builder = commandler.getBuilder();
         scripts = commandler.getEngine();
+    }
+
+    public <T> M send(String body, Map<String, T> params) {
+        return send(scripts.get(source, body, params));
     }
 
     /**
@@ -48,7 +54,7 @@ public abstract class CommandEvent<S, M> implements ICommandEvent<S, M> {
         return commandler;
     }
 
-    public IScriptEngine<S> getScripts() {
+    public IScripts<S> getScripts() {
         return scripts;
     }
 

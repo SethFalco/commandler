@@ -13,7 +13,7 @@ public abstract class Handler<S, M> {
 
 	protected ModuleData module;
 
-	protected IScriptEngine<S> scripts;
+	protected IScripts<S> scripts;
 
 	/**
 	 * If this module is enabled or out of service.

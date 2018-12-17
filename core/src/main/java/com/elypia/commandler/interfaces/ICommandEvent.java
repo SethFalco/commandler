@@ -27,17 +27,17 @@ public interface ICommandEvent<S, M> {
     <T> M send(T output);
 
     /**
-     * Send a reply using {@link IScriptEngine}
+     * Send a reply using {@link IScripts}
      * for obtaining a script through your implementation.
      *
      * @param key The key associated with the script to obtain.
      * @return A script associated with this key.
      */
-    default String send(String key) {
+    default M send(String key) {
         return send(key, Map.of());
     }
 
-    <T> String send(String key, Map<String, T> params);
+    <T> M send(String key, Map<String, T> params);
 
     default M trigger(String trigger) {
         return trigger(trigger, true);

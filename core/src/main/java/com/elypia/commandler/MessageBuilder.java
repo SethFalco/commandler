@@ -4,7 +4,7 @@ import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
 import org.slf4j.*;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.*;
 import java.util.*;
 
 /**
@@ -31,7 +31,7 @@ public class MessageBuilder<M> {
      * All registered {@link IBuilder} instances mapped
      * to the data type it builds for.
      */
-    private Map<Class<? extends IBuilder<?, ?, M>>, IBuilder<?, ?, M>> builders;
+    private Map<Class<? extends IBuilder<? extends ICommandEvent<?, M>, ?, M>>, IBuilder<? extends ICommandEvent<?, M>, ?, M>> builders;
 
     public MessageBuilder() {
         builders = new HashMap<>();
@@ -46,9 +46,21 @@ public class MessageBuilder<M> {
      * @param types The data types this builder can build.
      */
     @SafeVarargs
-    final public void add(Class<? extends IBuilder<?, ?, M>>... types) {
-        for (Class<? extends IBuilder<?, ?, M>> type : types)
+    final public void add(Class<? extends IBuilder<? extends ICommandEvent<?, M>, ?, M>>... types) {
+        for (Class<? extends IBuilder<?, ?, M>> type : types) {
+            if (!type.isAnnotationPresent(Compatible.class))
+                throw new IllegalStateException(String.format("Builder %s must have @Compatible annotations to define compatible types.", type.getName()));
+
+            if (type.getAnnotation(Compatible.class).value().length == 0)
+                throw new IllegalStateException(String.format("Builder %s has no defined data-types in it's @Compatible annotation.", type.getName()));
+
             builders.putIfAbsent(type, null);
+        }
+    }
+
+    public void addPackage(String packageName, Class<? extends IBuilder> clazz) {
+        var builders = CommandlerUtils.getClasses(packageName, clazz);
+        builders.forEach(o -> add((Class<? extends IBuilder<? extends ICommandEvent<?, M>, ?, M>>)o));
     }
 
     /**
@@ -64,7 +76,7 @@ public class MessageBuilder<M> {
      */
     public M build(ICommandEvent<?, M> event, Object object) {
         Objects.requireNonNull(object);
-        IBuilder builder = getBuilder(event, object.getClass());
+        IBuilder builder = getBuilder(object.getClass());
 
         M content = (M)builder.build(event, object);
 
@@ -87,22 +99,36 @@ public class MessageBuilder<M> {
      * @throws IllegalArgumentException If no {@link IBuilder} is
      *         registered for this data-type.
      */
-    private IBuilder<?, ?, M> getBuilder(ICommandEvent<?, M> event, Class<?> typeRequired) {
-        for (var builder : event.getInput().getModuleData().getBuilders()) {
-            Class<?>[] compatibleTypes = builder.getAnnotation(Compatible.class).value();
+    private IBuilder<?, ?, M> getBuilder(Class<?> typeRequired) {
+        for (var entry : builders.entrySet()) {
+            var clazz = entry.getKey();
+            var builder = entry.getValue();
+
+            Class<?>[] compatibleTypes = clazz.getAnnotation(Compatible.class).value();
 
             for (Class<?> type : compatibleTypes) {
-                if (type == typeRequired || type.isAssignableFrom(typeRequired)) {
-                    if (!builders.containsKey(builder)) {
-                        try {
-                            builders.put((Class<IBuilder<?, ?, M>>)builder, builder.getConstructor().newInstance());
-                        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
-                            throw new IllegalStateException("No default constructor.");
-                        }
-                    }
+                if (type != typeRequired && !type.isAssignableFrom(typeRequired))
+                    continue;
 
-                    return builders.get(builder);
+                if (builder != null)
+                    return builder;
+
+                Optional<Constructor<?>> optConstructor = Arrays.stream(clazz.getConstructors())
+                    .filter(c -> c.getParameterCount() == 0)
+                    .findAny();
+
+                if (optConstructor.isEmpty())
+                    throw new IllegalStateException(String.format("Builder %s has no default constructor.", clazz.getName()));
+
+                Constructor<?> constructor = optConstructor.get();
+
+                try {
+                    builders.put(clazz, (IBuilder<? extends ICommandEvent<?, M>, ?, M>) constructor.newInstance());
+                } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+                    e.printStackTrace();
                 }
+
+                return builders.get(clazz);
             }
         }
 

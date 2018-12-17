@@ -136,7 +136,7 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
             }
 
             @Override
-            public <T> String send(String key, Map<String, T> params) {
+            public <T> M send(String key, Map<String, T> params) {
                 return null;
             }
         };

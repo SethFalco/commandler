@@ -2,7 +2,7 @@ package com.elypia.commandler.interfaces;
 
 import java.util.Map;
 
-public interface IScriptEngine<S> {
+public interface IScripts<S> {
 
     default String get(String script) {
         return get(script, Map.of());

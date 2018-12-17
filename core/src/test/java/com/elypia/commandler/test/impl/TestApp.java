@@ -11,6 +11,9 @@ public class TestApp {
             .setPrefix(">");
 
         commandler = builder.build();
+
+        String builderPackage = "com.elypia.commandler.test.impl.builders";
+        commandler.getBuilder().addPackage(builderPackage, ITestBuilder.class);
     }
 
     public String execute(String text) {
@@ -26,3 +29,4 @@ public class TestApp {
         return commandler;
     }
 }
+
