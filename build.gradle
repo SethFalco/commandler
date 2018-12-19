@@ -136,22 +136,6 @@ subprojects { subproject ->
     }
 
     dependencies {
-        if (subproject.name != "core") {
-            implementation project(":core")
-        } else {
-            // Apache Commons
-            implementation "org.apache.commons:commons-lang3:3.8.1"
-
-            // Validation
-            api "javax.validation:validation-api:2.0.1.Final"
-            api "org.hibernate.validator:hibernate-validator:6.0.13.Final"
-            implementation "javax.el:javax.el-api:3.0.0"
-            implementation "org.glassfish:javax.el:3.0.0"
-
-            // Logging
-            api "org.slf4j:slf4j-api:1.7.25"
-        }
-
         // Testing
         implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"

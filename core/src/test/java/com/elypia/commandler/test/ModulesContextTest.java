@@ -20,7 +20,7 @@ public class ModulesContextTest {
         ModulesContext context = app.getCommandler().getContext();
         context.addPackage("com.elypia.commandler.test.impl.modules");
 
-        int expected = 5;
+        int expected = 6;
         int actual = context.getModules().size();
 
         assertEquals(expected, actual);

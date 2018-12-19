@@ -4,6 +4,8 @@ ext {
 }
 
 dependencies {
+    implementation project(":core")
+
     // Configuration
     implementation "com.electronwill.night-config:core:${nightconfigVersion}"
     testImplementation "com.electronwill.night-config:toml:${nightconfigVersion}"

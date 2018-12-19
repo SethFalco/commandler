@@ -19,7 +19,7 @@ import java.util.*;
  *            should be the data-type the client of our integrating
  *            platform expects us to send back to users.
  */
-public class MessageBuilder<M> {
+public class MessageBuilder<B extends IBuilder, M> {
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
@@ -31,7 +31,7 @@ public class MessageBuilder<M> {
      * All registered {@link IBuilder} instances mapped
      * to the data type it builds for.
      */
-    private Map<Class<? extends IBuilder<? extends ICommandEvent<?, M>, ?, M>>, IBuilder<? extends ICommandEvent<?, M>, ?, M>> builders;
+    private Map<Class<B>, B> builders;
 
     public MessageBuilder() {
         builders = new HashMap<>();
@@ -46,8 +46,8 @@ public class MessageBuilder<M> {
      * @param types The data types this builder can build.
      */
     @SafeVarargs
-    final public void add(Class<? extends IBuilder<? extends ICommandEvent<?, M>, ?, M>>... types) {
-        for (Class<? extends IBuilder<?, ?, M>> type : types) {
+    final public void add(Class<B>... types) {
+        for (Class<B> type : types) {
             if (!type.isAnnotationPresent(Compatible.class))
                 throw new IllegalStateException(String.format("Builder %s must have @Compatible annotations to define compatible types.", type.getName()));
 
@@ -60,7 +60,7 @@ public class MessageBuilder<M> {
 
     public void addPackage(String packageName, Class<? extends IBuilder> clazz) {
         var builders = CommandlerUtils.getClasses(packageName, clazz);
-        builders.forEach(o -> add((Class<? extends IBuilder<? extends ICommandEvent<?, M>, ?, M>>)o));
+        builders.forEach(o -> add((Class<B>)o));
     }
 
     /**
@@ -99,7 +99,7 @@ public class MessageBuilder<M> {
      * @throws IllegalArgumentException If no {@link IBuilder} is
      *         registered for this data-type.
      */
-    private IBuilder<?, ?, M> getBuilder(Class<?> typeRequired) {
+    protected B getBuilder(Class<?> typeRequired) {
         for (var entry : builders.entrySet()) {
             var clazz = entry.getKey();
             var builder = entry.getValue();
@@ -123,7 +123,7 @@ public class MessageBuilder<M> {
                 Constructor<?> constructor = optConstructor.get();
 
                 try {
-                    builders.put(clazz, (IBuilder<? extends ICommandEvent<?, M>, ?, M>) constructor.newInstance());
+                    builders.put(clazz, (B) constructor.newInstance());
                 } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
                     e.printStackTrace();
                 }

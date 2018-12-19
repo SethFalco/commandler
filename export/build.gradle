@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(":core")
+
+    // GSON
+    implementation "com.google.code.gson:gson:2.8.5"
+}

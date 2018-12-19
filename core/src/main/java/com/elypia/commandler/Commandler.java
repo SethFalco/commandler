@@ -13,11 +13,11 @@ public class Commandler<S, M> {
     protected ModulesContext context;
     protected IMisuseHandler<S, M> misuseHandler;
     protected IScripts<S> engine;
+    protected MessageBuilder<?, M> builder;
 
     protected ICommandProcessor<S, M> processor;
     protected CommandValidator validator;
     protected ParameterParser parser;
-    protected MessageBuilder builder;
 
     protected Map<Class<? extends Handler<S, M>>, Handler<S, M>> handlers;
 
@@ -27,11 +27,11 @@ public class Commandler<S, M> {
         website = commandlerBuilder.website;
         misuseHandler = commandlerBuilder.misuseHandler;
         engine = commandlerBuilder.engine;
+        builder = commandlerBuilder.builder;
 
         processor = new CommandProcessor<>(this);
         validator = new CommandValidator(this);
         parser = new ParameterParser(misuseHandler);
-        builder = new MessageBuilder();
 
         handlers = new HashMap<>();
     }
@@ -41,7 +41,7 @@ public class Commandler<S, M> {
     }
 
     public void addInstance(Handler<S, M> handler) {
-
+        handlers.put((Class)handler.getClass(), handler);
     }
 
     public Handler<S, M> getHandler(Class<? extends Handler<S, M>> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
@@ -87,7 +87,7 @@ public class Commandler<S, M> {
         return parser;
     }
 
-    public MessageBuilder<M> getBuilder() {
+    public MessageBuilder<?, M> getBuilder() {
         return builder;
     }
 
@@ -98,6 +98,7 @@ public class Commandler<S, M> {
         protected ModulesContext context;
         protected IMisuseHandler<S, M> misuseHandler;
         protected IScripts<S> engine;
+        protected MessageBuilder<?, M> builder;
 
         public Commandler<S, M> build() {
             initializeDefaults();
@@ -116,6 +117,9 @@ public class Commandler<S, M> {
 
             if (engine == null)
                 engine = new Scripts<>();
+
+            if (builder == null)
+                builder = new MessageBuilder<>();
         }
 
         public String getPrefix() {
@@ -160,6 +164,15 @@ public class Commandler<S, M> {
 
         public Builder<S, M> setEngine(IScripts<S> engine) {
             this.engine = engine;
+            return this;
+        }
+
+        public MessageBuilder<?, M> getBuilder() {
+            return builder;
+        }
+
+        public Builder<S, M> setBuilder(MessageBuilder<?, M> builder) {
+            this.builder = builder;
             return this;
         }
     }

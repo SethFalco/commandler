@@ -2,7 +2,7 @@ package com.elypia.commandler.doc;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.doc.annotations.*;
+import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.doc.entities.AppData;
 import com.elypia.commandler.metadata.ModuleData;
 import org.apache.velocity.*;
@@ -153,7 +153,7 @@ public class DocBuilder {
     }
 
     private void copyFiles(String output, String path, String start) {
-        try (InputStream inputStream = this.getClass().getClassLoader() .getResourceAsStream(path)) {
+        try (InputStream inputStream = DocBuilder.class.getResourceAsStream(path)) {
             if (inputStream == null)
                 return;
 

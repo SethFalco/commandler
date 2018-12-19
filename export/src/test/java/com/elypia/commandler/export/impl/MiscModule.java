@@ -1,4 +1,4 @@
-package com.elypia.commandler.doc.impl;
+package com.elypia.commandler.export.impl;
 
 import com.elypia.commandler.Handler;
 import com.elypia.commandler.annotations.Module;
