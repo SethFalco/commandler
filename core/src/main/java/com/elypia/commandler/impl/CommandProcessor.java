@@ -65,7 +65,7 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
             try {
                 Object[] params = commandler.getParser().processEvent(event, commandData);
 
-                Handler<S, M> handler = commandler.getHandler((Class<Handler<S, M>>)commandData.getModuleData().getModuleClass());
+                Handler<S, M> handler = commandler.getHandler((Class<Handler<S, M>>) commandData.getModuleData().getModuleClass());
 
                 if (params == null || !commandler.getValidator().validate(event, handler, params))
                     response = event.getError();
@@ -88,10 +88,12 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
         if (response == null)
             return null;
 
-        M message = commandler.getBuilder().build(event, response);
+        M message;
 
         if (send)
-            event.send(message);
+            message = event.send(response);
+        else
+            message = commandler.getBuilder().build(event, response);
 
         return message;
     }
@@ -166,7 +168,7 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
 
     @Override
     public String[] getPrefixes(S event) {
-        return new String[] { commandler.getPrefix() };
+        return new String[]{commandler.getPrefix()};
     }
 
     public boolean normalize(ICommandEvent<S, M> event, boolean firstList) {
