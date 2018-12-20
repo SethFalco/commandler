@@ -54,6 +54,9 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
         Object response;
         ICommandEvent<S, M> event = process(commandler, source, content);
 
+        if (event == null)
+            return null;
+
         if (!event.isValid())
             response = event.getError();
 
