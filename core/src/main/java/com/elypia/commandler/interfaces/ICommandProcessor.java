@@ -1,6 +1,6 @@
 package com.elypia.commandler.interfaces;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.*;
 
 /**
  * The {@link ICommandProcessor} has the role of processing an event
@@ -32,6 +32,8 @@ public interface ICommandProcessor<S, M> {
      * @return If this was a command.
      */
     boolean isCommand(S source, String content);
+
+    ICommandEvent<S, M> spawnEvent(Commandler<S, M> commandler, S source, CommandInput input);
 
     /**
      * Break the command down into it's individual components.

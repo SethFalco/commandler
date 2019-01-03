@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public class Scripts<S> implements IScripts<S> {
 
+    private static final String[] languages = {"en"};
+
     @Override
     public <T> String get(S event, String script, Map<String, T> params) {
         if (params != null) {
@@ -19,5 +21,15 @@ public class Scripts<S> implements IScripts<S> {
         }
 
         return script;
+    }
+
+    @Override
+    public String getLanguage(S source) {
+        return languages[0];
+    }
+
+    @Override
+    public String[] getSupportedLanguages() {
+        return languages;
     }
 }

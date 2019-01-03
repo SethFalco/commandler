@@ -35,7 +35,7 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
      * The default item regex, this matches every item within a list of parameters.
      * This is for list parameters as a single parameter can contain multiple items.
      */
-    protected static final Pattern ITEM_PATTERN = Pattern.compile("\"(?<quote>(?:\\\\\"|[^\"])*)\"|(?<word>[^\\s,]+)");
+    protected static final Pattern ITEM_PATTERN = Pattern.compile("(?<!\\\\)\"(?<quote>.+?)(?<!\\\\)\"|(?<word>[^\\s,]+)");
 
     protected Commandler<S, M> commandler;
 
@@ -133,7 +133,25 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
 
         CommandInput input = new CommandInput(content, module, command, parameters);
 
-        ICommandEvent<S, M> event = new CommandEvent<>(commandler, source, input) {
+        ICommandEvent<S, M> event = spawnEvent(commandler, source, input);
+
+        if (!context.getAliases().contains(module.toLowerCase())) {
+            event.invalidate(misuseHandler.onModuleNotFound(input.getContent()));
+            return event;
+        }
+
+        normalize(event, commandMatcher.group("list") != null);
+        return event;
+    }
+
+    @Override
+    public boolean isCommand(S source, String content) {
+        return matchCommand(source, content) != null;
+    }
+
+    @Override
+    public ICommandEvent<S, M> spawnEvent(Commandler<S, M> commandler, S source, CommandInput input) {
+        return new CommandEvent<>(commandler, source, input) {
 
             @Override
             public <T> M send(T output) {
@@ -145,14 +163,6 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
                 return null;
             }
         };
-
-        normalize(event, commandMatcher.group("list") != null);
-        return event;
-    }
-
-    @Override
-    public boolean isCommand(S source, String content) {
-        return matchCommand(source, content) != null;
     }
 
     private Matcher matchCommand(S source, String content) {

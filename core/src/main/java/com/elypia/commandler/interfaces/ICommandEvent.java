@@ -54,9 +54,7 @@ public interface ICommandEvent<S, M> {
         return getCommandler().execute(getSource(), trigger, send);
     }
 
-    default boolean isValid() {
-        return getError() == null;
-    }
+    boolean isValid();
 
     /**
      * Invalidate the event, if a command follows a valid format, however

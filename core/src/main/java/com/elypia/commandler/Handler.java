@@ -83,7 +83,7 @@ public abstract class Handler<S, M> {
 		while (metaCommandIt.hasNext()) {
 			CommandData commandData = metaCommandIt.next();
 			Command command = commandData.getAnnotation();
-			builder.append(command.id());
+			builder.append(scripts.get(event.getSource(), command.id()));
 
 			StringJoiner aliasJoiner = new StringJoiner(", ");
 
@@ -91,13 +91,13 @@ public abstract class Handler<S, M> {
 				aliasJoiner.add(string);
 
 			builder.append(" (" + aliasJoiner.toString() + ")");
-			builder.append("\n" + command.help());
+			builder.append("\n" + scripts.get(event.getSource(), command.help()));
 
 			List<ParamData> paramData = commandData.getInputParams();
 
 			paramData.forEach(metaParam -> {
 				Param param = metaParam.getAnnotation();
-				builder.append("\n" + param.id() + ": ");
+				builder.append("\n" + scripts.get(event.getSource(), param.id()) + ": ");
 				builder.append(scripts.get(event.getSource(), param.help()));
 			});
 
@@ -108,7 +108,7 @@ public abstract class Handler<S, M> {
 		String helpUrl = commandler.getWebsite();
 
 		if (helpUrl != null)
-			builder.append(helpUrl);
+			builder.append("\n").append(helpUrl);
 
 		return builder.toString();
 	}

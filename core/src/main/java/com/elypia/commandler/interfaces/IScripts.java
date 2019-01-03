@@ -17,4 +17,8 @@ public interface IScripts<S> {
     }
 
     <T> String get(S source, String script, Map<String, T> params);
+
+    String getLanguage(S source);
+
+    String[] getSupportedLanguages();
 }

@@ -23,6 +23,7 @@ public abstract class CommandEvent<S, M> implements ICommandEvent<S, M> {
     protected S source;
 
     protected CommandInput input;
+    protected boolean isValid;
     protected String error;
 
     public CommandEvent(Commandler<S, M> commandler, S source, CommandInput input) {
@@ -32,11 +33,11 @@ public abstract class CommandEvent<S, M> implements ICommandEvent<S, M> {
 
         builder = commandler.getBuilder();
         scripts = commandler.getEngine();
+
+        isValid = true;
     }
 
-    public <T> M send(String body, Map<String, T> params) {
-        return send(scripts.get(source, body, params));
-    }
+    public abstract <T> M send(String body, Map<String, T> params);
 
     /**
      * This indicates that the event has been invalidated. If the error
@@ -48,6 +49,12 @@ public abstract class CommandEvent<S, M> implements ICommandEvent<S, M> {
     @Override
     public void invalidate(String reason) {
         error = reason;
+        isValid = false;
+    }
+
+    @Override
+    public boolean isValid() {
+        return isValid;
     }
 
     public Commandler<S, M> getCommandler() {
