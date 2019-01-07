@@ -16,11 +16,6 @@ public abstract class Handler<S, M> {
 	protected IScripts<S> scripts;
 
 	/**
-	 * If this module is enabled or out of service.
-	 */
-	protected boolean enabled;
-
-	/**
 	 * Initialise the module, this will assign the values
 	 * in the module and create a {@link ModuleData} which is
 	 * what {@link Commandler} uses in runtime to identify modules,
@@ -29,12 +24,11 @@ public abstract class Handler<S, M> {
 	 * @param commandler Our parent Commandler class.
 	 * @return Returns if the {@link #test()} for this module passed.
 	 */
-	public boolean init(Commandler<S, M> commandler) {
+	public Handler(Commandler<S, M> commandler) {
 		this.commandler = commandler;
 		module = commandler.getContext().getModule(this.getClass());
 		scripts = commandler.getEngine();
-		enabled = test();
-		return enabled;
+		commandler.getTestRunner().test(this);
 	}
 
 	/**
@@ -60,21 +54,18 @@ public abstract class Handler<S, M> {
 	 */
 	@Command(id = "Help", aliases = "help")
 	public Object help(ICommandEvent<S, M> event) {
-		StringBuilder builder = new StringBuilder();
+        Module annotation = getModule().getAnnotation();
 
-		Module annotation = getModule().getAnnotation();
-		builder.append(annotation.id());
+        StringBuilder builder = new StringBuilder(annotation.id());
 
-		StringJoiner commandAliasJoiner = new StringJoiner(", ");
+		builder
+            .append(" (")
+            .append(String.join(", ", annotation.aliases()))
+            .append(")\n")
+            .append(annotation.help());
 
-		for (String alias : annotation.aliases())
-			commandAliasJoiner.add(alias);
-
-		builder.append(" (" + commandAliasJoiner.toString() + ")");
-		builder.append("\n" + annotation.help());
-
-		if (!isEnabled())
-			builder.append("\n" + getCommandler().getMisuseHandler().onModuleDisabled(event));
+		if (commandler.getTestRunner().isFailing(this))
+			builder.append("\n").append(getCommandler().getMisuseHandler().onModuleDisabled(event));
 
 		builder.append("\n\n");
 
@@ -85,13 +76,11 @@ public abstract class Handler<S, M> {
 			Command command = commandData.getAnnotation();
 			builder.append(scripts.get(event.getSource(), command.id()));
 
-			StringJoiner aliasJoiner = new StringJoiner(", ");
-
-			for (String string : command.aliases())
-				aliasJoiner.add(string);
-
-			builder.append(" (" + aliasJoiner.toString() + ")");
-			builder.append("\n" + scripts.get(event.getSource(), command.help()));
+			builder
+                .append(" (")
+                .append(String.join(", ", command.aliases()))
+                .append(")\n")
+			    .append(scripts.get(event.getSource(), command.help()));
 
 			List<ParamData> paramData = commandData.getInputParams();
 
@@ -119,10 +108,6 @@ public abstract class Handler<S, M> {
 
 	public ModuleData getModule() {
 		return module;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
 	}
 
 	public int compareTo(Handler<S, M> o) {

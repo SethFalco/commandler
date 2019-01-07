@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * is only ever constructed once. All objects here are just various views
  * or references of the data.
  */
-public class ModulesContext {
+public class ModulesContext implements Iterable<ModuleData> {
 
     /**
      * Logging using the SLF4J API.
@@ -87,11 +87,6 @@ public class ModulesContext {
         for (ModuleData data : modules.values()) {
             if (data.performed(alias))
                 return data;
-
-            for (CommandData command : data.getStaticCommands()) {
-                if (command.performed(alias))
-                    return data;
-            }
         }
 
         return null;
@@ -182,5 +177,10 @@ public class ModulesContext {
         });
 
         return List.copyOf(commands);
+    }
+
+    @Override
+    public Iterator<ModuleData> iterator() {
+        return modules.values().iterator();
     }
 }

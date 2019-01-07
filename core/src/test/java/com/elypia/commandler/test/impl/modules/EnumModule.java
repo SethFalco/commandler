@@ -16,6 +16,19 @@ import java.util.concurrent.TimeUnit;
 @Module(id = "Enum", aliases = "enum", help = "Does Commandler interact with enums correctly?")
 public class EnumModule extends Handler<String, String> {
 
+    /**
+     * Initialise the module, this will assign the values
+     * in the module and create a {@link ModuleData} which is
+     * what {@link Commandler} uses in runtime to identify modules,
+     * commands or obtain any static data.
+     *
+     * @param commandler Our parent Commandler class.
+     * @return Returns if the {@link #test()} for this module passed.
+     */
+    public EnumModule(Commandler<String, String> commandler) {
+        super(commandler);
+    }
+
     enum YouTuber {
         PEWDIEPIE,
         T_SERIES

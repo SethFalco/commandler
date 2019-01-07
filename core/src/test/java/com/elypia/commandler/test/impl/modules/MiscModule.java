@@ -11,6 +11,19 @@ import com.elypia.commandler.annotations.*;
 @Module(id = "Miscellaneous", aliases = "misc", help = "Test generic functionality and if it works.")
 public class MiscModule extends Handler<String, String> {
 
+    /**
+     * Initialise the module, this will assign the values
+     * in the module and create a {@link ModuleData} which is
+     * what {@link Commandler} uses in runtime to identify modules,
+     * commands or obtain any static data.
+     *
+     * @param commandler Our parent Commandler class.
+     * @return Returns if the {@link #test()} for this module passed.
+     */
+    public MiscModule(Commandler<String, String> commandler) {
+        super(commandler);
+    }
+
     @Command(id = "Say", aliases = "say", help = "I'll repeat something you say.")
     @Param(id = "input", help = "What you want me to say.")
     public String say(String input) {

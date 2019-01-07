@@ -2,9 +2,7 @@ package com.elypia.commandler;
 
 import com.elypia.commandler.impl.*;
 import com.elypia.commandler.interfaces.*;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import com.elypia.commandler.testing.TestRunner;
 
 public class Commandler<S, M> {
 
@@ -18,8 +16,7 @@ public class Commandler<S, M> {
     protected ICommandProcessor<S, M> processor;
     protected CommandValidator validator;
     protected ParameterParser parser;
-
-    protected Map<Class<? extends Handler<S, M>>, Handler<S, M>> handlers;
+    protected TestRunner runner;
 
     protected Commandler(Builder<S, M> commandlerBuilder) {
         prefix = commandlerBuilder.prefix;
@@ -32,8 +29,7 @@ public class Commandler<S, M> {
         processor = new CommandProcessor<>(this);
         validator = new CommandValidator(this);
         parser = new ParameterParser(misuseHandler);
-
-        handlers = new HashMap<>();
+        runner = new TestRunner(this);
     }
 
     public M execute(S event, String content, boolean send) {
@@ -41,18 +37,7 @@ public class Commandler<S, M> {
     }
 
     public void addInstance(Handler<S, M> handler) {
-        handlers.put((Class)handler.getClass(), handler);
-    }
-
-    public Handler<S, M> getHandler(Class<? extends Handler<S, M>> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        if (!handlers.containsKey(handler)) {
-            Handler<S, M> handlerInstance = handler.getConstructor().newInstance();
-            handlerInstance.init(this);
-
-            handlers.put(handler, handlerInstance);
-        }
-
-        return handlers.get(handler);
+        context.getModule(handler.getClass()).setInstance(handler);
     }
 
     public String getPrefix() {
@@ -89,6 +74,10 @@ public class Commandler<S, M> {
 
     public MessageBuilder<M> getBuilder() {
         return builder;
+    }
+
+    public TestRunner getTestRunner() {
+        return runner;
     }
 
     public static class Builder<S, M> {

@@ -17,31 +17,41 @@ public class CommandParamNameProvider implements ParameterNameProvider {
 
     @Override
     public List<String> getParameterNames(Constructor<?> constructor) {
-        throw new IllegalStateException("Constructor is not a command.");
+        return getJavaNames(constructor);
     }
 
     @Override
     public List<String> getParameterNames(Method method) {
-        List<String> params = new ArrayList<>();
-        ModuleData module = context.getModule((Class<Handler>)method.getDeclaringClass());
+        Class<?> clazz = method.getDeclaringClass();
+        ModuleData module = context.getModule((Class<Handler>)clazz);
 
-        if (module == null) {
-            for (int i = 0; i < method.getParameterCount(); i++)
-                params.add(null);
+        // If it's not a module, just return Java's names.
+        if (module == null)
+            return getJavaNames(method);
 
-            return params;
-        }
-
+        // If it is a module, use our @Param annotations to return names.
         for (CommandData command : module.getCommands()) {
             for (CommandData overload : command.getOverloads()) {
                 if (overload.getMethod().equals(method)) {
+                    List<String> params = new ArrayList<>();
+
                     for (ParamData param : overload.getParamData())
                         params.add((param.isInput()) ? param.getAnnotation().id() : null);
 
-                    break;
+                    return params;
                 }
             }
         }
+
+        String format = "Method %s is not a command.";
+        throw new IllegalStateException(String.format(format, method.getName()));
+    }
+
+    private List<String> getJavaNames(Executable executable) {
+        List<String> params = new ArrayList<>();
+
+        for (Parameter parameter : executable.getParameters())
+            params.add(parameter.getName());
 
         return params;
     }

@@ -5,7 +5,7 @@ import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import org.slf4j.*;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +31,8 @@ public class ModuleData implements Comparable<ModuleData> {
      * in validation and ensure conflicts don't occur between modules.
      */
     private ModulesContext context;
+
+    private Handler instance;
 
     /**
      * The class this annotation data belongs too.
@@ -102,22 +104,18 @@ public class ModuleData implements Comparable<ModuleData> {
         if (aliases.size() != annoAliases.length)
             logger.warn("Module {} ({}) contains repetitive aliases.", annotation.id(), moduleClass.getName());
 
-        aliases.forEach(alias -> {
-            ModuleData existing = context.getModule(alias);
+        for (String alias : aliases) {
+            if (!context.getAliases().contains(alias))
+                continue;
 
-            if (existing == null)
-                return;
-
-            String format = "Module %s (%s) contains an alias which has already been registered by %s (%s).";
+            String format = "Module '%s' contains the alias '%s' which has already been registered.";
             String thisModule = annotation.id();
             String thisClass = moduleClass.getName();
-            String existingModule = existing.annotation.id();
-            String existingClass = existing.getModuleClass().getName();
 
-            String ex = String.format(format, thisModule, thisClass, existingModule, existingClass);
+            String ex = String.format(format, thisModule, thisClass);
 
             throw new IllegalStateException(ex);
-        });
+        }
     }
 
     /**
@@ -173,6 +171,25 @@ public class ModuleData implements Comparable<ModuleData> {
      */
     public boolean performed(String input) {
         return aliases.contains(input.toLowerCase());
+    }
+
+    public Handler getInstance(Commandler commandler) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        if (instance == null) {
+            var constructors = moduleClass.getConstructors();
+
+            for (var constructor : constructors) {
+                if (constructor.getParameterCount() == 1 && constructor.getParameterTypes()[0] == Commandler.class)
+                    return instance = (Handler) constructor.newInstance(commandler);
+            }
+
+            throw new IllegalStateException("Handler has no constructor that Commandler can use, an instance should be injected through the Commandler#addInstance method.");
+        }
+
+        return instance;
+    }
+
+    public void setInstance(Handler instance) {
+        this.instance = instance;
     }
 
     public ModulesContext getContext() {

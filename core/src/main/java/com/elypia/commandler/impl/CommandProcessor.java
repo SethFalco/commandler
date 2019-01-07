@@ -23,7 +23,7 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
      * The default commands regex, this matches the commands to see if its
      * valid and returns the matches as groups.
      */
-    protected static final String COMMAND_REGEX = "(?i)\\A(?:\\Q%s\\E)(?<module>[A-Z\\d]+)(?:\\s+(?<command>[A-Z\\d]+)(?<list>\\s*,\\s*)?)?(?:\\s+(?<params>.+))?\\Z";
+    protected static final String COMMAND_REGEX = "(?i)\\A(?<prefix>\\Q%s\\E)(?<module>[A-Z\\d]+)(?:\\s+(?<command>[A-Z\\d]+)(?<list>\\s*,\\s*)?)?(?:\\s+(?<params>.+))?\\Z";
 
     /**
      * The default params regex, this matches every argument in the commands,
@@ -68,13 +68,13 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
             try {
                 Object[] params = commandler.getParser().processEvent(event, commandData);
 
-                Handler<S, M> handler = commandler.getHandler((Class<Handler<S, M>>) commandData.getModuleData().getModuleClass());
+                Handler<S, M> handler = commandData.getModuleData().getInstance(commandler);
 
                 if (params == null || !commandler.getValidator().validate(event, handler, params))
                     response = event.getError();
 
                 else {
-                    if (!input.getCommand().equalsIgnoreCase("help") && !handler.isEnabled()) {
+                    if (!input.getCommand().equalsIgnoreCase("help") && commandler.getTestRunner().isFailing(handler)) {
                         event.invalidate(misuseHandler.onModuleDisabled(event));
                         response = event.getError();
                     } else {
@@ -108,6 +108,7 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
         if (commandMatcher == null)
             return null;
 
+        String prefix = commandMatcher.group("prefix");
         String module = commandMatcher.group("module");
         String command = commandMatcher.group("command");
         String params = commandMatcher.group("params");
@@ -131,7 +132,7 @@ public class CommandProcessor<S, M> implements ICommandProcessor<S, M> {
             }
         }
 
-        CommandInput input = new CommandInput(content, module, command, parameters);
+        CommandInput input = new CommandInput(prefix, content, module, command, parameters);
 
         ICommandEvent<S, M> event = spawnEvent(commandler, source, input);
 

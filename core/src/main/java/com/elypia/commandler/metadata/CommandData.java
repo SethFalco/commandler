@@ -2,7 +2,6 @@ package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.impl.CommandEvent;
 import com.elypia.commandler.interfaces.ICommandEvent;
 import org.slf4j.*;
 
@@ -189,7 +188,7 @@ public class CommandData implements Comparable<CommandData> {
     /**
      * Parses all parameters of the command method and any {@link Param} annotations
      * to ensure they sync up and match according to the standards Commandler expects. <br>
-     * This may print warning messages if a single method askes for {@link CommandEvent} multiple
+     * This may print warning messages if a single method askes for {@link ICommandEvent} multiple
      * times as there are <strong>no</strong> benefit to require this parameter more than once.
      *
      * @throws IllegalStateException If there isn't a param annotation for every parameter in the method.
@@ -258,7 +257,7 @@ public class CommandData implements Comparable<CommandData> {
             Parameter parameter = parameters[i];
             Param param = null;
 
-            if (CommandEvent.class.isAssignableFrom(parameter.getType()))
+            if (ICommandEvent.class.isAssignableFrom(parameter.getType()))
                 checkOffset(++offset);
             else {
                 String name = order.get(i - offset);

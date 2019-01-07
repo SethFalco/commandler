@@ -1,12 +1,26 @@
 package com.elypia.commandler.test.impl.modules;
 
-import com.elypia.commandler.Handler;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.metadata.ModuleData;
 import com.elypia.commandler.test.impl.builders.BuilderModuleBuilderI;
 
 @Module(id = "Builders", aliases = "builder", help = "Module for testing if builders are performing correctly.")
 public class BuilderModule extends Handler<String, String> {
+
+    /**
+     * Initialise the module, this will assign the values
+     * in the module and create a {@link ModuleData} which is
+     * what {@link Commandler} uses in runtime to identify modules,
+     * commands or obtain any static data.
+     *
+     * @param commandler Our parent Commandler class.
+     * @return Returns if the {@link #test()} for this module passed.
+     */
+    public BuilderModule(Commandler<String, String> commandler) {
+        super(commandler);
+    }
 
     /**
      * @return Returns a new {@link BuilderModule} instance
@@ -16,6 +30,6 @@ public class BuilderModule extends Handler<String, String> {
      */
     @Command(id = "Builders Returned Null", aliases = "null", help = "When a builder returns null for input.")
     public BuilderModule builderReturnedNull() {
-        return new BuilderModule();
+        return new BuilderModule(null);
     }
 }

@@ -1,13 +1,27 @@
 package com.elypia.commandler.test.impl.modules;
 
-import com.elypia.commandler.Handler;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.metadata.ModuleData;
 
 import java.util.stream.*;
 
 @Module(id = "Array", aliases = "array", help = "Testing if parsers are parsing and using arrays correctly.")
 public class ArrayModule extends Handler<String, String> {
+
+    /**
+     * Initialise the module, this will assign the values
+     * in the module and create a {@link ModuleData} which is
+     * what {@link Commandler} uses in runtime to identify modules,
+     * commands or obtain any static data.
+     *
+     * @param commandler Our parent Commandler class.
+     * @return Returns if the {@link #test()} for this module passed.
+     */
+    public ArrayModule(Commandler<String, String> commandler) {
+        super(commandler);
+    }
 
     @Command(id = "Collect Bools", aliases = "bools")
     @Param(id = "bools", help = "A list of true/false.")

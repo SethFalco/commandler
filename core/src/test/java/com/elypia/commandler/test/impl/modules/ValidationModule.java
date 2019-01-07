@@ -3,6 +3,7 @@ package com.elypia.commandler.test.impl.modules;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.metadata.ModuleData;
 import com.elypia.commandler.validation.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,6 +18,19 @@ import java.util.stream.IntStream;
  */
 @Module(id = "Validation", aliases = "valid")
 public class ValidationModule extends Handler<String, String> {
+
+    /**
+     * Initialise the module, this will assign the values
+     * in the module and create a {@link ModuleData} which is
+     * what {@link Commandler} uses in runtime to identify modules,
+     * commands or obtain any static data.
+     *
+     * @param commandler Our parent Commandler class.
+     * @return Returns if the {@link #test()} for this module passed.
+     */
+    public ValidationModule(Commandler<String, String> commandler) {
+        super(commandler);
+    }
 
     @Command(id = "Concatenate", aliases = "concat")
     @Param(id = "first", help = "The text that's prepended to the next.")

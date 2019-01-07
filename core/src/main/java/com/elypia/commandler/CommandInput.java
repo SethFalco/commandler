@@ -14,6 +14,11 @@ public class CommandInput {
     private String content;
 
     /**
+     * Thre prefix the user used.
+     */
+    private String prefix;
+
+    /**
      * The module alias the user referred to.
      */
     private String module;
@@ -47,11 +52,16 @@ public class CommandInput {
      * @param command The command performed.
      * @param parameters Any parameters specified.
      */
-    public CommandInput(String content, String module, String command, List<List<String>> parameters) {
+    public CommandInput(String prefix, String content, String module, String command, List<List<String>> parameters) {
+        this.prefix = prefix;
         this.content = content;
         this.module = Objects.requireNonNull(module);
         this.command = command;
         this.parameters = Objects.requireNonNull(parameters);
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 
     public String getContent() {
