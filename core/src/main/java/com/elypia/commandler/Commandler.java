@@ -11,7 +11,7 @@ public class Commandler<S, M> {
     protected ModulesContext context;
     protected IMisuseHandler<S, M> misuseHandler;
     protected IScripts<S> engine;
-    protected MessageBuilder<M> builder;
+    protected ResponseBuilder<M> builder;
 
     protected ICommandProcessor<S, M> processor;
     protected CommandValidator validator;
@@ -72,7 +72,7 @@ public class Commandler<S, M> {
         return parser;
     }
 
-    public MessageBuilder<M> getBuilder() {
+    public ResponseBuilder<M> getBuilder() {
         return builder;
     }
 
@@ -87,7 +87,7 @@ public class Commandler<S, M> {
         protected ModulesContext context;
         protected IMisuseHandler<S, M> misuseHandler;
         protected IScripts<S> engine;
-        protected MessageBuilder<M> builder;
+        protected ResponseBuilder<M> builder;
 
         public Commandler<S, M> build() {
             initializeDefaults();
@@ -108,7 +108,7 @@ public class Commandler<S, M> {
                 engine = new Scripts<>();
 
             if (builder == null)
-                builder = new MessageBuilder<>();
+                builder = new ResponseBuilder<>();
         }
 
         public String getPrefix() {
@@ -156,11 +156,11 @@ public class Commandler<S, M> {
             return this;
         }
 
-        public MessageBuilder<M> getBuilder() {
+        public ResponseBuilder<M> getBuilder() {
             return builder;
         }
 
-        public Builder<S, M> setBuilder(MessageBuilder<M> builder) {
+        public Builder<S, M> setBuilder(ResponseBuilder<M> builder) {
             this.builder = builder;
             return this;
         }

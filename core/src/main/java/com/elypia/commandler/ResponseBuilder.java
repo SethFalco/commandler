@@ -19,13 +19,13 @@ import java.util.*;
  *            should be the data-type the client of our integrating
  *            platform expects us to send back to users.
  */
-public class MessageBuilder<M> {
+public class ResponseBuilder<M> {
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
-    protected static final Logger logger = LoggerFactory.getLogger(MessageBuilder.class);
+    protected static final Logger logger = LoggerFactory.getLogger(ResponseBuilder.class);
 
     /**
      * All registered {@link IBuilder} instances mapped
@@ -33,7 +33,7 @@ public class MessageBuilder<M> {
      */
     private Map<Class<? extends IBuilder<?, ?, M>>, IBuilder<?, ?, M>> builders;
 
-    public MessageBuilder() {
+    public ResponseBuilder() {
         builders = new HashMap<>();
     }
 

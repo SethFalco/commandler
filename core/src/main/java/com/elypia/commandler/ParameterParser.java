@@ -130,7 +130,7 @@ public class ParameterParser {
      * @return      The parsed object as required for the command, or null
      *              if we failed to parse the input. (Usually user misuse.)
      */
-    protected Object parseParameter(ICommandEvent event, ParamData param, List<String> items) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    protected Object parseParameter(ICommandEvent event, ParamData param, List<String> items) {
         Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
         IParser parser = getParser(event, componentType);

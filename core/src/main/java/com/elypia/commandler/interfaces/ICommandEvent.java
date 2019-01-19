@@ -21,8 +21,8 @@ public interface ICommandEvent<S, M> {
      * by the client because this allows us to utilise our builders
      * and implementation around it.
      *
-     * @param output The item to send to the {@link MessageBuilder} to process.
-     * @return The message that was built by the {@link MessageBuilder}.
+     * @param output The item to send to the {@link ResponseBuilder} to process.
+     * @return The message that was built by the {@link ResponseBuilder}.
      */
     <T> M send(T output);
 

@@ -8,7 +8,7 @@ import com.elypia.commandler.metadata.ModuleData;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-@Module(id = "Help", aliases = "help", help = "help.help")
+@Module(id = "Help", aliases = "help")
 public class HelpModule<S, M> extends Handler<S, M> {
 
     /**
@@ -18,7 +18,6 @@ public class HelpModule<S, M> extends Handler<S, M> {
      * commands or obtain any static data.
      *
      * @param commandler Our parent Commandler class.
-     * @return Returns if the {@link #test()} for this module passed.
      */
     public HelpModule(Commandler<S, M> commandler) {
         super(commandler);
@@ -26,13 +25,12 @@ public class HelpModule<S, M> extends Handler<S, M> {
 
     @Override
     @Default
-    @Command(id = "Help", aliases = "help")
     public Object help(ICommandEvent<S, M> event) {
         return super.help(event);
     }
 
     @Overload("Help")
-    @Param(id = "help.help.module", help = "help.help.module.help")
+    @Param(id = "module", help = "module.h")
     public Object help(ICommandEvent<S, M> event, String module) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         ModulesContext context = commandler.getContext();
 

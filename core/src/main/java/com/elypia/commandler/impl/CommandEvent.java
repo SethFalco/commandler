@@ -17,7 +17,7 @@ import java.util.Map;
 public abstract class CommandEvent<S, M> implements ICommandEvent<S, M> {
 
     protected Commandler<S, M> commandler;
-    protected MessageBuilder<M> builder;
+    protected ResponseBuilder<M> builder;
     protected IScripts<S> scripts;
 
     protected S source;

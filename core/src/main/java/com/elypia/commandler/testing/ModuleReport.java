@@ -6,6 +6,10 @@ public class ModuleReport implements Iterable<Report> {
 
     private List<Report> reports;
 
+    public ModuleReport() {
+        reports = new ArrayList<>();
+    }
+
     public void add(Report report) {
         reports.add(report);
     }

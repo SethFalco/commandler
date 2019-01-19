@@ -22,7 +22,6 @@ public abstract class Handler<S, M> {
 	 * commands or obtain any static data.
 	 *
 	 * @param commandler Our parent Commandler class.
-	 * @return Returns if the {@link #test()} for this module passed.
 	 */
 	public Handler(Commandler<S, M> commandler) {
 		this.commandler = commandler;
