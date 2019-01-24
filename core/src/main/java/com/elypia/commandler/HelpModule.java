@@ -30,8 +30,10 @@ public class HelpModule<S, M> extends Handler<S, M> {
     }
 
     @Overload("Help")
-    @Param(id = "module", help = "module.h")
-    public Object help(ICommandEvent<S, M> event, String module) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public Object help(
+        ICommandEvent<S, M> event,
+        @Param(id = "module", help = "module.h") String module
+    ) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         ModulesContext context = commandler.getContext();
 
         ModuleData moduleData = context.getModule(module);
@@ -56,8 +58,10 @@ public class HelpModule<S, M> extends Handler<S, M> {
     }
 
     @Command(id = "help.modules.name", aliases = "modules", help = "help.modules.help")
-    @Param(id = "group", help = "The group to list modules for.")
-    public Object modules(ICommandEvent<S, M> event, String query) {
+    public Object modules(
+        ICommandEvent<S, M> event,
+        @Param(id = "group", help = "The group to list modules for.") String query
+    ) {
         var groups = commandler.getContext().getGroups(false);
 
         Optional<String> optGroupName = groups.keySet().stream().filter(
@@ -99,6 +103,4 @@ public class HelpModule<S, M> extends Handler<S, M> {
 
         return builder.toString();
     }
-
-
 }

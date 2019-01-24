@@ -3,6 +3,7 @@ package com.elypia.commandler.test.impl.modules;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.metadata.ModuleData;
 
 /**
  * This is just a really basic test module with the bare minimum
@@ -25,15 +26,17 @@ public class MiscModule extends Handler<String, String> {
     }
 
     @Command(id = "Say", aliases = "say", help = "I'll repeat something you say.")
-    @Param(id = "input", help = "What you want me to say.")
-    public String say(String input) {
+    public String say(
+        @Param(id = "input", help = "What you want me to say.") String input
+    ) {
         return input;
     }
 
     @Command(id = "Repeat", aliases = "repeat", help = "Repeat some text multiple times.")
-    @Param(id = "input", help = "What you want me to say.")
-    @Param(id = "count", help = "The number of times I should say it.")
-    public String repeat(String input, int count) {
+    public String repeat(
+        @Param(id = "input", help = "What you want me to say.") String input,
+        @Param(id = "count", help = "The number of times I should say it.") int count
+    ) {
         return input.repeat(count);
     }
 

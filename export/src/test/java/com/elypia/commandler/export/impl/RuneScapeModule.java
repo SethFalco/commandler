@@ -3,6 +3,7 @@ package com.elypia.commandler.export.impl;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.metadata.ModuleData;
 
 import javax.validation.constraints.Size;
 
@@ -29,14 +30,16 @@ public class RuneScapeModule extends Handler {
     }
 
     @Command(id = "Player Stats", aliases = "stats", help = "View a players stats.")
-    @Param(id = "username", help = "The players in-game name.")
-    public void getPlayerStats(@Size(min = 1, max = 12) String username) {
+    public void getPlayerStats(
+        @Param(id = "username", help = "The players in-game name.") @Size(min = 1, max = 12) String username
+    ) {
         // Stub
     }
 
     @Command(id = "Completed Quests", aliases = "quests", help = "View all quests a player has completed.")
-    @Param(id = "username", help = "The players in-game name.")
-    public void getCompletedQuests(@Size(min = 1, max = 12) String username) {
+    public void getCompletedQuests(
+        @Param(id = "username", help = "The players in-game name.") @Size(min = 1, max = 12) String username
+    ) {
         // Stub
     }
 }

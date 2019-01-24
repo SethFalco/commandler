@@ -3,6 +3,7 @@ package com.elypia.commandler.doc.impl;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.metadata.ModuleData;
 
 @Icon(value = "fab fa-youtube", color = "rgb(255, 0, 0)")
 @Module(id = "YouTube", group = "Media", aliases = {"youtube", "yt"}, help = "Search for videos on YouTube.")
@@ -22,8 +23,9 @@ public class YouTubeModule extends Handler {
     }
 
     @Command(id = "Search", aliases = "search", help = "Search for a video, playlist or channel on YouTube.")
-    @Param(id = "query", help = "The search query to look up.")
-    public void getVideo(String query) {
+    public void getVideo(
+            @Param(id = "query", help = "The search query to look up.") String query
+    ) {
         // Stub
     }
 }

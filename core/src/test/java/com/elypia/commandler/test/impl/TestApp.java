@@ -7,10 +7,9 @@ public class TestApp {
     private Commandler<String, String> commandler;
 
     public TestApp() {
-        var builder = new Commandler.Builder<String, String>()
-            .setPrefix(">");
-
-        commandler = builder.build();
+        commandler = new Commandler.Builder<Commandler.Builder<?, String, String>, String, String>()
+            .setPrefix(">")
+            .build();
 
         String builderPackage = "com.elypia.commandler.test.impl.builders";
         commandler.getBuilder().addPackage(builderPackage, ITestBuilder.class);

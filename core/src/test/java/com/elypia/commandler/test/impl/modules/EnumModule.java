@@ -3,6 +3,7 @@ package com.elypia.commandler.test.impl.modules;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.metadata.ModuleData;
 import com.elypia.commandler.parsers.EnumParser;
 
 import java.util.concurrent.TimeUnit;
@@ -35,14 +36,16 @@ public class EnumModule extends Handler<String, String> {
     }
 
     @Command(id = "TimeUnit", aliases = "timeunit", help = "Can we parse the input into an enum with no annotations?")
-    @Param(id = "unit", help = "A unit of measuring time.")
-    public String say(TimeUnit unit) {
+    public String say(
+        @Param(id = "unit", help = "A unit of measuring time.") TimeUnit unit
+    ) {
         return unit.name();
     }
 
     @Command(id = "Top YouTuber", aliases = "top", help = "Can we parse non standard-library enum with no annotations?")
-    @Param(id = "youtuber", help = "The number one YouTuber.")
-    public String topYouTuber(YouTuber youtuber) {
+    public String topYouTuber(
+        @Param(id = "youtuber", help = "The number one YouTuber.") YouTuber youtuber
+    ) {
         return (youtuber == YouTuber.PEWDIEPIE) ? "K" : "Wrong!";
     }
 }

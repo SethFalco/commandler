@@ -37,9 +37,16 @@ public class ModulesContext implements Iterable<ModuleData> {
     private Set<String> rootAliases;
 
     public ModulesContext() {
+        this(null);
+    }
+
+    public ModulesContext(String packagePath) {
         modules = new HashMap<>();
         groups = new TreeMap<>();
         rootAliases = new HashSet<>();
+
+        if (packagePath != null)
+            addPackage(packagePath);
     }
 
     /**

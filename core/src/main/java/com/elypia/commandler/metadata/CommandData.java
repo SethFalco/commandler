@@ -194,20 +194,18 @@ public class CommandData implements Comparable<CommandData> {
      * @throws IllegalStateException If there isn't a param annotation for every parameter in the method.
      */
     protected void parseParams() {
-        Param[] params = method.getAnnotationsByType(Param.class);
         Parameter[] parameters = method.getParameters();
-        inputRequired = checkParamLength(parameters, params.length);
+        inputRequired = getParamLength(parameters);
 
         int offset = 0;
 
-        for (int i = 0; i < parameters.length; i++) {
-            Parameter parameter = parameters[i];
+        for (Parameter parameter : parameters) {
             Param param = null;
 
             if (ICommandEvent.class.isAssignableFrom(parameter.getType()))
                 checkOffset(++offset);
             else
-                param = params[i - offset];
+                param = parameter.getAnnotation(Param.class);
 
             ParamData meta = new ParamData(this, param, parameter);
             paramData.add(meta);
@@ -229,32 +227,26 @@ public class CommandData implements Comparable<CommandData> {
     protected void parseOverload(CommandData commandData) {
         command = commandData.command;
 
-        List<ParamData> parentParams = commandData.paramData.stream().filter(o -> {
-            return o.isInput();
-        }).collect(Collectors.toList());
+        List<ParamData> parentParams = commandData.paramData.stream()
+            .filter(ParamData::isInput)
+            .collect(Collectors.toList());
 
         Overload overload = method.getAnnotation(Overload.class);
-        Param[] params = method.getAnnotationsByType(Param.class);
         List<String> order = new ArrayList<>(Arrays.asList(overload.params()));
         boolean inherit = order.size() == 1 && order.get(0).equals(Overload.INHERIT);
 
         if (inherit) {
-            order.clear(); // ? Remove the inherit flag.
-
+            order.clear();
             parentParams.forEach(o -> order.add(o.getAnnotation().id()));
-
-            for (Param param : params)
-                order.add(param.id());
         }
 
         Parameter[] parameters = method.getParameters();
-        inputRequired = checkParamLength(parameters, order.size());
+        inputRequired = getParamLength(parameters);
 
         int offset = 0;
 
         outer:
-        for (int i = 0; i < parameters.length; i++) {
-            Parameter parameter = parameters[i];
+        for (Parameter parameter : parameters) {
             Param param = null;
 
             if (ICommandEvent.class.isAssignableFrom(parameter.getType()))
@@ -282,21 +274,10 @@ public class CommandData implements Comparable<CommandData> {
         }
     }
 
-    private int checkParamLength(Parameter[] parameters, int paramLength) {
-        int inputRequired = (int)Arrays.stream(parameters).filter(o -> {
+    private int getParamLength(Parameter[] parameters) {
+        return (int)Arrays.stream(parameters).filter(o -> {
             return !ICommandEvent.class.isAssignableFrom(o.getType());
         }).count();
-
-        if (inputRequired != paramLength) {
-            String commandName = command.id();
-            String moduleName = moduleData.getAnnotation().id();
-            String typeName = moduleData.getModuleClass().getName();
-            String message = String.format("Command %s in module %s (%s) doesn't contain the correct number of @Param annotations.", commandName, moduleName, typeName);
-
-            throw new IllegalStateException(message);
-        }
-
-        return inputRequired;
     }
 
     private void checkOffset(int offset) {

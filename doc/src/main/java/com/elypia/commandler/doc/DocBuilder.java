@@ -76,7 +76,6 @@ public class DocBuilder {
         globalContext.put("parser", parser);
         globalContext.put("modules", context.getModules(false));
         globalContext.put("groups", groups);
-        globalContext.put("example_class", Example.class);
         globalContext.put("icon_class", Icon.class);
 
         VelocityContext allCommandsContext = new VelocityContext(globalContext);

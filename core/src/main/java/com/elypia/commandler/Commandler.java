@@ -18,7 +18,7 @@ public class Commandler<S, M> {
     protected ParameterParser parser;
     protected TestRunner runner;
 
-    protected Commandler(Builder<S, M> commandlerBuilder) {
+    protected Commandler(Builder commandlerBuilder) {
         prefix = commandlerBuilder.prefix;
         context = commandlerBuilder.context;
         website = commandlerBuilder.website;
@@ -80,7 +80,7 @@ public class Commandler<S, M> {
         return runner;
     }
 
-    public static class Builder<S, M> {
+    public static class Builder<B extends Builder<?, S, M>, S, M> {
 
         protected String prefix;
         protected String website;
@@ -115,54 +115,54 @@ public class Commandler<S, M> {
             return prefix;
         }
 
-        public Builder<S, M> setPrefix(String prefix) {
+        public B setPrefix(String prefix) {
             this.prefix = prefix;
-            return this;
+            return (B)this;
         }
 
         public String getWebsite() {
             return website;
         }
 
-        public Builder<S, M> setWebsite(String website) {
+        public B setWebsite(String website) {
             this.website = website;
-            return this;
+            return (B)this;
         }
 
         public ModulesContext getContext() {
             return context;
         }
 
-        public Builder<S, M> setContext(ModulesContext context) {
+        public B setContext(ModulesContext context) {
             this.context = context;
-            return this;
+            return (B)this;
         }
 
         public IMisuseHandler<S, M> getMisuseHandler() {
             return misuseHandler;
         }
 
-        public Builder<S, M> setMisuseHandler(IMisuseHandler<S, M> misuseHandler) {
+        public B setMisuseHandler(IMisuseHandler<S, M> misuseHandler) {
             this.misuseHandler = misuseHandler;
-            return this;
+            return (B)this;
         }
 
         public IScripts<S> getEngine() {
             return engine;
         }
 
-        public Builder<S, M> setEngine(IScripts<S> engine) {
+        public B setEngine(IScripts<S> engine) {
             this.engine = engine;
-            return this;
+            return (B)this;
         }
 
         public ResponseBuilder<M> getBuilder() {
             return builder;
         }
 
-        public Builder<S, M> setBuilder(ResponseBuilder<M> builder) {
+        public B setBuilder(ResponseBuilder<M> builder) {
             this.builder = builder;
-            return this;
+            return (B)this;
         }
     }
 }
