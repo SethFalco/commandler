@@ -1,8 +1,10 @@
 package com.elypia.commandler.test.impl.modules;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.Handler;
+import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.metadata.ModuleData;
 import com.elypia.commandler.parsers.EnumParser;
 
@@ -24,7 +26,6 @@ public class EnumModule extends Handler<String, String> {
      * commands or obtain any static data.
      *
      * @param commandler Our parent Commandler class.
-     * @return Returns if the {@link #test()} for this module passed.
      */
     public EnumModule(Commandler<String, String> commandler) {
         super(commandler);

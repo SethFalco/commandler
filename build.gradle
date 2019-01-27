@@ -36,8 +36,8 @@ subprojects { subproject ->
         from sourceSets.main.allSource
 
         manifest {
-            attributes "Implementation-Title": this.name,
-                       "Implementation-Version": projectVersion
+            attributes  "Implementation-Title": this.name,
+                        "Implementation-Version": projectVersion
         }
     }
 
@@ -136,6 +136,9 @@ subprojects { subproject ->
     }
 
     dependencies {
+        // Logging
+        api "org.slf4j:slf4j-api:1.7.25"
+
         // Testing
         implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"

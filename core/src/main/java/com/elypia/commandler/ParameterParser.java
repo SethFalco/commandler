@@ -1,12 +1,20 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.annotations.Command;
+import com.elypia.commandler.annotations.Compatible;
+import com.elypia.commandler.annotations.Param;
+import com.elypia.commandler.interfaces.ICommandEvent;
+import com.elypia.commandler.interfaces.IMisuseHandler;
+import com.elypia.commandler.interfaces.IParser;
+import com.elypia.commandler.metadata.CommandData;
+import com.elypia.commandler.metadata.ParamData;
 import com.elypia.commandler.parsers.*;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -216,7 +224,7 @@ public class ParameterParser {
                     .filter(c -> c.getParameterCount() == 0)
                     .findAny();
 
-                if (optConstructor.isEmpty())
+                if (!optConstructor.isPresent())
                     throw new IllegalStateException(String.format("Parser %s has no default constructor.", clazz.getName()));
 
                 Constructor<?> constructor = optConstructor.get();

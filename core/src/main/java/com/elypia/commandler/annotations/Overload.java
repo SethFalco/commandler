@@ -1,8 +1,9 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.Commandler;
-
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Command groups are used when overloading commands, ie there is
@@ -16,26 +17,9 @@ import java.lang.annotation.*;
 public @interface Overload {
 
     /**
-     * By setting a value to a single empty console,
-     * {@link Commandler} will interpret this as inherit
-     * all of the {@link Command}'s data.
-     */
-    String INHERIT = "";
-
-    /**
      * Before you can use this you must ensure the command you are overloading
      * specified the {@link Command#id()} value. That is the unique reference to the
      * command and how Commandler knows what command this is overloading.
             */
     String value();
-
-    /**
-     * This dictates which parameters are copied from the parent {@link Command}
-     * and in what order. If {@link #INHERIT} (default) is specified, then
-     * it copies all parent params in the same order, and appends any new ones
-     * in the overload, otherwise you can specify a String[] specifying a list
-     * of params in the order the overload required them. If an empty array
-     * is passed, no parameters is inherited.
-     */
-    String[] params() default INHERIT;
 }

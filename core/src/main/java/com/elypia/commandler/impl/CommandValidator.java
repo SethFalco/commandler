@@ -1,12 +1,19 @@
 package com.elypia.commandler.impl;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.Handler;
 import com.elypia.commandler.interfaces.ICommandEvent;
 import com.elypia.commandler.metadata.CommandData;
-import com.elypia.commandler.validation.*;
-import org.slf4j.*;
+import com.elypia.commandler.validation.CommandParamNameProvider;
+import com.elypia.commandler.validation.CommandlerConstraintValidatorFactory;
+import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
+import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.validation.*;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.validation.executable.ExecutableValidator;
 import java.lang.reflect.Method;
 
@@ -33,6 +40,7 @@ public class CommandValidator {
 
         ValidatorFactory factory = Validation.byDefaultProvider()
             .configure()
+            .messageInterpolator(new ResourceBundleMessageInterpolator(new PlatformResourceBundleLocator(ResourceBundleMessageInterpolator.USER_VALIDATION_MESSAGES, null, true)))
             .constraintValidatorFactory(new CommandlerConstraintValidatorFactory(this))
             .parameterNameProvider(new CommandParamNameProvider(commandler.getContext()))
             .buildValidatorFactory();

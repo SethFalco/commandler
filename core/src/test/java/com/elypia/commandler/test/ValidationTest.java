@@ -2,7 +2,8 @@ package com.elypia.commandler.test;
 
 import com.elypia.commandler.test.impl.TestApp;
 import com.elypia.commandler.test.impl.modules.ValidationModule;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,23 +32,9 @@ public class ValidationTest {
             "Module: Validation\n" +
             "Command: Concatenate\n" +
             "\n" +
-            "first: Size must be between 0 and 1. (an)";
+            "first: Size must be between 0 and 1.";
 
         String actual = app.execute(">valid concat an jenni");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testLimit() {
-        String expected =
-            "Command failed; a parameter was invalidated.\n" +
-            "Module: Validation\n" +
-            "Command: Min & Max\n" +
-            "\n" +
-            "y: Must be less than or equal to 10. (150)";
-
-        String actual = app.execute(">valid sum 100 150");
 
         assertEquals(expected, actual);
     }
@@ -75,7 +62,7 @@ public class ValidationTest {
             "Module: Validation\n" +
             "Command: Period\n" +
             "\n" +
-            "duration: Must be between 0 and 2 days. (PT84H20S)";
+            "duration: Must be between 0 and 2 days.";
 
         String actual = app.execute(">valid period 3d12h20s");
 

@@ -6,7 +6,8 @@ import com.elypia.commandler.interfaces.ICommandEvent;
 import com.elypia.commandler.metadata.ModuleData;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Optional;
 
 @Module(id = "Help", aliases = "help")
 public class HelpModule<S, M> extends Handler<S, M> {
@@ -68,7 +69,7 @@ public class HelpModule<S, M> extends Handler<S, M> {
             name -> name.equalsIgnoreCase(query)
         ).findAny();
 
-        if (optGroupName.isEmpty())
+        if (!optGroupName.isPresent())
             return "That group doesn't exist.";
 
         S source = event.getSource();

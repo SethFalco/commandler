@@ -1,10 +1,13 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.interfaces.*;
-import org.slf4j.*;
+import com.elypia.commandler.interfaces.IBuilder;
+import com.elypia.commandler.interfaces.ICommandEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -117,7 +120,7 @@ public class ResponseBuilder<M> {
                     .filter(c -> c.getParameterCount() == 0)
                     .findAny();
 
-                if (optConstructor.isEmpty())
+                if (!optConstructor.isPresent())
                     throw new IllegalStateException(String.format("Builder %s has no default constructor.", clazz.getName()));
 
                 Constructor<?> constructor = optConstructor.get();

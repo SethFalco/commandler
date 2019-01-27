@@ -1,8 +1,11 @@
 package com.elypia.commandler.test.impl.modules;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.Handler;
+import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Param;
+import com.elypia.commandler.annotations.Static;
 import com.elypia.commandler.metadata.ModuleData;
 
 /**
@@ -19,7 +22,6 @@ public class MiscModule extends Handler<String, String> {
      * commands or obtain any static data.
      *
      * @param commandler Our parent Commandler class.
-     * @return Returns if the {@link #test()} for this module passed.
      */
     public MiscModule(Commandler<String, String> commandler) {
         super(commandler);
@@ -37,7 +39,12 @@ public class MiscModule extends Handler<String, String> {
         @Param(id = "input", help = "What you want me to say.") String input,
         @Param(id = "count", help = "The number of times I should say it.") int count
     ) {
-        return input.repeat(count);
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < count; i++)
+            builder.append(input);
+
+        return builder.toString();
     }
 
     @Static

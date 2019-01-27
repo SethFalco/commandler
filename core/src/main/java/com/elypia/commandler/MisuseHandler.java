@@ -1,13 +1,22 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.annotations.Param;
-import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.interfaces.ICommandEvent;
+import com.elypia.commandler.interfaces.IMisuseHandler;
+import com.elypia.commandler.metadata.CommandData;
+import com.elypia.commandler.metadata.ModuleData;
+import com.elypia.commandler.metadata.ParamData;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.validation.*;
-import java.util.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * A default implementation of {@link IMisuseHandler}.
@@ -70,24 +79,48 @@ public class MisuseHandler<S, M> implements IMisuseHandler<S, M> {
 
     @Override
     public <H extends Handler<S, M>> String onInvalidated(ICommandEvent<S, M> event, Set<ConstraintViolation<H>> violations) {
+        var commandViolations = violations.parallelStream()
+            .filter((v) -> v.getInvalidValue() instanceof ICommandEvent)
+            .collect(Collectors.toList());
+
+        var parameterViolations = new ArrayList<>(violations);
+        parameterViolations.removeAll(commandViolations);
+
+        StringJoiner invalidType = new StringJoiner(" ");
+
+        if (!commandViolations.isEmpty())
+            invalidType.add("the command");
+        if (!parameterViolations.isEmpty())
+            invalidType.add("a parameter");
+
         String format =
-            "Command failed; a parameter was invalidated.\n" +
+            "Command failed; " + invalidType.toString() + " was invalidated.\n" +
             "Module: %s\n" +
             "Command: %s\n";
 
-        for (var violation : violations) {
-            String message = StringUtils.capitalize(violation.getMessage());
+        for (var violation : commandViolations)
+            format += formatViolationString("command", violation);
 
-            if (message.indexOf(message.length() - 1) != '.')
-                message += ".";
+        if (!commandViolations.isEmpty())
+            format += "\n";
 
+        for (var violation : parameterViolations) {
             Path.Node violatedParam = CommandlerUtils.getLastElement(violation.getPropertyPath().iterator());
-            message = violatedParam.getName() + ": " + message;
-
-            format += "\n" + message + " (" + violation.getInvalidValue() + ")";
+            format += formatViolationString(violatedParam.getName(), violation);
         }
 
         return generateMessage(format, event);
+    }
+
+    private String formatViolationString(String name, ConstraintViolation violation) {
+        String message =
+            "\n" +
+            name + ": " + StringUtils.capitalize(violation.getMessage());
+
+        if (message.indexOf(message.length() - 1) != '.')
+            message += ".";
+
+        return message;
     }
 
     private String generateMessage(String format, ICommandEvent<S, M> event) {

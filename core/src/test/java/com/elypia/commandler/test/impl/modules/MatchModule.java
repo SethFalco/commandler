@@ -1,8 +1,9 @@
 package com.elypia.commandler.test.impl.modules;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.Handler;
+import com.elypia.commandler.annotations.Match;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.impl.CommandEvent;
 import com.elypia.commandler.metadata.ModuleData;
 
@@ -21,7 +22,6 @@ public class MatchModule extends Handler<String, String> {
      * commands or obtain any static data.
      *
      * @param commandler Our parent Commandler class.
-     * @return Returns if the {@link #test()} for this module passed.
      */
     public MatchModule(Commandler<String, String> commandler) {
         super(commandler);

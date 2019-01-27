@@ -1,13 +1,17 @@
 package com.elypia.commandler.test.impl.modules;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.Handler;
+import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Param;
 import com.elypia.commandler.metadata.ModuleData;
-import com.elypia.commandler.validation.*;
+import com.elypia.commandler.validation.Option;
+import com.elypia.commandler.validation.Period;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -26,7 +30,6 @@ public class ValidationModule extends Handler<String, String> {
      * commands or obtain any static data.
      *
      * @param commandler Our parent Commandler class.
-     * @return Returns if the {@link #test()} for this module passed.
      */
     public ValidationModule(Commandler<String, String> commandler) {
         super(commandler);
@@ -47,14 +50,6 @@ public class ValidationModule extends Handler<String, String> {
         @Param(id = "numbers", help = "A list of all numbers to sum together.") @Max(100) int[] numbers
     ) {
         return IntStream.of(numbers).sum();
-    }
-
-    @Overload(value = "Min & Max", params = {"x", "y"})
-    public long sumTwoNumbers(
-        @Param(id = "x", help = "The first number to sum.") @Min(1) int x,
-        @Param(id = "y", help = "The second number to sum.") @Min(1) @Max(10) int y
-    ) {
-        return sumArray(new int[] {x, y});
     }
 
     @Command(id = "Sethi or Jenni", aliases = "panda")

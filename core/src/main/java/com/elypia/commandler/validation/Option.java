@@ -1,10 +1,14 @@
 package com.elypia.commandler.validation;
 
-import javax.validation.*;
+import javax.validation.Constraint;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 @Constraint(validatedBy = Option.Validator.class)
 public @interface Option {
 

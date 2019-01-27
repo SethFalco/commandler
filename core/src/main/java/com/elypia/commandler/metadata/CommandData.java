@@ -1,12 +1,15 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Handler;
+import com.elypia.commandler.ModulesContext;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.interfaces.ICommandEvent;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -222,7 +225,7 @@ public class CommandData implements Comparable<CommandData> {
      * making similar commands to avoid having to redefine or copy and paste
      * meta-data already defined in another {@link Command}.
      *
-     * @param commandData The parent {@link CommandData} that found this {@link Overload}.
+     * @param commandData The parent {@link CommandData} that owns this {@link Overload}.
      */
     protected void parseOverload(CommandData commandData) {
         command = commandData.command;
@@ -231,46 +234,23 @@ public class CommandData implements Comparable<CommandData> {
             .filter(ParamData::isInput)
             .collect(Collectors.toList());
 
-        Overload overload = method.getAnnotation(Overload.class);
-        List<String> order = new ArrayList<>(Arrays.asList(overload.params()));
-        boolean inherit = order.size() == 1 && order.get(0).equals(Overload.INHERIT);
-
-        if (inherit) {
-            order.clear();
-            parentParams.forEach(o -> order.add(o.getAnnotation().id()));
-        }
-
         Parameter[] parameters = method.getParameters();
         inputRequired = getParamLength(parameters);
 
+        paramData = new ArrayList<>(parentParams);
+
         int offset = 0;
 
-        outer:
         for (Parameter parameter : parameters) {
-            Param param = null;
-
             if (ICommandEvent.class.isAssignableFrom(parameter.getType()))
                 checkOffset(++offset);
             else {
-                String name = order.get(i - offset);
-
-                for (int ii = 0; ii < parentParams.size(); ii++) {
-                    ParamData parentParam = parentParams.get(ii);
-
-                    if (name.equals(parentParam.getAnnotation().id())) {
-                        paramData.add(parentParams.remove(ii));
-                        continue outer;
-                    }
-                }
-
-                for (Param p : params) {
-                    if (name.equals(p.id()))
-                        param = p;
+                if (parameter.isAnnotationPresent(Param.class)) {
+                    Param param = parameter.getAnnotation(Param.class);
+                    ParamData meta = new ParamData(this, param, parameter);
+                    paramData.add(meta);
                 }
             }
-
-            ParamData meta = new ParamData(this, param, parameter);
-            paramData.add(meta);
         }
     }
 
