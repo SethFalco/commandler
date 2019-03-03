@@ -18,16 +18,28 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
     private boolean isHidden;
     private boolean isStatic;
     private boolean isDefault;
+    private List<String> defaultParams;
 
     private Collection<ParamBuilder> params;
+    private Collection<OverloadBuilder> overloads;
 
     public CommandBuilder(Method method) {
         this.method = method;
         params = new ArrayList<>();
+        defaultParams = new ArrayList<>();
+        overloads = new ArrayList<>();
     }
 
-    public void addParam(ParamBuilder param) {
+    public CommandBuilder addParam(ParamBuilder param) {
         params.add(param);
+        defaultParams.add(param.getName());
+        return this;
+    }
+
+    public CommandBuilder addOverload(OverloadBuilder overload) {
+        params.addAll(overload.getParams());
+        overloads.add(overload);
+        return this;
     }
 
     public CommandData build(ModuleData data) {
@@ -65,7 +77,7 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
 
     public CommandBuilder setAliases(String... aliases) {
         this.aliases = Stream.of(aliases)
-            .map(String::toLowerCase).collect(Collectors.toSet());
+                .map(String::toLowerCase).collect(Collectors.toSet());
 
         if (this.aliases.size() != aliases.length)
             logger.warn("Command `%s` contains multiple of the same alias.");
@@ -107,6 +119,14 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
     public CommandBuilder setDefault(boolean aDefault) {
         isDefault = aDefault;
         return this;
+    }
+
+    public Collection<String> getDefaultParams() {
+        return defaultParams;
+    }
+
+    public Collection<OverloadBuilder> getOverloads() {
+        return overloads;
     }
 
     @Override

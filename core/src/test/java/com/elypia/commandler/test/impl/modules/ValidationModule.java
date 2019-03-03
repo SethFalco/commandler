@@ -4,7 +4,6 @@ import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.validation.*;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.*;
 import java.time.Duration;
@@ -37,7 +36,7 @@ public class ValidationModule extends Handler<String, String> {
     public String selectBetterPanda(
         @Param(name = "id", value = "The better panda, Sethi or Jenni.") @Option({"seth", "jen"}) String name
     ) {
-        return "You selected " + StringUtils.capitalize(name) + ".";
+        return "You selected " + name.substring(0, 1).toUpperCase() + name.substring(1) + ".";
     }
 
     @Command(name = "Period", aliases = "period")

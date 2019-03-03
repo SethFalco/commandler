@@ -18,5 +18,10 @@ public @interface Overload {
      * specified the {@link Command#name()} value. That is the unique reference to the
      * command and how Commandler knows what command this is overloading.
      */
-    String value();
+    String value() default "";
+
+    /**
+     * @return The parameters that make up this overload.
+     */
+    String[] params() default {};
 }

@@ -52,7 +52,7 @@ public class ParameterParser {
     public Object[] processEvent(CommandlerEvent event) {
         EventInput input = event.getInput();
         Class<?>[] types = input.getCommandData().getMethod().getParameterTypes();
-        Iterator<ParamData> params = input.getCommandData().getParamData().iterator();
+        Iterator<ParamData> params = input.getCommandData().getParams().iterator();
         Iterator<List<String>> inputs = input.getParameters().iterator();
 
         int length = types.length;

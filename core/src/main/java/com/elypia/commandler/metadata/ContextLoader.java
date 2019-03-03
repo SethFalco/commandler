@@ -98,7 +98,6 @@ public class ContextLoader {
         for (MetadataLoader loader : loaders) {
             for (Class<? extends Handler> clazz : handlers) {
                 ModuleBuilder module = new ModuleBuilder(clazz);
-
                 loader.loadModule(module);
 
                 for (Method method : loader.findCommands(clazz)) {
@@ -109,6 +108,19 @@ public class ContextLoader {
                         ParamBuilder param = new ParamBuilder(parameter);
                         loader.loadParam(param);
                         command.addParam(param);
+                    }
+
+                    for (Method methodOverload : loader.findOverloads(command)) {
+                        OverloadBuilder overload = new OverloadBuilder(methodOverload);
+                        loader.loadOverload(overload);
+
+                        for (Parameter parameter : loader.findParams(method)) {
+                            ParamBuilder param = new ParamBuilder(parameter);
+                            loader.loadParam(param);
+                            overload.addParam(param);
+                        }
+
+                        command.addOverload(overload);
                     }
 
                     module.addCommand(command);

@@ -2,7 +2,8 @@ package com.elypia.commandler.test;
 
 import com.elypia.commandler.metadata.ContextLoader;
 import com.elypia.commandler.test.impl.*;
-import com.elypia.commandler.test.impl.modules.ArrayModule;
+import com.elypia.commandler.test.impl.builders.DefaultBuilder;
+import com.elypia.commandler.test.impl.modules.EnumModule;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,9 +14,15 @@ public class MisuseTest {
 
     @BeforeAll
     public static void beforeAll() {
+        ContextLoader loader = new ContextLoader(EnumModule.class);
+
+        loader.add(
+            DefaultBuilder.class
+        );
+
         commandler = new TestCommandlerBuilder()
             .setPrefix(">")
-            .setContextLoader(new ContextLoader(ArrayModule.class))
+            .setContextLoader(loader)
             .build();
     }
 

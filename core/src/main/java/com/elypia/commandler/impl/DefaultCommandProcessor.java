@@ -76,7 +76,7 @@ public class DefaultCommandProcessor<S, M> implements com.elypia.commandler.inte
                     response = event.getError();
 
                 else {
-                    if (!commandler.getTestRunner().isFailing(handler)) {
+                    if (commandler.getTestRunner().isFailing(handler)) {
                         event.invalidate(misuseHandler.onModuleDisabled(event));
                         response = event.getError();
                     } else {

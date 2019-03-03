@@ -20,6 +20,19 @@ public class AnnotationLoader implements MetadataLoader {
     }
 
     @Override
+    public List<Method> findOverloads(CommandBuilder command) {
+        Class clazz = command.getMethod().getDeclaringClass();
+
+        return Arrays.stream(clazz.getMethods())
+            .filter((m) -> {
+                if (!m.isAnnotationPresent(Overload.class))
+                    return false;
+
+                return m.getAnnotation(Overload.class).value().equals(command.getName());
+            }).collect(Collectors.toList());
+    }
+
+    @Override
     public ModuleBuilder loadModule(ModuleBuilder builder) {
         Module module = builder.getHandlerClass().getAnnotation(Module.class);
 
@@ -48,6 +61,17 @@ public class AnnotationLoader implements MetadataLoader {
             .setHelp(command.help())
             .setStatic(method.isAnnotationPresent(Static.class))
             .setDefault(method.isAnnotationPresent(Default.class));
+    }
+
+    @Override
+    public OverloadBuilder loadOverload(OverloadBuilder builder) {
+        Method method = builder.getMethod();
+
+        if (!method.isAnnotationPresent(Overload.class))
+            return builder;
+
+        Overload overload = method.getAnnotation(Overload.class);
+        return builder.setNames(List.of(overload.params()));
     }
 
     @Override

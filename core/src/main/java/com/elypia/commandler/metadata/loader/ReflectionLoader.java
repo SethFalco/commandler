@@ -21,6 +21,11 @@ public class ReflectionLoader implements MetadataLoader {
     }
 
     @Override
+    public List<Method> findOverloads(CommandBuilder command) {
+        return List.of();
+    }
+
+    @Override
     public ModuleBuilder loadModule(ModuleBuilder builder) {
         String name = builder.getClass().getSimpleName();
 
@@ -44,6 +49,11 @@ public class ReflectionLoader implements MetadataLoader {
             .setAliases(toAlias(command))
             .setStatic(command.endsWith("StaticCommand"))
             .setDefault(command.endsWith("DefaultCommand"));
+    }
+
+    @Override
+    public OverloadBuilder loadOverload(OverloadBuilder builder) {
+        return builder;
     }
 
     @Override

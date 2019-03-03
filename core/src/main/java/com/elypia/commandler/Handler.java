@@ -63,7 +63,7 @@ public abstract class Handler<S, M> {
                 .append(")\n")
 			    .append(language.get(event.getSource(), command.getHelp()));
 
-			List<ParamData> params = command.getParamData();
+			List<ParamData> params = command.getParams();
 
 			params.forEach((param) -> {
 				builder.append("\n" + language.get(event.getSource(), param.getName()) + ": ");

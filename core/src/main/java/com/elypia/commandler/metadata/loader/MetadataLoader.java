@@ -11,6 +11,7 @@ import java.util.stream.*;
 public interface MetadataLoader {
 
     List<Method> findCommands(Class<? extends Handler> clazz);
+    List<Method> findOverloads(CommandBuilder command);
 
     default List<Parameter> findParams(Method method) {
         return Stream.of(method.getParameters())
@@ -20,6 +21,7 @@ public interface MetadataLoader {
 
     ModuleBuilder loadModule(ModuleBuilder builder);
     CommandBuilder loadCommand(CommandBuilder builder);
+    OverloadBuilder loadOverload(OverloadBuilder builder);
     ParamBuilder loadParam(ParamBuilder builder);
 
     ParserBuilder loadParser(ParserBuilder builder);

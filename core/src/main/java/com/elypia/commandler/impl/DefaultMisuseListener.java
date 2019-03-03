@@ -27,9 +27,13 @@ public class DefaultMisuseListener<S, M> implements MisuseListener<S, M> {
         StringJoiner commandJoiner = new StringJoiner("\n");
 
         CommandData command = input.getCommandData();
+        List<ParamData> defaultParams = command.getDefaultParams();
 
-        for (CommandData overload : command.getOverloads())
-            commandJoiner.add(overload.toString());
+//        commandler.
+//
+//        for (List<OverloadData> overload : command.getOverloads()) {
+//            commandJoiner.add(overload.toString());
+//        }
 
         String commandName = command.getName();
         String moduleName = input.getModuleData().getName();
@@ -65,7 +69,7 @@ public class DefaultMisuseListener<S, M> implements MisuseListener<S, M> {
         String module = input.getModuleData().getName();
         CommandData command = input.getCommandData();
 
-        return String.format(format, joiner, param.getName(), module, command.getName(), command);
+        return String.format(format, joiner, param.getName(), module, command.getName(), command.toParamsString());
     }
 
     @Override

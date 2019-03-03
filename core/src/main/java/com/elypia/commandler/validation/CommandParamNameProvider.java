@@ -7,6 +7,7 @@ import com.elypia.commandler.metadata.data.*;
 import javax.validation.ParameterNameProvider;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CommandParamNameProvider implements ParameterNameProvider {
 
@@ -29,21 +30,31 @@ public class CommandParamNameProvider implements ParameterNameProvider {
         if (module == null)
             return getJavaNames(method);
 
+        List<ParamData> params = null;
+
+        outer:
         for (CommandData command : module.getCommands()) {
-            for (CommandData overload : command.getOverloads()) {
+            if (method.equals(command.getMethod())) {
+                params = command.getDefaultParams();
+                break;
+            }
+
+            for (OverloadData overload : command.getOverloads()) {
                 if (overload.getMethod().equals(method)) {
-                    List<String> params = new ArrayList<>();
-
-                    for (ParamData param : overload.getParamData())
-                        params.add(param.getName());
-
-                    return params;
+                    params = overload.getParams();
+                    break outer;
                 }
             }
         }
 
-        String format = "Method %s is not a command.";
-        throw new IllegalStateException(String.format(format, method.getName()));
+        List<String> names = params.parallelStream()
+            .map(ParamData::getName)
+            .collect(Collectors.toList());
+
+        while (names.size() < method.getParameterCount())
+            names.add("");
+
+        return names;
     }
 
     private List<String> getJavaNames(Executable executable) {
