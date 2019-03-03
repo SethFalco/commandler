@@ -3,21 +3,21 @@ package com.elypia.commandler.parsers;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.ParamData;
+import com.elypia.commandler.metadata.data.ParamData;
 
 /**
  * This is the generic {@link Enum} parser. This should be the fallback parser
  * for any enums that are registered to {@link Commandler} if a
- * {@link IParser} of that type was not specifically registered. <br>
+ * {@link Parser} of that type was not specifically registered. <br>
  * This simply checks if the names are the same after removing
  * spaces, under scores, and converting to lower case.
  */
 
 @Compatible(Enum.class)
-public class EnumParser implements IParser<ICommandEvent, Enum> {
+public class EnumParser implements Parser<CommandlerEvent, Enum> {
 
     @Override
-    public Enum parse(ICommandEvent event, ParamData data, Class<? extends Enum> type, String input) {
+    public Enum parse(CommandlerEvent event, ParamData data, Class<? extends Enum> type, String input) {
         input = input.toLowerCase().replace(" ", "");
 
         for (Enum e : type.getEnumConstants()) {

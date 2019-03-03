@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation;
 
-import com.elypia.commandler.impl.CommandValidator;
-import com.elypia.commandler.interfaces.ICommandEvent;
+import com.elypia.commandler.CommandValidator;
+import com.elypia.commandler.interfaces.CommandlerEvent;
 
 import javax.validation.*;
 import java.lang.reflect.*;
@@ -26,7 +26,7 @@ public class CommandlerConstraintValidatorFactory implements ConstraintValidator
                     return key.cast(constructor.newInstance());
 
                 if (count == 1) {
-                    if (ICommandEvent.class.isAssignableFrom(constructor.getParameterTypes()[0]))
+                    if (CommandlerEvent.class.isAssignableFrom(constructor.getParameterTypes()[0]))
                         return key.cast(constructor.newInstance(validator.event));
                 }
             }
@@ -35,7 +35,7 @@ public class CommandlerConstraintValidatorFactory implements ConstraintValidator
         }
 
         String format = "%s must have a no parameter or single parameter constructor of type %s only.";
-        throw new IllegalStateException(String.format(format, key.getName(), ICommandEvent.class.getName()));
+        throw new IllegalStateException(String.format(format, key.getName(), CommandlerEvent.class.getName()));
     }
 
     @Override

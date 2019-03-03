@@ -1,5 +1,3 @@
 rootProject.name = 'Commandler'
 
-include 'core'
-include 'doc'
-include 'export'
+include 'core', 'file-config', 'doc', 'export'

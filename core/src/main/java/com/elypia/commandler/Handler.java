@@ -1,39 +1,24 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.annotations.Command;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.metadata.data.*;
+import com.google.inject.Inject;
 
 import java.util.*;
 
 public abstract class Handler<S, M> {
 
-	protected Commandler<S, M> commandler;
+	@Inject
+	protected Commandler commandler;
 
-	protected ModuleData module;
-
-	protected IScripts<S> scripts;
-
-	/**
-	 * Initialise the module, this will assign the values
-	 * in the module and create a {@link ModuleData} which is
-	 * what {@link Commandler} uses in runtime to identify modules,
-	 * commands or obtain any static data.
-	 *
-	 * @param commandler Our parent Commandler class.
-	 */
-	public Handler(Commandler<S, M> commandler) {
-		this.commandler = commandler;
-		module = commandler.getContext().getModule(this.getClass());
-		scripts = commandler.getEngine();
-		commandler.getTestRunner().test(this);
-	}
+	@Inject
+	protected LanguageAdapter language;
 
 	/**
 	 * Performs relevent tests to ensure this module
 	 * is still working as intended. Should any test fail we will
-	 * still load and display {@link #help(ICommandEvent)} for the module
+	 * still load and display {@link #help(CommandlerEvent)} for the module
 	 * however all other commands will not be possible.
 	 *
 	 * @return If the module should remain enabled.
@@ -43,25 +28,23 @@ public abstract class Handler<S, M> {
 	}
 
 	/**
-	 * The default help command for a {@link Handler},
+	 * The default value command for a {@link Handler},
 	 * this should use the {@link ModuleData} around
 	 * this {@link Handler} to display helpful information
 	 * to the user.
 	 *
-	 * @param event The {@link ICommandEvent event} produced by Commandler.
+	 * @param event The {@link CommandlerEvent event} produced by Commandler.
 	 * @return The message to send to the end user.
 	 */
-	@Command(id = "Help", aliases = "help")
-	public Object help(ICommandEvent<S, M> event) {
-        Module annotation = getModule().getAnnotation();
-
-        StringBuilder builder = new StringBuilder(annotation.id());
+	@Command(name = "Help", aliases = "help")
+	public Object help(CommandlerEvent<S, M> event) {
+        StringBuilder builder = new StringBuilder(getModule().getName());
 
 		builder
             .append(" (")
-            .append(String.join(", ", annotation.aliases()))
+            .append(String.join(", ", getModule().getAliases()))
             .append(")\n")
-            .append(annotation.help());
+            .append(getModule().getHelp());
 
 		if (commandler.getTestRunner().isFailing(this))
 			builder.append("\n").append(getCommandler().getMisuseHandler().onModuleDisabled(event));
@@ -71,22 +54,20 @@ public abstract class Handler<S, M> {
 		Iterator<CommandData> metaCommandIt = getModule().getPublicCommands().iterator();
 
 		while (metaCommandIt.hasNext()) {
-			CommandData commandData = metaCommandIt.next();
-			Command command = commandData.getAnnotation();
-			builder.append(scripts.get(event.getSource(), command.id()));
+			CommandData command = metaCommandIt.next();
+			builder.append(language.get(event.getSource(), command.getName()));
 
 			builder
                 .append(" (")
-                .append(String.join(", ", command.aliases()))
+                .append(String.join(", ", command.getAliases()))
                 .append(")\n")
-			    .append(scripts.get(event.getSource(), command.help()));
+			    .append(language.get(event.getSource(), command.getHelp()));
 
-			List<ParamData> paramData = commandData.getInputParams();
+			List<ParamData> params = command.getParamData();
 
-			paramData.forEach(metaParam -> {
-				Param param = metaParam.getAnnotation();
-				builder.append("\n" + scripts.get(event.getSource(), param.id()) + ": ");
-				builder.append(scripts.get(event.getSource(), param.help()));
+			params.forEach((param) -> {
+				builder.append("\n" + language.get(event.getSource(), param.getName()) + ": ");
+				builder.append(language.get(event.getSource(), param.getHelp()));
 			});
 
 			if (metaCommandIt.hasNext())
@@ -106,10 +87,6 @@ public abstract class Handler<S, M> {
 	}
 
 	public ModuleData getModule() {
-		return module;
-	}
-
-	public int compareTo(Handler<S, M> o) {
-		return module.compareTo(o.getModule());
+		return commandler.getContext().getModule(this.getClass());
 	}
 }

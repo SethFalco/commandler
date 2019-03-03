@@ -1,14 +1,12 @@
 package com.elypia.commandler.testing;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.metadata.ModuleData;
+import com.elypia.commandler.metadata.data.ModuleData;
 import org.slf4j.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.function.Consumer;
 
 public class TestRunner {
 
@@ -33,47 +31,33 @@ public class TestRunner {
 
     private final ScheduledExecutorService executor;
 
-    private final List<Consumer<Report>> postActions;
-
     public TestRunner(Commandler commandler) {
         started = Instant.now();
         this.commandler = commandler;
         testReports = new HashMap<>();
         executor = Executors.newSingleThreadScheduledExecutor();
-        postActions = new ArrayList<>();
 
         begin();
-    }
-
-    public void addPostAction(Consumer<Report> action) {
-        postActions.add(action);
     }
 
     private void begin() {
         executor.scheduleAtFixedRate(() -> {
             for (ModuleData data : commandler.getContext()) {
-                try {
-                    Handler handler = data.getInstance(commandler);
+                Handler handler = commandler.getServiceProvider().get(data.getModuleClass());
 
-                    if (handler == null) {
-                        logger.debug("Registered handler is not initalised, testing was skipped.");
-                        continue;
-                    }
-
-                    Class<? extends Handler> clazz = handler.getClass();
-                    Report report = test(handler);
-
-                    if (!testReports.containsKey(clazz))
-                        testReports.put(clazz, new ModuleReport());
-
-                    ModuleReport moduleReport = testReports.get(handler.getClass());
-                    moduleReport.add(report);
-
-                    for (Consumer<Report> action : postActions)
-                        action.accept(report);
-                } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-                    logger.error("Failed to instantiate module.");
+                if (handler == null) {
+                    logger.debug("Registered handler is not initalised, testing was skipped.");
+                    continue;
                 }
+
+                Class<? extends Handler> clazz = handler.getClass();
+                Report report = test(handler);
+
+                if (!testReports.containsKey(clazz))
+                    testReports.put(clazz, new ModuleReport());
+
+                ModuleReport moduleReport = testReports.get(handler.getClass());
+                moduleReport.add(report);
             }
         }, 0, 30000, TimeUnit.MINUTES);
     }

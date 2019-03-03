@@ -1,26 +1,38 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.test.impl.TestApp;
+import com.elypia.commandler.metadata.ContextLoader;
+import com.elypia.commandler.metadata.loader.AnnotationLoader;
+import com.elypia.commandler.test.impl.*;
+import com.elypia.commandler.test.impl.builders.*;
 import com.elypia.commandler.test.impl.modules.ValidationModule;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ValidationTest {
 
-    private static TestApp app;
+    private static TestCommandler commandler;
 
     @BeforeAll
     public static void beforeAll() {
-        app = new TestApp();
-        app.add(ValidationModule.class);
+        ContextLoader loader = new ContextLoader(new AnnotationLoader());
+
+        loader.add(
+            ValidationModule.class,
+            DefaultBuilder.class,
+            NumberBuilder.class
+        );
+
+        commandler = new TestCommandlerBuilder()
+            .setPrefix(">")
+            .setContextLoader(loader)
+            .build();
     }
 
     @Test
     public void testLength() {
         String expected = "ajenni";
-        String actual = app.execute(">valid concat a jenni");
+        String actual = commandler.execute(">valid concat a jenni");
 
         assertEquals(expected, actual);
     }
@@ -34,7 +46,7 @@ public class ValidationTest {
             "\n" +
             "first: Size must be between 0 and 1.";
 
-        String actual = app.execute(">valid concat an jenni");
+        String actual = commandler.execute(">valid concat an jenni");
 
         assertEquals(expected, actual);
     }
@@ -42,7 +54,7 @@ public class ValidationTest {
     @Test
     public void testOption() {
         String expected = "You selected Seth.";
-        String actual = app.execute(">valid panda seth");
+        String actual = commandler.execute(">valid panda seth");
 
         assertEquals(expected, actual);
     }
@@ -50,7 +62,7 @@ public class ValidationTest {
     @Test
     public void testValidPeriod() {
         String expected = "3723 seconds";
-        String actual = app.execute(">valid period 1h2m3s");
+        String actual = commandler.execute(">valid period 1h2m3s");
 
         assertEquals(expected, actual);
     }
@@ -64,7 +76,7 @@ public class ValidationTest {
             "\n" +
             "duration: Must be between 0 and 2 days.";
 
-        String actual = app.execute(">valid period 3d12h20s");
+        String actual = commandler.execute(">valid period 3d12h20s");
 
         assertEquals(expected, actual);
     }

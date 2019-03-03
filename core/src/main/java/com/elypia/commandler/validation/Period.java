@@ -1,14 +1,11 @@
 package com.elypia.commandler.validation;
 
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
+import javax.validation.*;
 import java.lang.annotation.*;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(validatedBy = Period.Validator.class)

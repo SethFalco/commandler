@@ -1,7 +1,8 @@
 package com.elypia.commandler.validation;
 
-import com.elypia.commandler.*;
-import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.Handler;
+import com.elypia.commandler.metadata.Context;
+import com.elypia.commandler.metadata.data.*;
 
 import javax.validation.ParameterNameProvider;
 import java.lang.reflect.*;
@@ -9,9 +10,9 @@ import java.util.*;
 
 public class CommandParamNameProvider implements ParameterNameProvider {
 
-    private ModulesContext context;
+    private Context context;
 
-    public CommandParamNameProvider(ModulesContext context) {
+    public CommandParamNameProvider(Context context) {
         this.context = context;
     }
 
@@ -25,18 +26,16 @@ public class CommandParamNameProvider implements ParameterNameProvider {
         Class<?> clazz = method.getDeclaringClass();
         ModuleData module = context.getModule((Class<Handler>)clazz);
 
-        // If it's not a module, just return Java's names.
         if (module == null)
             return getJavaNames(method);
 
-        // If it is a module, use our @Param annotations to return names.
         for (CommandData command : module.getCommands()) {
             for (CommandData overload : command.getOverloads()) {
                 if (overload.getMethod().equals(method)) {
                     List<String> params = new ArrayList<>();
 
                     for (ParamData param : overload.getParamData())
-                        params.add((param.isInput()) ? param.getAnnotation().id() : null);
+                        params.add(param.getName());
 
                     return params;
                 }

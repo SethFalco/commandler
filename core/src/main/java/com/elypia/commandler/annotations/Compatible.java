@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 import java.time.Duration;
 
 /**
- * Used with {@link IParser}s and {@link IBuilder}s in
+ * Used with {@link Parser}s and {@link Builder}s in
  * order to bind data-types they are made to work with.
  * For example if a builder is able to convert your
  * {@link Duration} into a viable message object for your

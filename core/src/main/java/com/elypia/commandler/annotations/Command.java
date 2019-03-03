@@ -1,12 +1,12 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.metadata.data.ModuleData;
 
 import java.lang.annotation.*;
 
 /**
  * The Command annotation is used to supply metadata
- * to commands. This can be aliases, or the help to
+ * to commands. This can be aliases, or the value to
  * let people know how to use this commands.
  *
  * All static data will be stored in an annotation, reserving the
@@ -17,33 +17,26 @@ import java.lang.annotation.*;
 public @interface Command {
 
 	/**
-	 * The default value for {@link #help()}. By
-	 * assigning this to {@link String#isEmpty() an empty
-	 * String}, {@link Commandler} will omit this {@link Command}
-	 * in the help and documentation. Assign it a value for it
-	 * to be displayed.
+	 * @return The name of the commands as it appears in value / documentation.
+	 * This also acts as a reference for other commands to refer to it.
 	 */
-	String HIDDEN = "";
-
-	/**
-	 * @return The id of the commands as it appears in help / documentation.
-	 * 		   This also acts as a reference for other commands to refer to it.
-	 */
-	String id();
+	String name() default "";
 
 	/**
 	 * @return A list of all the alises that allow users
 	 * to perform this commands, this must be not be registered in the
-	 * {@link Module} already.
+	 * {@link ModuleData} already.
 	 */
-	String[] aliases();
+	String[] aliases() default {};
 
 	/**
-	 * @return The help text to advise the user of what
+	 * @return The value text to advise the user of what
 	 * this commands does.
-	 *
-	 * If the help String is {@link #HIDDEN} then
-	 * it will be hidden from the help docs.
 	 */
-	String help() default HIDDEN;
+	String help() default "";
+
+	/**
+	 * @return If this module should be hidden from documentation.
+	 */
+	boolean hidden() default false;
 }

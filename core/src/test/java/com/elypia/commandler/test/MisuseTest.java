@@ -1,19 +1,22 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.test.impl.TestApp;
-import com.elypia.commandler.test.impl.modules.EnumModule;
+import com.elypia.commandler.metadata.ContextLoader;
+import com.elypia.commandler.test.impl.*;
+import com.elypia.commandler.test.impl.modules.ArrayModule;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MisuseTest {
 
-    private static TestApp app;
+    private static TestCommandler commandler;
 
     @BeforeAll
     public static void beforeAll() {
-        app = new TestApp();
-        app.add(EnumModule.class);
+        commandler = new TestCommandlerBuilder()
+            .setPrefix(">")
+            .setContextLoader(new ContextLoader(ArrayModule.class))
+            .build();
     }
 
     @Test
@@ -29,7 +32,7 @@ public class MisuseTest {
             "Possibilities:\n" +
             "(1) 'unit'";
 
-        String actual = app.execute(">enum timeunit seconds extra");
+        String actual = commandler.execute(">enum timeunit seconds extra");
 
         assertEquals(expected, actual);
     }
@@ -44,9 +47,9 @@ public class MisuseTest {
             "TimeUnit ('timeunit')\n" +
             "Top YouTuber ('top')\n" +
             "\n" +
-            "See the help command for more information.";
+            "See the value command for more information.";
 
-        String actual = app.execute(">enum");
+        String actual = commandler.execute(">enum");
 
         assertEquals(expected, actual);
     }
@@ -61,7 +64,7 @@ public class MisuseTest {
             "Required:\n" +
             "(1) 'unit'";
 
-        String actual = app.execute(">enum timeunit seconds, minutes, hours");
+        String actual = commandler.execute(">enum timeunit seconds, minutes, hours");
 
         assertEquals(expected, actual);
     }

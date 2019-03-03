@@ -1,16 +1,29 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.test.impl.TestApp;
+import com.elypia.commandler.metadata.ContextLoader;
+import com.elypia.commandler.metadata.loader.AnnotationLoader;
+import com.elypia.commandler.test.impl.*;
+import com.elypia.commandler.test.impl.builders.*;
 import com.elypia.commandler.test.impl.modules.BuilderModule;
 import org.junit.jupiter.api.BeforeAll;
 
 public class BuildersTest {
 
-    private static TestApp app;
+    private static TestCommandler commandler;
 
     @BeforeAll
     public static void beforeAll() {
-        app = new TestApp();
-        app.add(BuilderModule.class);
+        ContextLoader loader = new ContextLoader(new AnnotationLoader());
+
+        loader.add(
+            BuilderModule.class,
+            DefaultBuilder.class,
+            NumberBuilder.class
+        );
+
+        commandler = new TestCommandlerBuilder()
+            .setPrefix(">")
+            .setContextLoader(loader)
+            .build();
     }
 }

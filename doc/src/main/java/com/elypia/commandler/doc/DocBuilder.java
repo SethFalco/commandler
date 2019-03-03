@@ -1,15 +1,10 @@
 package com.elypia.commandler.doc;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Module;
-import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.doc.entities.AppData;
-import com.elypia.commandler.metadata.ModuleData;
-import org.apache.velocity.*;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.commonmark.ext.gfm.tables.TablesExtension;
-import org.jsoup.Jsoup;
+import com.elypia.commandler.metadata.Context;
+import com.elypia.commandler.metadata.data.ModuleData;
 import org.slf4j.*;
 
 import java.io.*;
@@ -20,15 +15,13 @@ public class DocBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(DocBuilder.class);
 
-    private VelocityEngine engine;
-
     /**
      * The modules parsed as {@link ModuleData}.
      */
-    private ModulesContext context;
+    private Context context;
 
     /**
-     * All documentation specific data to help generate
+     * All documentation specific data to value generate
      * webpages.
      *
      * This mostly comprises data that might not be required by
@@ -40,10 +33,10 @@ public class DocBuilder {
     private MarkdownParser parser;
 
     public DocBuilder() {
-        this(new ModulesContext());
+        this(new Context());
     }
 
-    public DocBuilder(ModulesContext context) {
+    public DocBuilder(Context context) {
         this.context = context;
         parser = new MarkdownParser(TablesExtension.create());
 
@@ -56,7 +49,7 @@ public class DocBuilder {
     }
 
     public void build() throws IOException {
-        build("./build/docs/commandlerdoc/");
+        build("./load/docs/commandlerdoc/");
     }
 
     public void build(String path) throws IOException {
@@ -110,18 +103,18 @@ public class DocBuilder {
         }
 
         for (ModuleData module : context.getModules()) {
-            if (!module.isPublic())
+            if (!module.isHidden())
                 continue;
 
             Module moduleAnno = module.getAnnotation();
-            String moduleName = moduleAnno.id();
+            String moduleName = moduleAnno.name();
             String outputName = "modules/" + DocUtils.toOutput(moduleName);
 
             VelocityContext moduleContext = new VelocityContext(globalContext);
             moduleContext.put("page_name", "Module | " + moduleName);
             moduleContext.put("module", module);
             moduleContext.put("module_anno", moduleAnno);
-            moduleContext.put("module_id", moduleAnno.id());
+            moduleContext.put("module_id", moduleAnno.name());
             moduleContext.put("module_group", moduleAnno.group());
             moduleContext.put("commands", module.getPublicCommands());
             moduleContext.put("content", "module_template.vm");
@@ -179,11 +172,11 @@ public class DocBuilder {
         }
     }
 
-    public ModulesContext getContext() {
+    public Context getContext() {
         return context;
     }
 
-    public DocBuilder setContext(ModulesContext context) {
+    public DocBuilder setContext(Context context) {
         this.context = context;
         return this;
     }

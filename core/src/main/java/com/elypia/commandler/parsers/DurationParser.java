@@ -2,19 +2,19 @@ package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.ParamData;
+import com.elypia.commandler.metadata.data.ParamData;
 
 import java.time.Duration;
 import java.util.regex.*;
 
 @Compatible(Duration.class)
-public class DurationParser implements IParser<ICommandEvent, Duration> {
+public class DurationParser implements Parser<CommandlerEvent, Duration> {
 
     private Pattern matchPattern = Pattern.compile("(?i)\\A(?:\\d+\\s*[A-Z]+(?:\\s*,\\s*|\\s*)?)+\\Z");
     private Pattern splitPattern = Pattern.compile("(?i)(?<time>\\d+)\\s*(?<unit>[A-Z]+)");
 
     @Override
-    public Duration parse(ICommandEvent event, ParamData data, Class<? extends Duration> type, String input) {
+    public Duration parse(CommandlerEvent event, ParamData data, Class<? extends Duration> type, String input) {
         if (matchPattern.matcher(input).matches()) {
             Duration duration = Duration.ZERO;
             Matcher split = splitPattern.matcher(input);

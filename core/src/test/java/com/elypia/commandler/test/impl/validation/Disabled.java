@@ -1,6 +1,6 @@
 package com.elypia.commandler.test.impl.validation;
 
-import com.elypia.commandler.impl.CommandEvent;
+import com.elypia.commandler.AbstractCommandlerEvent;
 
 import javax.validation.*;
 import java.lang.annotation.*;
@@ -18,7 +18,7 @@ public @interface Disabled {
 
     boolean value() default true;
 
-    class Validator implements ConstraintValidator<Disabled, CommandEvent<String, String>> {
+    class Validator implements ConstraintValidator<Disabled, AbstractCommandlerEvent<String, String>> {
 
         private boolean isDisabled;
 
@@ -28,7 +28,7 @@ public @interface Disabled {
         }
 
         @Override
-        public boolean isValid(CommandEvent<String, String> value, ConstraintValidatorContext context) {
+        public boolean isValid(AbstractCommandlerEvent<String, String> value, ConstraintValidatorContext context) {
             return isDisabled;
         }
     }

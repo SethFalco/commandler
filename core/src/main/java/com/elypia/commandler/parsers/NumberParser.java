@@ -2,13 +2,13 @@ package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.ParamData;
+import com.elypia.commandler.metadata.data.ParamData;
 
 @Compatible({Number.class, double.class, float.class, long.class, int.class, short.class, byte.class})
-public class NumberParser implements IParser<ICommandEvent, Number> {
+public class NumberParser implements Parser<CommandlerEvent, Number> {
 
     @Override
-    public Number parse(ICommandEvent event, ParamData data, Class<? extends Number> type, String input) {
+    public Number parse(CommandlerEvent event, ParamData data, Class<? extends Number> type, String input) {
         try {
             if (type == Double.class || type == double.class)
                 return Double.parseDouble(input);

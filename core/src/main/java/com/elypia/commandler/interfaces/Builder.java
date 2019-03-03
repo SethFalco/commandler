@@ -1,0 +1,29 @@
+package com.elypia.commandler.interfaces;
+
+/**
+ * This should implement the default load method.
+ * The default method should be the standard or minimal way
+ * to send messages in a chat channel, usually raw text.
+ * Platform specific implementations may append more
+ * methods according to the different types of messages.
+ *
+ * @param <E> The Commandler managed event entity.
+ * @param <O> The object to load, this should be the ouput from a {@link Parser}.
+ * @param <M> The message we're returning.
+ */
+public interface Builder<E extends CommandlerEvent<?, M>, O, M> {
+
+    /**
+     * The default load method, this builder should be the default
+     * way to send an {@link O object} of this type as a message.
+     * Platform specific implementations may implement more load
+     * methods for the diffenet message formats, if so this load method
+     * should return the basic {@link M message} that requires minimal
+     * permissions.
+     *
+     * @param event The {@link CommandlerEvent} which required building.
+     * @param output The output from the {@link Parser} when parsing the input.
+     * @return The message to response to the user.
+     */
+    M build(E event, O output);
+}

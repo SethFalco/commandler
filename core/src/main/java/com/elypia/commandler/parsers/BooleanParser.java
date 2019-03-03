@@ -2,12 +2,12 @@ package com.elypia.commandler.parsers;
 
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.ParamData;
+import com.elypia.commandler.metadata.data.ParamData;
 
 import java.util.*;
 
 @Compatible({Boolean.class, boolean.class})
-public class BooleanParser implements IParser<ICommandEvent, Boolean> {
+public class BooleanParser implements Parser<CommandlerEvent, Boolean> {
 
     private static final Collection<String> TRUE = List.of(
         "true", "t", "yes", "y", "1", "one", "✔"
@@ -18,7 +18,7 @@ public class BooleanParser implements IParser<ICommandEvent, Boolean> {
     );
 
     @Override
-    public Boolean parse(ICommandEvent event, ParamData data, Class<? extends Boolean> type, String input) {
+    public Boolean parse(CommandlerEvent event, ParamData data, Class<? extends Boolean> type, String input) {
         input = input.toLowerCase();
 
         if (TRUE.contains(input))

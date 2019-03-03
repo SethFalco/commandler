@@ -1,6 +1,9 @@
 package com.elypia.commandler.test;
 
-import com.elypia.commandler.test.impl.TestApp;
+import com.elypia.commandler.metadata.ContextLoader;
+import com.elypia.commandler.metadata.loader.AnnotationLoader;
+import com.elypia.commandler.test.impl.*;
+import com.elypia.commandler.test.impl.builders.*;
 import com.elypia.commandler.test.impl.modules.MiscModule;
 import org.junit.jupiter.api.*;
 
@@ -8,18 +11,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiscTest {
 
-    private static TestApp app;
+    private static TestCommandler commandler;
 
     @BeforeAll
     public static void beforeAll() {
-        app = new TestApp();
-        app.add(MiscModule.class);
+        ContextLoader loader = new ContextLoader(new AnnotationLoader());
+
+        loader.add(
+            MiscModule.class,
+            DefaultBuilder.class,
+            NumberBuilder.class
+        );
+
+        commandler = new TestCommandlerBuilder()
+            .setPrefix(">")
+            .setContextLoader(loader)
+            .build();
     }
 
     @Test
     public void testSay() {
         String expected = "hi";
-        String actual = app.execute(">misc say hi");
+        String actual = commandler.execute(">misc say hi");
 
         assertEquals(expected, actual);
     }
@@ -27,7 +40,7 @@ public class MiscTest {
     @Test
     public void testRepeat() {
         String expected = "hellohellohellohellohello";
-        String actual = app.execute(">misc repeat hello 5");
+        String actual = commandler.execute(">misc repeat hello 5");
 
         assertEquals(expected, actual);
     }
@@ -35,7 +48,7 @@ public class MiscTest {
     @Test
     public void testStaticPing() {
         String expected = "pong!";
-        String actual = app.execute(">ping");
+        String actual = commandler.execute(">ping");
 
         assertEquals(expected, actual);
     }
@@ -58,7 +71,7 @@ public class MiscTest {
             "I'll repeat something you say.\n" +
             "input: What you want me to say.";
 
-        String actual = app.execute(">misc help");
+        String actual = commandler.execute(">misc value");
 
         assertEquals(expected, actual);
     }

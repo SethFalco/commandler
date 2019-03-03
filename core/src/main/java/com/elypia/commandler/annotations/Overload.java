@@ -1,9 +1,6 @@
 package com.elypia.commandler.annotations;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Command groups are used when overloading commands, ie there is
@@ -18,8 +15,8 @@ public @interface Overload {
 
     /**
      * Before you can use this you must ensure the command you are overloading
-     * specified the {@link Command#id()} value. That is the unique reference to the
+     * specified the {@link Command#name()} value. That is the unique reference to the
      * command and how Commandler knows what command this is overloading.
-            */
+     */
     String value();
 }

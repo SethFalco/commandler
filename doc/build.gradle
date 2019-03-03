@@ -1,20 +1,4 @@
-ext {
-    nightconfigVersion = "3.4.2"
-    commonmarkVersion = "0.12.1"
-}
-
 dependencies {
     implementation project(":core")
-
-    // Configuration
-    implementation "com.electronwill.night-config:core:${nightconfigVersion}"
-    testImplementation "com.electronwill.night-config:toml:${nightconfigVersion}"
-
-    // HTML Parsing
-    implementation "org.apache.velocity:velocity-engine-core:2.0"
-    implementation "org.jsoup:jsoup:1.11.3"
-
-    // Common-Mark
-    implementation "com.atlassian.commonmark:commonmark:${commonmarkVersion}"
-    implementation "com.atlassian.commonmark:commonmark-ext-gfm-tables:${commonmarkVersion}"
+    implementation project(":export")
 }
