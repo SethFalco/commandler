@@ -2,8 +2,8 @@ dependencies {
     implementation project(":core")
 
     // Configuration
-    implementation "com.electronwill.night-config:core:3.4.2"
+    implementation "com.electronwill.night-config:core:3.6.0"
 
     // Testing
-    testImplementation "com.electronwill.night-config:toml:3.4.2"
+    testRuntimeOnly "com.electronwill.night-config:toml:3.6.0"
 }

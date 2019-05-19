@@ -55,6 +55,7 @@ gradle-app.setting
 # IntelliJ
 /out/
 /.idea/
+*.iml
 
 # Eclipse
 /bin/

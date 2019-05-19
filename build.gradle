@@ -6,10 +6,11 @@ allprojects() {
     apply plugin: "idea"
     apply plugin: "jacoco"
 
+    version = "3.0.0"
+    description = "Commandler is a abstract command handling framework ready to be implemented with any platform."
+
     ext {
-        projectVersion = "3.0.0"
-        projectDescription = "Commandler is a generic command handling framework ready to be implemented with any platform."
-        projectGit = 'https://gitlab.com/Elypia/Commandler.git'
+        projectGit = 'https://gitlab.com/Elypia/commandler.git'
     }
 
     tasks.withType(JavaCompile) {
@@ -17,11 +18,8 @@ allprojects() {
     }
 
     repositories {
+        mavenCentral()
         jcenter()
-    }
-
-    jacoco {
-        toolVersion = "0.8.2"
     }
 }
 
@@ -34,184 +32,87 @@ subprojects { subproject ->
         from sourceSets.main.allSource
 
         manifest {
-            attributes  "Implementation-Title": this.name,
-                        "Implementation-Version": projectVersion
+            attributes  "Implementation-Title": subproject.name,
+                        "Implementation-Version": version
         }
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = "sources"
-        from sourceSets.main.allSource
     }
 
     javadoc {
-        options.encoding = 'UTF-8'
-    }
+        options {
+            options.encoding = 'UTF-8'
+            options.addStringOption('-html5')
 
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-
-        javadoc {
-            options.addBooleanOption("html5", true)
-
-            options {
-                links += [
-                    "https://docs.oracle.com/javase/10/docs/api/"
-                ]
-            }
+            links += [
+                "https://docs.oracle.com/javase/10/docs/api/"
+            ]
         }
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
     }
 
     bintray {
         user = System.getenv("BINTRAY_USER")
         key = System.getenv("BINTRAY_KEY")
-        publications = [this.name]
+        publications = ["Commandler"]
         publish = true
 
         pkg {
-            repo = this.name
+            repo = "maven"
             name = subproject.name
             userOrg = "elypia"
-            licenses = ["Apache-2.0"]
+            licenses = ['Apache-2.0']
             vcsUrl = projectGit
+            publicDownloadNumbers = true
 
             version {
-                name = projectVersion
-                desc = projectDescription
+                name = version
+                desc = description
                 released = new Date()
             }
         }
     }
 
     publishing {
-        def details = {
-            licenses {
-                license {
-                    name "The Apache Software License, Version 2.0"
-                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                    distribution this.name
-                }
-            }
-
-            developers {
-                developer {
-                    id "Seth"
-                    name "Seth"
-                    email "seth@elypia.com"
-                }
-            }
-
-            scm {
-                url projectGit
-            }
-        }
-
         publications {
             Commandler(MavenPublication) {
                 from components.java
-                artifact sourcesJar
-                artifact javadocJar
-                groupId "com.elypia.commandler"
+                groupId 'com.elypia.commandler'
                 artifactId subproject.name
-                version projectVersion
-
-                pom.withXml {
-                    def root = asNode()
-
-                    root.appendNode("description", projectDescription)
-                    root.appendNode("name", this.name)
-                    root.appendNode("url", "https://elypia.com/")
-                    root.children().last() + details
-                }
+                version version
+                artifact javadoc
+                artifact classes
             }
         }
     }
 
     dependencies {
         // Logging
-        api "org.slf4j:slf4j-api:1.7.25"
+        implementation "org.slf4j:slf4j-api:1.7.26"
+        testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
 
         // Testing
-        testImplementation "org.junit.jupiter:junit-jupiter-api:5.4.0"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.4.0"
-        testRuntimeOnly "org.junit.platform:junit-platform-runner:1.4.0"
-
-        testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+        testImplementation "org.junit.jupiter:junit-jupiter:5.4.2"
     }
+
+    /**
+     * Testing and Code Coverage
+     */
 
     test {
         useJUnitPlatform()
+        finalizedBy jacocoTestReport
 
         reports {
             html.enabled = false
         }
     }
-}
 
-/**
- * Generate Global JavaDocs for GitLab Pages
- */
-
-task globalJavadoc(type: Javadoc) {
-    source = subprojects.collect { it.sourceSets.main.allJava }
-    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
-    destinationDir = file("${buildDir}/docs/javadoc")
-}
-
-/**
- * Test reporting and code coverage to Codacy.
- */
-
-configurations {
-    codacy
-}
-
-repositories {
-    maven {
-        url "https://jitpack.io"
+    jacoco {
+        toolVersion = "0.8.4"
     }
 
-    maven {
-        url "http://dl.bintray.com/typesafe/maven-releases"
+    jacocoTestReport {
+        reports {
+            html.enabled = true
+            xml.enabled = false
+        }
     }
-}
-
-dependencies {
-    codacy "com.github.codacy:codacy-coverage-reporter:-SNAPSHOT"
-}
-
-task jacocoMerge(type: JacocoMerge) {
-    executionData = files(subprojects.jacocoTestReport.executionData.findAll { it.asList() })
-
-    doFirst {
-        executionData = files(executionData.findAll {
-            it.exists()
-        })
-    }
-}
-
-task jacocoReport(type: JacocoReport, dependsOn: jacocoMerge) {
-    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs.findAll { it.asList() })
-    classDirectories = files(subprojects.sourceSets.main.output.findAll { it.asList() })
-    executionData = files(jacocoMerge.destinationFile)
-
-    reports {
-        html.enabled = false
-        xml.enabled = true
-    }
-}
-
-task codacyCoverage(type: JavaExec, dependsOn: jacocoReport) {
-    main = "com.codacy.CodacyCoverageReporter"
-    classpath = configurations.codacy
-
-    args = [
-        "report", "-l", "Java", "-r", "${buildDir}/reports/jacoco/jacocoReport/jacocoReport.xml"
-    ]
 }

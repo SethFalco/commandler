@@ -1,5 +1,8 @@
 image: gradle:jdk11-slim
 
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
@@ -9,12 +12,13 @@ build:
   cache:
     paths:
       - .gradle
+      - build
 
 test:
   stage: test
   script:
     - gradle --build-cache --full-stacktrace check
-    - gradle codacyCoverage
+    - cat build/reports/jacoco/test/html/index.html
   cache:
     paths:
       - .gradle
@@ -29,6 +33,7 @@ bintray:
     policy: pull
     paths:
       - .gradle
+      - build
 
 pages:
   only:
@@ -41,7 +46,6 @@ pages:
     paths:
       - public
   cache:
-    key: $CI_PROJECT_ID
     policy: pull
     paths:
       - build/docs/

@@ -1,21 +1,20 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.Commandler;
 import com.elypia.commandler.exceptions.NoBuilderException;
 import com.elypia.commandler.inject.ServiceProvider;
-import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.interfaces.Builder;
+import com.elypia.commandler.interfaces.CommandlerEvent;
 import com.elypia.commandler.metadata.data.BuilderData;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The builder is used to load messages from returning commands
- * or the {@link CommandlerEvent#send(Object)} method. Builders
- * that implement {@link Builder} can be registered via the
- * {@link #add} method, this tells {@link Commandler} how to
- * turn various types of Objects into
- * messages to be sent in chat.
+ * or the {@link CommandlerEvent#send(Object)} method.
  *
  * @param <M> The data-type we're building messages into, this
  *            should be the data-type the client of our integrating

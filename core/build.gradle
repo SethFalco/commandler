@@ -1,13 +1,10 @@
 dependencies {
     // Dependency Injection
-    implementation "com.google.inject:guice:4.1.0"
+    implementation "com.google.inject:guice:4.2.2"
 
     // Validation
-    api "javax.validation:validation-api:2.0.1.Final"
-    api "org.hibernate.validator:hibernate-validator:6.0.13.Final"
+    implementation "javax.validation:validation-api:2.0.1.Final"
+    implementation "org.hibernate.validator:hibernate-validator:6.0.16.Final"
     implementation "javax.el:javax.el-api:3.0.0"
-    implementation "org.glassfish:javax.el:3.0.0"
-
-    // Logging
-    api "org.slf4j:slf4j-api:1.7.25"
+    runtimeOnly "org.glassfish:javax.el:3.0.0"
 }
