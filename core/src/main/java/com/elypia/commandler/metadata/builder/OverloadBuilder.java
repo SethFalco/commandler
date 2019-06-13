@@ -21,7 +21,7 @@ public class OverloadBuilder {
         return this;
     }
 
-    public OverloadData build(CommandData command) {
+    public OverloadData build(MetaCommand command) {
         return new OverloadData(command, this);
     }
 

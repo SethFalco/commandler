@@ -53,7 +53,7 @@ gradle-app.setting
 *.json
 
 # IntelliJ
-/out/
+out/
 /.idea/
 *.iml
 

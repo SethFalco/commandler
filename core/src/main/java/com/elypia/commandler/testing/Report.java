@@ -4,25 +4,16 @@ import java.time.*;
 
 public class Report {
 
-    /**
-     * The time this report was logged.
-     */
+    /** The time this report was logged. */
     private final Instant timestamp;
 
-    /**
-     * If this test passed.
-     */
+    /** If this test passed. */
     private final boolean passed;
 
-    /**
-     * The duration this test went on for.
-     */
+    /** The duration this test went on for. */
     private final Duration duration;
 
-    /**
-     * Only non-null if the test failed because
-     * an exception occured.
-     */
+    /** Only non-null if the test failed because an exception occured. */
     private final Exception ex;
 
     public Report(boolean passed, long millis) {

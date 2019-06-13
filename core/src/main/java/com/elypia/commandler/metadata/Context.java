@@ -8,11 +8,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Within the same {@link Context} a single {@link ModuleData}
+ * Within the same {@link Context} a single {@link MetaModule}
  * is only ever constructed once. All objects here are just various views
  * or references of the data.
  */
-public class Context implements Iterable<ModuleData> {
+public class Context implements Iterable<MetaModule> {
 
     /**
      * Logging using the SLF4J API.
@@ -23,12 +23,12 @@ public class Context implements Iterable<ModuleData> {
      * A collection of data for each module within this
      * module context.
      */
-    private Map<Class<? extends Handler>, ModuleData> modules;
+    private Map<Class<? extends Handler>, MetaModule> modules;
 
     /**
      * A list of grouped modules.
      */
-    private Map<String, List<ModuleData>> groups;
+    private Map<String, List<MetaModule>> groups;
 
     /**
      * A list of all root aliases, this includes module aliases
@@ -36,13 +36,13 @@ public class Context implements Iterable<ModuleData> {
      */
     private Set<String> rootAliases;
 
-    private Collection<ParserData> parsers;
-    private Collection<BuilderData> builders;
+    private Collection<MetaAdapter> parsers;
+    private Collection<MetaProvider> builders;
 
     public Context(
-        Collection<ModuleData> datas,
-        Collection<ParserData> parsers,
-        Collection<BuilderData> builders
+        Collection<MetaModule> datas,
+        Collection<MetaAdapter> parsers,
+        Collection<MetaProvider> builders
     ) {
         modules = new HashMap<>();
         groups = new TreeMap<>();
@@ -51,10 +51,10 @@ public class Context implements Iterable<ModuleData> {
         this.parsers = parsers;
         this.builders = builders;
 
-        for (ModuleData data : datas) {
+        for (MetaModule data : datas) {
             Set<String> moduleAliases = data.getAliases();
-            Set<String> staticAliases = data.getStaticCommands().parallelStream()
-                .flatMap((c) -> c.getAliases().parallelStream())
+            Set<String> staticAliases = data.getStaticCommands().stream()
+                .flatMap((c) -> c.getAliases().stream())
                 .collect(Collectors.toSet());
 
             rootAliases.addAll(moduleAliases);
@@ -69,8 +69,8 @@ public class Context implements Iterable<ModuleData> {
         }
     }
 
-    public ModuleData getModule(String alias) {
-        for (ModuleData data : modules.values()) {
+    public MetaModule getModule(String alias) {
+        for (MetaModule data : modules.values()) {
             if (data.performed(alias))
                 return data;
         }
@@ -78,7 +78,7 @@ public class Context implements Iterable<ModuleData> {
         return null;
     }
 
-    public ModuleData getModule(Class<? extends Handler> clazz) {
+    public MetaModule getModule(Class<? extends Handler> clazz) {
         return modules.get(clazz);
     }
 
@@ -88,7 +88,7 @@ public class Context implements Iterable<ModuleData> {
      *
      * @return A list of all modules.
      */
-    public List<ModuleData> getModules() {
+    public List<MetaModule> getModules() {
         return getModules(true);
     }
 
@@ -98,12 +98,12 @@ public class Context implements Iterable<ModuleData> {
      * @param includePrivate If to include private modules.
      * @return A list of modules.
      */
-    public List<ModuleData> getModules(boolean includePrivate) {
+    public List<MetaModule> getModules(boolean includePrivate) {
         if (includePrivate)
             return List.copyOf(modules.values());
 
         return modules.values().stream()
-            .filter(ModuleData::isHidden)
+            .filter(MetaModule::isHidden)
             .sorted()
             .collect(Collectors.toUnmodifiableList());
     }
@@ -115,7 +115,7 @@ public class Context implements Iterable<ModuleData> {
      *
      * @return A unmodifiable map of modules and the groups they belong in.
      */
-    public Map<String, List<ModuleData>> getGroups() {
+    public Map<String, List<MetaModule>> getGroups() {
         return getGroups(true);
     }
 
@@ -125,15 +125,15 @@ public class Context implements Iterable<ModuleData> {
      * @param includePrivate If to include public modules in the result.
      * @return A unmodifiable map of modules and the groups they belong in.
      */
-    public Map<String, List<ModuleData>> getGroups(boolean includePrivate) {
+    public Map<String, List<MetaModule>> getGroups(boolean includePrivate) {
         if (includePrivate)
             return Map.copyOf(groups);
 
-        Map<String, List<ModuleData>> groupsCopy = new TreeMap<>();
+        Map<String, List<MetaModule>> groupsCopy = new TreeMap<>();
 
         groups.forEach((group, modules) -> {
-            List<ModuleData> publicModules = modules.stream()
-                .filter(ModuleData::isHidden)
+            List<MetaModule> publicModules = modules.stream()
+                .filter(MetaModule::isHidden)
                 .sorted()
                 .collect(Collectors.toUnmodifiableList());
 
@@ -147,13 +147,13 @@ public class Context implements Iterable<ModuleData> {
         return Set.copyOf(rootAliases);
     }
 
-    public List<CommandData> getCommands() {
+    public List<MetaCommand> getCommands() {
         return getCommands(true);
     }
 
-    public List<CommandData> getCommands(boolean includePrivate) {
-        List<CommandData> commands = new ArrayList<>();
-        List<ModuleData> modules = getModules(includePrivate);
+    public List<MetaCommand> getCommands(boolean includePrivate) {
+        List<MetaCommand> commands = new ArrayList<>();
+        List<MetaModule> modules = getModules(includePrivate);
 
         modules.forEach((data) -> {
             if (includePrivate)
@@ -166,15 +166,15 @@ public class Context implements Iterable<ModuleData> {
     }
 
     @Override
-    public Iterator<ModuleData> iterator() {
+    public Iterator<MetaModule> iterator() {
         return modules.values().iterator();
     }
 
-    public Collection<ParserData> getParsers() {
+    public Collection<MetaAdapter> getParsers() {
         return parsers;
     }
 
-    public Collection<BuilderData> getBuilders() {
+    public Collection<MetaProvider> getBuilders() {
         return builders;
     }
 }

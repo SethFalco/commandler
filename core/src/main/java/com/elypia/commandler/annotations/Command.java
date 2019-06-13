@@ -1,6 +1,6 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.metadata.data.ModuleData;
+import com.elypia.commandler.metadata.data.MetaModule;
 
 import java.lang.annotation.*;
 
@@ -25,7 +25,7 @@ public @interface Command {
 	/**
 	 * @return A list of all the alises that allow users
 	 * to perform this commands, this must be not be registered in the
-	 * {@link ModuleData} already.
+	 * {@link MetaModule} already.
 	 */
 	String[] aliases() default {};
 

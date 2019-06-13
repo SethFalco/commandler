@@ -72,7 +72,7 @@ public class ConfigurationLoader implements MetadataLoader {
 
     @Override
     public List<Class<? extends Handler>> findModules() {
-        return configuration.getModules().parallelStream()
+        return configuration.getModules().stream()
             .map(ModuleConfig::getHandler)
             .collect(Collectors.toList());
     }
@@ -83,7 +83,7 @@ public class ConfigurationLoader implements MetadataLoader {
             if (module.getHandler() != clazz)
                 continue;
 
-            return module.getCommands().parallelStream()
+            return module.getCommands().stream()
                 .map(CommandConfig::getMethod)
                 .collect(Collectors.toList());
         }
@@ -92,12 +92,12 @@ public class ConfigurationLoader implements MetadataLoader {
     }
 
     @Override
-    public List<Class<? extends Builder>> findBuilders() {
+    public List<Class<? extends Provider>> findBuilders() {
         return null;
     }
 
     @Override
-    public List<Class<? extends Parser>> findParsers() {
+    public List<Class<? extends Adapter>> findParsers() {
         return null;
     }
 

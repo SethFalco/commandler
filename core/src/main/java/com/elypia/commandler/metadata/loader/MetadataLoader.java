@@ -24,6 +24,6 @@ public interface MetadataLoader {
     OverloadBuilder loadOverload(OverloadBuilder builder);
     ParamBuilder loadParam(ParamBuilder builder);
 
-    ParserBuilder loadParser(ParserBuilder builder);
-    BuilderBuilder loadBuilder(BuilderBuilder builder);
+    AdapterBuilder loadParser(AdapterBuilder builder);
+    ProviderBuilder loadBuilder(ProviderBuilder builder);
 }

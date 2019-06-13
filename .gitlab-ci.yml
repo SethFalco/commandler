@@ -6,38 +6,31 @@ variables:
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
+cache:
+  paths:
+    - .gradle
+    - build
+
 build:
   stage: build
   script: gradle --build-cache --full-stacktrace assemble
-  cache:
-    paths:
-      - .gradle
-      - build
 
 test:
   stage: test
   script:
     - gradle --build-cache --full-stacktrace check
-    - cat build/reports/jacoco/test/html/index.html
-  cache:
-    paths:
-      - .gradle
-      - build
+    - gradle jacocoReport
+    - cat build/reports/jacoco/jacocoReport/html/index.html
 
 bintray:
   only:
-    - master
+    - tags
   stage: deploy
   script: gradle bintrayUpload
-  cache:
-    policy: pull
-    paths:
-      - .gradle
-      - build
 
 pages:
   only:
-    - master
+    - tags
   stage: deploy
   script:
     - gradle globalJavadoc

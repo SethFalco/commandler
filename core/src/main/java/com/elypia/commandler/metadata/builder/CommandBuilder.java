@@ -42,7 +42,7 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
         return this;
     }
 
-    public CommandData build(ModuleData data) {
+    public MetaCommand build(MetaModule data) {
         if (isStatic) {
             Set<String> existing = data.getAliases();
 
@@ -55,7 +55,7 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
             }
         }
 
-        return new CommandData(this);
+        return new MetaCommand(this);
     }
 
     public Method getMethod() {

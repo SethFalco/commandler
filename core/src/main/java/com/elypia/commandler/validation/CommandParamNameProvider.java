@@ -14,7 +14,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
     private Context context;
 
     public CommandParamNameProvider(Context context) {
-        this.context = context;
+        this.context = Objects.requireNonNull(context);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
     @Override
     public List<String> getParameterNames(Method method) {
         Class<?> clazz = method.getDeclaringClass();
-        ModuleData module = context.getModule((Class<Handler>)clazz);
+        MetaModule module = context.getModule((Class<Handler>)clazz);
 
         if (module == null)
             return getJavaNames(method);
@@ -33,7 +33,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
         List<ParamData> params = null;
 
         outer:
-        for (CommandData command : module.getCommands()) {
+        for (MetaCommand command : module.getCommands()) {
             if (method.equals(command.getMethod())) {
                 params = command.getDefaultParams();
                 break;
@@ -47,7 +47,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
             }
         }
 
-        List<String> names = params.parallelStream()
+        List<String> names = params.stream()
             .map(ParamData::getName)
             .collect(Collectors.toList());
 

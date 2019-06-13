@@ -14,7 +14,7 @@ public class ParamBuilder {
         this.parameter = parameter;
     }
 
-    public ParamData build(CommandData data) {
+    public ParamData build(MetaCommand data) {
         return new ParamData(parameter, this);
     }
 

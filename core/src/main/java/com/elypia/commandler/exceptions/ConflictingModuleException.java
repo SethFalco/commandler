@@ -1,12 +1,16 @@
 package com.elypia.commandler.exceptions;
 
-public class ConflictingModuleException extends CommandlerException {
+public class ConflictingModuleException extends CommandlerRuntimeException {
 
-    public ConflictingModuleException(Throwable cause, String message, Object... args) {
-        super(cause, message, args);
+    public ConflictingModuleException() {
+        super();
     }
 
     public ConflictingModuleException(String message, Object... args) {
-        super(message, args);
+        super(String.format(message, args));
+    }
+
+    public ConflictingModuleException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

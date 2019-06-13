@@ -16,7 +16,6 @@ public class ParamData {
 
     private String name;
     private String help;
-
     private boolean isList;
 
     public ParamData(Parameter parameter, ParamBuilder builder) {

@@ -1,7 +1,7 @@
 package com.elypia.commandler.testing;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.metadata.data.ModuleData;
+import com.elypia.commandler.metadata.data.MetaModule;
 import org.slf4j.*;
 
 import java.time.Instant;
@@ -18,9 +18,7 @@ public class TestRunner {
      */
     private final Instant started;
 
-    /**
-     * The Commandler instance to take modules from and test.
-     */
+    /** The Commandler instance to take modules from and test. */
     private final Commandler commandler;
 
     /**
@@ -37,13 +35,9 @@ public class TestRunner {
         testReports = new HashMap<>();
         executor = Executors.newSingleThreadScheduledExecutor();
 
-        begin();
-    }
-
-    private void begin() {
         executor.scheduleAtFixedRate(() -> {
-            for (ModuleData data : commandler.getContext()) {
-                Handler handler = commandler.getServiceProvider().get(data.getModuleClass());
+            for (MetaModule data : commandler.getContext()) {
+                Handler handler = commandler.getInjector().get(data.getModuleClass());
 
                 if (handler == null) {
                     logger.debug("Registered handler is not initalised, testing was skipped.");

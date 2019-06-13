@@ -1,20 +1,7 @@
 # Commandler [![Discord][discord-members]][discord] [![Download][bintray-download]][bintray] [![Documentation][docs-shield]][docs] [![GitLab Pipeline Status][gitlab-build]][gitlab] [![Coverage][gitlab-coverage]][gitlab] 
+The [Gradle][gradle]/[Maven][maven] import string can be found at the Download badge above!
+
 **Declaration: This library is a work in progress and is not considered stable _YET_ outside of internal use.**
-
-## Importing
-### [Gradle](https://gradle.org/)
-```gradle
-implementation 'com.elypia.commandler:{ARTIFACT}:{VERSION}'
-```
-
-### [Maven](https://maven.apache.org/)
-```xml
-<dependency>
-  <groupId>com.elypia.commandler</groupId>
-  <artifactId>{ARTIFACT}</artifactId>
-  <version>{VERSION}</version>
-</dependency>
-```
 
 ## Artifacts
 | Artifact      | Description                                                                                              |
@@ -35,19 +22,22 @@ Commandler is abstract and should be implemented with the desired service or API
 work with between multiple different APIs.
 
 ## Support
-Should any problems occur, come visit us over on [Discord][discord]! We're always around and there are ample developers that would be willing to help; if it's a problem with the library itself then we'll make sure to get it sorted.
-
-This project is _heavily_ relied on by [Alexis, the Discord bot][alexis]. Feel free to check her out or join our guild so you can see Commandler in action.
+Should any problems occur, come visit us over on [Discord][discord]! We're always around and there are
+ample developers that would be willing to help; if it's a problem with the library itself then we'll
+make sure to get it sorted.
 
 [discord]: https://discord.gg/hprGMaM "Discord Invite"
 [discord-members]: https://discordapp.com/api/guilds/184657525990359041/widget.png "Discord Shield"
-[bintray]: (https://bintray.com/elypia/Commandler/core/_latestVersion "Bintray Latest Version"
+[bintray]: https://bintray.com/elypia/Commandler/core/_latestVersion "Bintray Latest Version"
 [bintray-download]: https://api.bintray.com/packages/elypia/Commandler/core/images/download.svg "Bintray Download Shield"
 [docs]: https://commandler.elypia.com/ "Commandler Documentation"
 [docs-shield]: https://img.shields.io/badge/Docs-Commandler-blue.svg "Commandler Documentation Shield"
 [gitlab]: https://gitlab.com/Elypia/commandler/commits/master "Repository on GitLab"
 [gitlab-build]: https://gitlab.com/Elypia/commandler/badges/master/pipeline.svg "GitLab Build Shield"
 [gitlab-coverage]: https://gitlab.com/Elypia/commandler/badges/master/coverage.svg "GitLab Coverage Shield"
+
+[gradle]: https://gradle.org/ "Depend via Gradle"
+[maven]: https://maven.apache.org/ "Depend via Maven"
+
 [elypia]: https://elypia.com/ "Elypia Homepage"
 [night-config]: https://github.com/TheElectronWill/Night-Config "GitHub Repo for Night-Config"
-[alexis]: https://discordapp.com/oauth2/authorize?client_id=230716794212581376&scope=bot "Invite Alexis"

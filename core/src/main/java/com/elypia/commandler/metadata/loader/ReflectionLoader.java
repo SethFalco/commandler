@@ -63,12 +63,12 @@ public class ReflectionLoader implements MetadataLoader {
     }
 
     @Override
-    public ParserBuilder loadParser(ParserBuilder builder) {
+    public AdapterBuilder loadParser(AdapterBuilder builder) {
         return builder;
     }
 
     @Override
-    public BuilderBuilder loadBuilder(BuilderBuilder builder) {
+    public ProviderBuilder loadBuilder(ProviderBuilder builder) {
         return builder;
     }
 

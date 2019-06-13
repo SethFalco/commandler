@@ -6,82 +6,42 @@ allprojects() {
     apply plugin: "idea"
     apply plugin: "jacoco"
 
+    group = "com.elypia.commandler"
     version = "3.0.0"
-    description = "Commandler is a abstract command handling framework ready to be implemented with any platform."
+    description = "Commandler is a abstract command handling framework for dispatching events."
 
     ext {
-        projectGit = 'https://gitlab.com/Elypia/commandler.git'
-    }
-
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
+        repoUrl = "https://gitlab.com/Elypia/commandler"
+        gitUrl = "${repoUrl}.git"
+        issueUrl = "${repoUrl}/issues"
+        website = "https://elypia.com/"
     }
 
     repositories {
-        mavenCentral()
         jcenter()
+    }
+
+    jacoco {
+        toolVersion = "0.8.4"
     }
 }
 
-subprojects { subproject ->
+def publishedProjects = [
+    /** Library */
+    project(":core"),
+    project(":file-config"),
+    project(":export")
+]
+
+configure(publishedProjects) {
     apply plugin: "java-library"
     apply plugin: "maven-publish"
     apply plugin: "com.jfrog.bintray"
 
-    jar {
-        from sourceSets.main.allSource
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
-        manifest {
-            attributes  "Implementation-Title": subproject.name,
-                        "Implementation-Version": version
-        }
-    }
-
-    javadoc {
-        options {
-            options.encoding = 'UTF-8'
-            options.addStringOption('-html5')
-
-            links += [
-                "https://docs.oracle.com/javase/10/docs/api/"
-            ]
-        }
-    }
-
-    bintray {
-        user = System.getenv("BINTRAY_USER")
-        key = System.getenv("BINTRAY_KEY")
-        publications = ["Commandler"]
-        publish = true
-
-        pkg {
-            repo = "maven"
-            name = subproject.name
-            userOrg = "elypia"
-            licenses = ['Apache-2.0']
-            vcsUrl = projectGit
-            publicDownloadNumbers = true
-
-            version {
-                name = version
-                desc = description
-                released = new Date()
-            }
-        }
-    }
-
-    publishing {
-        publications {
-            Commandler(MavenPublication) {
-                from components.java
-                groupId 'com.elypia.commandler'
-                artifactId subproject.name
-                version version
-                artifact javadoc
-                artifact classes
-            }
-        }
-    }
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     dependencies {
         // Logging
@@ -92,9 +52,7 @@ subprojects { subproject ->
         testImplementation "org.junit.jupiter:junit-jupiter:5.4.2"
     }
 
-    /**
-     * Testing and Code Coverage
-     */
+    /** Testing */
 
     test {
         useJUnitPlatform()
@@ -105,14 +63,134 @@ subprojects { subproject ->
         }
     }
 
-    jacoco {
-        toolVersion = "0.8.4"
-    }
+    /** Code Coverage */
 
     jacocoTestReport {
         reports {
-            html.enabled = true
+            html.enabled = false
             xml.enabled = false
         }
+    }
+
+    /** Upload to Bintray */
+
+    jar {
+        manifest {
+            attributes "Implementation-Title": this.name + project.path.replace(':', '-'),
+                    "Implementation-Version": version
+        }
+    }
+
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allSource
+        archiveClassifier = 'sources'
+    }
+
+    task javadocJar(type: Jar) {
+        from javadoc
+        archiveClassifier = 'javadoc'
+
+        javadoc {
+            options {
+                links += [
+                        "https://docs.oracle.com/en/java/javase/12/docs/api/"
+                ]
+            }
+        }
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
+    }
+
+    bintray {
+        user = System.getenv("BINTRAY_USER")
+        key = System.getenv("BINTRAY_KEY")
+        publications = ['mavenJava']
+        publish = true
+        pkg {
+            repo = this.name
+            name = project.path.substring(1).replace(':', '-')
+            desc = project.description
+            userOrg = "elypia"
+            websiteUrl = website
+            licenses = ["Apache-2.0"]
+            vcsUrl = gitUrl
+            issueTrackerUrl = issueUrl
+            publicDownloadNumbers = true
+            version {
+                name = project.version
+                desc = project.description
+                vcsTag = project.version
+                released = new Date()
+            }
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId project.path.substring(1).replace(':', '-')
+                groupId project.group
+                version project.version
+                from components.java
+                artifact sourcesJar
+                artifact javadocJar
+
+                pom {
+                    name = this.name
+                    description = project.description
+                    url = website
+                    licenses {
+                        license {
+                            name = "The Apache License, Version 2.0"
+                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = "Seth"
+                            name = "Seth"
+                            email = "seth@elypia.com"
+                        }
+                    }
+                    scm {
+                        url = gitUrl
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** Generate Global JavaDocs for GitLab Pages */
+
+task globalJavadoc(type: Javadoc) {
+    source = subprojects.collect { it.sourceSets.main.allJava }
+    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
+    destinationDir = file("${buildDir}/docs/javadoc")
+}
+
+/** Combine and ouput code coverage. */
+
+task jacocoMerge(type: JacocoMerge) {
+    executionData = files(subprojects.jacocoTestReport.executionData.findAll {it.asList() })
+
+    doFirst {
+        executionData = files(executionData.findAll {
+            it.exists()
+        })
+    }
+}
+
+task jacocoReport(type: JacocoReport, dependsOn: jacocoMerge) {
+    sourceDirectories.from = files(subprojects.sourceSets.main.allSource.srcDirs.findAll { it.asList() })
+    classDirectories.from = files(subprojects.sourceSets.main.output.findAll { it.asList() })
+    executionData.from = files(jacocoMerge.destinationFile)
+
+    reports {
+        html.enabled = true
+        xml.enabled = false
     }
 }

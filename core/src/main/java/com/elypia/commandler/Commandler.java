@@ -1,43 +1,49 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.impl.DefaultCommandProcessor;
-import com.elypia.commandler.inject.ServiceProvider;
+import com.elypia.commandler.def.DefCommandProcessor;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.testing.TestRunner;
+import com.elypia.commandler.validation.CommandValidator;
+import com.google.inject.Injector;
 
 public class Commandler<S, M> {
 
     protected String prefix;
     protected String website;
     protected Context context;
-    protected MisuseListener<S, M> misuseHandler;
+    protected MisuseHandler misuseHandler;
     protected LanguageAdapter<S> engine;
-    protected ResponseBuilder<M> builder;
+    protected MessageProvider<M> builder;
 
     protected CommandProcessor<S, M> processor;
     protected CommandValidator validator;
-    protected ParameterParser parser;
+    protected ParamAdapter parser;
     protected TestRunner runner;
 
-    protected ServiceProvider provider;
+    protected Injector injector;
 
-    protected Commandler(CommandlerBuilder<?, S, M> commandlerBuilder) {
-        provider = new ServiceProvider(this);
-        context = commandlerBuilder.context.load();
-        misuseHandler = commandlerBuilder.misuseHandler;
-        engine = commandlerBuilder.engine;
+    protected Commandler(
+        String prefix,
+        String website,
+        ContextLoader contextLoader,
+        MisuseHandler misuseHandler,
+        LanguageAdapter<S> engine,
+        Injector injector
+    ) {
+        this.injector = injector;
+        this.context = contextLoader.load();
+        this.misuseHandler = misuseHandler;
+        this.engine = engine;
 
-        provider.createInjector();
+        this.prefix = prefix;
+        this.website = website;
+        this.processor = new DefCommandProcessor(this);
+        this.validator = new CommandValidator(injector, this);
+        this.runner = new TestRunner(this);
 
-        prefix = commandlerBuilder.prefix;
-        website = commandlerBuilder.website;
-        processor = new DefaultCommandProcessor(this);
-        validator = new CommandValidator(this);
-        runner = new TestRunner(this);
-
-        parser = new ParameterParser(provider, context.getParsers());
-        builder = new ResponseBuilder<>(provider, context.getBuilders());
+        this.parser = new ParamAdapter(injector, context.getParsers());
+        this.builder = new MessageProvider<>(injector, context.getBuilders());
     }
 
     public M execute(S event, String content, boolean send) {
@@ -60,7 +66,7 @@ public class Commandler<S, M> {
         return processor;
     }
 
-    public MisuseListener<S, M> getMisuseHandler() {
+    public MisuseHandler getMisuseHandler() {
         return misuseHandler;
     }
 
@@ -72,11 +78,11 @@ public class Commandler<S, M> {
         return validator;
     }
 
-    public ParameterParser getParser() {
+    public ParamAdapter getParser() {
         return parser;
     }
 
-    public ResponseBuilder<M> getBuilder() {
+    public MessageProvider<M> getBuilder() {
         return builder;
     }
 
@@ -84,7 +90,7 @@ public class Commandler<S, M> {
         return runner;
     }
 
-    public ServiceProvider getServiceProvider() {
-        return provider;
+    public Injector getInjector() {
+        return injector;
     }
 }

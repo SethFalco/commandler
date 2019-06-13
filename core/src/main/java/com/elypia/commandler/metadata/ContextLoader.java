@@ -1,13 +1,13 @@
 package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.Handler;
+import com.elypia.commandler.adapters.*;
+import com.elypia.commandler.def.modules.HelpModule;
 import com.elypia.commandler.exceptions.ConflictingModuleException;
-import com.elypia.commandler.impl.modules.HelpModule;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.builder.*;
-import com.elypia.commandler.metadata.data.ModuleData;
+import com.elypia.commandler.metadata.data.MetaModule;
 import com.elypia.commandler.metadata.loader.*;
-import com.elypia.commandler.parsers.*;
 import org.slf4j.*;
 
 import java.io.*;
@@ -23,14 +23,14 @@ public class ContextLoader {
     private MetadataLoader[] loaders;
 
     private Collection<Class<? extends Handler>> handlers;
-    private Collection<Class<? extends Parser>> parsers;
-    private Collection<Class<? extends Builder>> builders;
+    private Collection<Class<? extends Adapter>> parsers;
+    private Collection<Class<? extends Provider>> builders;
 
-    private Collection<ModuleData> modules;
+    private Collection<MetaModule> modules;
 
     private Collection<ModuleBuilder> moduleBuilders;
-    private Collection<ParserBuilder> parserBuilders;
-    private Collection<BuilderBuilder> builderBuilders;
+    private Collection<AdapterBuilder> adapterBuilders;
+    private Collection<ProviderBuilder> providerBuilders;
 
     /**
      * Defaults to using all provided loaders which will cascade to load
@@ -58,18 +58,18 @@ public class ContextLoader {
         modules = new ArrayList<>();
 
         moduleBuilders = new ArrayList<>();
-        parserBuilders = new ArrayList<>();
-        builderBuilders = new ArrayList<>();
+        adapterBuilders = new ArrayList<>();
+        providerBuilders = new ArrayList<>();
 
         add(
             HelpModule.class,
-            BooleanParser.class,
-            CharacterParser.class,
-            DurationParser.class,
-            EnumParser.class,
-            NumberParser.class,
-            StringParser.class,
-            UrlParser.class
+            BooleanAdapter.class,
+            CharAdapter.class,
+            DurationAdapter.class,
+            EnumAdapter.class,
+            NumberAdapter.class,
+            StringAdapter.class,
+            UrlAdapter.class
         );
 
         if (reference == null)
@@ -86,15 +86,15 @@ public class ContextLoader {
         for (Class clazz : clazzes) {
             if (Handler.class.isAssignableFrom(clazz))
                 handlers.add(clazz);
-            else if (Parser.class.isAssignableFrom(clazz))
+            else if (Adapter.class.isAssignableFrom(clazz))
                 parsers.add(clazz);
-            else if (Builder.class.isAssignableFrom(clazz))
+            else if (Provider.class.isAssignableFrom(clazz))
                 builders.add(clazz);
         }
     }
 
     public Context load() {
-        // TODO: Get data as builder and merge them to prevent overwriting
+        // TODO: Get data as adapters and merge them to prevent overwriting
         for (MetadataLoader loader : loaders) {
             for (Class<? extends Handler> clazz : handlers) {
                 ModuleBuilder module = new ModuleBuilder(clazz);
@@ -129,16 +129,16 @@ public class ContextLoader {
                 moduleBuilders.add(module);
             }
 
-            for (Class<? extends Parser> clazz : parsers) {
-                ParserBuilder builder = new ParserBuilder(clazz);
+            for (Class<? extends Adapter> clazz : parsers) {
+                AdapterBuilder builder = new AdapterBuilder(clazz);
                 loader.loadParser(builder);
-                parserBuilders.add(builder);
+                adapterBuilders.add(builder);
             }
 
-            for (Class<? extends Builder> clazz : builders) {
-                BuilderBuilder builder = new BuilderBuilder(clazz);
+            for (Class<? extends Provider<?, ?>> clazz : builders) {
+                ProviderBuilder builder = new ProviderBuilder(clazz);
                 loader.loadBuilder(builder);
-                builderBuilders.add(builder);
+                providerBuilders.add(builder);
             }
         }
 
@@ -150,11 +150,11 @@ public class ContextLoader {
             }
         }
 
-        var parsers = parserBuilders.stream()
+        var parsers = adapterBuilders.stream()
             .map((p) -> p.build(this))
             .collect(Collectors.toList());
 
-        var builders = builderBuilders.stream()
+        var builders = providerBuilders.stream()
             .map((b) -> b.build(this))
             .collect(Collectors.toList());
 
@@ -229,7 +229,7 @@ public class ContextLoader {
         return moduleBuilders;
     }
 
-    public Collection<ModuleData> getModules() {
+    public Collection<MetaModule> getModules() {
         return modules;
     }
 }

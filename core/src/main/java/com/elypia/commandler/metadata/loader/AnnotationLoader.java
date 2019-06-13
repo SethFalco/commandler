@@ -87,8 +87,8 @@ public class AnnotationLoader implements MetadataLoader {
     }
 
     @Override
-    public ParserBuilder loadParser(ParserBuilder builder) {
-        Class<? extends Parser> clazz = builder.getParserClass();
+    public AdapterBuilder loadParser(AdapterBuilder builder) {
+        Class<? extends Adapter> clazz = builder.getParserClass();
 
         if (!clazz.isAnnotationPresent(Compatible.class))
             return builder;
@@ -100,8 +100,8 @@ public class AnnotationLoader implements MetadataLoader {
     }
 
     @Override
-    public BuilderBuilder loadBuilder(BuilderBuilder builder) {
-        Class<? extends Builder> clazz = builder.getBuilderClass();
+    public ProviderBuilder loadBuilder(ProviderBuilder builder) {
+        Class<? extends Provider> clazz = builder.getBuilderClass();
 
         if (!clazz.isAnnotationPresent(Compatible.class))
             return builder;

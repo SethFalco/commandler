@@ -37,8 +37,8 @@ public class ModuleBuilder implements Iterable<CommandBuilder> {
     }
 
     public void addCommand(CommandBuilder builder) {
-        Set<String> existing = commands.parallelStream()
-            .flatMap((c) -> c.getAliases().parallelStream())
+        Set<String> existing = commands.stream()
+            .flatMap((c) -> c.getAliases().stream())
             .collect(Collectors.toSet());
 
         for (String alias : aliases) {
@@ -49,7 +49,7 @@ public class ModuleBuilder implements Iterable<CommandBuilder> {
             throw new IllegalStateException(String.format(format, builder.getName(), alias));
         }
 
-        boolean multiDefaults = commands.parallelStream()
+        boolean multiDefaults = commands.stream()
             .anyMatch(CommandBuilder::isDefault);
 
         if (multiDefaults) {
@@ -60,21 +60,21 @@ public class ModuleBuilder implements Iterable<CommandBuilder> {
         commands.add(builder);
     }
 
-    public ModuleData build(ContextLoader context) {
+    public MetaModule build(ContextLoader context) {
         if (group == null || group.isEmpty())
             group = DEFAULT_GROUP;
 
-        ModuleData data = new ModuleData(clazz, this);
+        MetaModule data = new MetaModule(clazz, this);
 
-        for (ModuleData module : context.getModules()) {
+        for (MetaModule module : context.getModules()) {
             if (name.equalsIgnoreCase(module.getName()))
                 throw new ConflictingModuleException("Module `%s` already exists within current context.", name);
 
             if (!Collections.disjoint(aliases, module.getAliases()))
                 throw new ConflictingModuleException("Module `%s` has an alias which is already taken by another module.", name);
 
-            Collection<String> staticAliases = module.getCommands().parallelStream()
-                .filter(CommandData::isStatic)
+            Collection<String> staticAliases = module.getCommands().stream()
+                .filter(MetaCommand::isStatic)
                 .flatMap((c) -> c.getAliases().stream())
                 .collect(Collectors.toList());
 
