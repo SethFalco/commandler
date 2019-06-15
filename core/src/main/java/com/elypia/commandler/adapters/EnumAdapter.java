@@ -3,7 +3,7 @@ package com.elypia.commandler.adapters;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.metadata.data.ParamData;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import javax.inject.Singleton;
 import java.util.Objects;
@@ -20,7 +20,7 @@ import java.util.Objects;
 public class EnumAdapter implements Adapter<Enum> {
 
     @Override
-    public Enum adapt(String input, Class<? extends Enum> type, ParamData data) {
+    public Enum adapt(String input, Class<? extends Enum> type, MetaParam data) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(input);
         input = input.toLowerCase().replace(" ", "");

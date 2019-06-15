@@ -1,7 +1,7 @@
 package com.elypia.commandler.metadata.builder;
 
-import com.elypia.commandler.Handler;
-import com.elypia.commandler.exceptions.ConflictingModuleException;
+import com.elypia.commandler.exceptions.init.ConflictingModuleException;
+import com.elypia.commandler.interfaces.Handler;
 import com.elypia.commandler.metadata.ContextLoader;
 import com.elypia.commandler.metadata.data.*;
 import org.slf4j.*;

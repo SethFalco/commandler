@@ -15,7 +15,7 @@ public class ValidationTest {
     @BeforeAll
     public static void beforeAll() {
         ContextLoader loader = new ContextLoader(new AnnotationLoader());
-        loader.add(ValidationModule.class, DefaultProvider.class, NumberProvider.class);
+        loader.add(ValidationModule.class, DefaultResponseProvider.class, NumberResponseProvider.class);
 
         commandler = new TestCommandlerBuilder()
             .setPrefix(">")

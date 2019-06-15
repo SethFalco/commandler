@@ -1,7 +1,7 @@
 package com.elypia.commandler.export;
 
+import com.elypia.commandler.core.Context;
 import com.elypia.commandler.export.deserializers.ModulesContextSerializer;
-import com.elypia.commandler.metadata.Context;
 import com.google.gson.*;
 
 public class DocExporter {

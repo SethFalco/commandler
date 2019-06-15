@@ -2,6 +2,18 @@ plugins {
     id "com.jfrog.bintray" version "1.8.4" apply false
 }
 
+def publishedProjects = [
+    /** Library */
+    project(":core"),
+    project(":file-config"),
+    project(":export")
+]
+
+def applicationProjects = [
+    /** Example */
+    project(":example")
+]
+
 allprojects() {
     apply plugin: "idea"
     apply plugin: "jacoco"
@@ -26,18 +38,15 @@ allprojects() {
     }
 }
 
-def publishedProjects = [
-    /** Library */
-    project(":core"),
-    project(":file-config"),
-    project(":export")
-]
-
 configure(publishedProjects) {
     apply plugin: "java-library"
-    apply plugin: "maven-publish"
-    apply plugin: "com.jfrog.bintray"
+}
 
+configure(applicationProjects) {
+    apply plugin: "java"
+}
+
+configure(publishedProjects + applicationProjects) {
     sourceCompatibility = 11
     targetCompatibility = 11
 
@@ -47,7 +56,14 @@ configure(publishedProjects) {
         // Logging
         implementation "org.slf4j:slf4j-api:1.7.26"
         testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    }
+}
 
+configure(publishedProjects) {
+    apply plugin: "maven-publish"
+    apply plugin: "com.jfrog.bintray"
+
+    dependencies {
         // Testing
         testImplementation "org.junit.jupiter:junit-jupiter:5.4.2"
     }
@@ -167,15 +183,15 @@ configure(publishedProjects) {
 /** Generate Global JavaDocs for GitLab Pages */
 
 task globalJavadoc(type: Javadoc) {
-    source = subprojects.collect { it.sourceSets.main.allJava }
-    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
+    source = publishedProjects.collect { it.sourceSets.main.allJava }
+    classpath = files(publishedProjects.collect { it.sourceSets.main.compileClasspath })
     destinationDir = file("${buildDir}/docs/javadoc")
 }
 
-/** Combine and ouput code coverage. */
+/** Combine and output code coverage. */
 
 task jacocoMerge(type: JacocoMerge) {
-    executionData = files(subprojects.jacocoTestReport.executionData.findAll {it.asList() })
+    executionData = files(publishedProjects.jacocoTestReport.executionData.findAll {it.asList() })
 
     doFirst {
         executionData = files(executionData.findAll {
@@ -185,8 +201,8 @@ task jacocoMerge(type: JacocoMerge) {
 }
 
 task jacocoReport(type: JacocoReport, dependsOn: jacocoMerge) {
-    sourceDirectories.from = files(subprojects.sourceSets.main.allSource.srcDirs.findAll { it.asList() })
-    classDirectories.from = files(subprojects.sourceSets.main.output.findAll { it.asList() })
+    sourceDirectories.from = files(publishedProjects.sourceSets.main.allSource.srcDirs.findAll { it.asList() })
+    classDirectories.from = files(publishedProjects.sourceSets.main.output.findAll { it.asList() })
     executionData.from = files(jacocoMerge.destinationFile)
 
     reports {

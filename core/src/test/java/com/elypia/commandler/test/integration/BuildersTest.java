@@ -16,8 +16,8 @@ public class BuildersTest {
 
         loader.add(
             BuilderModule.class,
-            DefaultProvider.class,
-            NumberProvider.class
+            DefaultResponseProvider.class,
+            NumberResponseProvider.class
         );
 
         commandler = new TestCommandlerBuilder()

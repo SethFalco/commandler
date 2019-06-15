@@ -1,6 +1,7 @@
 package com.elypia.commandler.testing;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.interfaces.Handler;
 import com.elypia.commandler.metadata.data.MetaModule;
 import org.slf4j.*;
 
@@ -37,7 +38,7 @@ public class TestRunner {
 
         executor.scheduleAtFixedRate(() -> {
             for (MetaModule data : commandler.getContext()) {
-                Handler handler = commandler.getInjector().get(data.getModuleClass());
+                Handler handler = commandler.getInjector().getInstance(data.getModuleType());
 
                 if (handler == null) {
                     logger.debug("Registered handler is not initalised, testing was skipped.");

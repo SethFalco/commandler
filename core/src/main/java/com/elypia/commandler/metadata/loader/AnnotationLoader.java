@@ -1,6 +1,5 @@
 package com.elypia.commandler.metadata.loader;
 
-import com.elypia.commandler.Handler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.interfaces.*;
@@ -17,19 +16,6 @@ public class AnnotationLoader implements MetadataLoader {
         return Arrays.stream(clazz.getMethods())
             .filter((m) -> m.isAnnotationPresent(Command.class))
             .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Method> findOverloads(CommandBuilder command) {
-        Class clazz = command.getMethod().getDeclaringClass();
-
-        return Arrays.stream(clazz.getMethods())
-            .filter((m) -> {
-                if (!m.isAnnotationPresent(Overload.class))
-                    return false;
-
-                return m.getAnnotation(Overload.class).value().equals(command.getName());
-            }).collect(Collectors.toList());
     }
 
     @Override
@@ -64,17 +50,6 @@ public class AnnotationLoader implements MetadataLoader {
     }
 
     @Override
-    public OverloadBuilder loadOverload(OverloadBuilder builder) {
-        Method method = builder.getMethod();
-
-        if (!method.isAnnotationPresent(Overload.class))
-            return builder;
-
-        Overload overload = method.getAnnotation(Overload.class);
-        return builder.setNames(List.of(overload.params()));
-    }
-
-    @Override
     public ParamBuilder loadParam(ParamBuilder builder) {
         Param param = builder.getParameter().getAnnotation(Param.class);
 
@@ -83,7 +58,7 @@ public class AnnotationLoader implements MetadataLoader {
 
         return builder
             .setName(param.name())
-            .setHelp(param.value());
+            .setHelp(param.help());
     }
 
     @Override
@@ -101,7 +76,7 @@ public class AnnotationLoader implements MetadataLoader {
 
     @Override
     public ProviderBuilder loadBuilder(ProviderBuilder builder) {
-        Class<? extends Provider> clazz = builder.getBuilderClass();
+        Class<? extends ResponseProvider> clazz = builder.getBuilderClass();
 
         if (!clazz.isAnnotationPresent(Compatible.class))
             return builder;

@@ -1,21 +1,32 @@
 package com.elypia.commandler.metadata.data;
 
-import com.elypia.commandler.interfaces.Provider;
+import com.elypia.commandler.interfaces.*;
 
 import java.util.*;
 
 public class MetaProvider {
 
-    private Class<? extends Provider<?, ?>> clazz;
+    /** What service is this a provider for. */
+    private Class<? extends ServiceController<?, ?>> serviceType;
+
+    /** The type of the provider itself. */
+    private Class<? extends ResponseProvider<?, ?>> type;
+
+    /** The types this provider is compatible for. */
     private Collection<Class<?>> compatible;
 
-    public MetaProvider(Class<? extends Provider<?, ?>> clazz, Collection<Class<?>> compatible) {
-        this.clazz = Objects.requireNonNull(clazz);
+    public MetaProvider(Class<? extends ServiceController<?, ?>> serviceType, Class<? extends ResponseProvider<?, ?>> type, Collection<Class<?>> compatible) {
+        this.serviceType = Objects.requireNonNull(serviceType);
+        this.type = Objects.requireNonNull(type);
         this.compatible = Objects.requireNonNull(compatible);
     }
 
-    public Class<? extends Provider<?, ?>> getProviderClass() {
-        return clazz;
+    public Class<? extends ServiceController<?, ?>> getServiceType() {
+        return serviceType;
+    }
+
+    public Class<? extends ResponseProvider<?, ?>> getProviderType() {
+        return type;
     }
 
     public Collection<Class<?>> getCompatibleClasses() {

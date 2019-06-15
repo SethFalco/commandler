@@ -1,7 +1,7 @@
 package com.elypia.commandler.validation;
 
-import com.elypia.commandler.Handler;
-import com.elypia.commandler.metadata.Context;
+import com.elypia.commandler.core.Context;
+import com.elypia.commandler.interfaces.Handler;
 import com.elypia.commandler.metadata.data.*;
 
 import javax.validation.ParameterNameProvider;
@@ -30,25 +30,17 @@ public class CommandParamNameProvider implements ParameterNameProvider {
         if (module == null)
             return getJavaNames(method);
 
-        List<ParamData> params = null;
+        List<MetaParam> params = null;
 
-        outer:
         for (MetaCommand command : module.getCommands()) {
             if (method.equals(command.getMethod())) {
-                params = command.getDefaultParams();
+                params = command.getParams();
                 break;
-            }
-
-            for (OverloadData overload : command.getOverloads()) {
-                if (overload.getMethod().equals(method)) {
-                    params = overload.getParams();
-                    break outer;
-                }
             }
         }
 
         List<String> names = params.stream()
-            .map(ParamData::getName)
+            .map(MetaParam::getName)
             .collect(Collectors.toList());
 
         while (names.size() < method.getParameterCount())

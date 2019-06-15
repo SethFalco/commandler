@@ -1,6 +1,6 @@
 package com.elypia.commandler.metadata.loader;
 
-import com.elypia.commandler.Handler;
+import com.elypia.commandler.interfaces.Handler;
 import com.elypia.commandler.metadata.builder.*;
 
 import java.lang.reflect.Method;
@@ -18,11 +18,6 @@ public class ReflectionLoader implements MetadataLoader {
         return Stream.of(clazz.getMethods())
             .filter((m) -> m.getName().endsWith("Command"))
             .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Method> findOverloads(CommandBuilder command) {
-        return List.of();
     }
 
     @Override
@@ -49,11 +44,6 @@ public class ReflectionLoader implements MetadataLoader {
             .setAliases(toAlias(command))
             .setStatic(command.endsWith("StaticCommand"))
             .setDefault(command.endsWith("DefaultCommand"));
-    }
-
-    @Override
-    public OverloadBuilder loadOverload(OverloadBuilder builder) {
-        return builder;
     }
 
     @Override

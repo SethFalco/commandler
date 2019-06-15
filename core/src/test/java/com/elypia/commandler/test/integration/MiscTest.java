@@ -18,8 +18,8 @@ public class MiscTest {
 
         loader.add(
             MiscModule.class,
-            DefaultProvider.class,
-            NumberProvider.class
+            DefaultResponseProvider.class,
+            NumberResponseProvider.class
         );
 
         commandler = new TestCommandlerBuilder()
@@ -70,7 +70,7 @@ public class MiscTest {
             "I'll repeat something you say.\n" +
             "input: What you want me to say.";
 
-        String actual = commandler.execute(">misc value");
+        String actual = commandler.execute(">misc help");
 
         assertEquals(expected, actual);
     }

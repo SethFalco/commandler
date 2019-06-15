@@ -1,6 +1,6 @@
 package com.elypia.commandler.export.deserializers;
 
-import com.elypia.commandler.metadata.Context;
+import com.elypia.commandler.core.Context;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
@@ -35,7 +35,7 @@ public class ModulesContextSerializer implements JsonSerializer<Context> {
 //
 //                    Param paramAnno = paramData.getAnnotation();
 //                    param.addProperty("id", paramAnno.name());
-//                    param.addProperty("value", paramAnno.value());
+//                    param.addProperty("help", paramAnno.help());
 //
 //                    params.add(param);
 //                });
@@ -76,6 +76,6 @@ public class ModulesContextSerializer implements JsonSerializer<Context> {
             jsonAliases.add(alias);
 
         src.add("aliases", jsonAliases);
-        src.addProperty("value", help);
+        src.addProperty("help", help);
     }
 }

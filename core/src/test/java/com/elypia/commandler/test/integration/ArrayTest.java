@@ -18,8 +18,8 @@ public class ArrayTest {
 
         loader.add(
             ArrayModule.class,
-            DefaultProvider.class,
-            NumberProvider.class
+            DefaultResponseProvider.class,
+            NumberResponseProvider.class
         );
 
         commandler = new TestCommandlerBuilder()

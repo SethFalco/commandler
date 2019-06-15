@@ -2,7 +2,7 @@ package com.elypia.commandler.adapters;
 
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.metadata.data.ParamData;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import javax.inject.Singleton;
 import java.util.*;
@@ -12,41 +12,23 @@ import java.util.*;
 public class BooleanAdapter implements Adapter<Boolean> {
 
     private static final Collection<String> TRUE = List.of(
-        // Formal responses
-        "true", "t",
-
-        // Developer responses
-        "1", "one",
-
-        // Normal responses
-        "yes", "y",
-
-        // Informal responses
-        "ya", "ye", "yea", "yeah",
-
-        // Characters
-        "✔"
+        "true", "t", // Formal responses
+        "1", "one", // Developer responses
+        "yes", "y", // Normal responses
+        "ya", "ye", "yea", "yeah", // Informal responses
+        "✔" // Characters
     );
 
     private static final Collection<String> FALSE = List.of(
-        // Formal responses
-        "false", "f",
-
-        // Developer responses
-        "0", "zero",
-
-        // Normal responses
-        "no", "n",
-
-        // Informal responses
-        "nah", "nope",
-
-        // Characters
-        "❌"
+        "false", "f", // Formal responses
+        "0", "zero", // Developer responses
+        "no", "n", // Normal responses
+        "nah", "nope", // Informal responses
+        "❌" // Characters
     );
 
     @Override
-    public Boolean adapt(String input, Class<? extends Boolean> type, ParamData data) {
+    public Boolean adapt(String input, Class<? extends Boolean> type, MetaParam data) {
         input = input.toLowerCase();
 
         if (TRUE.contains(input))

@@ -2,7 +2,7 @@ package com.elypia.commandler.adapters;
 
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.metadata.data.ParamData;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import javax.inject.Singleton;
 import java.net.*;
@@ -12,7 +12,7 @@ import java.net.*;
 public class UrlAdapter implements Adapter<URL> {
 
     @Override
-    public URL adapt(String input, Class<? extends URL> type, ParamData data) {
+    public URL adapt(String input, Class<? extends URL> type, MetaParam data) {
         try {
             return new URL(input);
         } catch (MalformedURLException e) {

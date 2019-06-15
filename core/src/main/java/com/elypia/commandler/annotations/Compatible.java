@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 import java.time.Duration;
 
 /**
- * Used with {@link Adapter}s and {@link Provider}s in
+ * Used with {@link Adapter}s and {@link ResponseProvider}s in
  * order to bind data-types they are made to work with.
  * For example if a adapters is able to convert your
  * {@link Duration} into a viable message object for your

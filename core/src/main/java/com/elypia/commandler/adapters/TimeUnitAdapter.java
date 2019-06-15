@@ -2,7 +2,7 @@ package com.elypia.commandler.adapters;
 
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.metadata.data.ParamData;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import javax.inject.Singleton;
 import java.util.*;
@@ -27,7 +27,7 @@ public class TimeUnitAdapter implements Adapter<TimeUnit> {
     }
 
     @Override
-    public TimeUnit adapt(String input, Class<? extends TimeUnit> type, ParamData param) {
+    public TimeUnit adapt(String input, Class<? extends TimeUnit> type, MetaParam param) {
         switch (input.toLowerCase()) {
             case "days": case "day": case "d":
                 return (units.contains(TimeUnit.DAYS)) ? TimeUnit.DAYS : null;

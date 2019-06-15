@@ -1,6 +1,7 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.interfaces.Handler;
 
 import java.lang.annotation.*;
 
@@ -16,7 +17,7 @@ public @interface Module {
 
 	/**
 	 * @return Name of the module as it should appear at the top
-	 * of the value commands. This is not the alias of the module.
+	 * of the help commands. This is not the alias of the module.
 	 */
 	String name() default "";
 
@@ -34,7 +35,7 @@ public @interface Module {
 	String[] aliases() default {};
 
 	/**
-	 * @return A value String to advise users what
+	 * @return A help String to advise users what
 	 * the module is for.
 	 */
 	String help() default "";

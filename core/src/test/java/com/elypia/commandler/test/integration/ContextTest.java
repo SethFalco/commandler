@@ -22,7 +22,7 @@ public class ContextTest {
 
     @Test
     public void testAddingPackage() {
-        // TODO: Make the default HelpModule optional.
+        // TODO: Make the default DefHelpModule optional.
         int expected = 7;
         int actual = commandler.getContext().getModules().size();
 

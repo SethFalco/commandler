@@ -1,8 +1,9 @@
 package com.elypia.commandler.test.integration.impl.modules;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.interfaces.Handler;
 
 /**
  * This is just a really basic test module with the bare minimum
@@ -13,15 +14,15 @@ public class MiscModule implements Handler {
 
     @Command(name = "Say", aliases = "say", help = "I'll repeat something you say.")
     public String say(
-        @Param(name = "input", value = "What you want me to say.") String input
+        @Param(name = "input", help = "What you want me to say.") String input
     ) {
         return input;
     }
 
     @Command(name = "Repeat", aliases = "repeat", help = "Repeat some text multiple times.")
     public String repeat(
-        @Param(name = "input", value = "What you want me to say.") String input,
-        @Param(name = "count", value = "The number of times I should say it.") int count
+        @Param(name = "input", help = "What you want me to say.") String input,
+        @Param(name = "count", help = "The number of times I should say it.") int count
     ) {
         StringBuilder builder = new StringBuilder();
 

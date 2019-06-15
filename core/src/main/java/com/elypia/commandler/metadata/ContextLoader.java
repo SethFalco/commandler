@@ -1,9 +1,9 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.Handler;
 import com.elypia.commandler.adapters.*;
-import com.elypia.commandler.def.modules.HelpModule;
-import com.elypia.commandler.exceptions.ConflictingModuleException;
+import com.elypia.commandler.core.Context;
+import com.elypia.commandler.def.modules.DefHelpModule;
+import com.elypia.commandler.exceptions.init.ConflictingModuleException;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.builder.*;
 import com.elypia.commandler.metadata.data.MetaModule;
@@ -24,7 +24,7 @@ public class ContextLoader {
 
     private Collection<Class<? extends Handler>> handlers;
     private Collection<Class<? extends Adapter>> parsers;
-    private Collection<Class<? extends Provider>> builders;
+    private Collection<Class<? extends ResponseProvider<?, ?>>> builders;
 
     private Collection<MetaModule> modules;
 
@@ -41,7 +41,7 @@ public class ContextLoader {
      * are moduleBuilders.
      */
     public ContextLoader(Class reference) {
-        this(reference, new AnnotationLoader()); //, new ReflectionLoader()
+        this(reference, new AnnotationLoader(), new ReflectionLoader());
     }
 
     public ContextLoader(MetadataLoader... loaders) {
@@ -62,7 +62,7 @@ public class ContextLoader {
         providerBuilders = new ArrayList<>();
 
         add(
-            HelpModule.class,
+            DefHelpModule.class,
             BooleanAdapter.class,
             CharAdapter.class,
             DurationAdapter.class,
@@ -88,7 +88,7 @@ public class ContextLoader {
                 handlers.add(clazz);
             else if (Adapter.class.isAssignableFrom(clazz))
                 parsers.add(clazz);
-            else if (Provider.class.isAssignableFrom(clazz))
+            else if (ResponseProvider.class.isAssignableFrom(clazz))
                 builders.add(clazz);
         }
     }
@@ -110,19 +110,6 @@ public class ContextLoader {
                         command.addParam(param);
                     }
 
-                    for (Method methodOverload : loader.findOverloads(command)) {
-                        OverloadBuilder overload = new OverloadBuilder(methodOverload);
-                        loader.loadOverload(overload);
-
-                        for (Parameter parameter : loader.findParams(method)) {
-                            ParamBuilder param = new ParamBuilder(parameter);
-                            loader.loadParam(param);
-                            overload.addParam(param);
-                        }
-
-                        command.addOverload(overload);
-                    }
-
                     module.addCommand(command);
                 }
 
@@ -135,7 +122,7 @@ public class ContextLoader {
                 adapterBuilders.add(builder);
             }
 
-            for (Class<? extends Provider<?, ?>> clazz : builders) {
+            for (Class<? extends ResponseProvider<?, ?>> clazz : builders) {
                 ProviderBuilder builder = new ProviderBuilder(clazz);
                 loader.loadBuilder(builder);
                 providerBuilders.add(builder);

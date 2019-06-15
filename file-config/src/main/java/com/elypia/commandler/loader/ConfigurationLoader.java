@@ -2,9 +2,8 @@ package com.elypia.commandler.loader;
 
 import com.electronwill.nightconfig.core.conversion.ObjectConverter;
 import com.electronwill.nightconfig.core.file.FileConfig;
-import com.elypia.commandler.Handler;
 import com.elypia.commandler.configuration.*;
-import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.interfaces.Handler;
 import com.elypia.commandler.metadata.builder.*;
 import com.elypia.commandler.metadata.loader.MetadataLoader;
 
@@ -71,13 +70,6 @@ public class ConfigurationLoader implements MetadataLoader {
     }
 
     @Override
-    public List<Class<? extends Handler>> findModules() {
-        return configuration.getModules().stream()
-            .map(ModuleConfig::getHandler)
-            .collect(Collectors.toList());
-    }
-
-    @Override
     public List<Method> findCommands(Class<? extends Handler> clazz) {
         for (ModuleConfig module : configuration) {
             if (module.getHandler() != clazz)
@@ -88,16 +80,6 @@ public class ConfigurationLoader implements MetadataLoader {
                 .collect(Collectors.toList());
         }
 
-        return null;
-    }
-
-    @Override
-    public List<Class<? extends Provider>> findBuilders() {
-        return null;
-    }
-
-    @Override
-    public List<Class<? extends Adapter>> findParsers() {
         return null;
     }
 
@@ -145,10 +127,10 @@ public class ConfigurationLoader implements MetadataLoader {
     @Override
     public ParamBuilder loadParam(ParamBuilder builder) {
         Executable method = builder.getParameter().getDeclaringExecutable();
-        Class clazz = method.getDeclaringClass();
+        Class type = method.getDeclaringClass();
 
         for (ModuleConfig module : configuration) {
-            if (module.getHandler() != clazz)
+            if (module.getHandler() != type)
                 continue;
 
             for (CommandConfig command : module) {
@@ -164,6 +146,16 @@ public class ConfigurationLoader implements MetadataLoader {
         }
 
         return builder;
+    }
+
+    @Override
+    public AdapterBuilder loadParser(AdapterBuilder builder) {
+        return null;
+    }
+
+    @Override
+    public ProviderBuilder loadBuilder(ProviderBuilder builder) {
+        return null;
     }
 
     public Configuration getConfiguration() {

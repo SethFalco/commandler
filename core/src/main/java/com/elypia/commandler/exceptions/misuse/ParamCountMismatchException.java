@@ -1,6 +1,7 @@
 package com.elypia.commandler.exceptions.misuse;
 
 import com.elypia.commandler.Input;
+import com.elypia.commandler.exceptions.InputException;
 
 public class ParamCountMismatchException extends InputException {
 

@@ -1,83 +1,52 @@
 package com.elypia.commandler.metadata.data;
 
-import com.elypia.commandler.*;
-import com.elypia.commandler.annotations.Overload;
-import com.elypia.commandler.exceptions.MalformedModuleException;
-import com.elypia.commandler.metadata.builder.*;
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.interfaces.Handler;
 import org.slf4j.*;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
  * This is a wrapper around a Module. This is not an instantiated module that
- * can adapt commands; it holds information on the commands in a
+ * can process commands; it holds information on the commands in a
  * form convinient to access to {@link Commandler} and any other APIs.
  */
-public class MetaModule implements Comparable<MetaModule> {
+public class MetaModule implements Comparable<MetaModule>, Iterable<MetaCommand> {
 
-    /**
-     * We use SLF4J for logging, be sure to include a binding so you can see
-     * warnings and messages.
-     */
+    /** SLF4J logger */
     private static final Logger logger = LoggerFactory.getLogger(MetaModule.class);
 
-    /**
-     * The class this annotation data belongs too.
-     */
-    private Class<? extends Handler> clazz;
+    /** The class this annotation data belongs too. */
+    private Class<? extends Handler> type;
 
-    /**
-     * The name of the module.
-     */
-    private String name;
-
-    /**
-     * The group this module belongs to.
-     */
+    /** The group this module belongs to. */
     private String group;
 
-    /**
-     * A list of collected aliases from this annotation. This is used to compare
-     * any user input too as we convert all aliases to lower case in advance.
-     */
+    /** The name of the module. */
+    private String name;
+
+    /** A distinct set of aliases to access this module. */
     private Set<String> aliases;
 
-    /**
-     * Additional help to provide to users.
-     */
+    /** Additional help to provide to users. */
     private String help;
 
-    /**
-     * If the command should be hidden from documentation.
-     */
+    /** If the command should be hidden from documentation. */
     private boolean isHidden;
 
-    /**
-     * A list of {@link MetaCommand} that were created inside the {@link Handler}.
-     * This does not include {@link Overload}s, these are stored inside
-     * {@link MetaCommand#getOverloads()}.
-     */
+    /** A list of {@link MetaCommand} that were created inside the {@link Handler}. */
     private List<MetaCommand> commands;
 
-    private MetaCommand defaultCommand;
-
-    public MetaModule(Class<? extends Handler> moduleClass, ModuleBuilder builder) {
-        try {
-            this.clazz = Objects.requireNonNull(moduleClass);
-            this.name = Objects.requireNonNull(builder.getName());
-            this.group = Objects.requireNonNull(builder.getGroup());
-            this.aliases = Objects.requireNonNull(builder.getAliases());
-        } catch (NullPointerException ex) {
-            throw new MalformedModuleException("Module is missing required metadata.", ex);
-        }
-
-        commands = new ArrayList<>();
-
-        for (CommandBuilder command : builder)
-            commands.add(command.build(this));
-
-        this.help = builder.getHelp();
+    public MetaModule(Class<? extends Handler> moduleClass, String name, String group, Set<String> aliases, String help, boolean isHidden, List<MetaCommand> commands) {
+        this.type = Objects.requireNonNull(moduleClass);
+        this.name = Objects.requireNonNull(name);
+        this.group = Objects.requireNonNull(group);
+        this.aliases = Objects.requireNonNull(aliases);
+        this.help = help;
+        this.isHidden = isHidden;
+        this.commands = Objects.requireNonNull(commands);
     }
 
     /**
@@ -88,12 +57,20 @@ public class MetaModule implements Comparable<MetaModule> {
         return aliases.contains(input.toLowerCase());
     }
 
-    public Class<? extends Handler> getModuleClass() {
-        return clazz;
+    public Class<? extends Handler> getModuleType() {
+        return type;
+    }
+
+    public String getGroup() {
+        return group;
     }
 
     public String getName() {
         return name;
+    }
+
+    public Set<String> getAliases() {
+        return Set.copyOf(aliases);
     }
 
     public String getHelp() {
@@ -104,66 +81,71 @@ public class MetaModule implements Comparable<MetaModule> {
         return isHidden;
     }
 
-    public Set<String> getAliases() {
-        return Set.copyOf(aliases);
-    }
-
     public List<MetaCommand> getCommands() {
         return List.copyOf(commands);
     }
 
     /**
-     * @return Return all {@link MetaCommand}s registered to this
-     * annotation where {@link MetaCommand#isHidden()} is false.
+     * @return All {@link MetaCommand}s in this
+     * module where {@link MetaCommand#isHidden()} is false.
      */
     public List<MetaCommand> getPublicCommands() {
         return commands.stream()
-            .filter((command) -> !command.isHidden())
+            .filter(Predicate.not(MetaCommand::isHidden))
             .collect(Collectors.toUnmodifiableList());
     }
 
+    /**
+     * @return All {@link MetaCommand}s in this
+     * module where {@link MetaCommand#isHidden()} is true.
+     */
+    public List<MetaCommand> getHiddenCommands() {
+        return commands.stream()
+            .filter(MetaCommand::isHidden)
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    /**
+     * @return All commands in this module where
+     * {@link MetaCommand#isStatic()} is true.
+     */
     public List<MetaCommand> getStaticCommands() {
         return commands.stream()
             .filter(MetaCommand::isStatic)
             .collect(Collectors.toUnmodifiableList());
     }
 
+    /**
+     * @return Return the default command, or null
+     * if this module doesn't have one.
+     */
     public MetaCommand getDefaultCommand() {
-        return defaultCommand;
+        return commands.stream()
+            .filter(MetaCommand::isDefault)
+            .findAny().orElse(null);
     }
 
+    /**
+     * @return The module name and it's aliases.
+     */
     @Override
     public String toString() {
-        String format = "%s (%s)";
-        StringJoiner commandJoiner = new StringJoiner("\n");
-
-        for (MetaCommand metaCommand : getPublicCommands()) {
-            String name = metaCommand.getName();
-            StringJoiner aliasJoiner = new StringJoiner(", ");
-
-            for (String alias : metaCommand.getAliases())
-                aliasJoiner.add("'" + alias + "'");
-
-            commandJoiner.add(String.format(format, name, aliasJoiner.toString()));
-        }
-
-        return commandJoiner.toString();
+        return name + " Module (" + String.join(", ", aliases) + ")";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof MetaModule))
-            return false;
-
-        return (((MetaModule)o).clazz == clazz);
-    }
-
+    /**
+     * Sorts {@link MetaModule}s into alphabetical order.
+     *
+     * @param o Another module.
+     * @return If this module is above or below the provided module.
+     */
     @Override
     public int compareTo(MetaModule o) {
         return name.compareToIgnoreCase(o.name);
     }
 
-    public String getGroup() {
-        return group;
+    @Override
+    public Iterator<MetaCommand> iterator() {
+        return commands.iterator();
     }
 }

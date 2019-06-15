@@ -8,29 +8,29 @@ import java.util.*;
 public class MetaAdapter {
 
     /** The class of the adapters itself. */
-    private Class<? extends Adapter> clazz;
+    private Class<? extends Adapter> type;
 
     /** The compatible classes this adapters can adapt for. */
     private Collection<Class<?>> compatible;
 
-    public MetaAdapter(Class<? extends Adapter> clazz, Class<?>... compatible) {
-        this(clazz, List.of(compatible));
+    public MetaAdapter(Class<? extends Adapter> type, Class<?>... compatible) {
+        this(type, List.of(compatible));
     }
 
     /**
-     * @param clazz The class of the adapters itself.
+     * @param type The class of the adapters itself.
      * @param compatible The compatible classes this adapters can adapt for.
      */
-    public MetaAdapter(Class<? extends Adapter> clazz, Collection<Class<?>> compatible) {
-        this.clazz = Objects.requireNonNull(clazz);
+    public MetaAdapter(Class<? extends Adapter> type, Collection<Class<?>> compatible) {
+        this.type = Objects.requireNonNull(type);
         this.compatible = Objects.requireNonNull(compatible);
     }
 
-    public Class<? extends Adapter> getAdapterClass() {
-        return clazz;
+    public Class<? extends Adapter> getAdapterType() {
+        return type;
     }
 
-    public Collection<Class<?>> getCompatibleClasses() {
+    public Collection<Class<?>> getCompatibleTypes() {
         return compatible;
     }
 }

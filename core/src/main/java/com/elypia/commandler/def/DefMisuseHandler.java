@@ -85,7 +85,7 @@ public class DefMisuseHandler implements MisuseHandler {
     public String onParamParse(ParamParseException ex) {
         Objects.requireNonNull(ex);
         Input input = ex.getInput();
-        ParamData param = ex.getParam();
+        MetaParam param = ex.getParam();
         String format =
             "Command failed; I couldn't interpret '%s', as the parameter '%s' (%s).\n" +
             "Module: %s\n" +

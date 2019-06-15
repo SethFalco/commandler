@@ -1,7 +1,7 @@
 package com.elypia.commandler.metadata.loader;
 
-import com.elypia.commandler.Handler;
-import com.elypia.commandler.interfaces.CommandlerEvent;
+import com.elypia.commandler.CommandlerEvent;
+import com.elypia.commandler.interfaces.Handler;
 import com.elypia.commandler.metadata.builder.*;
 
 import java.lang.reflect.*;
@@ -11,7 +11,6 @@ import java.util.stream.*;
 public interface MetadataLoader {
 
     List<Method> findCommands(Class<? extends Handler> clazz);
-    List<Method> findOverloads(CommandBuilder command);
 
     default List<Parameter> findParams(Method method) {
         return Stream.of(method.getParameters())
@@ -21,7 +20,6 @@ public interface MetadataLoader {
 
     ModuleBuilder loadModule(ModuleBuilder builder);
     CommandBuilder loadCommand(CommandBuilder builder);
-    OverloadBuilder loadOverload(OverloadBuilder builder);
     ParamBuilder loadParam(ParamBuilder builder);
 
     AdapterBuilder loadParser(AdapterBuilder builder);

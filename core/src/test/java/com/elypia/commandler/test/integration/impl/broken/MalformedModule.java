@@ -1,8 +1,8 @@
 package com.elypia.commandler.test.integration.impl.broken;
 
-import com.elypia.commandler.Handler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.interfaces.Handler;
 import com.elypia.commandler.metadata.loader.AnnotationLoader;
 
 /**

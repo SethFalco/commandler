@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 /**
  * The Command annotation is used to supply metadata
- * to commands. This can be aliases, or the value to
+ * to commands. This can be aliases, or the help to
  * let people know how to use this commands.
  *
  * All static data will be stored in an annotation, reserving the
@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 public @interface Command {
 
 	/**
-	 * @return The name of the commands as it appears in value / documentation.
+	 * @return The name of the commands as it appears in help / documentation.
 	 * This also acts as a reference for other commands to refer to it.
 	 */
 	String name() default "";
@@ -30,7 +30,7 @@ public @interface Command {
 	String[] aliases() default {};
 
 	/**
-	 * @return The value text to advise the user of what
+	 * @return The help text to advise the user of what
 	 * this commands does.
 	 */
 	String help() default "";

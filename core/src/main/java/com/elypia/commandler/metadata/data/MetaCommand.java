@@ -1,82 +1,53 @@
 package com.elypia.commandler.metadata.data;
 
-import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.metadata.builder.*;
+import com.elypia.commandler.metadata.builder.ParamBuilder;
 import org.slf4j.*;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class MetaCommand implements Comparable<MetaCommand> {
+public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam> {
 
-    /**
-     * We use SLF4J for logging, be sure to include an implementation / binding
-     * so you can configure warnings and other messages.
-     */
+    /** We use SLF4J for logging, be sure to include an implementation / binding. */
     private static final Logger logger = LoggerFactory.getLogger(MetaCommand.class);
 
-    /**
-     * The actual method that is called when this command is performed.
-     */
+    /** The actual method that is called when this command is performed. */
     private Method method;
 
+    /** The display-friendly name of this command. */
     private String name;
 
-    /**
-     * A list of unique aliases for this command. If the command
-     * had duplicate aliases, they are filtered out.
-     */
+    /** A distinct list of aliases for this command. */
     private Set<String> aliases;
 
+    /** A short helper description or message for what this command does. */
     private String help;
 
+    /** If this command is hidden from public help messages. */
     private boolean isHidden;
 
-    /**
-     * Is this a {@link Static} command. <br>
-     * Static commands can be performed without specifying the
-     * module it belongs too, despite this it still belongs to the module.
-     */
+    /** Is this a static command, if so it can be performed without specifying the module. */
     private boolean isStatic;
 
-    /**
-     * Is this a {@link Default} command. <br>
-     * Default commands are what we assume if the user didn't specify a command
-     * or the next input after the module name doesn't fit the name requirement
-     * or alias of any commands in the alias.
-     */
+    /** If this is the default command of the module. */
     private boolean isDefault;
 
-    /**
-     * The parameters this command requires.
-     */
-    private List<ParamData> params;
+    /** The parameters this command requires. */
+    private List<MetaParam> params;
 
-    private List<ParamData> defaultParams;
-    private List<OverloadData> overloads;
-
-    public MetaCommand(CommandBuilder builder) {
-        Objects.requireNonNull(builder);
-        this.method = Objects.requireNonNull(builder.getMethod());
-        this.name = Objects.requireNonNull(builder.getName());
-        this.help = Objects.requireNonNull(builder.getHelp());
-        this.aliases = Objects.requireNonNull(builder.getAliases());
-        this.isHidden = builder.isHidden();
-        this.isStatic = builder.isStatic();
-        this.isDefault = builder.isDefault();
+    public MetaCommand(Method method, String name, Set<String> aliases, String help, boolean isHidden, boolean isStatic, boolean isDefault) {
+        this.method = Objects.requireNonNull(method);
+        this.name = Objects.requireNonNull(name);
+        this.aliases = Objects.requireNonNull(aliases);
+        this.help = help;
+        this.isHidden = isHidden;
+        this.isStatic = isStatic;
+        this.isDefault = isDefault;
 
         params = new ArrayList<>();
-        defaultParams = new ArrayList<>();
-        overloads = new ArrayList<>();
 
         for (ParamBuilder param : builder)
             params.add(param.build(this));
-
-        for (String name : builder.getDefaultParams())
-            defaultParams.add(params.stream().filter(o -> o.getName().equals(name)).findAny().get());
-
-        for (OverloadBuilder overload : builder.getOverloads())
-            overloads.add(overload.build(this));
     }
 
     /**
@@ -91,7 +62,7 @@ public class MetaCommand implements Comparable<MetaCommand> {
         return method;
     }
 
-    public List<ParamData> getParams() {
+    public List<MetaParam> getParams() {
         return Collections.unmodifiableList(params);
     }
 
@@ -121,7 +92,7 @@ public class MetaCommand implements Comparable<MetaCommand> {
 
         StringJoiner itemJoiner = new StringJoiner(", ");
 
-        for (ParamData param : params) {
+        for (MetaParam param : params) {
             String name = param.getName();
 
             if (param.isList())
@@ -145,16 +116,19 @@ public class MetaCommand implements Comparable<MetaCommand> {
         return isHidden;
     }
 
-    public List<OverloadData> getOverloads() {
-        return overloads;
-    }
-
-    public List<ParamData> getDefaultParams() {
-        return defaultParams;
-    }
-
+    /**
+     * Sorts {@link MetaCommand}s into alphabetical order.
+     *
+     * @param o Another command.
+     * @return If this command is above or below the provided command.
+     */
     @Override
     public int compareTo(MetaCommand o) {
         return name.compareToIgnoreCase(o.name);
+    }
+
+    @Override
+    public Iterator<MetaParam> iterator() {
+        return params.iterator();
     }
 }

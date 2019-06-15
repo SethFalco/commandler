@@ -1,7 +1,7 @@
 package com.elypia.commandler.interfaces;
 
 import com.elypia.commandler.Commandler;
-import com.elypia.commandler.metadata.data.ParamData;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 /**
  * Parsers are what allow {@link Commandler} to know how
@@ -13,7 +13,6 @@ import com.elypia.commandler.metadata.data.ParamData;
  *
  * @param <O> The type of data we want to adapt our input as.
  */
-@FunctionalInterface
 public interface Adapter<O> {
 
     /**
@@ -26,7 +25,7 @@ public interface Adapter<O> {
      * @param input The input from the user.
      * @return The parsed data-type, or null if we're unable to adapt the input.
      */
-    O adapt(String input, Class<? extends O> type, ParamData param);
+    O adapt(String input, Class<? extends O> type, MetaParam param);
 
     default O adapt(String input) {
         return adapt(input, null);

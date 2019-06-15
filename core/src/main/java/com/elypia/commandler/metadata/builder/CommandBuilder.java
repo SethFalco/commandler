@@ -21,24 +21,16 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
     private List<String> defaultParams;
 
     private Collection<ParamBuilder> params;
-    private Collection<OverloadBuilder> overloads;
 
     public CommandBuilder(Method method) {
         this.method = method;
         params = new ArrayList<>();
         defaultParams = new ArrayList<>();
-        overloads = new ArrayList<>();
     }
 
     public CommandBuilder addParam(ParamBuilder param) {
         params.add(param);
         defaultParams.add(param.getName());
-        return this;
-    }
-
-    public CommandBuilder addOverload(OverloadBuilder overload) {
-        params.addAll(overload.getParams());
-        overloads.add(overload);
         return this;
     }
 
@@ -55,7 +47,7 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
             }
         }
 
-        return new MetaCommand(this);
+        return new MetaCommand(method, name, aliases, help, isHidden, isStatic, isDefault);
     }
 
     public Method getMethod() {
@@ -123,10 +115,6 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
 
     public Collection<String> getDefaultParams() {
         return defaultParams;
-    }
-
-    public Collection<OverloadBuilder> getOverloads() {
-        return overloads;
     }
 
     @Override

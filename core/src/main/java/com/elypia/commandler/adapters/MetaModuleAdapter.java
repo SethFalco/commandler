@@ -1,8 +1,8 @@
 package com.elypia.commandler.adapters;
 
 import com.elypia.commandler.annotations.Compatible;
+import com.elypia.commandler.core.Context;
 import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.metadata.Context;
 import com.elypia.commandler.metadata.data.*;
 
 import javax.inject.*;
@@ -20,7 +20,7 @@ public class MetaModuleAdapter implements Adapter<MetaModule> {
     }
 
     @Override
-    public MetaModule adapt(String input, Class<? extends MetaModule> type, ParamData param) {
+    public MetaModule adapt(String input, Class<? extends MetaModule> type, MetaParam param) {
         return context.getModule(input);
     }
 }

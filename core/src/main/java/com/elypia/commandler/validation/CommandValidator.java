@@ -1,10 +1,9 @@
 package com.elypia.commandler.validation;
 
-import com.elypia.commandler.Handler;
+import com.elypia.commandler.CommandlerEvent;
+import com.elypia.commandler.core.Context;
 import com.elypia.commandler.exceptions.misuse.ParamViolationException;
-import com.elypia.commandler.interfaces.CommandlerEvent;
-import com.elypia.commandler.metadata.Context;
-import com.elypia.commandler.metadata.data.MetaCommand;
+import com.elypia.commandler.interfaces.Handler;
 import com.google.inject.Injector;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
@@ -36,18 +35,14 @@ public class CommandValidator {
             .parameterNameProvider(new CommandParamNameProvider(context))
             .buildValidatorFactory();
 
-        Validator validator = factory.getValidator();
-        exValidator = validator.forExecutables();
+        exValidator = factory.getValidator().forExecutables();
     }
 
-    public <E, M> boolean validate(CommandlerEvent<E, M> event, Handler handler, Object[] parameters) throws ParamViolationException {
-        MetaCommand command = event.getInput().getCommand();
-        Method method = command.getMethod();
+    public <E> void validate(CommandlerEvent<E> event, Handler handler, Object[] parameters) throws ParamViolationException {
+        Method method = event.getInput().getCommand().getMethod();
         Set<ConstraintViolation<Handler>> violations = exValidator.validateParameters(handler, method, parameters);
 
-        if (violations.isEmpty())
-            return true;
-
-        throw new ParamViolationException(event.getInput(), violations);
+        if (!violations.isEmpty())
+            throw new ParamViolationException(event.getInput(), violations);
     }
 }

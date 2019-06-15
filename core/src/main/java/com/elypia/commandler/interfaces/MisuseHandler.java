@@ -1,6 +1,6 @@
 package com.elypia.commandler.interfaces;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.exceptions.misuse.*;
@@ -11,11 +11,17 @@ import javax.validation.executable.ExecutableValidator;
  * Whenever user errors occur such as using the bot incorrectly (<strong>not exceptions</strong>)
  * these methods are called to provide a friendly error message to the user.
  *
- * The return types are {@link Object} as we will use the {@link Provider}
+ * The return types are {@link Object} as we will use the {@link ResponseProvider}
  * internally to generate whatever should be sent.
  */
 public interface MisuseHandler {
 
+    /**
+     * Route the exception to the correct block.
+     *
+     * @param ex The exception that occured.
+     * @param <T> The type of exception.
+     */
     default <T extends Exception> void route(T ex) {
         if (ex instanceof OnlyPrefixException)
             onOnlyPrefix((OnlyPrefixException)ex);
@@ -103,8 +109,7 @@ public interface MisuseHandler {
 
     /**
      * This may occur when a user attempts to perform a command
-     * which isn't the {@link Handler#help(CommandlerEvent)} command on
-     * a {@link Module} that has been disabled.
+     * on a {@link Handler module} that has been disabled.
      *
      * @param ex The exception that occured.
      * @return The friendly error to send to users in chat.

@@ -17,10 +17,7 @@ public class Input {
     /** The prefix the user used. */
     private String prefix;
 
-    /**
-     * All parameters the user specified.
-     * This list is <strong>never</strong> null.
-     */
+    /** All parameters the user specified. This list is <strong>never</strong> null. */
     private List<List<String>> parameters;
 
     /** The data associated with the selected module. */
@@ -76,23 +73,6 @@ public class Input {
 
     @Override
     public String toString() {
-        if (parameters.isEmpty())
-            return "(0) None";
-
-        StringJoiner parameterJoiner = new StringJoiner(", ");
-
-        for (List<String> list : parameters) {
-            StringJoiner itemJoiner = new StringJoiner(", ");
-
-            for (String string : list)
-                itemJoiner.add("'" + string + "'");
-
-            if (list.size() > 1)
-                parameterJoiner.add("[" + itemJoiner.toString() + "]");
-            else
-                parameterJoiner.add(itemJoiner.toString());
-        }
-
-        return "(" + parameters.size() + ") " + parameterJoiner.toString();
+        return module.getName() + " > " + command.getName() + " | (" + command.getParams().size() + ")";
     }
 }

@@ -18,8 +18,8 @@ public class EnumTest {
 
         loader.add(
             EnumModule.class,
-            DefaultProvider.class,
-            NumberProvider.class
+            DefaultResponseProvider.class,
+            NumberResponseProvider.class
         );
 
         commandler = new TestCommandlerBuilder()

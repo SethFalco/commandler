@@ -25,7 +25,7 @@ public class CharAdapterTest {
 
     @Test
     public void assert2Digits() {
-        assertAll("Check if all these return character from the ASCII value.",
+        assertAll("Check if all these return character from the ASCII help.",
             () -> assertEquals('A', adapter.adapt("65")),
             () -> assertEquals('z', adapter.adapt("122"))
         );

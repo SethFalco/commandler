@@ -1,6 +1,8 @@
 package com.elypia.commandler.exceptions.misuse;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Input;
+import com.elypia.commandler.exceptions.InputException;
+import com.elypia.commandler.interfaces.Handler;
 
 import javax.validation.ConstraintViolation;
 import java.util.*;

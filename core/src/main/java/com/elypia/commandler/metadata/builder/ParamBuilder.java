@@ -2,24 +2,23 @@ package com.elypia.commandler.metadata.builder;
 
 import com.elypia.commandler.metadata.data.*;
 
-import java.lang.reflect.Parameter;
-
 public class ParamBuilder {
 
-    private Parameter parameter;
+    private Class<?> type;
     private String name;
     private String help;
+    private String defaultValue;
 
-    public ParamBuilder(Parameter parameter) {
-        this.parameter = parameter;
+    public ParamBuilder(Class<?> type) {
+        this.type = type;
     }
 
-    public ParamData build(MetaCommand data) {
-        return new ParamData(parameter, this);
+    public MetaParam build(MetaCommand data) {
+        return new MetaParam(type, name, help, defaultValue);
     }
 
-    public Parameter getParameter() {
-        return this.parameter;
+    public Class<?> getType() {
+        return type;
     }
 
     public String getName() {

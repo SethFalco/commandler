@@ -1,7 +1,7 @@
 package com.elypia.commandler.configuration;
 
 import com.electronwill.nightconfig.core.conversion.Path;
-import com.elypia.commandler.Handler;
+import com.elypia.commandler.interfaces.Handler;
 
 import java.util.*;
 

@@ -2,7 +2,7 @@ package com.elypia.commandler.adapters;
 
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.metadata.data.ParamData;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import javax.inject.*;
 import java.text.*;
@@ -24,7 +24,7 @@ public class NumberAdapter implements Adapter<Number> {
     }
 
     @Override
-    public Number adapt(String input, Class<? extends Number> type, ParamData data) {
+    public Number adapt(String input, Class<? extends Number> type, MetaParam data) {
         Objects.requireNonNull(input);
         Objects.requireNonNull(type);
 

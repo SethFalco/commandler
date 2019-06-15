@@ -1,77 +1,83 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.def.DefCommandProcessor;
+import com.elypia.commandler.core.*;
+import com.elypia.commandler.def.*;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.metadata.ContextLoader;
 import com.elypia.commandler.testing.TestRunner;
 import com.elypia.commandler.validation.CommandValidator;
-import com.google.inject.Injector;
+import com.google.inject.*;
 
-public class Commandler<S, M> {
+/**
+ * Commandler brings all components together to process
+ * command events to perform method calls and return
+ * the result.
+ */
+public class Commandler {
 
-    protected String prefix;
-    protected String website;
-    protected Context context;
-    protected MisuseHandler misuseHandler;
-    protected LanguageAdapter<S> engine;
-    protected MessageProvider<M> builder;
+    /** The collation of MetaData used to initialize this Commandler instance. */
+    private Context context;
 
-    protected CommandProcessor<S, M> processor;
-    protected CommandValidator validator;
-    protected ParamAdapter parser;
-    protected TestRunner runner;
+    /** Handler for errors, both end-user errors and exceptions. */
+    private MisuseHandler misuseHandler;
 
-    protected Injector injector;
+    /** Obtain externally managed strings for internationalization. */
+    private LanguageManager langManager;
 
-    protected Commandler(
-        String prefix,
-        String website,
-        ContextLoader contextLoader,
-        MisuseHandler misuseHandler,
-        LanguageAdapter<S> engine,
-        Injector injector
-    ) {
+    /** Take the result of a method and make it something sendable to the {@link ServiceController}. */
+    private MessageProvider provider;
+
+    private Dispatcher<?, ?> dispatcher;
+    private CommandValidator validator;
+    private ParamAdapter parser;
+    private TestRunner runner;
+
+    private Injector injector;
+
+    /**
+     * @param contextLoader The context loader in order to find and initialize
+     *                      Commandler and all special objects.
+     */
+    public Commandler(ContextLoader contextLoader) {
+        this(contextLoader, new DefMisuseHandler());
+    }
+
+    public Commandler(ContextLoader contextLoader, MisuseHandler misuseHandler) {
+        this(contextLoader, misuseHandler, new DefLanguageManager<>());
+    }
+
+    public Commandler(ContextLoader contextLoader, MisuseHandler misuseHandler, LanguageManager langManager) {
+        this(contextLoader, misuseHandler, langManager, Guice.createInjector());
+    }
+
+    public Commandler(ContextLoader contextLoader, MisuseHandler misuseHandler, LanguageManager langManager, Injector injector) {
         this.injector = injector;
         this.context = contextLoader.load();
         this.misuseHandler = misuseHandler;
-        this.engine = engine;
+        this.langManager = langManager;
 
-        this.prefix = prefix;
-        this.website = website;
-        this.processor = new DefCommandProcessor(this);
-        this.validator = new CommandValidator(injector, this);
+        this.dispatcher = new DefDispatcher(this);
+        this.validator = new CommandValidator(injector, context);
         this.runner = new TestRunner(this);
 
         this.parser = new ParamAdapter(injector, context.getParsers());
-        this.builder = new MessageProvider<>(injector, context.getBuilders());
-    }
-
-    public M execute(S event, String content, boolean send) {
-        return processor.dispatch(event, content, send);
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public String getWebsite() {
-        return website;
+        this.provider = new MessageProvider(injector, context.getBuilders());
     }
 
     public Context getContext() {
         return context;
     }
 
-    public CommandProcessor<S, M> getProcessor() {
-        return processor;
+    public Dispatcher getDispatcher() {
+        return dispatcher;
     }
 
     public MisuseHandler getMisuseHandler() {
         return misuseHandler;
     }
 
-    public LanguageAdapter<S> getEngine() {
-        return engine;
+    public LanguageManager getEngine() {
+        return langManager;
     }
 
     public CommandValidator getValidator() {
@@ -82,8 +88,8 @@ public class Commandler<S, M> {
         return parser;
     }
 
-    public MessageProvider<M> getBuilder() {
-        return builder;
+    public MessageProvider getProvider() {
+        return provider;
     }
 
     public TestRunner getTestRunner() {
