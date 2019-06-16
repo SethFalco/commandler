@@ -8,7 +8,7 @@ import com.elypia.commandler.interfaces.Handler;
 public class ExampleModule implements Handler {
 
     @Command(help = "Repeat back the parameter provided.")
-    public String sayCommand(@Param String body) {
+    public String sayCommand(@Param(name = "body", help = "What to say.") String body) {
         return body;
     }
 
@@ -18,7 +18,7 @@ public class ExampleModule implements Handler {
     }
 
     @Command(help = "This command should have varient ways to perform it.")
-    public String combineCommand(@Params ExampleCombineParams params) {
+    public String combineCommand(ExampleCombineParams params) {
         return String.join(":", new String[]{
             params.getOne(), params.getTwo(), params.getThree()
         });

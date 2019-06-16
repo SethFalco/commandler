@@ -3,7 +3,7 @@ package com.elypia.commandler;
 import com.elypia.commandler.core.*;
 import com.elypia.commandler.def.*;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.ContextLoader;
+import com.elypia.commandler.meta.ContextLoader;
 import com.elypia.commandler.testing.TestRunner;
 import com.elypia.commandler.validation.CommandValidator;
 import com.google.inject.*;
@@ -35,7 +35,7 @@ public class Commandler {
     private Injector injector;
 
     /**
-     * @param contextLoader The context loader in order to find and initialize
+     * @param contextLoader The context loaders in order to find and initialize
      *                      Commandler and all special objects.
      */
     public Commandler(ContextLoader contextLoader) {
@@ -52,7 +52,7 @@ public class Commandler {
 
     public Commandler(ContextLoader contextLoader, MisuseHandler misuseHandler, LanguageManager langManager, Injector injector) {
         this.injector = injector;
-        this.context = contextLoader.load();
+        this.context = contextLoader.load().build();
         this.misuseHandler = misuseHandler;
         this.langManager = langManager;
 
@@ -60,8 +60,8 @@ public class Commandler {
         this.validator = new CommandValidator(injector, context);
         this.runner = new TestRunner(this);
 
-        this.parser = new ParamAdapter(injector, context.getParsers());
-        this.provider = new MessageProvider(injector, context.getBuilders());
+        this.parser = new ParamAdapter(injector, context.getAdapters());
+        this.provider = new MessageProvider(injector, context.getProviders());
     }
 
     public Context getContext() {

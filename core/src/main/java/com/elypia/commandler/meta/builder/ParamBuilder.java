@@ -1,6 +1,6 @@
-package com.elypia.commandler.metadata.builder;
+package com.elypia.commandler.meta.builder;
 
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.meta.data.*;
 
 public class ParamBuilder {
 
@@ -36,6 +36,15 @@ public class ParamBuilder {
 
     public ParamBuilder setHelp(String help) {
         this.help = help;
+        return this;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public ParamBuilder setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
         return this;
     }
 }

@@ -1,7 +1,7 @@
 package com.elypia.commandler.exceptions.misuse;
 
 import com.elypia.commandler.exceptions.CommandlerException;
-import com.elypia.commandler.metadata.data.MetaModule;
+import com.elypia.commandler.meta.data.MetaModule;
 
 import java.util.Objects;
 

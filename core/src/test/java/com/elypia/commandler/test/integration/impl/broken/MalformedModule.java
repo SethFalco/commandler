@@ -3,7 +3,7 @@ package com.elypia.commandler.test.integration.impl.broken;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.loader.AnnotationLoader;
+import com.elypia.commandler.meta.loaders.AnnotationLoader;
 
 /**
  * This is for testing if Commandler will correctly

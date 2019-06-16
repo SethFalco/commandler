@@ -2,7 +2,7 @@ package com.elypia.commandler.testing;
 
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.data.MetaModule;
+import com.elypia.commandler.meta.data.MetaModule;
 import org.slf4j.*;
 
 import java.time.Instant;
@@ -38,18 +38,18 @@ public class TestRunner {
 
         executor.scheduleAtFixedRate(() -> {
             for (MetaModule data : commandler.getContext()) {
-                Handler handler = commandler.getInjector().getInstance(data.getModuleType());
+                Handler handler = commandler.getInjector().getInstance(data.getHandlerType());
 
                 if (handler == null) {
                     logger.debug("Registered handler is not initalised, testing was skipped.");
                     continue;
                 }
 
-                Class<? extends Handler> clazz = handler.getClass();
+                Class<? extends Handler> type = handler.getClass();
                 Report report = test(handler);
 
-                if (!testReports.containsKey(clazz))
-                    testReports.put(clazz, new ModuleReport());
+                if (!testReports.containsKey(type))
+                    testReports.put(type, new ModuleReport());
 
                 ModuleReport moduleReport = testReports.get(handler.getClass());
                 moduleReport.add(report);
@@ -74,12 +74,12 @@ public class TestRunner {
     }
 
     public boolean isFailing(Handler handler) {
-        Class<? extends Handler> clazz = handler.getClass();
+        Class<? extends Handler> type = handler.getClass();
 
-        if (!testReports.containsKey(clazz))
+        if (!testReports.containsKey(type))
             return false;
 
-        ModuleReport moduleReport = testReports.get(clazz);
+        ModuleReport moduleReport = testReports.get(type);
         List<Report> reports = moduleReport.getReports();
 
         if (reports.isEmpty())

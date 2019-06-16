@@ -2,7 +2,7 @@ package com.elypia.commandler.validation;
 
 import com.elypia.commandler.core.Context;
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.meta.data.*;
 
 import javax.validation.ParameterNameProvider;
 import java.lang.reflect.*;
@@ -24,8 +24,8 @@ public class CommandParamNameProvider implements ParameterNameProvider {
 
     @Override
     public List<String> getParameterNames(Method method) {
-        Class<?> clazz = method.getDeclaringClass();
-        MetaModule module = context.getModule((Class<Handler>)clazz);
+        Class<?> type = method.getDeclaringClass();
+        MetaModule module = context.getModule((Class<? extends Handler>)type);
 
         if (module == null)
             return getJavaNames(method);

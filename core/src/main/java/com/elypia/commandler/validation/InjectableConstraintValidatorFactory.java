@@ -1,11 +1,12 @@
 package com.elypia.commandler.validation;
 
-import com.google.inject.Injector;
+import com.google.inject.*;
 
 import javax.validation.*;
 
 public class InjectableConstraintValidatorFactory implements ConstraintValidatorFactory {
 
+    /** The {@link Guice} {@link Injector} to inject dependencies from. */
     private Injector injector;
 
     public InjectableConstraintValidatorFactory(Injector injector) {

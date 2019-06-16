@@ -2,7 +2,7 @@ package com.elypia.commandler.exceptions.misuse;
 
 import com.elypia.commandler.Input;
 import com.elypia.commandler.exceptions.ParamException;
-import com.elypia.commandler.metadata.data.MetaParam;
+import com.elypia.commandler.meta.data.MetaParam;
 
 import java.util.Objects;
 

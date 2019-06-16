@@ -1,6 +1,6 @@
 package com.elypia.commandler.test.integration;
 
-import com.elypia.commandler.metadata.ContextLoader;
+import com.elypia.commandler.meta.ContextLoader;
 import com.elypia.commandler.test.integration.impl.builders.DefaultResponseProvider;
 import com.elypia.commandler.test.integration.impl.modules.EnumModule;
 import org.junit.jupiter.api.*;

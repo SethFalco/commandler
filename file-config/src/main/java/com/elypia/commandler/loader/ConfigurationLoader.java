@@ -3,9 +3,8 @@ package com.elypia.commandler.loader;
 import com.electronwill.nightconfig.core.conversion.ObjectConverter;
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.elypia.commandler.configuration.*;
-import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.builder.*;
-import com.elypia.commandler.metadata.loader.MetadataLoader;
+import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.meta.builder.*;
 
 import java.lang.reflect.*;
 import java.net.URL;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
  * <strong>You must have a runtime dependency on the NightConfig
  * implementation you want to use.</strong>
  */
-public class ConfigurationLoader implements MetadataLoader {
+public class ConfigurationLoader implements MetaLoader {
 
     /**
      * The default path to look for files not including file types.
@@ -70,9 +69,9 @@ public class ConfigurationLoader implements MetadataLoader {
     }
 
     @Override
-    public List<Method> findCommands(Class<? extends Handler> clazz) {
+    public List<Method> findCommands(Class<? extends Handler> type) {
         for (ModuleConfig module : configuration) {
-            if (module.getHandler() != clazz)
+            if (module.getHandler() != type)
                 continue;
 
             return module.getCommands().stream()
@@ -86,7 +85,7 @@ public class ConfigurationLoader implements MetadataLoader {
     @Override
     public ModuleBuilder loadModule(ModuleBuilder builder) {
         for (ModuleConfig module : configuration) {
-            if (module.getHandler() != builder.getHandlerClass())
+            if (module.getHandler() != builder.getHandlerType())
                 continue;
 
             return builder
@@ -102,10 +101,10 @@ public class ConfigurationLoader implements MetadataLoader {
     @Override
     public CommandBuilder loadCommand(CommandBuilder builder) {
         Method method = builder.getMethod();
-        Class clazz = method.getDeclaringClass();
+        Class type = method.getDeclaringClass();
 
         for (ModuleConfig module : configuration) {
-            if (module.getHandler() != clazz)
+            if (module.getHandler() != type)
                 continue;
 
             for (CommandConfig command : module) {

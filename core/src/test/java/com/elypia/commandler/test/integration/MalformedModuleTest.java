@@ -1,8 +1,8 @@
 package com.elypia.commandler.test.integration;
 
 import com.elypia.commandler.exceptions.init.MalformedModuleException;
-import com.elypia.commandler.metadata.ContextLoader;
-import com.elypia.commandler.metadata.loader.AnnotationLoader;
+import com.elypia.commandler.meta.ContextLoader;
+import com.elypia.commandler.meta.loaders.AnnotationLoader;
 import com.elypia.commandler.test.integration.impl.broken.MalformedModule;
 import org.junit.jupiter.api.Test;
 

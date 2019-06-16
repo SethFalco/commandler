@@ -1,6 +1,6 @@
-package com.elypia.commandler.metadata.builder;
+package com.elypia.commandler.meta.builder;
 
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.meta.data.*;
 import org.slf4j.*;
 
 import java.lang.reflect.Method;
@@ -9,29 +9,39 @@ import java.util.stream.*;
 
 public class CommandBuilder implements Iterable<ParamBuilder> {
 
+    /** SLF4J Logger */
     private static final Logger logger = LoggerFactory.getLogger(CommandBuilder.class);
 
+    /** The method to execute when this command is called. */
     private Method method;
+
+    /** The user friendly name of command. */
     private String name;
+
+    /** Aliases to access this command. */
     private Set<String> aliases;
+
+    /** A help descriptor to help users use this command. */
     private String help;
+
+    /** Is this command displayed on help messages and docs. */
     private boolean isHidden;
-    private boolean isStatic;
+
+    /** Is this the default command if none is specified. */
     private boolean isDefault;
-    private List<String> defaultParams;
+
+    /** Is this a static command. */
+    private boolean isStatic;
+
+    /** Are the parameters in the method head, or in a ParamObject. */
+    private boolean isInline;
 
     private Collection<ParamBuilder> params;
 
     public CommandBuilder(Method method) {
         this.method = method;
         params = new ArrayList<>();
-        defaultParams = new ArrayList<>();
-    }
-
-    public CommandBuilder addParam(ParamBuilder param) {
-        params.add(param);
-        defaultParams.add(param.getName());
-        return this;
+        params = new ArrayList<>();
     }
 
     public MetaCommand build(MetaModule data) {
@@ -47,7 +57,8 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
             }
         }
 
-        return new MetaCommand(method, name, aliases, help, isHidden, isStatic, isDefault);
+        // TODO: Somehow give this the parameters too.
+        return new MetaCommand(method, name, aliases, help, isHidden, isStatic, isDefault, null);
     }
 
     public Method getMethod() {
@@ -69,7 +80,7 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
 
     public CommandBuilder setAliases(String... aliases) {
         this.aliases = Stream.of(aliases)
-                .map(String::toLowerCase).collect(Collectors.toSet());
+            .map(String::toLowerCase).collect(Collectors.toSet());
 
         if (this.aliases.size() != aliases.length)
             logger.warn("Command `%s` contains multiple of the same alias.");
@@ -113,8 +124,17 @@ public class CommandBuilder implements Iterable<ParamBuilder> {
         return this;
     }
 
-    public Collection<String> getDefaultParams() {
-        return defaultParams;
+    public Collection<ParamBuilder> getParams() {
+        return params;
+    }
+
+    public CommandBuilder setParams(ParamBuilder... params) {
+        return setParams(List.of(params));
+    }
+
+    public CommandBuilder setParams(Collection<ParamBuilder> params) {
+        this.params = params;
+        return this;
     }
 
     @Override

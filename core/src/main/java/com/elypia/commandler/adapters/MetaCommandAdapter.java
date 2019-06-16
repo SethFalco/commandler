@@ -3,8 +3,8 @@ package com.elypia.commandler.adapters;
 import com.elypia.commandler.annotations.Compatible;
 import com.elypia.commandler.core.Context;
 import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.metadata.data.*;
-import com.elypia.commandler.utils.Utils;
+import com.elypia.commandler.meta.data.*;
+import com.elypia.commandler.utils.CommandlerUtils;
 
 import javax.inject.*;
 
@@ -22,7 +22,7 @@ public class MetaCommandAdapter implements Adapter<MetaCommand> {
 
     @Override
     public MetaCommand adapt(String input, Class<? extends MetaCommand> type, MetaParam param) {
-        String[] args = Utils.splitSpaces(input);
+        String[] args = CommandlerUtils.splitSpaces(input);
 
         if (args.length != 2)
             return null;

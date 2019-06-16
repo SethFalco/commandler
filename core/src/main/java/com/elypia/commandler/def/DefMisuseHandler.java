@@ -3,7 +3,7 @@ package com.elypia.commandler.def;
 import com.elypia.commandler.*;
 import com.elypia.commandler.exceptions.misuse.*;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.meta.data.*;
 import org.slf4j.*;
 
 import javax.validation.*;
@@ -56,9 +56,6 @@ public class DefMisuseHandler implements MisuseHandler {
             "%s";
 
         StringJoiner commandJoiner = new StringJoiner("\n");
-
-        for (OverloadData overload : command.getOverloads())
-            commandJoiner.add(overload.toString());
 
         String moduleName = input.getModule().getName();
         String commandName = command.getName();

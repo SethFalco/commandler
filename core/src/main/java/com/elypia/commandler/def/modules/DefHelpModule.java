@@ -5,7 +5,7 @@ import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.core.Context;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.meta.data.*;
 import com.elypia.commandler.testing.TestRunner;
 
 import javax.inject.*;

@@ -10,7 +10,7 @@ import com.elypia.commandler.exceptions.misuse.*;
  * adapt it into an input and event object to be used internally.
  *
  * @param <S> The (S)ource event that triggered this.
- * @param <M> The (M)essage type.
+ * @param <M> The (B)essage type.
  */
 public interface Dispatcher<S, M> {
 

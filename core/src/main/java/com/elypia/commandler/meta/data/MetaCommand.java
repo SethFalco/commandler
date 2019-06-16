@@ -1,6 +1,5 @@
-package com.elypia.commandler.metadata.data;
+package com.elypia.commandler.meta.data;
 
-import com.elypia.commandler.metadata.builder.ParamBuilder;
 import org.slf4j.*;
 
 import java.lang.reflect.Method;
@@ -35,7 +34,7 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
     /** The parameters this command requires. */
     private List<MetaParam> params;
 
-    public MetaCommand(Method method, String name, Set<String> aliases, String help, boolean isHidden, boolean isStatic, boolean isDefault) {
+    public MetaCommand(Method method, String name, Set<String> aliases, String help, boolean isHidden, boolean isStatic, boolean isDefault, List<MetaParam> params) {
         this.method = Objects.requireNonNull(method);
         this.name = Objects.requireNonNull(name);
         this.aliases = Objects.requireNonNull(aliases);
@@ -43,11 +42,7 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
         this.isHidden = isHidden;
         this.isStatic = isStatic;
         this.isDefault = isDefault;
-
-        params = new ArrayList<>();
-
-        for (ParamBuilder param : builder)
-            params.add(param.build(this));
+        this.params = Objects.requireNonNull(params);
     }
 
     /**
@@ -62,25 +57,37 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
         return method;
     }
 
-    public List<MetaParam> getParams() {
-        return Collections.unmodifiableList(params);
+    public String getName() {
+        return name;
     }
 
     public Set<String> getAliases() {
         return aliases;
     }
 
-    public boolean isStatic() {
-        return isStatic;
+    public String getHelp() {
+        return help;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
     }
 
     public boolean isDefault() {
         return isDefault;
     }
 
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public List<MetaParam> getParams() {
+        return Collections.unmodifiableList(params);
+    }
+
     @Override
     public String toString() {
-        return name + " " + toParamsString();
+        return name + " | " + toParamsString();
     }
 
     public String toParamsString() {
@@ -102,18 +109,6 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
         }
 
         return "(" + params.size() + ") " + itemJoiner.toString();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getHelp() {
-        return help;
-    }
-
-    public boolean isHidden() {
-        return isHidden;
     }
 
     /**

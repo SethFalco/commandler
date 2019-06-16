@@ -3,12 +3,12 @@ package com.elypia.commandler.test;
 import com.elypia.commandler.adapters.*;
 import com.elypia.commandler.core.ParamAdapter;
 import com.elypia.commandler.exceptions.init.AdapterRequiredException;
-import com.elypia.commandler.metadata.data.MetaAdapter;
+import com.elypia.commandler.meta.data.MetaAdapter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AdapterTest {
+public class ParamAdapterTest {
 
     @Test
     public void adapterTest() {

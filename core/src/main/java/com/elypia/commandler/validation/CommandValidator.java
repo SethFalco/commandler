@@ -24,6 +24,7 @@ public class CommandValidator {
     /** We use SLF4J to log, be sure to include a binding when using this API at runtime! */
     private static final Logger logger = LoggerFactory.getLogger(CommandValidator.class);
 
+    /** The actual validator object constructed and on use throughout Commandler. */
     private final ExecutableValidator exValidator;
 
     public CommandValidator(Injector injector, Context context) {

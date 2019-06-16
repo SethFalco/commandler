@@ -1,7 +1,7 @@
 package com.elypia.commandler.annotations;
 
 import com.elypia.commandler.interfaces.DynDefaultValue;
-import com.elypia.commandler.utils.Utils;
+import com.elypia.commandler.utils.AnnoUtils;
 
 import java.lang.annotation.*;
 
@@ -15,13 +15,13 @@ import java.lang.annotation.*;
 public @interface Param {
 
 	/** The name to display this parameter as. */
-	String name() default "";
+	String name() default AnnoUtils.EFFECTIVELY_NULL;
 
 	/** A small description of what the parameter is. */
-	String help() default "";
+	String help() default AnnoUtils.EFFECTIVELY_NULL;
 
 	/** Set the default value to a literal string.*/
-	String defaultValue() default Utils.EFFECTIVELY_NULL;
+	String defaultValue() default AnnoUtils.EFFECTIVELY_NULL;
 
 	/** Set a dynamic default value by implementing and pointing to a {@link DynDefaultValue} implementation. */
 	Class<? extends DynDefaultValue> dynDefaultValue() default DynDefaultValue.class;

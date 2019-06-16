@@ -4,8 +4,8 @@ import com.elypia.commandler.*;
 import com.elypia.commandler.core.Context;
 import com.elypia.commandler.exceptions.misuse.*;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.data.*;
-import com.elypia.commandler.utils.Utils;
+import com.elypia.commandler.meta.data.*;
+import com.elypia.commandler.utils.CommandlerUtils;
 
 import java.util.*;
 import java.util.regex.*;
@@ -57,7 +57,7 @@ public class DefDispatcher<S, M> implements Dispatcher<S, M> {
 
             Object[] params = commandler.getParser().adaptEvent(event);
 
-            Handler handler = commandler.getInjector().getInstance(module.getModuleType());
+            Handler handler = commandler.getInjector().getInstance(module.getHandlerType());
 
             commandler.getValidator().validate(event, handler, params);
 
@@ -92,7 +92,7 @@ public class DefDispatcher<S, M> implements Dispatcher<S, M> {
             throw new IllegalStateException("This is not a command.");
 
         String offsetContent = content.substring(prefix.length());
-        String[] command = Utils.splitSpaces(offsetContent, 2);
+        String[] command = CommandlerUtils.splitSpaces(offsetContent, 2);
 
         if (command.length == 0)
             throw new OnlyPrefixException();

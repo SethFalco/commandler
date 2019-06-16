@@ -1,9 +1,9 @@
-package com.elypia.commandler.metadata.builder;
+package com.elypia.commandler.meta.builder;
 
 import com.elypia.commandler.exceptions.init.ConflictingModuleException;
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.ContextLoader;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.meta.ContextLoader;
+import com.elypia.commandler.meta.data.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -14,26 +14,30 @@ public class ModuleBuilder implements Iterable<CommandBuilder> {
     private static final Logger logger = LoggerFactory.getLogger(ModuleBuilder.class);
     private static final String DEFAULT_GROUP = "Miscellaneous";
 
-    private Class<? extends Handler> clazz;
-    private String name;
+    /** The type of this handler. */
+    private Class<? extends Handler> type;
+
+    /** The group this module belongs too. Defaults to {@link #DEFAULT_GROUP}.*/
     private String group;
+
+    /** The user friendly name of this module. */
+    private String name;
+
+    /** The aliases for this module, this is how it can be accessed. */
     private Set<String> aliases;
+
+    /** The optional help descriptor for this module. */
     private String help;
+
+    /** If the help is publically visible. */
     private boolean isHidden;
 
     private Collection<CommandBuilder> commands;
 
-    public ModuleBuilder(Class<? extends Handler> clazz) {
-        this.clazz = clazz;
+    public ModuleBuilder(Class<? extends Handler> type) {
+        this.type = type;
         aliases = new HashSet<>();
         commands = new ArrayList<>();
-    }
-
-    public ModuleBuilder addAliases(String... aliases) {
-        this.aliases.addAll(Stream.of(aliases)
-            .map(String::toLowerCase).collect(Collectors.toSet()));
-
-        return this;
     }
 
     public void addCommand(CommandBuilder builder) {
@@ -64,7 +68,7 @@ public class ModuleBuilder implements Iterable<CommandBuilder> {
         if (group == null || group.isEmpty())
             group = DEFAULT_GROUP;
 
-        MetaModule data = new MetaModule(clazz, this);
+        MetaModule data = new MetaModule(type, this);
 
         for (MetaModule module : context.getModules()) {
             if (name.equalsIgnoreCase(module.getName()))
@@ -85,8 +89,8 @@ public class ModuleBuilder implements Iterable<CommandBuilder> {
         return data;
     }
 
-    public Class<? extends Handler> getHandlerClass() {
-        return clazz;
+    public Class<? extends Handler> getHandlerType() {
+        return type;
     }
 
     public String getName() {
@@ -111,6 +115,13 @@ public class ModuleBuilder implements Iterable<CommandBuilder> {
         return aliases;
     }
 
+    public ModuleBuilder setAliases(String... aliases) {
+        this.aliases.addAll(Stream.of(aliases)
+                .map(String::toLowerCase).collect(Collectors.toSet()));
+
+        return this;
+    }
+
     public String getHelp() {
         return help;
     }
@@ -129,9 +140,22 @@ public class ModuleBuilder implements Iterable<CommandBuilder> {
         return this;
     }
 
+    public Collection<CommandBuilder> getCommands() {
+        return commands;
+    }
+
+    public ModuleBuilder setCommands(CommandBuilder... commands) {
+        return setCommands(List.of(commands));
+    }
+
+    public ModuleBuilder setCommands(Collection<CommandBuilder> commands) {
+        this.commands = commands;
+        return this;
+    }
+
     @Override
     public String toString() {
-        return clazz.getSimpleName() + " | " + name;
+        return type.getSimpleName() + " | " + name;
     }
 
     @Override

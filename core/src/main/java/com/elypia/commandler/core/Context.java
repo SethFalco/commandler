@@ -1,7 +1,7 @@
 package com.elypia.commandler.core;
 
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.meta.data.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -9,49 +9,32 @@ import java.util.stream.Collectors;
 
 /**
  * Within the same {@link Context} a single {@link MetaModule}
- * is only ever constructed once. All objects here are just various views
- * or references of the data.
+ * is only ever constructed once.
  */
 public class Context implements Iterable<MetaModule> {
 
-    /**
-     * Logging using the SLF4J API.
-     */
+    /** Logging using the SLF4J API. */
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
 
-    /**
-     * A collection of data for each module within this
-     * module context.
-     */
-    private Map<Class<? extends Handler>, MetaModule> modules;
-
-    /**
-     * A list of grouped modules.
-     */
-    private Map<String, List<MetaModule>> groups;
-
-    /**
-     * A list of all root aliases, this includes module aliases
-     * and static command aliases. There must never be duplicates.
-     */
+    /** A distinct list of root aliases. (modules and static command aliases) */
     private Set<String> rootAliases;
 
-    private Collection<MetaAdapter> parsers;
-    private Collection<MetaProvider> builders;
+    /** A collection of data for each module within this module context. */
+    private Collection<MetaModule> modules;
 
-    public Context(
-        Collection<MetaModule> datas,
-        Collection<MetaAdapter> parsers,
-        Collection<MetaProvider> builders
-    ) {
-        modules = new HashMap<>();
-        groups = new TreeMap<>();
-        rootAliases = new HashSet<>();
+    /** A collection parameter adapters. */
+    private Collection<MetaAdapter> adapters;
 
-        this.parsers = parsers;
-        this.builders = builders;
+    /** A collection of response providers. */
+    private Collection<MetaProvider> providers;
 
-        for (MetaModule data : datas) {
+    public Context(Collection<MetaModule> modules, Collection<MetaAdapter> adapters, Collection<MetaProvider> providers) {
+        this.modules = modules;
+        this.adapters = adapters;
+        this.providers = providers;
+        this.rootAliases = new HashSet<>();
+
+        for (MetaModule data : modules) {
             Set<String> moduleAliases = data.getAliases();
             Set<String> staticAliases = data.getStaticCommands().stream()
                 .flatMap((c) -> c.getAliases().stream())
@@ -59,27 +42,25 @@ public class Context implements Iterable<MetaModule> {
 
             rootAliases.addAll(moduleAliases);
             rootAliases.addAll(staticAliases);
-
-            modules.put(data.getModuleType(), data);
-
-            if (!groups.containsKey(data.getGroup()))
-                groups.put(data.getGroup(), new ArrayList<>());
-
-            groups.get(data.getGroup()).add(data);
         }
     }
 
     public MetaModule getModule(String alias) {
-        for (MetaModule data : modules.values()) {
-            if (data.performed(alias))
-                return data;
+        for (MetaModule module : modules) {
+            if (module.performed(alias))
+                return module;
         }
 
         return null;
     }
 
-    public MetaModule getModule(Class<? extends Handler> clazz) {
-        return modules.get(clazz);
+    public MetaModule getModule(Class<? extends Handler> type) {
+        for (MetaModule module : modules) {
+            if (module.getHandlerType() == type)
+                return module;
+        }
+
+        return null;
     }
 
     /**
@@ -95,17 +76,22 @@ public class Context implements Iterable<MetaModule> {
     /**
      * Get a list of all modules within the context.
      *
-     * @param includePrivate If to include private modules.
+     * @param includeHidden If to include private modules.
      * @return A list of modules.
      */
-    public List<MetaModule> getModules(boolean includePrivate) {
-        if (includePrivate)
-            return List.copyOf(modules.values());
-
-        return modules.values().stream()
-            .filter(MetaModule::isHidden)
+    public List<MetaModule> getModules(boolean includeHidden) {
+        return modules.stream()
+            .filter((m) -> !m.isHidden() || includeHidden)
             .sorted()
             .collect(Collectors.toUnmodifiableList());
+    }
+
+    public Collection<MetaAdapter> getAdapters() {
+        return Collections.unmodifiableCollection(adapters);
+    }
+
+    public Collection<MetaProvider> getProviders() {
+        return Collections.unmodifiableCollection(providers);
     }
 
     /**
@@ -126,55 +112,45 @@ public class Context implements Iterable<MetaModule> {
      * @return A unmodifiable map of modules and the groups they belong in.
      */
     public Map<String, List<MetaModule>> getGroups(boolean includePrivate) {
-        if (includePrivate)
-            return Map.copyOf(groups);
+        Map<String, List<MetaModule>> groups = modules.stream()
+            .filter((m) -> !m.isHidden() || includePrivate)
+            .sorted()
+            .collect(Collectors.groupingBy(MetaModule::getGroupName));
 
-        Map<String, List<MetaModule>> groupsCopy = new TreeMap<>();
-
-        groups.forEach((group, modules) -> {
-            List<MetaModule> publicModules = modules.stream()
-                .filter(MetaModule::isHidden)
-                .sorted()
-                .collect(Collectors.toUnmodifiableList());
-
-            groupsCopy.put(group, publicModules);
-        });
-
-        return Collections.unmodifiableMap(groupsCopy);
+        return Collections.unmodifiableMap(groups);
     }
 
+    /**
+     * @return A distinct unmodifiable set of all used aliases.
+     */
     public Set<String> getAliases() {
-        return Set.copyOf(rootAliases);
+        return Collections.unmodifiableSet(rootAliases);
     }
 
+    /**
+     * @see #getCommands(boolean)
+     * @return An unmodifiable collection of all commands.
+     */
     public List<MetaCommand> getCommands() {
         return getCommands(true);
     }
 
-    public List<MetaCommand> getCommands(boolean includePrivate) {
-        List<MetaCommand> commands = new ArrayList<>();
-        List<MetaModule> modules = getModules(includePrivate);
-
-        modules.forEach((data) -> {
-            if (includePrivate)
-                commands.addAll(data.getCommands());
-            else
-                commands.addAll(data.getPublicCommands());
-        });
-
-        return List.copyOf(commands);
+    /**
+     * @param includeHidden If to include hidden modules and commands.
+     * @return An unmodifiable collection of all commands.
+     */
+    public List<MetaCommand> getCommands(boolean includeHidden) {
+        return getModules(includeHidden).stream()
+            .map((m) -> (includeHidden) ? m.getCommands() : m.getPublicCommands())
+            .flatMap(List::stream)
+            .collect(Collectors.toUnmodifiableList());
     }
 
+    /**
+     * @return An iterator of registered modules.
+     */
     @Override
     public Iterator<MetaModule> iterator() {
-        return modules.values().iterator();
-    }
-
-    public Collection<MetaAdapter> getParsers() {
-        return parsers;
-    }
-
-    public Collection<MetaProvider> getBuilders() {
-        return builders;
+        return modules.iterator();
     }
 }

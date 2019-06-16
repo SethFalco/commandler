@@ -1,4 +1,4 @@
-package com.elypia.commandler.metadata.data;
+package com.elypia.commandler.meta.data;
 
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.interfaces.Handler;
@@ -21,8 +21,8 @@ public class MetaModule implements Comparable<MetaModule>, Iterable<MetaCommand>
     /** The class this annotation data belongs too. */
     private Class<? extends Handler> type;
 
-    /** The group this module belongs to. */
-    private String group;
+    /** The groupName this module belongs to. */
+    private String groupName;
 
     /** The name of the module. */
     private String name;
@@ -39,10 +39,10 @@ public class MetaModule implements Comparable<MetaModule>, Iterable<MetaCommand>
     /** A list of {@link MetaCommand} that were created inside the {@link Handler}. */
     private List<MetaCommand> commands;
 
-    public MetaModule(Class<? extends Handler> moduleClass, String name, String group, Set<String> aliases, String help, boolean isHidden, List<MetaCommand> commands) {
+    public MetaModule(Class<? extends Handler> moduleClass, String name, String groupName, Set<String> aliases, String help, boolean isHidden, List<MetaCommand> commands) {
         this.type = Objects.requireNonNull(moduleClass);
         this.name = Objects.requireNonNull(name);
-        this.group = Objects.requireNonNull(group);
+        this.groupName = Objects.requireNonNull(groupName);
         this.aliases = Objects.requireNonNull(aliases);
         this.help = help;
         this.isHidden = isHidden;
@@ -57,12 +57,12 @@ public class MetaModule implements Comparable<MetaModule>, Iterable<MetaCommand>
         return aliases.contains(input.toLowerCase());
     }
 
-    public Class<? extends Handler> getModuleType() {
+    public Class<? extends Handler> getHandlerType() {
         return type;
     }
 
-    public String getGroup() {
-        return group;
+    public String getGroupName() {
+        return groupName;
     }
 
     public String getName() {

@@ -5,7 +5,7 @@ import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.exceptions.init.AdapterRequiredException;
 import com.elypia.commandler.exceptions.misuse.*;
 import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.meta.data.*;
 import com.google.inject.*;
 import org.slf4j.*;
 
