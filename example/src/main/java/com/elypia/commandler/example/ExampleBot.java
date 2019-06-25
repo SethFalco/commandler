@@ -31,7 +31,7 @@ public class ExampleBot {
         // Login to Discord so we can accept commands from 2 places.
         JDA jda = new JDABuilder(args[0]).build();
 
-        new ConsoleController(commandler.getDispatcher());
-        new DiscordController(commandler.getDispatcher(), jda);
+        new ConsoleController(commandler.getDispatchManager());
+        new DiscordController(commandler.getDispatchManager(), jda);
     }
 }

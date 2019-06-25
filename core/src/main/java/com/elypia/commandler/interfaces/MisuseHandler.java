@@ -14,8 +14,7 @@ import javax.validation.executable.ExecutableValidator;
  * The return types are {@link Object} as we will use the {@link ResponseProvider}
  * internally to generate whatever should be sent.
  */
-// TODO: Change Misuse to not handled a fix set of exceptions, but be a collection of exceptions and
-// TODO: What object to return from it.
+// TODO: Change Misuse to not handled a fix set of exceptions, but be a collection of exceptions and what object to return from it.
 public interface MisuseHandler {
 
     /**

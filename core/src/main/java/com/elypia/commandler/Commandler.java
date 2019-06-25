@@ -2,7 +2,6 @@ package com.elypia.commandler;
 
 import com.elypia.commandler.dispatchers.CommandDispatcher;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.managers.LanguageManager;
 import com.elypia.commandler.managers.*;
 import com.elypia.commandler.misuse.CommandMisuseListener;
 import com.google.inject.*;
@@ -21,12 +20,12 @@ public class Commandler {
     private MisuseHandler misuseHandler;
 
     /** Obtain externally managed strings for internationalization. */
-    private com.elypia.commandler.interfaces.LanguageManager langManager;
+    private LanguageManager langManager;
 
     /** Take the result of a method and make it something sendable to the service. */
     private ProviderManager provider;
 
-    private Dispatcher dispatcher;
+    private DispatchManager dispatch;
     private ValidationManager validator;
     private AdapterManager adapter;
     private TestManager runner;
@@ -42,20 +41,22 @@ public class Commandler {
     }
 
     public Commandler(Context context, MisuseHandler misuseHandler) {
-        this(context, misuseHandler, new LanguageManager<>());
+        this(context, misuseHandler, new DefLanguageManager<>());
     }
 
-    public Commandler(Context context, MisuseHandler misuseHandler, com.elypia.commandler.interfaces.LanguageManager langManager) {
+    public Commandler(Context context, MisuseHandler misuseHandler, LanguageManager langManager) {
         this(context, misuseHandler, langManager, Guice.createInjector(new CommandlerModule()));
     }
 
-    public Commandler(Context context, MisuseHandler misuseHandler, com.elypia.commandler.interfaces.LanguageManager langManager, Injector injector) {
+    public Commandler(Context context, MisuseHandler misuseHandler, LanguageManager langManager, Injector injector) {
         this.injector = injector;
         this.context = context;
         this.misuseHandler = misuseHandler;
         this.langManager = langManager;
 
-        this.dispatcher = new CommandDispatcher(this, ">");
+        this.dispatch = new DispatchManager();
+        this.dispatch.addDispatchers(new CommandDispatcher(this, ">"));
+
         this.validator = new ValidationManager(injector, context);
         this.runner = new TestManager(this);
 
@@ -67,31 +68,31 @@ public class Commandler {
         return context;
     }
 
-    public Dispatcher getDispatcher() {
-        return dispatcher;
+    public DispatchManager getDispatchManager() {
+        return dispatch;
     }
 
-    public MisuseHandler getMisuseHandler() {
+    public MisuseHandler getMisuseManager() {
         return misuseHandler;
     }
 
-    public com.elypia.commandler.interfaces.LanguageManager getEngine() {
+    public LanguageManager getLanguageManager() {
         return langManager;
     }
 
-    public ValidationManager getValidator() {
+    public ValidationManager getValidationManager() {
         return validator;
     }
 
-    public AdapterManager getAdapter() {
+    public AdapterManager getAdapterManager() {
         return adapter;
     }
 
-    public ProviderManager getProvider() {
+    public ProviderManager getProviderManager() {
         return provider;
     }
 
-    public TestManager getTestRunner() {
+    public TestManager getTestManager() {
         return runner;
     }
 

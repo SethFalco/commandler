@@ -5,11 +5,12 @@ import com.elypia.commandler.CommandlerEvent;
 import java.util.*;
 
 /**
- * The {@link LanguageManager} is used in order to get and display scripts
+ * The {@link DefLanguageManager} is used in order to get and display scripts
  * whereever text may be required. This could be as a message, on a website
  * or anything that doesn't have debugging intent.
  */
-public class LanguageManager<S> implements com.elypia.commandler.interfaces.LanguageManager {
+// TODO: Give this a better name
+public class DefLanguageManager<S> implements com.elypia.commandler.interfaces.LanguageManager {
 
     private static final Locale[] locales = {Locale.ENGLISH};
 

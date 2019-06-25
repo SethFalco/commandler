@@ -1,6 +1,7 @@
 package com.elypia.commandler.example.discord;
 
-import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.interfaces.Controller;
+import com.elypia.commandler.managers.DispatchManager;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -10,10 +11,10 @@ public class DiscordListener extends ListenerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(DiscordListener.class);
 
-    private final Dispatcher dispatcher;
+    private final DispatchManager dispatcher;
     private final Controller controller;
 
-    public DiscordListener(final Dispatcher dispatcher, Controller controller) {
+    public DiscordListener(final DispatchManager dispatcher, Controller controller) {
         this.dispatcher = dispatcher;
         this.controller = controller;
     }
@@ -25,9 +26,6 @@ public class DiscordListener extends ListenerAdapter {
 
         String content = event.getMessage().getContentRaw();
 
-        if (!dispatcher.isValid(event, content))
-            return;
-
         Object object = dispatcher.dispatch(controller, event, content);
 
         if (object != null)
@@ -38,7 +36,7 @@ public class DiscordListener extends ListenerAdapter {
     public void onMessageUpdate(MessageUpdateEvent event) {
         String content = event.getMessage().getContentRaw();
 
-        if (!dispatcher.isValid(event, content) || event.getAuthor().isBot())
+        if (event.getAuthor().isBot())
             return;
 
         Message updatedMessage = event.getMessage();

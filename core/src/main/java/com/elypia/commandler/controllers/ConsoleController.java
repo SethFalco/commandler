@@ -1,13 +1,14 @@
 package com.elypia.commandler.controllers;
 
-import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.interfaces.Controller;
+import com.elypia.commandler.managers.DispatchManager;
 
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 
 public class ConsoleController implements Controller {
 
-    public ConsoleController(Dispatcher dispatcher) {
+    public ConsoleController(DispatchManager dispatcher) {
         Scanner scanner = new Scanner(System.in);
 
         Executors.newSingleThreadExecutor().submit(() -> {

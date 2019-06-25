@@ -3,8 +3,8 @@ package com.elypia.commandler.test.integration;
 import com.elypia.commandler.*;
 import com.elypia.commandler.adapters.*;
 import com.elypia.commandler.controllers.ConsoleController;
-import com.elypia.commandler.interfaces.Dispatcher;
 import com.elypia.commandler.loader.AnnotationLoader;
+import com.elypia.commandler.managers.DispatchManager;
 import com.elypia.commandler.metadata.ContextLoader;
 import com.elypia.commandler.metadata.builder.ModuleBuilder;
 import com.elypia.commandler.test.integration.impl.builders.NullBuilder;
@@ -32,7 +32,7 @@ public class MalformedModuleTest {
         )).load().build();
 
         Commandler commandler = new Commandler(context);
-        Dispatcher dispatcher = commandler.getDispatcher();
+        DispatchManager dispatcher = commandler.getDispatchManager();
         ConsoleController controller = new ConsoleController(dispatcher);
 
         String event = ">misc say Test";

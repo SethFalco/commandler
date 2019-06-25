@@ -31,7 +31,7 @@ public interface Dispatcher {
     /**
      * Break the command down into it's individual components.
      *
-     * @param controller The name of the service that recieved this.
+     * @param controller The controller that dispatched this event.
      * @param content The content of the meessage.
      * @return The input the user provided or null if it's not a valid command.
      */

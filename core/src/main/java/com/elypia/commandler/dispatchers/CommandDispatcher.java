@@ -57,16 +57,16 @@ public class CommandDispatcher implements Dispatcher {
             Input input = event.getInput();
             MetaModule module = input.getModule();
             Handler handler = commandler.getInjector().getInstance(module.getHandlerType());
-            Object[] params = commandler.getAdapter().adaptEvent(event);
-            commandler.getValidator().validate(event, handler, params);
+            Object[] params = commandler.getAdapterManager().adaptEvent(event);
+            commandler.getValidationManager().validate(event, handler, params);
 
-            if (commandler.getTestRunner().isFailing(handler))
+            if (commandler.getTestManager().isFailing(handler))
                 throw new ModuleDisabledException(input);
 
             MetaCommand command = input.getCommand();
             response = command.getMethod().invoke(handler, params);
         } catch (Exception ex) {
-            response = commandler.getMisuseHandler().route(ex);
+            response = commandler.getMisuseManager().route(ex);
         }
 
         Object object;
@@ -74,7 +74,7 @@ public class CommandDispatcher implements Dispatcher {
         if (response == null)
             return null;
 
-        object = commandler.getProvider().provide(controller, response);
+        object = commandler.getProviderManager().provide(controller, response);
         return object;
     }
 

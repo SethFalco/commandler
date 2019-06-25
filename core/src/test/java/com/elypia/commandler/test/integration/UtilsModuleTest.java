@@ -2,8 +2,9 @@ package com.elypia.commandler.test.integration;
 
 import com.elypia.commandler.*;
 import com.elypia.commandler.controllers.ConsoleController;
-import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.interfaces.Controller;
 import com.elypia.commandler.loader.AnnotationLoader;
+import com.elypia.commandler.managers.DispatchManager;
 import com.elypia.commandler.metadata.ContextLoader;
 import com.elypia.commandler.providers.MiscToStringProvider;
 import com.elypia.commandler.test.integration.impl.modules.UtilsModule;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilsModuleTest {
 
-    private static Dispatcher dispatcher;
+    private static DispatchManager dispatcher;
     private static Controller controller;
 
     @BeforeEach
@@ -24,7 +25,7 @@ public class UtilsModuleTest {
         )).load().build();
 
         Commandler commandler = new Commandler(context);
-        dispatcher = commandler.getDispatcher();
+        dispatcher = commandler.getDispatchManager();
         controller = new ConsoleController(dispatcher);
     }
 

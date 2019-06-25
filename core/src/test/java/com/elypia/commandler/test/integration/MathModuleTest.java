@@ -3,8 +3,9 @@ package com.elypia.commandler.test.integration;
 import com.elypia.commandler.*;
 import com.elypia.commandler.adapters.*;
 import com.elypia.commandler.controllers.ConsoleController;
-import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.interfaces.Controller;
 import com.elypia.commandler.loader.AnnotationLoader;
+import com.elypia.commandler.managers.DispatchManager;
 import com.elypia.commandler.metadata.ContextLoader;
 import com.elypia.commandler.providers.*;
 import com.elypia.commandler.test.integration.impl.modules.MathModule;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MathModuleTest {
 
-    private static Dispatcher dispatcher;
+    private static DispatchManager dispatcher;
     private static Controller controller;
 
     @BeforeEach
@@ -28,7 +29,7 @@ public class MathModuleTest {
         )).load().build();
 
         Commandler commandler = new Commandler(context);
-        dispatcher = commandler.getDispatcher();
+        dispatcher = commandler.getDispatchManager();
         controller = new ConsoleController(dispatcher);
     }
 
