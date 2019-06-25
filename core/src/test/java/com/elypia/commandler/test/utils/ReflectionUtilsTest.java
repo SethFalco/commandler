@@ -1,6 +1,6 @@
 package com.elypia.commandler.test.utils;
 
-import com.elypia.commandler.def.DefDispatcher;
+import com.elypia.commandler.dispatchers.CommandDispatcher;
 import com.elypia.commandler.utils.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ public class ReflectionUtilsTest {
 
     @Test
     public void getClassesRecursively() {
-        Collection<Class<?>> types = ReflectionUtils.getClasses(DefDispatcher.class);
-        assertEquals(4, types.size());
+        Collection<Class<?>> types = ReflectionUtils.getClasses(CommandDispatcher.class);
+        assertEquals(3, types.size());
     }
 }

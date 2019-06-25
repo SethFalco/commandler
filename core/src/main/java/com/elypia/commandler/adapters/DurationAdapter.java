@@ -1,10 +1,10 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.meta.data.MetaParam;
+import com.elypia.commandler.annotations.Adapter;
+import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.metadata.data.MetaParam;
 
-import javax.inject.Singleton;
+import javax.inject.*;
 import java.text.*;
 import java.time.Duration;
 import java.util.*;
@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.*;
 
 @Singleton
-@Compatible(Duration.class)
-public class DurationAdapter implements Adapter<Duration> {
+@Adapter(Duration.class)
+public class DurationAdapter implements ParamAdapter<Duration> {
 
     private static final TimeUnit[] units = {
         TimeUnit.DAYS,
@@ -29,6 +29,7 @@ public class DurationAdapter implements Adapter<Duration> {
     private final NumberFormat formatter;
     private final TimeUnitAdapter timeUnitAdapter;
 
+    // TODO: Make a means to dictate if duplicate of same value is allowed or ASC/DESC
     public DurationAdapter() {
         this(NumberFormat.getInstance());
     }
@@ -37,6 +38,7 @@ public class DurationAdapter implements Adapter<Duration> {
         this(formatter, new TimeUnitAdapter(units));
     }
 
+    @Inject
     public DurationAdapter(NumberFormat formatter, TimeUnitAdapter timeUnitAdapter) {
         this.formatter = Objects.requireNonNull(formatter);
         this.timeUnitAdapter = Objects.requireNonNull(timeUnitAdapter);
@@ -54,11 +56,17 @@ public class DurationAdapter implements Adapter<Duration> {
                 String unitInput = split.group("unit");
                 TimeUnit unit = timeUnitAdapter.adapt(unitInput);
 
+                if (unit == null)
+                    return null;
+
                 units.put(unit, time);
             } catch (IllegalArgumentException | ArithmeticException | ParseException ex) {
                 return null;
             }
         }
+
+        if (units.size() == 0)
+            return null;
 
         Duration duration = Duration.ZERO;
 

@@ -21,7 +21,7 @@ public @interface Param {
 	String help() default AnnoUtils.EFFECTIVELY_NULL;
 
 	/** Set the default value to a literal string.*/
-	String defaultValue() default AnnoUtils.EFFECTIVELY_NULL;
+	String[] defaultValue() default AnnoUtils.EFFECTIVELY_NULL;
 
 	/** Set a dynamic default value by implementing and pointing to a {@link DynDefaultValue} implementation. */
 	Class<? extends DynDefaultValue> dynDefaultValue() default DynDefaultValue.class;

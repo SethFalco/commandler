@@ -1,7 +1,7 @@
 package com.elypia.commandler.exceptions;
 
 import com.elypia.commandler.Input;
-import com.elypia.commandler.meta.data.MetaParam;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import java.util.Objects;
 
@@ -11,15 +11,22 @@ public abstract class ParamException extends InputException {
     private MetaParam param;
 
     public ParamException(Input input, MetaParam param) {
-        this(input, param, null);
+        super(input);
+        this.param = Objects.requireNonNull(param);
     }
 
-    public ParamException(Input input, MetaParam param, String message, Object... args) {
-        this(input, param, String.format(message, args), (Throwable)null);
+    public ParamException(Input input, MetaParam param, String message) {
+        super(input, message);
+        this.param = Objects.requireNonNull(param);
     }
 
     public ParamException(Input input, MetaParam param, String message, Throwable cause) {
         super(input, message, cause);
+        this.param = Objects.requireNonNull(param);
+    }
+
+    public ParamException(Input input, MetaParam param, Throwable cause) {
+        super(input, cause);
         this.param = Objects.requireNonNull(param);
     }
 

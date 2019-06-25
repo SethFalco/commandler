@@ -17,7 +17,15 @@ public class TimeUnitAdapterTest {
     }
 
     @Test
-    public void assertChars() {
+    public void assertSingle() {
+        TimeUnit expected = TimeUnit.SECONDS;
+        TimeUnit actual = adapter.adapt("sec");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void assertTimeUnits() {
         assertAll("Check that they all return the correct type.",
             () -> assertEquals(TimeUnit.SECONDS, adapter.adapt("seconds")),
             () -> assertEquals(TimeUnit.HOURS, adapter.adapt("h")),

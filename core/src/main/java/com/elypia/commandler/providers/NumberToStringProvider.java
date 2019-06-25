@@ -1,12 +1,12 @@
 package com.elypia.commandler.providers;
 
-import com.elypia.commandler.annotations.Compatible;
+import com.elypia.commandler.annotations.Provider;
 import com.elypia.commandler.interfaces.ResponseProvider;
 
 import javax.inject.Inject;
 import java.text.NumberFormat;
 
-@Compatible({Number.class, double.class, float.class, long.class, int.class, short.class, byte.class})
+@Provider(provides = String.class, value = {Number.class, double.class, float.class, long.class, int.class, short.class, byte.class})
 public class NumberToStringProvider implements ResponseProvider<Number, String> {
 
     private NumberFormat format;

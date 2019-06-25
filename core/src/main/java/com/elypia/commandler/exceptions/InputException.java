@@ -4,20 +4,27 @@ import com.elypia.commandler.Input;
 
 import java.util.Objects;
 
-public abstract class InputException extends CommandlerException {
+public abstract class InputException extends Exception {
 
     private Input input;
 
     public InputException(Input input) {
-        this(input, null);
+        super();
+        this.input = Objects.requireNonNull(input);
     }
 
-    public InputException(Input input, String message, Object... args) {
-        this(input, String.format(message, args), (Throwable)null);
+    public InputException(Input input, String message) {
+        super(message);
+        this.input = Objects.requireNonNull(input);
     }
 
     public InputException(Input input, String message, Throwable cause) {
         super(message, cause);
+        this.input = Objects.requireNonNull(input);
+    }
+
+    public InputException(Input input, Throwable cause) {
+        super(cause);
         this.input = Objects.requireNonNull(input);
     }
 

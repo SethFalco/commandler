@@ -1,32 +1,25 @@
 package com.elypia.commandler.controllers;
 
-import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.interfaces.ServiceController;
+import com.elypia.commandler.interfaces.*;
 
 import java.util.Scanner;
+import java.util.concurrent.Executors;
 
-public class ConsoleController implements ServiceController<String, String> {
+public class ConsoleController implements Controller {
 
-    public ConsoleController() {
+    public ConsoleController(Dispatcher dispatcher) {
         Scanner scanner = new Scanner(System.in);
-        String nextLine;
 
-        while ((nextLine = scanner.nextLine()) != null)
-            receive(nextLine);
+        Executors.newSingleThreadExecutor().submit(() -> {
+            String nextLine;
+
+            while ((nextLine = scanner.nextLine()) != null)
+                System.out.println(dispatcher.dispatch(this, nextLine, nextLine));
+        });
     }
 
     @Override
-    public String receive(String event) {
-        return event;
-    }
-
-    @Override
-    public void send(CommandlerEvent<String> event, String message) {
-        System.out.println(message);
-    }
-
-    @Override
-    public Class<?>[] getMessageTypes() {
-        return new Class<?>[] {String.class};
+    public Class<?> getMessageType() {
+        return String.class;
     }
 }

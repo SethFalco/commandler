@@ -1,8 +1,8 @@
 package com.elypia.commandler.validation;
 
-import com.elypia.commandler.core.Context;
+import com.elypia.commandler.Context;
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.meta.data.*;
+import com.elypia.commandler.metadata.data.*;
 
 import javax.validation.ParameterNameProvider;
 import java.lang.reflect.*;

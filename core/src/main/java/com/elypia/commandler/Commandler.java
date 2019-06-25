@@ -1,11 +1,10 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.core.*;
-import com.elypia.commandler.def.*;
+import com.elypia.commandler.dispatchers.CommandDispatcher;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.meta.ContextLoader;
-import com.elypia.commandler.testing.TestRunner;
-import com.elypia.commandler.validation.CommandValidator;
+import com.elypia.commandler.managers.LanguageManager;
+import com.elypia.commandler.managers.*;
+import com.elypia.commandler.misuse.CommandMisuseListener;
 import com.google.inject.*;
 
 /**
@@ -22,46 +21,46 @@ public class Commandler {
     private MisuseHandler misuseHandler;
 
     /** Obtain externally managed strings for internationalization. */
-    private LanguageManager langManager;
+    private com.elypia.commandler.interfaces.LanguageManager langManager;
 
-    /** Take the result of a method and make it something sendable to the {@link ServiceController}. */
-    private MessageProvider provider;
+    /** Take the result of a method and make it something sendable to the service. */
+    private ProviderManager provider;
 
-    private Dispatcher<?, ?> dispatcher;
-    private CommandValidator validator;
-    private ParamAdapter parser;
-    private TestRunner runner;
+    private Dispatcher dispatcher;
+    private ValidationManager validator;
+    private AdapterManager adapter;
+    private TestManager runner;
 
     private Injector injector;
 
     /**
-     * @param contextLoader The context loaders in order to find and initialize
+     * @param context The context loaders in order to find and initialize
      *                      Commandler and all special objects.
      */
-    public Commandler(ContextLoader contextLoader) {
-        this(contextLoader, new DefMisuseHandler());
+    public Commandler(Context context) {
+        this(context, new CommandMisuseListener());
     }
 
-    public Commandler(ContextLoader contextLoader, MisuseHandler misuseHandler) {
-        this(contextLoader, misuseHandler, new DefLanguageManager<>());
+    public Commandler(Context context, MisuseHandler misuseHandler) {
+        this(context, misuseHandler, new LanguageManager<>());
     }
 
-    public Commandler(ContextLoader contextLoader, MisuseHandler misuseHandler, LanguageManager langManager) {
-        this(contextLoader, misuseHandler, langManager, Guice.createInjector());
+    public Commandler(Context context, MisuseHandler misuseHandler, com.elypia.commandler.interfaces.LanguageManager langManager) {
+        this(context, misuseHandler, langManager, Guice.createInjector(new CommandlerModule()));
     }
 
-    public Commandler(ContextLoader contextLoader, MisuseHandler misuseHandler, LanguageManager langManager, Injector injector) {
+    public Commandler(Context context, MisuseHandler misuseHandler, com.elypia.commandler.interfaces.LanguageManager langManager, Injector injector) {
         this.injector = injector;
-        this.context = contextLoader.load().build();
+        this.context = context;
         this.misuseHandler = misuseHandler;
         this.langManager = langManager;
 
-        this.dispatcher = new DefDispatcher(this);
-        this.validator = new CommandValidator(injector, context);
-        this.runner = new TestRunner(this);
+        this.dispatcher = new CommandDispatcher(this, ">");
+        this.validator = new ValidationManager(injector, context);
+        this.runner = new TestManager(this);
 
-        this.parser = new ParamAdapter(injector, context.getAdapters());
-        this.provider = new MessageProvider(injector, context.getProviders());
+        this.adapter = new AdapterManager(injector, context.getAdapters());
+        this.provider = new ProviderManager(injector, context.getProviders());
     }
 
     public Context getContext() {
@@ -76,23 +75,23 @@ public class Commandler {
         return misuseHandler;
     }
 
-    public LanguageManager getEngine() {
+    public com.elypia.commandler.interfaces.LanguageManager getEngine() {
         return langManager;
     }
 
-    public CommandValidator getValidator() {
+    public ValidationManager getValidator() {
         return validator;
     }
 
-    public ParamAdapter getParser() {
-        return parser;
+    public AdapterManager getAdapter() {
+        return adapter;
     }
 
-    public MessageProvider getProvider() {
+    public ProviderManager getProvider() {
         return provider;
     }
 
-    public TestRunner getTestRunner() {
+    public TestManager getTestRunner() {
         return runner;
     }
 

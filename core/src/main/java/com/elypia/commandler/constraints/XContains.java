@@ -35,7 +35,7 @@ public @interface XContains {
         @Override
         public void initialize(XContains constraintAnnotation) {
             int index = constraintAnnotation.value();
-            List<String> param = event.getInput().getParameters().get(index);
+            List<String> param = event.getInput().getParams().get(index);
 
             if (param.size() > 1)
                 throw new IllegalStateException("Can't perform XContains validation on a list.");

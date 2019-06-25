@@ -1,7 +1,7 @@
 package com.elypia.commandler.constraints;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.interfaces.ServiceController;
+import com.elypia.commandler.interfaces.Controller;
 
 import javax.validation.*;
 import java.lang.annotation.*;
@@ -17,23 +17,23 @@ public @interface Platform {
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
-    Class<? extends ServiceController<?, ?>>[] value();
+    Class<? extends Controller>[] value();
 
     class Validator implements ConstraintValidator<Platform, CommandlerEvent<?>> {
 
-        private Class<? extends ServiceController<?, ?>>[] platforms;
+        private Class<? extends Controller>[] controllerTypes;
 
         @Override
         public void initialize(Platform constraintAnnotation) {
-            this.platforms = constraintAnnotation.value();
+            this.controllerTypes = constraintAnnotation.value();
         }
 
         @Override
         public boolean isValid(CommandlerEvent<?> event, ConstraintValidatorContext context) {
-            Class<?> serviceType = event.getService().getClass();
+            Controller controller = event.getController();
 
-            for (Class<? extends ServiceController<?, ?>> service : platforms) {
-                if (service == serviceType)
+            for (Class<? extends Controller> type : controllerTypes) {
+                if (type == controller.getClass())
                     return true;
             }
 

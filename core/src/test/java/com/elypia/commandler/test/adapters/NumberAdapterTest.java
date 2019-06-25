@@ -26,7 +26,7 @@ public class NumberAdapterTest {
         NumberAdapter adapter = new NumberAdapter(NumberFormat.getInstance(Locale.ITALY));
 
         assertAll("Check if all these return the number equivilent.",
-            () -> assertEquals(20000.456, adapter.adapt("20.000,456")),
+            () -> assertEquals(20000.456, adapter.adapt("20.000,456", Double.class)),
             () -> assertEquals(-1234345, adapter.adapt("-1.234.345"))
         );
     }
@@ -36,7 +36,7 @@ public class NumberAdapterTest {
         NumberAdapter adapter = new NumberAdapter(NumberFormat.getInstance(Locale.UK));
 
         assertAll("Check if all these return the number equivilent.",
-            () -> assertEquals(20000.456, adapter.adapt("20,000,456")),
+            () -> assertEquals(20000.456, adapter.adapt("20,000.456", Double.class)),
             () -> assertEquals(-1234345, adapter.adapt("-1,234,345"))
         );
     }

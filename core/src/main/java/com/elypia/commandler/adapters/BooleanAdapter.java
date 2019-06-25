@@ -1,15 +1,15 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.meta.data.MetaParam;
+import com.elypia.commandler.annotations.Adapter;
+import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import javax.inject.Singleton;
 import java.util.*;
 
 @Singleton
-@Compatible({Boolean.class, boolean.class})
-public class BooleanAdapter implements Adapter<Boolean> {
+@Adapter({Boolean.class, boolean.class})
+public class BooleanAdapter implements ParamAdapter<Boolean> {
 
     private static final Collection<String> TRUE = List.of(
         "true", "t", // Formal responses

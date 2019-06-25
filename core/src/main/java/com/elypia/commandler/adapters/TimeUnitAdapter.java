@@ -1,16 +1,16 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.meta.data.MetaParam;
+import com.elypia.commandler.annotations.Adapter;
+import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import javax.inject.Singleton;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
-@Compatible(TimeUnit.class)
-public class TimeUnitAdapter implements Adapter<TimeUnit> {
+@Adapter(TimeUnit.class)
+public class TimeUnitAdapter implements ParamAdapter<TimeUnit> {
 
     private final Collection<TimeUnit> units;
 
@@ -35,7 +35,7 @@ public class TimeUnitAdapter implements Adapter<TimeUnit> {
             case "hours": case "hour": case "h":
                 return (units.contains(TimeUnit.HOURS)) ? TimeUnit.HOURS : null;
 
-            case "minutes": case "minute": case "min": case "m":
+            case "minutes": case "minute": case "mins": case "min": case "m":
                 return (units.contains(TimeUnit.MINUTES)) ? TimeUnit.MINUTES : null;
 
             case "seconds": case "second": case "secs": case "sec": case "s":
@@ -47,7 +47,7 @@ public class TimeUnitAdapter implements Adapter<TimeUnit> {
             case "microseconds": case "microsecond": case "microsec": case "micros": case "micro": case "mic": case "mis":
                 return (units.contains(TimeUnit.MICROSECONDS)) ? TimeUnit.MICROSECONDS : null;
 
-            case "nanoseconds": case "nanosecond": case "nanosecs": case "nanosec": case "nanos": case "nano": case "ns":
+            case "nanoseconds": case "nanosecond": case "nanosecs": case "nanosec": case "nanos": case "nano": case "ns": case "n":
                 return (units.contains(TimeUnit.NANOSECONDS)) ? TimeUnit.NANOSECONDS : null;
 
             default:

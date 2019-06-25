@@ -1,6 +1,6 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.meta.data.*;
+import com.elypia.commandler.metadata.data.*;
 
 import java.util.*;
 
@@ -11,14 +11,14 @@ import java.util.*;
  */
 public class Input {
 
+    /** Format used for {@link #toParamString()}. */
+    private static final String PARAM_FORMAT = "(%,d) %s";
+
     /** The actual content of the message. */
     private String content;
 
-    /** The prefix the user used. */
-    private String prefix;
-
     /** All parameters the user specified. This list is <strong>never</strong> null. */
-    private List<List<String>> parameters;
+    private List<List<String>> params;
 
     /** The data associated with the selected module. */
     private MetaModule module;
@@ -30,26 +30,42 @@ public class Input {
      * The raw user input as is. None of the parameters can be null.
      *
      * @param content The original message content.
-     * @param prefix The prefix used to initiate this command.
      * @param module The module containing the command initiated.
      * @param command The command initiated.
-     * @param parameters The parameters to pass to the command.
+     * @param params The parameters to pass to the command.
      */
-    public Input(String content, String prefix, MetaModule module, MetaCommand command, List<List<String>> parameters) {
+    public Input(String content, MetaModule module, MetaCommand command, List<List<String>> params) {
         this.content = Objects.requireNonNull(content);
-        this.prefix = Objects.requireNonNull(prefix);
-        this.content = Objects.requireNonNull(prefix);
         this.module = Objects.requireNonNull(module);
         this.command = Objects.requireNonNull(command);
-        this.parameters = Objects.requireNonNull(parameters);
+        this.params = Objects.requireNonNull(params);
+    }
+
+    /**
+     * @return The parameters in a user displayable state.
+     */
+    public String toParamString() {
+        final StringJoiner paramJoiner = new StringJoiner(", ");
+
+        for (List<String> items : params) {
+            if (items.size() == 1)
+                paramJoiner.add("'" + items.get(0) + "'");
+
+            else {
+                StringJoiner itemJoiner = new StringJoiner(", ");
+
+                for (String item : items)
+                    itemJoiner.add("'" + item + "'");
+
+                paramJoiner.add("[" + itemJoiner.toString() + "]");
+            }
+        }
+
+        return String.format(PARAM_FORMAT, params.size(), paramJoiner.toString());
     }
 
     public String getContent() {
         return content;
-    }
-
-    public String getPrefix() {
-        return prefix;
     }
 
     public MetaModule getModule() {
@@ -60,15 +76,15 @@ public class Input {
         return command;
     }
 
-    public List<List<String>> getParameters() {
-        return parameters;
+    public List<List<String>> getParams() {
+        return params;
     }
 
     /**
      * @return The total number of parameters.
      */
-    public int getParameterCount() {
-        return parameters.size();
+    public int getParamCount() {
+        return params.size();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.elypia.commandler.export.deserializers;
 
-import com.elypia.commandler.core.Context;
+import com.elypia.commandler.Context;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;

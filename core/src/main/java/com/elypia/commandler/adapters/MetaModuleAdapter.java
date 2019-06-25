@@ -1,16 +1,16 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.core.Context;
-import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.meta.data.*;
+import com.elypia.commandler.Context;
+import com.elypia.commandler.annotations.Adapter;
+import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.metadata.data.*;
 
 import javax.inject.*;
 
 /** Take a command handler/module as a parameter. */
 @Singleton
-@Compatible(MetaModule.class)
-public class MetaModuleAdapter implements Adapter<MetaModule> {
+@Adapter(MetaModule.class)
+public class MetaModuleAdapter implements ParamAdapter<MetaModule> {
 
     private Context context;
 

@@ -3,7 +3,7 @@ package com.elypia.commandler.interfaces;
 import com.elypia.commandler.Commandler;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
-import com.elypia.commandler.exceptions.misuse.*;
+import com.elypia.commandler.exceptions.*;
 
 import javax.validation.executable.ExecutableValidator;
 
@@ -14,6 +14,8 @@ import javax.validation.executable.ExecutableValidator;
  * The return types are {@link Object} as we will use the {@link ResponseProvider}
  * internally to generate whatever should be sent.
  */
+// TODO: Change Misuse to not handled a fix set of exceptions, but be a collection of exceptions and
+// TODO: What object to return from it.
 public interface MisuseHandler {
 
     /**
@@ -22,25 +24,25 @@ public interface MisuseHandler {
      * @param ex The exception that occured.
      * @param <T> The type of exception.
      */
-    default <T extends Exception> void route(T ex) {
+    default <T extends Exception> Object route(T ex) {
         if (ex instanceof OnlyPrefixException)
-            onOnlyPrefix((OnlyPrefixException)ex);
+            return onOnlyPrefix((OnlyPrefixException)ex);
         else if (ex instanceof ModuleNotFoundException)
-            onModuleNotFound((ModuleNotFoundException)ex);
+            return onModuleNotFound((ModuleNotFoundException)ex);
         else if (ex instanceof ParamCountMismatchException)
-            onParamMismatch((ParamCountMismatchException)ex);
+            return onParamMismatch((ParamCountMismatchException)ex);
         else if (ex instanceof NoDefaultCommandException)
-            onNoDefaultCommand((NoDefaultCommandException)ex);
+            return onNoDefaultCommand((NoDefaultCommandException)ex);
         else if (ex instanceof ParamParseException)
-            onParamParse((ParamParseException)ex);
+            return onParamParse((ParamParseException)ex);
         else if (ex instanceof ListUnsupportedException)
-            onListUnsupported((ListUnsupportedException)ex);
+            return onListUnsupported((ListUnsupportedException)ex);
         else if (ex instanceof ParamViolationException)
-            onParamViolation((ParamViolationException)ex);
+            return onParamViolation((ParamViolationException)ex);
         else if (ex instanceof ModuleDisabledException)
-            onDisabled((ModuleDisabledException)ex);
+            return onDisabled((ModuleDisabledException)ex);
         else
-            onException(ex);
+            return onException(ex);
     }
 
     /**

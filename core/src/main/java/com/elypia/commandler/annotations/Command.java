@@ -1,12 +1,12 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.meta.data.MetaModule;
+import com.elypia.commandler.metadata.data.MetaModule;
 import com.elypia.commandler.utils.AnnoUtils;
 
 import java.lang.annotation.*;
 
 /**
- * The Command annotation is used to supply meta
+ * The Command annotation is used to supply metadata
  * to commands. This can be aliases, or the help to
  * let people know how to use this commands.
  *

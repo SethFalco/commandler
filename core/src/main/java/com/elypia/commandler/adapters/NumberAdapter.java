@@ -1,16 +1,16 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.meta.data.MetaParam;
+import com.elypia.commandler.annotations.Adapter;
+import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import javax.inject.*;
 import java.text.*;
 import java.util.Objects;
 
 @Singleton
-@Compatible({Number.class, double.class, float.class, long.class, int.class, short.class, byte.class})
-public class NumberAdapter implements Adapter<Number> {
+@Adapter({Number.class, double.class, float.class, long.class, int.class, short.class, byte.class})
+public class NumberAdapter implements ParamAdapter<Number> {
 
     private NumberFormat defaultFormat;
 
@@ -24,7 +24,7 @@ public class NumberAdapter implements Adapter<Number> {
     }
 
     @Override
-    public Number adapt(String input, Class<? extends Number> type, MetaParam data) {
+    public Number adapt(String input, Class<? extends Number> type, MetaParam param) {
         Objects.requireNonNull(input);
         Objects.requireNonNull(type);
 
@@ -49,5 +49,18 @@ public class NumberAdapter implements Adapter<Number> {
         }
 
         return null;
+    }
+
+    /**
+     * Calls {@link #adapt(String, Class, MetaParam)} but uses
+     * the default type of {@link Integer}.
+     *
+     * @see #adapt(String, Class, MetaParam)
+     * @param input The parameter input.
+     * @return The number or null if it wasn't possible to adapt this.
+     */
+    @Override
+    public Number adapt(String input) {
+        return adapt(input, Integer.class);
     }
 }

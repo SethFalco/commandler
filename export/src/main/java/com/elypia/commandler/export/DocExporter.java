@@ -1,6 +1,6 @@
 package com.elypia.commandler.export;
 
-import com.elypia.commandler.core.Context;
+import com.elypia.commandler.Context;
 import com.elypia.commandler.export.deserializers.ModulesContextSerializer;
 import com.google.gson.*;
 

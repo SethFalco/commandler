@@ -1,14 +1,14 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.annotations.Compatible;
-import com.elypia.commandler.interfaces.Adapter;
-import com.elypia.commandler.meta.data.MetaParam;
+import com.elypia.commandler.annotations.Adapter;
+import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.metadata.data.MetaParam;
 
 import javax.inject.Singleton;
 
 @Singleton
-@Compatible({Character.class, char.class})
-public class CharAdapter implements Adapter<Character> {
+@Adapter({Character.class, char.class})
+public class CharAdapter implements ParamAdapter<Character> {
 
     @Override
     public Character adapt(String input, Class<? extends Character> type, MetaParam data) {

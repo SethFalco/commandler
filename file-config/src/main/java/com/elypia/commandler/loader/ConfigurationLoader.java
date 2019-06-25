@@ -2,14 +2,13 @@ package com.elypia.commandler.loader;
 
 import com.electronwill.nightconfig.core.conversion.ObjectConverter;
 import com.electronwill.nightconfig.core.file.FileConfig;
-import com.elypia.commandler.configuration.*;
+import com.elypia.commandler.configuration.Configuration;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.meta.builder.*;
+import com.elypia.commandler.metadata.builder.*;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * The ConfigurationLoader uses NightConfig so it is only
@@ -69,91 +68,80 @@ public class ConfigurationLoader implements MetaLoader {
     }
 
     @Override
-    public List<Method> findCommands(Class<? extends Handler> type) {
-        for (ModuleConfig module : configuration) {
-            if (module.getHandler() != type)
-                continue;
-
-            return module.getCommands().stream()
-                .map(CommandConfig::getMethod)
-                .collect(Collectors.toList());
-        }
-
+    public List<ModuleBuilder> getModules() {
+//        for (ModuleConfig module : configuration) {
+//            if (module.getHandler() != builder.getHandlerType())
+//                continue;
+//
+//            return builder
+//                    .setName(module.getName())
+//                    .setGroup(module.getGroup())
+//                    .addAliases(module.getAliases().toArray(new String[0]))
+//                    .setHelp(module.getHelp());
+//        }
+//
+//        return builder;
         return null;
     }
 
     @Override
-    public ModuleBuilder loadModule(ModuleBuilder builder) {
-        for (ModuleConfig module : configuration) {
-            if (module.getHandler() != builder.getHandlerType())
-                continue;
-
-            return builder
-                .setName(module.getName())
-                .setGroup(module.getGroup())
-                .addAliases(module.getAliases().toArray(new String[0]))
-                .setHelp(module.getHelp());
-        }
-
-        return builder;
-    }
-
-    @Override
-    public CommandBuilder loadCommand(CommandBuilder builder) {
-        Method method = builder.getMethod();
-        Class type = method.getDeclaringClass();
-
-        for (ModuleConfig module : configuration) {
-            if (module.getHandler() != type)
-                continue;
-
-            for (CommandConfig command : module) {
-                if (command.getMethod() != method)
-                    continue;
-
-                return builder
-                    .setName(command.getName())
-                    .setAliases(command.getAliases().toArray(new String[0]))
-                    .setHelp(command.getHelp())
-                    .setStatic(command.isStatic())
-                    .setDefault(command.isDefault());
-            }
-        }
-
-        return builder;
-    }
-
-    @Override
-    public ParamBuilder loadParam(ParamBuilder builder) {
-        Executable method = builder.getParameter().getDeclaringExecutable();
-        Class type = method.getDeclaringClass();
-
-        for (ModuleConfig module : configuration) {
-            if (module.getHandler() != type)
-                continue;
-
-            for (CommandConfig command : module) {
-                if (command.getMethod() != method)
-                    continue;
-
-                for (ParamConfig param : command) {
-                    return builder
-                        .setName(param.getName())
-                        .setHelp(param.getHelp());
-                }
-            }
-        }
-
-        return builder;
-    }
-
-    @Override
-    public AdapterBuilder loadParser(AdapterBuilder builder) {
+    public List<CommandBuilder> getCommands(Class<? extends Handler> type) {
+//        Method method = builder.getMethod();
+//        Class type = method.getDeclaringClass();
+//
+//        for (ModuleConfig module : configuration) {
+//            if (module.getHandler() != type)
+//                continue;
+//
+//            for (CommandConfig command : module) {
+//                if (command.getMethod() != method)
+//                    continue;
+//
+//                return builder
+//                        .setName(command.getName())
+//                        .setAliases(command.getAliases().toArray(new String[0]))
+//                        .setHelp(command.getHelp())
+//                        .setStatic(command.isStatic())
+//                        .setDefault(command.isDefault());
+//            }
+//        }
+//
+//        return builder;
         return null;
     }
 
     @Override
-    public ProviderBuilder loadBuilder(ProviderBuilder builder) {
+    public List<ParamBuilder> getParams(Method method) {
+//        Executable method = builder.getParameter().getDeclaringExecutable();
+//        Class type = method.getDeclaringClass();
+//
+//        for (ModuleConfig module : configuration) {
+//            if (module.getHandler() != type)
+//                continue;
+//
+//            for (CommandConfig command : module) {
+//                if (command.getMethod() != method)
+//                    continue;
+//
+//                for (ParamConfig param : command) {
+//                    return builder
+//                            .setName(param.getName())
+//                            .setHelp(param.getHelp());
+//                }
+//            }
+//        }
+//
+//        return builder;
+        return null;
+    }
+
+    @Override
+    public List<AdapterBuilder> getAdapters() {
+        return null;
+    }
+
+    @Override
+    public List<ProviderBuilder> getProviders() {
         return null;
     }
 
