@@ -1,5 +1,7 @@
 package com.elypia.commandler.interfaces;
 
+import com.elypia.commandler.CommandlerEvent;
+
 /**
  * This should implement the default load method.
  * The default method should be the standard or minimal way
@@ -7,7 +9,7 @@ package com.elypia.commandler.interfaces;
  * Platform specific implementations may append more
  * methods according to the different types of messages.
  *
- * @param <O> The object to load, this should be the ouput from a {@link Adapter}.
+ * @param <O> The object convert into a message.
  * @param <M> The message we're returning.
  */
 public interface ResponseProvider<O, M> {
@@ -20,8 +22,8 @@ public interface ResponseProvider<O, M> {
      * should return the basic {@link M message} that requires minimal
      * permissions.
      *
-     * @param output The output from the {@link Adapter} when parsing the input.
+     * @param output The output from the {@link ParamAdapter} when parsing the input.
      * @return The message to response to the user.
      */
-    M provide(O output);
+    M provide(CommandlerEvent<?> event, O output);
 }

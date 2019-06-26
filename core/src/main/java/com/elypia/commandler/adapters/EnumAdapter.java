@@ -1,6 +1,6 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Adapter;
 import com.elypia.commandler.interfaces.ParamAdapter;
 import com.elypia.commandler.metadata.data.MetaParam;
@@ -20,7 +20,7 @@ import java.util.Objects;
 public class EnumAdapter implements ParamAdapter<Enum> {
 
     @Override
-    public Enum adapt(String input, Class<? extends Enum> type, MetaParam data) {
+    public Enum adapt(String input, Class<? extends Enum> type, MetaParam data, CommandlerEvent<?> event) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(input);
         input = input.toLowerCase().replace(" ", "");

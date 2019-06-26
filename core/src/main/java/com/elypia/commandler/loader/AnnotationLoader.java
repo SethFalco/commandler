@@ -20,11 +20,11 @@ public class AnnotationLoader extends SearchingLoader {
         super(types);
     }
 
-    public AnnotationLoader(Package pkge) {
+    public AnnotationLoader(Package... pkge) {
         super(pkge);
     }
 
-    public AnnotationLoader(String pkge) throws IOException {
+    public AnnotationLoader(String... pkge) throws IOException {
         super(pkge);
     }
 
@@ -75,7 +75,7 @@ public class AnnotationLoader extends SearchingLoader {
             .filter((t) -> t.isAnnotationPresent(Param.class))
             .map((p) -> {
                 Param param = p.getDeclaredAnnotation(Param.class);
-                return new ParamBuilder(p.getType())
+                return new ParamBuilder(p.getType(), p)
                     .setName(AnnoUtils.ifEffectivelyNull(param.name()))
                     .setHelp(AnnoUtils.ifEffectivelyNull(param.help()))
                     .setDefaultValue(AnnoUtils.ifEffectivelyNull(param.defaultValue()));

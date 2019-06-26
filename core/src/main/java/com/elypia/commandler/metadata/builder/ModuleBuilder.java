@@ -75,17 +75,17 @@ public class ModuleBuilder implements Iterable<CommandBuilder> {
 
         for (MetaModule module : modules) {
             if (name.equalsIgnoreCase(module.getName()))
-                throw new ConflictingModuleException("Module `%s` already exists within current context.", name);
+                throw new ConflictingModuleException("Module `" + name + "` already exists within current context.");
 
             if (!Collections.disjoint(aliases, module.getAliases()))
-                throw new ConflictingModuleException("Module `%s` has an alias which is already taken by another module.", name);
+                throw new ConflictingModuleException("Module `" + name + "` has an alias which is already taken by another module.");
 
             Collection<String> staticAliases = module.getStaticCommands().stream()
                 .flatMap((c) -> c.getAliases().stream())
                 .collect(Collectors.toList());
 
             if (!Collections.disjoint(aliases, staticAliases))
-                throw new ConflictingModuleException("Module `%s` has an alias which is already taken by a static command.", name);
+                throw new ConflictingModuleException("Module `" + name + "` has an alias which is already taken by a static command.");
         }
 
         return data;

@@ -1,5 +1,6 @@
 package com.elypia.commandler.providers;
 
+import com.elypia.commandler.CommandlerEvent;
 import com.elypia.commandler.annotations.Provider;
 import com.elypia.commandler.interfaces.ResponseProvider;
 
@@ -15,7 +16,7 @@ import java.net.URL;
 public class MiscToStringProvider implements ResponseProvider<Object, String> {
 
     @Override
-    public String provide(Object output) {
+    public String provide(CommandlerEvent<?> event, Object output) {
         return output.toString();
     }
 }

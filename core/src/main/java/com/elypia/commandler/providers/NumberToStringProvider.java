@@ -1,5 +1,6 @@
 package com.elypia.commandler.providers;
 
+import com.elypia.commandler.CommandlerEvent;
 import com.elypia.commandler.annotations.Provider;
 import com.elypia.commandler.interfaces.ResponseProvider;
 
@@ -21,7 +22,7 @@ public class NumberToStringProvider implements ResponseProvider<Number, String> 
     }
 
     @Override
-    public String provide(Number output) {
+    public String provide(CommandlerEvent<?> event, Number output) {
         return format.format(output);
     }
 }

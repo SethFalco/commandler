@@ -1,5 +1,6 @@
 package com.elypia.commandler.example.discord;
 
+import com.elypia.commandler.CommandlerEvent;
 import com.elypia.commandler.annotations.Provider;
 import com.elypia.commandler.interfaces.ResponseProvider;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -11,7 +12,7 @@ import java.net.URL;
 public class MiscToMessageProvider implements ResponseProvider<Object, Message> {
 
     @Override
-    public Message provide(Object output) {
+    public Message provide(CommandlerEvent<?> event, Object output) {
         return new MessageBuilder(output.toString()).build();
     }
 }

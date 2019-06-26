@@ -1,6 +1,6 @@
 package com.elypia.commandler.interfaces;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.*;
 import com.elypia.commandler.metadata.data.MetaParam;
 
 /**
@@ -25,7 +25,7 @@ public interface ParamAdapter<O> {
      * @param input The input from the user.
      * @return The parsed data-type, or null if we're unable to adapt the input.
      */
-    O adapt(String input, Class<? extends O> type, MetaParam param);
+    O adapt(String input, Class<? extends O> type, MetaParam param, CommandlerEvent<?> event);
 
     default O adapt(String input) {
         return adapt(input, null);
@@ -33,5 +33,9 @@ public interface ParamAdapter<O> {
 
     default O adapt(String input, Class<? extends O> type) {
         return adapt(input, type, null);
+    }
+
+    default O adapt(String input, Class<? extends O> type, MetaParam param) {
+        return adapt(input, type, param, null);
     }
 }

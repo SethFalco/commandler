@@ -19,11 +19,11 @@ import java.util.*;
 public class HelpModule implements Handler {
 
     private Context context;
-    private LanguageManager language;
+    private LanguageInterface language;
     private TestManager testManager;
 
     @Inject
-    public HelpModule(Context context, LanguageManager language, TestManager testManager) {
+    public HelpModule(Context context, LanguageInterface language, TestManager testManager) {
         this.context = context;
         this.language = language;
         this.testManager = testManager;

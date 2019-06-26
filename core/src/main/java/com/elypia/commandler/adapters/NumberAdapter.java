@@ -1,5 +1,6 @@
 package com.elypia.commandler.adapters;
 
+import com.elypia.commandler.CommandlerEvent;
 import com.elypia.commandler.annotations.Adapter;
 import com.elypia.commandler.interfaces.ParamAdapter;
 import com.elypia.commandler.metadata.data.MetaParam;
@@ -24,7 +25,7 @@ public class NumberAdapter implements ParamAdapter<Number> {
     }
 
     @Override
-    public Number adapt(String input, Class<? extends Number> type, MetaParam param) {
+    public Number adapt(String input, Class<? extends Number> type, MetaParam param, CommandlerEvent<?> event) {
         Objects.requireNonNull(input);
         Objects.requireNonNull(type);
 

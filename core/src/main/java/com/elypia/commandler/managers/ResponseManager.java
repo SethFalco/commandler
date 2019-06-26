@@ -1,5 +1,6 @@
 package com.elypia.commandler.managers;
 
+import com.elypia.commandler.CommandlerEvent;
 import com.elypia.commandler.exceptions.AdapterRequiredException;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.data.MetaProvider;
@@ -8,25 +9,25 @@ import org.slf4j.*;
 
 import java.util.*;
 
-public class ProviderManager {
+public class ResponseManager {
 
     /** SLF4J Logger*/
-    private static final Logger logger = LoggerFactory.getLogger(ProviderManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResponseManager.class);
 
     /** Used to manage dependency injection when constructions param adapters. */
     private final Injector injector;
 
     private final Collection<MetaProvider> providers;
 
-    public ProviderManager(MetaProvider... adapters) {
+    public ResponseManager(MetaProvider... adapters) {
         this(Guice.createInjector(), adapters);
     }
 
-    public ProviderManager(Injector injector, MetaProvider... adapters) {
+    public ResponseManager(Injector injector, MetaProvider... adapters) {
         this(injector, List.of(adapters));
     }
 
-    public ProviderManager(Injector injector, Collection<MetaProvider> providers) {
+    public ResponseManager(Injector injector, Collection<MetaProvider> providers) {
         this.injector = Objects.requireNonNull(injector);
         this.providers = Objects.requireNonNull(providers);
 
@@ -42,11 +43,12 @@ public class ProviderManager {
      * @param object The user input after already being parsed by the {@link AdapterManager}.
      * @return A built message ready to send to the client.
      */
-    public Object provide(Controller controller, Object object) {
+    public Object provide(CommandlerEvent<?> event, Controller controller, Object object) {
+        Objects.requireNonNull(controller);
         Objects.requireNonNull(object);
         ResponseProvider responseProvider = getProvider(controller, object.getClass(), Map.of());
 
-        Object content = responseProvider.provide(object);
+        Object content = responseProvider.provide(event, object);
 
         if (content == null)
             throw new IllegalStateException(String.format("String adapter `%s`returned null.", responseProvider.getClass().getName()));

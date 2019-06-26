@@ -4,7 +4,7 @@ import org.slf4j.*;
 
 import java.io.*;
 import java.lang.reflect.Modifier;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.util.*;
 
 public final class ReflectionUtils {
@@ -50,7 +50,10 @@ public final class ReflectionUtils {
 
         loader.getResources(path).asIterator().forEachRemaining((url) -> {
             try {
-                File dir = new File(url.toURI());
+                URI uri = url.toURI();
+                logger.debug("Getting classes for URI: {}", uri);
+
+                File dir = new File(uri);
                 addClasses(dir, pkge, list);
             } catch (URISyntaxException ex) {
                 logger.error("Package returned bad URL.", ex);

@@ -4,7 +4,7 @@ import com.elypia.commandler.CommandlerEvent;
 
 import java.util.*;
 
-public interface LanguageManager {
+public interface LanguageInterface {
 
     default String get(String key) {
         return get(key, Map.of());

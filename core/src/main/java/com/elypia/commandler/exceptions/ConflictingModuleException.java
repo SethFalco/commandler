@@ -6,8 +6,8 @@ public class ConflictingModuleException extends RuntimeException {
         super();
     }
 
-    public ConflictingModuleException(String message, Object... args) {
-        super(String.format(message, args));
+    public ConflictingModuleException(String message) {
+        super(message);
     }
 
     public ConflictingModuleException(String message, Throwable cause) {

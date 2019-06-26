@@ -12,8 +12,8 @@ public class NoDefaultCommandException extends Exception {
         this(module, null);
     }
 
-    public NoDefaultCommandException(MetaModule module, String message, Object... args) {
-        this(module, String.format(message, args), (Throwable)null);
+    public NoDefaultCommandException(MetaModule module, String message) {
+        this(module, message, null);
     }
 
     public NoDefaultCommandException(MetaModule module, String message, Throwable cause) {

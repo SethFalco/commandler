@@ -1,5 +1,6 @@
 package com.elypia.commandler.adapters;
 
+import com.elypia.commandler.CommandlerEvent;
 import com.elypia.commandler.annotations.Adapter;
 import com.elypia.commandler.interfaces.ParamAdapter;
 import com.elypia.commandler.metadata.data.MetaParam;
@@ -27,7 +28,7 @@ public class TimeUnitAdapter implements ParamAdapter<TimeUnit> {
     }
 
     @Override
-    public TimeUnit adapt(String input, Class<? extends TimeUnit> type, MetaParam param) {
+    public TimeUnit adapt(String input, Class<? extends TimeUnit> type, MetaParam param, CommandlerEvent<?> event) {
         switch (input.toLowerCase()) {
             case "days": case "day": case "d":
                 return (units.contains(TimeUnit.DAYS)) ? TimeUnit.DAYS : null;

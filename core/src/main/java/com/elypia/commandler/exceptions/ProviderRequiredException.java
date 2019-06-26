@@ -6,8 +6,8 @@ public class ProviderRequiredException extends RuntimeException {
         super();
     }
 
-    public ProviderRequiredException(String message, Object... args) {
-        super(String.format(message, args));
+    public ProviderRequiredException(String message) {
+        super(message);
     }
 
     public ProviderRequiredException(String message, Throwable cause) {

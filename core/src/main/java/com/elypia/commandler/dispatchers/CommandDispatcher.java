@@ -51,9 +51,10 @@ public class CommandDispatcher implements Dispatcher {
     @Override
     public Object dispatch(Controller controller, Object source, String content) {
         Object response;
+        CommandlerEvent<?> event = null;
 
         try {
-            CommandlerEvent<?> event = parse(controller, source, content);
+            event = parse(controller, source, content);
             Input input = event.getInput();
             MetaModule module = input.getModule();
             Handler handler = commandler.getInjector().getInstance(module.getHandlerType());
@@ -74,7 +75,7 @@ public class CommandDispatcher implements Dispatcher {
         if (response == null)
             return null;
 
-        object = commandler.getProviderManager().provide(controller, response);
+        object = commandler.getProviderManager().provide(event, controller, response);
         return object;
     }
 
@@ -212,5 +213,15 @@ public class CommandDispatcher implements Dispatcher {
             return null;
 
         return List.of(prefixes);
+    }
+
+    @Override
+    public String toString() {
+        String name = this.getClass().getSimpleName();
+
+        if (prefixes == null)
+            return name;
+
+        return name + " (" + String.join(", ", prefixes) + ")";
     }
 }

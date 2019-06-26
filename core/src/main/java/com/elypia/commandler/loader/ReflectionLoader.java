@@ -18,11 +18,11 @@ public class ReflectionLoader extends SearchingLoader {
         super(types);
     }
 
-    public ReflectionLoader(Package pkge) {
+    public ReflectionLoader(Package... pkge) {
         super(pkge);
     }
 
-    public ReflectionLoader(String pkge) throws IOException {
+    public ReflectionLoader(String... pkge) throws IOException {
         super(pkge);
     }
 
@@ -64,7 +64,8 @@ public class ReflectionLoader extends SearchingLoader {
     @Override
     public List<ParamBuilder> getParams(Method method) {
         return Stream.of(method.getParameters())
-            .map((p) -> new ParamBuilder(p.getType()).setName(p.getName()))
+            .map((p) -> new ParamBuilder(p.getType(), p)
+                .setName(p.getName()))
             .collect(Collectors.toUnmodifiableList());
     }
 

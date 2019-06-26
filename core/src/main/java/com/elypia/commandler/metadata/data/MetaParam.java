@@ -2,12 +2,15 @@ package com.elypia.commandler.metadata.data;
 
 import com.elypia.commandler.interfaces.DynDefaultValue;
 
+import java.lang.reflect.AnnotatedElement;
 import java.util.Objects;
 
 public class MetaParam {
 
-    /** The type of parameter this is. */
     private Class<?> type;
+
+    /** The method or parameter that represents this param. */
+    private AnnotatedElement annotatedElement;
 
     /** The name of this  */
     private String name;
@@ -27,8 +30,9 @@ public class MetaParam {
     /** If this is a single parameter, or a list parameter. */
     private boolean isList;
 
-    public MetaParam(Class<?> type, String name, String help, String[] defaultValue) {
+    public MetaParam(Class<?> type, AnnotatedElement annotatedElement, String name, String help, String[] defaultValue) {
         this.type = Objects.requireNonNull(type);
+        this.annotatedElement = Objects.requireNonNull(annotatedElement);
         this.name = Objects.requireNonNull(name);
         this.help = help;
         this.defaultValue = defaultValue;
@@ -39,6 +43,10 @@ public class MetaParam {
 
     public Class<?> getType() {
         return type;
+    }
+
+    public AnnotatedElement getAnnotatedElement() {
+        return annotatedElement;
     }
 
     public String getName() {

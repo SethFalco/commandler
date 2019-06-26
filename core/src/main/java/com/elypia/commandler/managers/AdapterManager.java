@@ -114,7 +114,7 @@ public class AdapterManager {
 
             for (int i = 0; i < size; i++) {
                 String item = items.get(i);
-                Object o = adapter.adapt(item, componentType, param);
+                Object o = adapter.adapt(item, componentType, param, event);
 
                 if (o == null)
                     throw new ParamParseException(input, param, item);
@@ -143,7 +143,7 @@ public class AdapterManager {
         }
 
         if (size == 1) {
-            Object o = adapter.adapt(items.get(0), componentType, param);
+            Object o = adapter.adapt(items.get(0), componentType, param, event);
 
             if (o == null)
                 throw new ParamParseException(input, param, items.get(0));

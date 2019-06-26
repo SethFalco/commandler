@@ -1,5 +1,6 @@
 package com.elypia.commandler.adapters;
 
+import com.elypia.commandler.CommandlerEvent;
 import com.elypia.commandler.annotations.Adapter;
 import com.elypia.commandler.interfaces.ParamAdapter;
 import com.elypia.commandler.metadata.data.MetaParam;
@@ -28,7 +29,7 @@ public class BooleanAdapter implements ParamAdapter<Boolean> {
     );
 
     @Override
-    public Boolean adapt(String input, Class<? extends Boolean> type, MetaParam data) {
+    public Boolean adapt(String input, Class<? extends Boolean> type, MetaParam data, CommandlerEvent<?> event) {
         input = input.toLowerCase();
 
         if (TRUE.contains(input))

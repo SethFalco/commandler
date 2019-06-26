@@ -1,6 +1,6 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.Context;
+import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Adapter;
 import com.elypia.commandler.interfaces.ParamAdapter;
 import com.elypia.commandler.metadata.data.*;
@@ -21,7 +21,7 @@ public class MetaCommandAdapter implements ParamAdapter<MetaCommand> {
     }
 
     @Override
-    public MetaCommand adapt(String input, Class<? extends MetaCommand> type, MetaParam param) {
+    public MetaCommand adapt(String input, Class<? extends MetaCommand> type, MetaParam param, CommandlerEvent<?> event) {
         String[] args = CommandlerUtils.splitSpaces(input);
 
         if (args.length != 2)

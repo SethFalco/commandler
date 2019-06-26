@@ -21,8 +21,11 @@ public abstract class SearchingLoader implements MetaLoader, Iterable<Class<?>> 
         this.types = List.of(types);
     }
 
-    public SearchingLoader(Package pkge) {
-        this.types = ReflectionUtils.getClasses(pkge);
+    public SearchingLoader(Package... pkge) {
+        types = new ArrayList<>();
+
+        for (Package p : pkge)
+            types.addAll(ReflectionUtils.getClasses(p));
     }
 
     /**
@@ -31,8 +34,11 @@ public abstract class SearchingLoader implements MetaLoader, Iterable<Class<?>> 
      *
      * @param pkge
      */
-    public SearchingLoader(String pkge) throws IOException {
-        types = ReflectionUtils.getClasses(pkge);
+    public SearchingLoader(String... pkge) throws IOException {
+        types = new ArrayList<>();
+
+        for (String p : pkge)
+            types.addAll(ReflectionUtils.getClasses(p));
     }
 
     /**

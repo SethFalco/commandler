@@ -11,6 +11,7 @@ import com.google.inject.*;
  * command events to perform method calls and return
  * the result.
  */
+// TODO: Commandler needs a way where something can automtaically load default stuff.
 public class Commandler {
 
     /** The collation of MetaData used to initialize this Commandler instance. */
@@ -20,10 +21,10 @@ public class Commandler {
     private MisuseHandler misuseHandler;
 
     /** Obtain externally managed strings for internationalization. */
-    private LanguageManager langManager;
+    private LanguageInterface langManager;
 
     /** Take the result of a method and make it something sendable to the service. */
-    private ProviderManager provider;
+    private ResponseManager provider;
 
     private DispatchManager dispatch;
     private ValidationManager validator;
@@ -41,14 +42,14 @@ public class Commandler {
     }
 
     public Commandler(Context context, MisuseHandler misuseHandler) {
-        this(context, misuseHandler, new DefLanguageManager<>());
+        this(context, misuseHandler, new LanguageManager<>());
     }
 
-    public Commandler(Context context, MisuseHandler misuseHandler, LanguageManager langManager) {
+    public Commandler(Context context, MisuseHandler misuseHandler, LanguageInterface langManager) {
         this(context, misuseHandler, langManager, Guice.createInjector(new CommandlerModule()));
     }
 
-    public Commandler(Context context, MisuseHandler misuseHandler, LanguageManager langManager, Injector injector) {
+    public Commandler(Context context, MisuseHandler misuseHandler, LanguageInterface langManager, Injector injector) {
         this.injector = injector;
         this.context = context;
         this.misuseHandler = misuseHandler;
@@ -61,7 +62,7 @@ public class Commandler {
         this.runner = new TestManager(this);
 
         this.adapter = new AdapterManager(injector, context.getAdapters());
-        this.provider = new ProviderManager(injector, context.getProviders());
+        this.provider = new ResponseManager(injector, context.getProviders());
     }
 
     public Context getContext() {
@@ -76,7 +77,7 @@ public class Commandler {
         return misuseHandler;
     }
 
-    public LanguageManager getLanguageManager() {
+    public LanguageInterface getLanguageManager() {
         return langManager;
     }
 
@@ -88,7 +89,7 @@ public class Commandler {
         return adapter;
     }
 
-    public ProviderManager getProviderManager() {
+    public ResponseManager getProviderManager() {
         return provider;
     }
 
