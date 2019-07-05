@@ -3,7 +3,4 @@ rootProject.name = 'commandler'
 /** Library */
 include "core"
 include "file-config"
-include "export"
-
-/** Example */
-include "example"
+include "doc"

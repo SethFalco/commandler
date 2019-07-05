@@ -9,15 +9,25 @@ import org.slf4j.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.*;
 import java.util.stream.*;
 
 public class AnnotationLoader extends SearchingLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(AnnotationLoader.class);
 
+    // TODO: This logic has been coded twice.
+    /**
+     * Bypass searching and only add the specified classes.
+     *
+     * @param types The types to add.
+     */
     public AnnotationLoader(Class<?>... types) {
-        super(types);
+        this(List.of(types));
+    }
+
+    public AnnotationLoader(Collection<Class<?>> types) {
+        super.types = types;
     }
 
     public AnnotationLoader(Package... pkge) {

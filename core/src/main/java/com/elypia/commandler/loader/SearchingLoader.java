@@ -11,14 +11,8 @@ public abstract class SearchingLoader implements MetaLoader, Iterable<Class<?>> 
     /** All classes found when searching. */
     protected Collection<Class<?>> types;
 
-    // TODO: This doesn't belong here, a SEARCH loader shouldn't have a means to not search
-    /**
-     * Bypass searching and only add the specified classes.
-     *
-     * @param types The types to add.
-     */
-    public SearchingLoader(Class<?>... types) {
-        this.types = List.of(types);
+    public SearchingLoader() {
+        this.types = new ArrayList<>();
     }
 
     public SearchingLoader(Package... pkge) {

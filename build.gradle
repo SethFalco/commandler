@@ -6,12 +6,7 @@ def publishedProjects = [
     /** Library */
     project(":core"),
     project(":file-config"),
-    project(":export")
-]
-
-def applicationProjects = [
-    /** Example */
-    project(":example")
+    project(":doc")
 ]
 
 allprojects() {
@@ -19,7 +14,7 @@ allprojects() {
     apply plugin: "jacoco"
 
     group = "com.elypia.commandler"
-    version = "3.0.0"
+    version = "4.0.0"
     description = "Commandler is a abstract command handling framework for dispatching events."
 
     ext {
@@ -40,13 +35,10 @@ allprojects() {
 
 configure(publishedProjects) {
     apply plugin: "java-library"
-}
+    apply plugin: "maven"
+    apply plugin: "maven-publish"
+    apply plugin: "com.jfrog.bintray"
 
-configure(applicationProjects) {
-    apply plugin: "java"
-}
-
-configure(publishedProjects + applicationProjects) {
     sourceCompatibility = 11
     targetCompatibility = 11
 
@@ -56,20 +48,10 @@ configure(publishedProjects + applicationProjects) {
         // Logging
         implementation "org.slf4j:slf4j-api:1.7.26"
         testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
-    }
-}
-
-configure(publishedProjects) {
-    apply plugin: "maven-publish"
-    apply plugin: "com.jfrog.bintray"
-
-    dependencies {
-        // Testing
         testImplementation "org.junit.jupiter:junit-jupiter:5.4.2"
     }
 
     /** Testing */
-
     test {
         useJUnitPlatform()
         finalizedBy jacocoTestReport
@@ -80,7 +62,6 @@ configure(publishedProjects) {
     }
 
     /** Code Coverage */
-
     jacocoTestReport {
         reports {
             html.enabled = false
@@ -93,7 +74,7 @@ configure(publishedProjects) {
     jar {
         manifest {
             attributes "Implementation-Title": this.name + project.path.replace(':', '-'),
-                    "Implementation-Version": version
+                       "Implementation-Version": version
         }
     }
 
@@ -181,7 +162,6 @@ configure(publishedProjects) {
 }
 
 /** Generate Global JavaDocs for GitLab Pages */
-
 task globalJavadoc(type: Javadoc) {
     source = publishedProjects.collect { it.sourceSets.main.allJava }
     classpath = files(publishedProjects.collect { it.sourceSets.main.compileClasspath })
@@ -189,7 +169,6 @@ task globalJavadoc(type: Javadoc) {
 }
 
 /** Combine and output code coverage. */
-
 task jacocoMerge(type: JacocoMerge) {
     executionData = files(publishedProjects.jacocoTestReport.executionData.findAll {it.asList() })
 

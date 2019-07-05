@@ -81,6 +81,10 @@ public class MetaModule implements Comparable<MetaModule>, Iterable<MetaCommand>
         return isHidden;
     }
 
+    public boolean isPublic() {
+        return !isHidden;
+    }
+
     public List<MetaCommand> getCommands() {
         return List.copyOf(commands);
     }

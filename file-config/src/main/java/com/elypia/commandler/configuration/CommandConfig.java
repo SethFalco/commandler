@@ -23,8 +23,6 @@ public class CommandConfig implements Iterable<ParamConfig> {
 
     private List<ParamConfig> params;
 
-    private List<OverloadConfig> overloads;
-
     public Method getMethod() {
         return method;
     }
@@ -87,14 +85,6 @@ public class CommandConfig implements Iterable<ParamConfig> {
 
     public void setParams(List<ParamConfig> params) {
         this.params = params;
-    }
-
-    public List<OverloadConfig> getOverloads() {
-        return overloads;
-    }
-
-    public void setOverloads(List<OverloadConfig> overloads) {
-        this.overloads = overloads;
     }
 
     @Override

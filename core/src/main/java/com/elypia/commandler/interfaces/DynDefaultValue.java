@@ -4,5 +4,5 @@ import com.elypia.commandler.CommandlerEvent;
 
 @FunctionalInterface
 public interface DynDefaultValue {
-    String defaultValue(CommandlerEvent event);
+    String defaultValue(CommandlerEvent<?> event);
 }

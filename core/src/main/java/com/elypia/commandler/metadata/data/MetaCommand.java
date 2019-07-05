@@ -96,6 +96,10 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
         return isHidden;
     }
 
+    public boolean isPublic() {
+        return !isHidden;
+    }
+
     public boolean isDefault() {
         return isDefault;
     }

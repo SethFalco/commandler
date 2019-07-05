@@ -3,8 +3,8 @@ dependencies {
     implementation "com.google.inject:guice:4.2.2"
 
     // Validation
-    implementation "javax.validation:validation-api:2.0.1.Final"
-    implementation "org.hibernate.validator:hibernate-validator:6.0.16.Final"
+    api "javax.validation:validation-api:2.0.1.Final"
+    api "org.hibernate.validator:hibernate-validator:6.0.16.Final"
     implementation "javax.el:javax.el-api:3.0.0"
     runtimeOnly "org.glassfish:javax.el:3.0.0"
 }

@@ -5,7 +5,7 @@ import com.elypia.commandler.metadata.builder.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.*;
 
@@ -14,8 +14,17 @@ public class ReflectionLoader extends SearchingLoader {
     private static final Pattern nameMatcher = Pattern.compile(".+Module$");
     private static final Pattern pattern = Pattern.compile("[^a-z]+");
 
+    /**
+     * Bypass searching and only add the specified classes.
+     *
+     * @param types The types to add.
+     */
     public ReflectionLoader(Class<?>... types) {
-        super(types);
+        this(List.of(types));
+    }
+
+    public ReflectionLoader(Collection<Class<?>> types) {
+        super.types = types;
     }
 
     public ReflectionLoader(Package... pkge) {
