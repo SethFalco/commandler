@@ -29,19 +29,15 @@ public class AdapterManager {
     private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
 
     /** Used to manage dependency injection when constructions param adapters. */
-    private final Injector injector;
+    private final InjectionManager injectionManager;
     private final Collection<MetaAdapter> adapters;
 
-    public AdapterManager(MetaAdapter... adapters) {
-        this(Guice.createInjector(), adapters);
+    public AdapterManager(InjectionManager injectionManager, MetaAdapter... adapters) {
+        this(injectionManager, List.of(adapters));
     }
 
-    public AdapterManager(Injector injector, MetaAdapter... adapters) {
-        this(injector, List.of(adapters));
-    }
-
-    public AdapterManager(Injector injector, Collection<MetaAdapter> adapters) {
-        this.injector = Objects.requireNonNull(injector);
+    public AdapterManager(InjectionManager injectionManager, Collection<MetaAdapter> adapters) {
+        this.injectionManager = Objects.requireNonNull(injectionManager);
         this.adapters = Objects.requireNonNull(adapters);
 
         for (MetaAdapter adapter : adapters)
@@ -190,7 +186,7 @@ public class AdapterManager {
 
         logger.debug("Using `{}` adapter for parameter.", adapter.getAdapterType().getSimpleName());
 
-        Injector child = injector.createChildInjector(new AbstractModule() {
+        Injector child = injectionManager.getInjector().createChildInjector(new AbstractModule() {
 
             @Override
             protected void configure() {

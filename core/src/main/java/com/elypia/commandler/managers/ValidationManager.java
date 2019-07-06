@@ -4,7 +4,6 @@ import com.elypia.commandler.*;
 import com.elypia.commandler.exceptions.ParamViolationException;
 import com.elypia.commandler.interfaces.Handler;
 import com.elypia.commandler.validation.*;
-import com.google.inject.Injector;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 import org.slf4j.*;
@@ -27,12 +26,12 @@ public class ValidationManager {
     /** The actual validator object constructed and on use throughout Commandler. */
     private final ExecutableValidator exValidator;
 
-    public ValidationManager(Injector injector, Context context) {
+    public ValidationManager(InjectionManager injectionManager, Context context) {
         var locator = new PlatformResourceBundleLocator(ResourceBundleMessageInterpolator.USER_VALIDATION_MESSAGES, null, true);
         ValidatorFactory factory = Validation.byDefaultProvider()
             .configure()
             .messageInterpolator(new ResourceBundleMessageInterpolator(locator))
-            .constraintValidatorFactory(new InjectableConstraintValidatorFactory(injector))
+            .constraintValidatorFactory(new InjectableConstraintValidatorFactory(injectionManager))
             .parameterNameProvider(new CommandParamNameProvider(context))
             .buildValidatorFactory();
 

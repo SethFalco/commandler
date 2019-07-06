@@ -63,7 +63,7 @@ public class CommandDispatcher implements Dispatcher {
             event = parse(controller, source, content);
             Input input = event.getInput();
             MetaModule module = input.getModule();
-            Handler handler = commandler.getInjector().getInstance(module.getHandlerType());
+            Handler handler = commandler.getInjector().getInjector().getInstance(module.getHandlerType());
             Object[] params = commandler.getAdapterManager().adaptEvent(event);
             commandler.getValidationManager().validate(event, handler, params);
 

@@ -15,20 +15,16 @@ public class ResponseManager {
     private static final Logger logger = LoggerFactory.getLogger(ResponseManager.class);
 
     /** Used to manage dependency injection when constructions param adapters. */
-    private final Injector injector;
+    private final InjectionManager injectionManager;
 
     private final Collection<MetaProvider> providers;
 
-    public ResponseManager(MetaProvider... adapters) {
-        this(Guice.createInjector(), adapters);
+    public ResponseManager(InjectionManager injectionManager, MetaProvider... adapters) {
+        this(injectionManager, List.of(adapters));
     }
 
-    public ResponseManager(Injector injector, MetaProvider... adapters) {
-        this(injector, List.of(adapters));
-    }
-
-    public ResponseManager(Injector injector, Collection<MetaProvider> providers) {
-        this.injector = Objects.requireNonNull(injector);
+    public ResponseManager(InjectionManager injectionManager, Collection<MetaProvider> providers) {
+        this.injectionManager = Objects.requireNonNull(injectionManager);
         this.providers = Objects.requireNonNull(providers);
 
         for (MetaProvider provider : providers)
@@ -87,7 +83,7 @@ public class ResponseManager {
         if (provider == null)
             throw new AdapterRequiredException("ResponseProvider required for type " + typeRequired + ".");
 
-        Injector child = injector.createChildInjector(new AbstractModule() {
+        Injector child = injectionManager.getInjector().createChildInjector(new AbstractModule() {
 
             @Override
             protected void configure() {

@@ -4,7 +4,6 @@ import com.elypia.commandler.Context;
 import com.elypia.commandler.interfaces.Handler;
 import com.elypia.commandler.metadata.MetaModule;
 import com.elypia.commandler.testing.*;
-import com.google.inject.Injector;
 import org.slf4j.*;
 
 import java.time.Instant;
@@ -29,14 +28,14 @@ public class TestManager {
 
     private final ScheduledExecutorService executor;
 
-    public TestManager(Context context, Injector injector) {
+    public TestManager(InjectionManager injectionManager, Context context) {
         started = Instant.now();
         testReports = new HashMap<>();
         executor = Executors.newSingleThreadScheduledExecutor();
 
         executor.scheduleAtFixedRate(() -> {
             for (MetaModule data : context) {
-                Handler handler = injector.getInstance(data.getHandlerType());
+                Handler handler = injectionManager.getInjector().getInstance(data.getHandlerType());
 
                 if (handler == null) {
                     logger.debug("Registered handler is not initalised, testing was skipped.");

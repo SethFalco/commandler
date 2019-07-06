@@ -3,7 +3,6 @@ package com.elypia.commandler;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.managers.*;
 import com.elypia.commandler.misuse.CommandMisuseListener;
-import com.google.inject.*;
 
 import java.util.Objects;
 
@@ -17,6 +16,9 @@ public class Commandler {
     /** The collation of MetaData used to initialize this Commandler instance. */
     private Context context;
 
+    /** Dependency injection injector to inject dependendies into provided implementations. */
+    private InjectionManager injectionManager;
+
     /** Handler for errors, both end-user errors and exceptions. */
     private MisuseHandler misuseManager;
 
@@ -26,39 +28,48 @@ public class Commandler {
     /** Take the result of a method and make it something sendable to the service. */
     private ResponseManager responseManager;
 
+    /** Dispatch various types of commands this instance is aware of. */
     private DispatcherManager dispatcherManager;
-    private ValidationManager validationManager;
-    private AdapterManager adapterManager;
-    private TestManager testManager;
 
-    private Injector injector;
+    /** Validate the parameters given are appropriate for the command executed. */
+    private ValidationManager validationManager;
+
+    /** Adapt parameters as Java objects for methods to use. */
+    private AdapterManager adapterManager;
+
+    /** The test runner to verify the integrity of modules through runtime. */
+    private TestManager testManager;
 
     public Commandler(
         Context context,
+        InjectionManager injectionManager,
         MisuseHandler misuseManager,
         LanguageInterface languageManager,
         ResponseManager responseManager,
         DispatcherManager dispatcherManager,
         ValidationManager validationManager,
         AdapterManager adapterManager,
-        TestManager testManager,
-        Injector injector
+        TestManager testManager
     ) {
-        this.context = context;
-        this.misuseManager = misuseManager;
-        this.languageManager = languageManager;
-        this.responseManager = responseManager;
-        this.dispatcherManager = dispatcherManager;
-        this.validationManager = validationManager;
-        this.adapterManager = adapterManager;
-        this.testManager = testManager;
-        this.injector = injector;
+        this.context = Objects.requireNonNull(context);
+        this.injectionManager = Objects.requireNonNull(injectionManager);
+        this.misuseManager = Objects.requireNonNull(misuseManager);
+        this.languageManager = Objects.requireNonNull(languageManager);
+        this.responseManager = Objects.requireNonNull(responseManager);
+        this.dispatcherManager = Objects.requireNonNull(dispatcherManager);
+        this.validationManager = Objects.requireNonNull(validationManager);
+        this.adapterManager = Objects.requireNonNull(adapterManager);
+        this.testManager = Objects.requireNonNull(testManager);
 
-        this.injector = injector.createChildInjector(new CommandlerModule(this));
+        injectionManager.addModules(new CommandlerModule(this));
     }
 
     public Context getContext() {
         return context;
+    }
+
+    public InjectionManager getInjector() {
+        return injectionManager;
     }
 
     public DispatcherManager getDispatcherManager() {
@@ -89,13 +100,10 @@ public class Commandler {
         return testManager;
     }
 
-    public Injector getInjector() {
-        return injector;
-    }
-
     public static class Builder {
 
         private Context context;
+        private InjectionManager injectionManager;
         private MisuseHandler misuseManager;
         private LanguageInterface languageManager;
         private ResponseManager responseManager;
@@ -103,7 +111,6 @@ public class Commandler {
         private ValidationManager validationManager;
         private AdapterManager adapterManager;
         private TestManager testManager;
-        private Injector injector;
 
         public Builder(Context context) {
             this.context = Objects.requireNonNull(context);
@@ -119,36 +126,45 @@ public class Commandler {
             if (dispatcherManager == null)
                 dispatcherManager = new DispatcherManager();
 
-            if (injector == null)
-                injector = Guice.createInjector();
+            if (injectionManager == null)
+                injectionManager = new InjectionManager();
 
             if (validationManager == null)
-                validationManager = new ValidationManager(injector, context);
+                validationManager = new ValidationManager(injectionManager, context);
 
             if (testManager == null)
-                testManager = new TestManager(context, injector);
+                testManager = new TestManager(injectionManager, context);
 
             if (adapterManager == null)
-                adapterManager = new AdapterManager(injector, context.getAdapters());
+                adapterManager = new AdapterManager(injectionManager, context.getAdapters());
 
             if (responseManager == null)
-                responseManager = new ResponseManager(injector, context.getProviders());
+                responseManager = new ResponseManager(injectionManager, context.getProviders());
 
             return new Commandler(
                 context,
+                injectionManager,
                 misuseManager,
                 languageManager,
                 responseManager,
                 dispatcherManager,
                 validationManager,
                 adapterManager,
-                testManager,
-                injector
+                testManager
             );
         }
 
         public Context getContext() {
             return context;
+        }
+
+        public InjectionManager getInjector() {
+            return injectionManager;
+        }
+
+        public Builder setInjector(InjectionManager injectionManager) {
+            this.injectionManager = injectionManager;
+            return this;
         }
 
         public MisuseHandler getMisuseManager() {
@@ -211,15 +227,6 @@ public class Commandler {
 
         public Builder setTestManager(TestManager testManager) {
             this.testManager = testManager;
-            return this;
-        }
-
-        public Injector getInjector() {
-            return injector;
-        }
-
-        public Builder setInjector(Injector injector) {
-            this.injector = injector;
             return this;
         }
     }

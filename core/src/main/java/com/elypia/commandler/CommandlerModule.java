@@ -2,7 +2,7 @@ package com.elypia.commandler;
 
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.managers.*;
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
 
 import java.text.NumberFormat;
 
@@ -24,7 +24,6 @@ public class CommandlerModule extends AbstractModule {
         bind(ValidationManager.class).toInstance(commandler.getValidationManager());
         bind(AdapterManager.class).toInstance(commandler.getAdapterManager());
         bind(TestManager.class).toInstance(commandler.getTestManager());
-        bind(Injector.class).toInstance(commandler.getInjector());
 
         // TODO: This shouldn't be configured by Commandler itself.
         bind(NumberFormat.class).toInstance(NumberFormat.getInstance());
