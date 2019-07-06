@@ -1,50 +1,29 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.interfaces.DynDefaultValue;
+import com.elypia.commandler.utils.AnnoUtils;
 
 import java.lang.annotation.*;
 
 /**
  * The parameter annotation allows us to give parameters for commands
- * a id and short description for what the parameter is or
+ * a name and short description for what the parameter is or
  * what you need.
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Param.List.class)
 public @interface Param {
 
-	/**
-	 * If the {@link #help()} is set to the default
-	 * then {@link Commandler} will check a global list
-	 * if a default there is a default help message for the
-	 * data type of the parameter.
-	 */
-	String DEFAULT = "";
+	/** The name to display this parameter as. */
+	String name() default AnnoUtils.EFFECTIVELY_NULL;
 
-	/**
-	 * The id to display this parameter as.
-	 */
-	String id();
+	/** A small description of what the parameter is. */
+	String help() default AnnoUtils.EFFECTIVELY_NULL;
 
-	/**
-	 * A small description of what the parameter is.
-	 */
-	String help() default DEFAULT;
+	/** Set the default value to a literal string.*/
+	String[] defaultValue() default AnnoUtils.EFFECTIVELY_NULL;
 
-	/**
-	 * Allows the {@link Param} annotiation to be repeatable
-	 * so we can specify multiple parameters per commands.
-	 */
-	@Target(ElementType.METHOD)
-	@Retention(RetentionPolicy.RUNTIME)
-	@interface List {
-
-		/**
-		 * @return Allows us to have multiple {@link Param}s
-		 * per method.
-		 */
-		Param[] value();
-	}
+	/** Set a dynamic default value by implementing and pointing to a {@link DynDefaultValue} implementation. */
+	Class<? extends DynDefaultValue> dynDefaultValue() default DynDefaultValue.class;
 }
 

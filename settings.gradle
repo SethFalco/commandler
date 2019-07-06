@@ -1,5 +1,6 @@
-rootProject.name = 'Commandler'
+rootProject.name = 'commandler'
 
-include 'core'
-include 'doc'
-include 'json'
+/** Library */
+include "core"
+include "file-config"
+include "doc"

@@ -1,21 +1,27 @@
 plugins {
-    id "com.jfrog.bintray" version "1.8.4"
+    id "com.jfrog.bintray" version "1.8.4" apply false
 }
 
-ext {
-    projectVersion = "3.0.0"
-    projectDescription = "Commandler is a generic command handling framework ready to be implemented with any platform."
-    projectGit = 'https://gitlab.com/Elypia/Commandler.git'
-
-    junitVersion = "5.3.2"
-}
+def publishedProjects = [
+    /** Library */
+    project(":core"),
+    project(":file-config"),
+    project(":doc")
+]
 
 allprojects() {
     apply plugin: "idea"
     apply plugin: "jacoco"
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
+    group = "com.elypia.commandler"
+    version = "4.0.0"
+    description = "Commandler is a abstract command handling framework for dispatching events."
+
+    ext {
+        repoUrl = "https://gitlab.com/Elypia/commandler"
+        gitUrl = "${repoUrl}.git"
+        issueUrl = "${repoUrl}/issues"
+        website = "https://elypia.com/"
     }
 
     repositories {
@@ -23,43 +29,68 @@ allprojects() {
     }
 
     jacoco {
-        toolVersion = "0.8.2"
+        toolVersion = "0.8.4"
     }
 }
 
-subprojects { subproject ->
+configure(publishedProjects) {
     apply plugin: "java-library"
+    apply plugin: "maven"
     apply plugin: "maven-publish"
     apply plugin: "com.jfrog.bintray"
 
-    jar {
-        from sourceSets.main.allSource
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
-        manifest {
-            attributes "Implementation-Title": this.name,
-                       "Implementation-Version": projectVersion
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    dependencies {
+        // Logging
+        implementation "org.slf4j:slf4j-api:1.7.26"
+        testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+        testImplementation "org.junit.jupiter:junit-jupiter:5.4.2"
+    }
+
+    /** Testing */
+    test {
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport
+
+        reports {
+            html.enabled = false
         }
     }
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = "sources"
+    /** Code Coverage */
+    jacocoTestReport {
+        reports {
+            html.enabled = false
+            xml.enabled = false
+        }
+    }
+
+    /** Upload to Bintray */
+
+    jar {
+        manifest {
+            attributes "Implementation-Title": this.name + project.path.replace(':', '-'),
+                       "Implementation-Version": version
+        }
+    }
+
+    task sourcesJar(type: Jar) {
         from sourceSets.main.allSource
+        archiveClassifier = 'sources'
     }
 
-    javadoc {
-        options.encoding = 'UTF-8'
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
+    task javadocJar(type: Jar) {
+        from javadoc
+        archiveClassifier = 'javadoc'
 
         javadoc {
-            options.addBooleanOption("html5", true)
-
             options {
                 links += [
-                    "https://docs.oracle.com/javase/10/docs/api/"
+                        "https://docs.oracle.com/en/java/javase/12/docs/api/"
                 ]
             }
         }
@@ -73,136 +104,73 @@ subprojects { subproject ->
     bintray {
         user = System.getenv("BINTRAY_USER")
         key = System.getenv("BINTRAY_KEY")
-        publications = [this.name]
+        publications = ['mavenJava']
         publish = true
-
         pkg {
             repo = this.name
-            name = subproject.name
+            name = project.path.substring(1).replace(':', '-')
+            desc = project.description
             userOrg = "elypia"
+            websiteUrl = website
             licenses = ["Apache-2.0"]
-            vcsUrl = projectGit
-
+            vcsUrl = gitUrl
+            issueTrackerUrl = issueUrl
+            publicDownloadNumbers = true
             version {
-                name = projectVersion
-                desc = projectDescription
+                name = project.version
+                desc = project.description
+                vcsTag = project.version
                 released = new Date()
             }
         }
     }
 
     publishing {
-        def details = {
-            licenses {
-                license {
-                    name "The Apache Software License, Version 2.0"
-                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                    distribution this.name
-                }
-            }
-
-            developers {
-                developer {
-                    id "Seth"
-                    name "Seth"
-                    email "seth@elypia.com"
-                }
-            }
-
-            scm {
-                url projectGit
-            }
-        }
-
         publications {
-            Commandler(MavenPublication) {
+            mavenJava(MavenPublication) {
+                artifactId project.path.substring(1).replace(':', '-')
+                groupId project.group
+                version project.version
                 from components.java
                 artifact sourcesJar
                 artifact javadocJar
-                groupId "com.elypia.commandler"
-                artifactId subproject.name
-                version projectVersion
 
-                pom.withXml {
-                    def root = asNode()
-
-                    root.appendNode("description", projectDescription)
-                    root.appendNode("name", this.name)
-                    root.appendNode("url", "https://elypia.com/")
-                    root.children().last() + details
+                pom {
+                    name = this.name
+                    description = project.description
+                    url = website
+                    licenses {
+                        license {
+                            name = "The Apache License, Version 2.0"
+                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = "Seth"
+                            name = "Seth"
+                            email = "seth@elypia.com"
+                        }
+                    }
+                    scm {
+                        url = gitUrl
+                    }
                 }
             }
         }
     }
-
-    dependencies {
-        if (subproject.name != "core") {
-            implementation project(":core")
-        } else {
-            // Apache Commons
-            implementation "org.apache.commons:commons-lang3:3.8.1"
-
-            // Validation
-            api "javax.validation:validation-api:2.0.1.Final"
-            api "org.hibernate.validator:hibernate-validator:6.0.13.Final"
-            implementation "javax.el:javax.el-api:3.0.0"
-            implementation "org.glassfish:javax.el:3.0.0"
-
-            // Logging
-            api "org.slf4j:slf4j-api:1.7.25"
-        }
-
-        // Testing
-        implementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-        testRuntimeOnly "org.junit.platform:junit-platform-runner:1.3.2"
-
-        testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
-    }
-
-    test {
-        useJUnitPlatform()
-
-        reports {
-            html.enabled = false
-        }
-    }
 }
 
-/**
- * Generate Global JavaDocs for GitLab Pages
- */
-
+/** Generate Global JavaDocs for GitLab Pages */
 task globalJavadoc(type: Javadoc) {
-    source = subprojects.collect { it.sourceSets.main.allJava }
-    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
+    source = publishedProjects.collect { it.sourceSets.main.allJava }
+    classpath = files(publishedProjects.collect { it.sourceSets.main.compileClasspath })
     destinationDir = file("${buildDir}/docs/javadoc")
 }
 
-/**
- * Test reporting and code coverage to Codacy.
- */
-
-configurations {
-    codacy
-}
-
-repositories {
-    maven {
-        url "https://jitpack.io"
-    }
-
-    maven {
-        url "http://dl.bintray.com/typesafe/maven-releases"
-    }
-}
-
-dependencies {
-    codacy "com.github.codacy:codacy-coverage-reporter:-SNAPSHOT"
-}
-
+/** Combine and output code coverage. */
 task jacocoMerge(type: JacocoMerge) {
-    executionData = files(subprojects.jacocoTestReport.executionData.findAll { it.asList() })
+    executionData = files(publishedProjects.jacocoTestReport.executionData.findAll {it.asList() })
 
     doFirst {
         executionData = files(executionData.findAll {
@@ -212,21 +180,12 @@ task jacocoMerge(type: JacocoMerge) {
 }
 
 task jacocoReport(type: JacocoReport, dependsOn: jacocoMerge) {
-    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs.findAll { it.asList() })
-    classDirectories = files(subprojects.sourceSets.main.output.findAll { it.asList() })
-    executionData = files(jacocoMerge.destinationFile)
+    sourceDirectories.from = files(publishedProjects.sourceSets.main.allSource.srcDirs.findAll { it.asList() })
+    classDirectories.from = files(publishedProjects.sourceSets.main.output.findAll { it.asList() })
+    executionData.from = files(jacocoMerge.destinationFile)
 
     reports {
-        html.enabled = false
-        xml.enabled = true
+        html.enabled = true
+        xml.enabled = false
     }
-}
-
-task codacyCoverage(type: JavaExec, dependsOn: jacocoReport) {
-    main = "com.codacy.CodacyCoverageReporter"
-    classpath = configurations.codacy
-
-    args = [
-        "report", "-l", "Java", "-r", "${buildDir}/reports/jacoco/jacocoReport/jacocoReport.xml"
-    ]
 }

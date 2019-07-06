@@ -1,6 +1,8 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.*;
+import com.elypia.commandler.Commandler;
+import com.elypia.commandler.interfaces.Handler;
+import com.elypia.commandler.utils.AnnoUtils;
 
 import java.lang.annotation.*;
 
@@ -15,51 +17,33 @@ import java.lang.annotation.*;
 public @interface Module {
 
 	/**
-	 * The default group which is assumed if the a group
-	 * isn't otherwise specified.
-	 */
-	String MISC = "Miscellaneous";
-
-	/**
-	 * The default help console for modules. By leaving the
-	 * {@link #help()} as an empty {@link String} it is omitted
-	 * from the help commands and documentation. Assign this a value
-	 * to be displayed.
-	 */
-	String HIDEEN = "";
-
-	/**
 	 * @return Name of the module as it should appear at the top
 	 * of the help commands. This is not the alias of the module.
 	 */
-	String id();
+	String name() default AnnoUtils.EFFECTIVELY_NULL;
 
 	/**
 	 * @return The group this module belongs too, this is used for
 	 * navigating the help menu.
 	 */
-	String group() default MISC;
+	String group() default AnnoUtils.EFFECTIVELY_NULL;
 
 	/**
 	 * @return A list of all the alises that grant the
 	 * user access to the module, these must be unique, the same
-	 * alias can not be registered to two modules.
+	 * alias can not be registered in two modules.
 	 */
-	String[] aliases();
+	String[] aliases() default AnnoUtils.EFFECTIVELY_NULL;
 
 	/**
 	 * @return A help String to advise users what
-	 * the module is for, if this is {@link String#isEmpty()}
-	 * then the module is hidden from any help commands or documentation.
+	 * the module is for.
 	 */
-	String help() default HIDEEN;
+	String help() default AnnoUtils.EFFECTIVELY_NULL;
 
 	/**
-	 * All {@link Module}s can assign themself a parent module recursively.
-	 * This is how submodules are created.
-	 *
-	 * @return The parent class this is a child of. Or {@link Handler} if
-	 * this has no parent module.
+	 * @return If true the module will be hidden from help commands
+	 * and documentation.
 	 */
-	Class<? extends Handler> parent() default Handler.class;
+	boolean hidden() default false;
 }

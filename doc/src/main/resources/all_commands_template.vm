@@ -1,4 +1,0 @@
-<div id="all-commands">
-    <h1>All Commands</h1>
-    #parse("commands_template.vm")
-</div>

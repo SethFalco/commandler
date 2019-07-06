@@ -1,179 +1,232 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.impl.*;
 import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.managers.*;
+import com.elypia.commandler.misuse.CommandMisuseListener;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Objects;
 
-public class Commandler<C, E, M> {
+/**
+ * Commandler brings all components together to process
+ * command events to perform method calls and return
+ * the result.
+ */
+public class Commandler {
 
-    private C client;
+    /** The collation of MetaData used to initialize this Commandler instance. */
+    private Context context;
 
-    private String prefix;
-    private String website;
-    private ModulesContext context;
-    private IMisuseHandler<C, E, M> misuseHandler;
-    private LanguageEngine<E> engine;
+    /** Dependency injection injector to inject dependendies into provided implementations. */
+    private InjectionManager injectionManager;
 
-    private ICommandProcessor<C, E, M> processor;
-    private CommandValidator validator;
-    private ParameterParser parser;
-    private MessageBuilder builder;
+    /** Handler for errors, both end-user errors and exceptions. */
+    private MisuseHandler misuseManager;
 
-    private Map<Class<? extends Handler<C, E, M>>, Handler<C, E, M>> handlers;
+    /** Obtain externally managed strings for internationalization. */
+    private LanguageInterface languageManager;
 
-    private Commandler(Builder<C, E, M> commandlerBuilder) {
-        client = commandlerBuilder.client;
-        prefix = commandlerBuilder.prefix;
-        context = commandlerBuilder.context;
-        website = commandlerBuilder.website;
-        misuseHandler = commandlerBuilder.misuseHandler;
-        engine = commandlerBuilder.engine;
+    /** Take the result of a method and make it something sendable to the service. */
+    private ResponseManager responseManager;
 
-        processor = new CommandProcessor<>(this);
-        validator = new CommandValidator(this);
-        parser = new ParameterParser(misuseHandler);
-        builder = new MessageBuilder();
+    /** Dispatch various types of commands this instance is aware of. */
+    private DispatcherManager dispatcherManager;
 
-        handlers = new HashMap<>();
+    /** Validate the parameters given are appropriate for the command executed. */
+    private ValidationManager validationManager;
+
+    /** Adapt parameters as Java objects for methods to use. */
+    private AdapterManager adapterManager;
+
+    /** The test runner to verify the integrity of modules through runtime. */
+    private TestManager testManager;
+
+    public Commandler(
+        Context context,
+        InjectionManager injectionManager,
+        MisuseHandler misuseManager,
+        LanguageInterface languageManager,
+        ResponseManager responseManager,
+        DispatcherManager dispatcherManager,
+        ValidationManager validationManager,
+        AdapterManager adapterManager,
+        TestManager testManager
+    ) {
+        this.context = Objects.requireNonNull(context);
+        this.injectionManager = Objects.requireNonNull(injectionManager);
+        this.misuseManager = Objects.requireNonNull(misuseManager);
+        this.languageManager = Objects.requireNonNull(languageManager);
+        this.responseManager = Objects.requireNonNull(responseManager);
+        this.dispatcherManager = Objects.requireNonNull(dispatcherManager);
+        this.validationManager = Objects.requireNonNull(validationManager);
+        this.adapterManager = Objects.requireNonNull(adapterManager);
+        this.testManager = Objects.requireNonNull(testManager);
+
+        injectionManager.addModules(new CommandlerModule(this));
     }
 
-    public M execute(E event, String content, boolean send) {
-        return processor.dispatch(event, content, send);
-    }
-
-    public Handler<C, E, M> getHandler(Class<? extends Handler<C, E, M>> handler) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        if (!handlers.containsKey(handler)) {
-            Handler<C, E, M> handlerInstance = handler.getConstructor().newInstance();
-            handlerInstance.init(this);
-
-            handlers.put(handler, handlerInstance);
-        }
-
-        return handlers.get(handler);
-    }
-
-    public C getClient() {
-        return client;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public ModulesContext getContext() {
+    public Context getContext() {
         return context;
     }
 
-    public ICommandProcessor<C, E, M> getProcessor() {
-        return processor;
+    public InjectionManager getInjector() {
+        return injectionManager;
     }
 
-    public IMisuseHandler<C, E, M> getMisuseHandler() {
-        return misuseHandler;
+    public DispatcherManager getDispatcherManager() {
+        return dispatcherManager;
     }
 
-    public LanguageEngine<E> getEngine() {
-        return engine;
+    public MisuseHandler getMisuseManager() {
+        return misuseManager;
     }
 
-    public CommandValidator getValidator() {
-        return validator;
+    public LanguageInterface getLanguageManager() {
+        return languageManager;
     }
 
-    public ParameterParser getParser() {
-        return parser;
+    public ValidationManager getValidationManager() {
+        return validationManager;
     }
 
-    public MessageBuilder<M> getBuilder() {
-        return builder;
+    public AdapterManager getAdapterManager() {
+        return adapterManager;
     }
 
-    public static class Builder<C, E, M> {
+    public ResponseManager getResponseManager() {
+        return responseManager;
+    }
 
-        private C client;
+    public TestManager getTestManager() {
+        return testManager;
+    }
 
-        private String prefix;
-        private String website;
-        private ModulesContext context;
-        private IMisuseHandler<C, E, M> misuseHandler;
-        private LanguageEngine<E> engine;
+    public static class Builder {
 
-        public Commandler<C, E, M> build() {
-            initializeDefaults();
-            return new Commandler<>(this);
+        private Context context;
+        private InjectionManager injectionManager;
+        private MisuseHandler misuseManager;
+        private LanguageInterface languageManager;
+        private ResponseManager responseManager;
+        private DispatcherManager dispatcherManager;
+        private ValidationManager validationManager;
+        private AdapterManager adapterManager;
+        private TestManager testManager;
+
+        public Builder(Context context) {
+            this.context = Objects.requireNonNull(context);
         }
 
-        private void initializeDefaults() {
-            if (prefix == null)
-                prefix = "!";
+        public Commandler build() {
+            if (misuseManager == null)
+                this.misuseManager = new CommandMisuseListener();
 
-            if (context == null)
-                context = new ModulesContext();
+            if (languageManager == null)
+                languageManager = new LanguageManager<>();
 
-            if (misuseHandler == null)
-                misuseHandler = new MisuseHandler<>();
+            if (dispatcherManager == null)
+                dispatcherManager = new DispatcherManager();
 
-            if (engine == null)
-                engine = new LanguageEngine<>();
+            if (injectionManager == null)
+                injectionManager = new InjectionManager();
+
+            if (validationManager == null)
+                validationManager = new ValidationManager(injectionManager, context);
+
+            if (testManager == null)
+                testManager = new TestManager(injectionManager, context);
+
+            if (adapterManager == null)
+                adapterManager = new AdapterManager(injectionManager, context.getAdapters());
+
+            if (responseManager == null)
+                responseManager = new ResponseManager(injectionManager, context.getProviders());
+
+            return new Commandler(
+                context,
+                injectionManager,
+                misuseManager,
+                languageManager,
+                responseManager,
+                dispatcherManager,
+                validationManager,
+                adapterManager,
+                testManager
+            );
         }
 
-        public C getClient() {
-            return client;
-        }
-
-        public Builder<C, E, M> setClient(C client) {
-            this.client = client;
-            return this;
-        }
-
-        public String getPrefix() {
-            return prefix;
-        }
-
-        public Builder<C, E, M> setPrefix(String prefix) {
-            this.prefix = prefix;
-            return this;
-        }
-
-        public String getWebsite() {
-            return website;
-        }
-
-        public Builder<C, E, M> setWebsite(String website) {
-            this.website = website;
-            return this;
-        }
-
-        public ModulesContext getContext() {
+        public Context getContext() {
             return context;
         }
 
-        public Builder<C, E, M> setContext(ModulesContext context) {
-            this.context = context;
+        public InjectionManager getInjector() {
+            return injectionManager;
+        }
+
+        public Builder setInjector(InjectionManager injectionManager) {
+            this.injectionManager = injectionManager;
             return this;
         }
 
-        public IMisuseHandler<C, E, M> getMisuseHandler() {
-            return misuseHandler;
+        public MisuseHandler getMisuseManager() {
+            return misuseManager;
         }
 
-        public Builder<C, E, M> setMisuseHandler(IMisuseHandler<C, E, M> misuseHandler) {
-            this.misuseHandler = misuseHandler;
+        public Builder setMisuseManager(MisuseHandler misuseManager) {
+            this.misuseManager = misuseManager;
             return this;
         }
 
-        public LanguageEngine<E> getEngine() {
-            return engine;
+        public LanguageInterface getLanguageManager() {
+            return languageManager;
         }
 
-        public Builder<C, E, M> setEngine(LanguageEngine<E> engine) {
-            this.engine = engine;
+        public Builder setLanguageManager(LanguageInterface languageManager) {
+            this.languageManager = languageManager;
+            return this;
+        }
+
+        public ResponseManager getResponseManager() {
+            return responseManager;
+        }
+
+        public Builder setResponseManager(ResponseManager responseManager) {
+            this.responseManager = responseManager;
+            return this;
+        }
+
+        public DispatcherManager getDispatcherManager() {
+            return dispatcherManager;
+        }
+
+        public Builder setDispatcherManager(DispatcherManager dispatcherManager) {
+            this.dispatcherManager = dispatcherManager;
+            return this;
+        }
+
+        public ValidationManager getValidationManager() {
+            return validationManager;
+        }
+
+        public Builder setValidationManager(ValidationManager validationManager) {
+            this.validationManager = validationManager;
+            return this;
+        }
+
+        public AdapterManager getAdapterManager() {
+            return adapterManager;
+        }
+
+        public Builder setAdapterManager(AdapterManager adapterManager) {
+            this.adapterManager = adapterManager;
+            return this;
+        }
+
+        public TestManager getTestManager() {
+            return testManager;
+        }
+
+        public Builder setTestManager(TestManager testManager) {
+            this.testManager = testManager;
             return this;
         }
     }

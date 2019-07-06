@@ -1,0 +1,9 @@
+dependencies {
+    implementation project(":core")
+
+    // Configuration
+    implementation "com.electronwill.night-config:core:3.6.0"
+
+    // Testing
+    testRuntimeOnly "com.electronwill.night-config:toml:3.6.0"
+}
