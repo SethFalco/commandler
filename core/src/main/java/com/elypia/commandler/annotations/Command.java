@@ -1,6 +1,6 @@
 package com.elypia.commandler.annotations;
 
-import com.elypia.commandler.metadata.data.MetaModule;
+import com.elypia.commandler.metadata.MetaModule;
 import com.elypia.commandler.utils.AnnoUtils;
 
 import java.lang.annotation.*;

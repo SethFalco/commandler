@@ -1,6 +1,6 @@
 package com.elypia.commandler;
 
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.*;
 
 import java.util.*;
 

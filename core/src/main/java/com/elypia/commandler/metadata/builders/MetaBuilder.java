@@ -1,4 +1,4 @@
-package com.elypia.commandler.metadata;
+package com.elypia.commandler.metadata.builders;
 
 /**
  * @param <M> The MetaObject that this MetaBuilder will produce.

@@ -1,10 +1,9 @@
 package com.elypia.commandler.test.meta;
 
 import com.elypia.commandler.Context;
-import com.elypia.commandler.loader.AnnotationLoader;
-import com.elypia.commandler.metadata.ContextLoader;
-import com.elypia.commandler.metadata.builder.ModuleBuilder;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.loaders.AnnotationLoader;
+import com.elypia.commandler.metadata.*;
+import com.elypia.commandler.metadata.builders.ModuleBuilder;
 import com.elypia.commandler.test.integration.impl.modules.MiscModule;
 import org.junit.jupiter.api.Test;
 

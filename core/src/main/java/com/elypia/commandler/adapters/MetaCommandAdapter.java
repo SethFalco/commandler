@@ -3,7 +3,7 @@ package com.elypia.commandler.adapters;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.Adapter;
 import com.elypia.commandler.interfaces.ParamAdapter;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.utils.CommandlerUtils;
 
 import javax.inject.*;

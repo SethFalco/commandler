@@ -1,9 +1,9 @@
-package com.elypia.commandler.loader;
+package com.elypia.commandler.loaders;
 
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.builder.*;
+import com.elypia.commandler.metadata.builders.*;
 import com.elypia.commandler.utils.AnnoUtils;
 import org.slf4j.*;
 

@@ -1,7 +1,7 @@
 package com.elypia.commandler.exceptions;
 
 import com.elypia.commandler.Input;
-import com.elypia.commandler.metadata.data.MetaParam;
+import com.elypia.commandler.metadata.MetaParam;
 
 import java.util.Objects;
 

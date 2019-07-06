@@ -3,7 +3,7 @@ package com.elypia.commandler.test.integration.impl.modules;
 import com.elypia.commandler.annotations.Module;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.loader.AnnotationLoader;
+import com.elypia.commandler.loaders.AnnotationLoader;
 
 import javax.inject.Singleton;
 

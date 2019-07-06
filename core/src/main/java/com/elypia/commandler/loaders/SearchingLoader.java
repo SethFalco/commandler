@@ -1,4 +1,4 @@
-package com.elypia.commandler.loader;
+package com.elypia.commandler.loaders;
 
 import com.elypia.commandler.interfaces.MetaLoader;
 import com.elypia.commandler.utils.ReflectionUtils;

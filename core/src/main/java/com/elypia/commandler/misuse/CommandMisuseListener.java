@@ -3,7 +3,7 @@ package com.elypia.commandler.misuse;
 import com.elypia.commandler.*;
 import com.elypia.commandler.exceptions.*;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
 import javax.validation.*;

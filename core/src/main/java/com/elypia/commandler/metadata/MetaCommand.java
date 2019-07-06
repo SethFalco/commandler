@@ -1,4 +1,4 @@
-package com.elypia.commandler.metadata.data;
+package com.elypia.commandler.metadata;
 
 import org.slf4j.*;
 

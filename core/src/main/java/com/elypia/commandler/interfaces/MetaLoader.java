@@ -1,7 +1,6 @@
 package com.elypia.commandler.interfaces;
 
-import com.elypia.commandler.metadata.MetaBuilder;
-import com.elypia.commandler.metadata.builder.*;
+import com.elypia.commandler.metadata.builders.*;
 
 import java.lang.reflect.*;
 import java.util.List;

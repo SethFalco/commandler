@@ -1,7 +1,7 @@
 package com.elypia.commandler;
 
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
 import java.util.*;

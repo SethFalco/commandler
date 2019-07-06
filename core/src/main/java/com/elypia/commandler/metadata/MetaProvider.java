@@ -1,4 +1,4 @@
-package com.elypia.commandler.metadata.data;
+package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.interfaces.ResponseProvider;
 

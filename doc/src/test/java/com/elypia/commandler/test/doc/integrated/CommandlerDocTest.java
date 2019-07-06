@@ -2,7 +2,7 @@ package com.elypia.commandler.test.doc.integrated;
 
 import com.elypia.commandler.Context;
 import com.elypia.commandler.doc.CommandlerDoc;
-import com.elypia.commandler.loader.AnnotationLoader;
+import com.elypia.commandler.loaders.AnnotationLoader;
 import com.elypia.commandler.metadata.ContextLoader;
 import com.elypia.commandler.test.doc.integrated.impl.*;
 import org.junit.jupiter.api.Test;

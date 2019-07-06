@@ -1,6 +1,6 @@
-package com.elypia.commandler.metadata.builder;
+package com.elypia.commandler.metadata.builders;
 
-import com.elypia.commandler.metadata.data.MetaParam;
+import com.elypia.commandler.metadata.MetaParam;
 
 import java.lang.reflect.*;
 import java.util.Objects;

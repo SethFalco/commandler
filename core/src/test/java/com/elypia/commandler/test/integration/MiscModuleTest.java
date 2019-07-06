@@ -3,9 +3,10 @@ package com.elypia.commandler.test.integration;
 import com.elypia.commandler.*;
 import com.elypia.commandler.adapters.*;
 import com.elypia.commandler.controllers.ConsoleController;
+import com.elypia.commandler.dispatchers.CommandDispatcher;
 import com.elypia.commandler.interfaces.Controller;
-import com.elypia.commandler.loader.AnnotationLoader;
-import com.elypia.commandler.managers.DispatchManager;
+import com.elypia.commandler.loaders.AnnotationLoader;
+import com.elypia.commandler.managers.DispatcherManager;
 import com.elypia.commandler.metadata.ContextLoader;
 import com.elypia.commandler.providers.MiscToStringProvider;
 import com.elypia.commandler.test.integration.impl.modules.MiscModule;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MiscModuleTest {
 
-    private static DispatchManager dispatcher;
+    private static DispatcherManager dispatcher;
     private static Controller controller;
 
     @BeforeEach
@@ -27,8 +28,10 @@ public class MiscModuleTest {
             MiscToStringProvider.class
         )).load().build();
 
-        Commandler commandler = new Commandler(context);
-        dispatcher = commandler.getDispatchManager();
+        Commandler commandler = new Commandler.Builder(context).build();
+        dispatcher = commandler.getDispatcherManager();
+        dispatcher.addDispatchers(new CommandDispatcher(commandler, ">"));
+
         controller = new ConsoleController(dispatcher);
     }
 

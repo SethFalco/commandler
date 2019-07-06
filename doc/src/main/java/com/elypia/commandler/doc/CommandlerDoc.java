@@ -2,7 +2,7 @@ package com.elypia.commandler.doc;
 
 import com.elypia.commandler.Context;
 import com.elypia.commandler.doc.deserializers.*;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.*;
 import com.google.gson.*;
 import org.slf4j.*;
 

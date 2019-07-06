@@ -9,13 +9,13 @@ import java.util.*;
  * An ordered list of dispatchers to dispatch events
  * that are received appropriately.
  */
-public class DispatchManager {
+public class DispatcherManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(DispatchManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(DispatcherManager.class);
 
     private List<Dispatcher> dispatchers;
 
-    public DispatchManager() {
+    public DispatcherManager() {
         dispatchers = new ArrayList<>();
     }
 

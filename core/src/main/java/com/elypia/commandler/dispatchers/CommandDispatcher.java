@@ -3,12 +3,14 @@ package com.elypia.commandler.dispatchers;
 import com.elypia.commandler.*;
 import com.elypia.commandler.exceptions.*;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.*;
 import com.elypia.commandler.utils.CommandlerUtils;
 import org.slf4j.*;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.*;
+import java.util.stream.Stream;
 
 /**
  * The default implementation of the CommandDispatcher, this implementation
@@ -36,16 +38,20 @@ public class CommandDispatcher implements Dispatcher {
 
     private final Commandler commandler;
     private final Context context;
-    private final String[] prefixes;
+    private final Function<Object, String[]> prefixProvider;
 
     public CommandDispatcher(Commandler commandler) {
         this(commandler, (String[])null);
     }
 
     public CommandDispatcher(Commandler commandler, String... prefixes) {
+        this(commandler, (object) -> prefixes);
+    }
+
+    public CommandDispatcher(Commandler commandler, Function<Object, String[]> prefixProvider) {
         this.commandler = commandler;
         this.context = commandler.getContext();
-        this.prefixes = prefixes;
+        this.prefixProvider = prefixProvider;
     }
 
     @Override
@@ -75,13 +81,13 @@ public class CommandDispatcher implements Dispatcher {
         if (response == null)
             return null;
 
-        object = commandler.getProviderManager().provide(event, controller, response);
+        object = commandler.getResponseManager().provide(event, controller, response);
         return object;
     }
 
     @Override
     public boolean isValid(Object source, String content) {
-        Collection<String> prefixes = getPrefixes(source);
+        String[] prefixes = prefixProvider.apply(source);
 
         if (prefixes == null)
             return true;
@@ -103,10 +109,10 @@ public class CommandDispatcher implements Dispatcher {
         if (!isValid(source, content))
             return null;
 
-        Collection<String> prefixes = getPrefixes(source);
+        String[] prefixes = prefixProvider.apply(source);
 
         if (prefixes != null) {
-            Optional<String> optPrefix = prefixes.stream()
+            Optional<String> optPrefix = Stream.of(prefixes)
                 .filter(content::startsWith)
                 .findAny();
 
@@ -202,26 +208,5 @@ public class CommandDispatcher implements Dispatcher {
             throw new ParamCountMismatchException(input);
 
         return new CommandlerEvent<>(controller, source, input);
-    }
-
-    /**
-     * @param event The event that this occcured.
-     * @return A list of all prefixes.
-     */
-    private Collection<String> getPrefixes(Object event) {
-        if (prefixes == null)
-            return null;
-
-        return List.of(prefixes);
-    }
-
-    @Override
-    public String toString() {
-        String name = this.getClass().getSimpleName();
-
-        if (prefixes == null)
-            return name;
-
-        return name + " (" + String.join(", ", prefixes) + ")";
     }
 }

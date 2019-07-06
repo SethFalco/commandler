@@ -2,8 +2,7 @@ package com.elypia.commandler.metadata;
 
 import com.elypia.commandler.Context;
 import com.elypia.commandler.interfaces.MetaLoader;
-import com.elypia.commandler.metadata.builder.*;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.builders.*;
 import org.slf4j.*;
 
 import java.util.*;

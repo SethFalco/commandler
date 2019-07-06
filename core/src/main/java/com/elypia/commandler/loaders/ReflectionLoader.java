@@ -1,7 +1,7 @@
-package com.elypia.commandler.loader;
+package com.elypia.commandler.loaders;
 
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.builder.*;
+import com.elypia.commandler.metadata.builders.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

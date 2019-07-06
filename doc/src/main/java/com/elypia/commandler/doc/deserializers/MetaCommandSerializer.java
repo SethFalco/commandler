@@ -1,6 +1,6 @@
 package com.elypia.commandler.doc.deserializers;
 
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.*;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;

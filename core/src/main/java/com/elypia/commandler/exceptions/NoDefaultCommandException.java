@@ -1,6 +1,6 @@
 package com.elypia.commandler.exceptions;
 
-import com.elypia.commandler.metadata.data.MetaModule;
+import com.elypia.commandler.metadata.MetaModule;
 
 import java.util.Objects;
 

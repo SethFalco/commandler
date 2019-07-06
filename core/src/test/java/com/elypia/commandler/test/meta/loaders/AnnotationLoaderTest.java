@@ -1,7 +1,7 @@
 package com.elypia.commandler.test.meta.loaders;
 
-import com.elypia.commandler.loader.AnnotationLoader;
-import com.elypia.commandler.metadata.builder.*;
+import com.elypia.commandler.loaders.AnnotationLoader;
+import com.elypia.commandler.metadata.builders.*;
 import com.elypia.commandler.providers.MiscToStringProvider;
 import com.elypia.commandler.test.integration.impl.modules.MiscModule;
 import org.junit.jupiter.api.Test;

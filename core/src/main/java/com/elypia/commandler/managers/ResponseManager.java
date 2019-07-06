@@ -3,7 +3,7 @@ package com.elypia.commandler.managers;
 import com.elypia.commandler.CommandlerEvent;
 import com.elypia.commandler.exceptions.AdapterRequiredException;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.data.MetaProvider;
+import com.elypia.commandler.metadata.MetaProvider;
 import com.google.inject.*;
 import org.slf4j.*;
 

@@ -3,7 +3,7 @@ package com.elypia.commandler.test;
 import com.elypia.commandler.adapters.*;
 import com.elypia.commandler.exceptions.AdapterRequiredException;
 import com.elypia.commandler.managers.AdapterManager;
-import com.elypia.commandler.metadata.data.MetaAdapter;
+import com.elypia.commandler.metadata.MetaAdapter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

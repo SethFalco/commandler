@@ -1,7 +1,7 @@
 package com.elypia.commandler.test.meta.loaders;
 
-import com.elypia.commandler.loader.ReflectionLoader;
-import com.elypia.commandler.metadata.builder.*;
+import com.elypia.commandler.loaders.ReflectionLoader;
+import com.elypia.commandler.metadata.builders.*;
 import com.elypia.commandler.test.integration.impl.modules.MiscModule;
 import org.junit.jupiter.api.Test;
 

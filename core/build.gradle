@@ -1,6 +1,6 @@
 dependencies {
     // Dependency Injection
-    implementation "com.google.inject:guice:4.2.2"
+    api "com.google.inject:guice:4.2.2"
 
     // Validation
     api "javax.validation:validation-api:2.0.1.Final"

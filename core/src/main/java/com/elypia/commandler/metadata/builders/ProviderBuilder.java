@@ -1,8 +1,7 @@
-package com.elypia.commandler.metadata.builder;
+package com.elypia.commandler.metadata.builders;
 
 import com.elypia.commandler.interfaces.ResponseProvider;
-import com.elypia.commandler.metadata.MetaBuilder;
-import com.elypia.commandler.metadata.data.MetaProvider;
+import com.elypia.commandler.metadata.MetaProvider;
 
 import java.util.*;
 

@@ -2,7 +2,7 @@ package com.elypia.commandler.validation;
 
 import com.elypia.commandler.Context;
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.*;
 
 import javax.validation.ParameterNameProvider;
 import java.lang.reflect.*;

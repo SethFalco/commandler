@@ -1,9 +1,10 @@
 package com.elypia.commandler.managers;
 
-import com.elypia.commandler.Commandler;
+import com.elypia.commandler.Context;
 import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.data.MetaModule;
+import com.elypia.commandler.metadata.MetaModule;
 import com.elypia.commandler.testing.*;
+import com.google.inject.Injector;
 import org.slf4j.*;
 
 import java.time.Instant;
@@ -20,9 +21,6 @@ public class TestManager {
      */
     private final Instant started;
 
-    /** The Commandler instance to take modules from and test. */
-    private final Commandler commandler;
-
     /**
      * Mapping of modules / command testReports to the respective
      * report instances to view report data.
@@ -31,15 +29,14 @@ public class TestManager {
 
     private final ScheduledExecutorService executor;
 
-    public TestManager(Commandler commandler) {
+    public TestManager(Context context, Injector injector) {
         started = Instant.now();
-        this.commandler = commandler;
         testReports = new HashMap<>();
         executor = Executors.newSingleThreadScheduledExecutor();
 
         executor.scheduleAtFixedRate(() -> {
-            for (MetaModule data : commandler.getContext()) {
-                Handler handler = commandler.getInjector().getInstance(data.getHandlerType());
+            for (MetaModule data : context) {
+                Handler handler = injector.getInstance(data.getHandlerType());
 
                 if (handler == null) {
                     logger.debug("Registered handler is not initalised, testing was skipped.");

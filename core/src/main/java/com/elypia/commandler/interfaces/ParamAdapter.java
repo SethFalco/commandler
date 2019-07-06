@@ -1,7 +1,7 @@
 package com.elypia.commandler.interfaces;
 
 import com.elypia.commandler.*;
-import com.elypia.commandler.metadata.data.MetaParam;
+import com.elypia.commandler.metadata.MetaParam;
 
 /**
  * Parsers are what allow {@link Commandler} to know how

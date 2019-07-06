@@ -4,7 +4,7 @@ import com.electronwill.nightconfig.core.conversion.ObjectConverter;
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.elypia.commandler.configuration.Configuration;
 import com.elypia.commandler.interfaces.*;
-import com.elypia.commandler.metadata.builder.*;
+import com.elypia.commandler.metadata.builders.*;
 
 import java.lang.reflect.Method;
 import java.net.URL;

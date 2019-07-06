@@ -1,6 +1,6 @@
-package com.elypia.commandler.metadata.builder;
+package com.elypia.commandler.metadata.builders;
 
-import com.elypia.commandler.metadata.data.*;
+import com.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
 import java.lang.reflect.Method;

@@ -1,6 +1,6 @@
 package com.elypia.commandler.doc;
 
-import com.elypia.commandler.metadata.data.MetaModule;
+import com.elypia.commandler.metadata.MetaModule;
 
 public class CommandlerData {
 
