@@ -15,4 +15,23 @@ public class UtilsModule implements Handler {
     public String ping() {
         return "pong!";
     }
+
+    @Static
+    @Command(name = "Print List", aliases = "list", help = "Print a list of items specified.")
+    public String list(@Param(name = "list", help = "List of items.", defaultValue = "${['It', 'helps', 'to', 'specify', 'a', 'list!']}") String[] list) {
+        return String.join("\n", list);
+    }
+
+    /**
+     * Print the name of the service provided, otherwise just print the name
+     * of the controller that was used for this command if the service is not
+     * specified.
+     *
+     * @param service The service's name to print.
+     * @return The services name.
+     */
+    @Command(name = "Service", aliases = "service", help = "Print the name of the service.")
+    public String service(@Param(name = "service", help = "Name of the service.", defaultValue = "${controller.class.simpleName}") String service) {
+        return service;
+    }
 }

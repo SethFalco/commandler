@@ -5,6 +5,5 @@ dependencies {
     // Validation
     api "javax.validation:validation-api:2.0.1.Final"
     api "org.hibernate.validator:hibernate-validator:6.0.16.Final"
-    implementation "javax.el:javax.el-api:3.0.0"
-    runtimeOnly "org.glassfish:javax.el:3.0.0"
+    implementation "org.glassfish:jakarta.el:3.0.2"
 }

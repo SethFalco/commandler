@@ -12,7 +12,9 @@ import java.util.stream.*;
 public class MathModule implements Handler {
 
     @Command(name = "Sum", aliases = "sum")
-    public long sum(@Param(name = "numbers", help = "A list of numbers to add together.") long[] numbers) {
+    public long sum(
+        @Param(name = "numbers", help = "A list of numbers to add together.") long[] numbers
+    ) {
         return LongStream.of(numbers).sum();
     }
 

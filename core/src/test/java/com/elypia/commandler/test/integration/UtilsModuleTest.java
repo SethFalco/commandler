@@ -1,6 +1,7 @@
 package com.elypia.commandler.test.integration;
 
 import com.elypia.commandler.*;
+import com.elypia.commandler.adapters.StringAdapter;
 import com.elypia.commandler.controllers.ConsoleController;
 import com.elypia.commandler.dispatchers.CommandDispatcher;
 import com.elypia.commandler.interfaces.Controller;
@@ -22,6 +23,7 @@ public class UtilsModuleTest {
     public void beforeEach() {
         Context context = new ContextLoader(new AnnotationLoader(
             UtilsModule.class,
+            StringAdapter.class,
             MiscToStringProvider.class
         )).load().build();
 
@@ -51,6 +53,28 @@ public class UtilsModuleTest {
         assertAll("Check all",
             () -> assertTrue(actual instanceof String),
             () -> assertEquals("pong!", actual)
+        );
+    }
+
+    @Test
+    public void printListTest() {
+        String event = ">utils list";
+        Object actual = dispatcher.dispatch(controller, event, event);
+
+        assertAll("Check all",
+            () -> assertTrue(actual instanceof String),
+            () -> assertEquals("It\nhelps\nto\nspecify\na\nlist!", actual)
+        );
+    }
+
+    @Test
+    public void printServiceName() {
+        String event = ">utils service";
+        Object actual = dispatcher.dispatch(controller, event, event);
+
+        assertAll("Check all",
+            () -> assertTrue(actual instanceof String),
+            () -> assertEquals("ConsoleController", actual)
         );
     }
 }

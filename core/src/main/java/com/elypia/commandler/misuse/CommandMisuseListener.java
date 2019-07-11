@@ -142,7 +142,7 @@ public class CommandMisuseListener implements MisuseHandler {
             "Command: %s\n";
 
         for (var violation : commandViolations)
-            format += formatViolationString("command", violation);
+            format += "command: " + violation.getMessage();
 
         if (!commandViolations.isEmpty())
             format += "\n";
@@ -154,22 +154,10 @@ public class CommandMisuseListener implements MisuseHandler {
             while (iter.hasNext())
                 last = iter.next();
 
-            format += formatViolationString(last.getName(), violation);
+            format += last.getName() + ": " + violation.getMessage();
         }
 
         return generateMessage(format, ex.getInput());
-    }
-
-    private String formatViolationString(String name, ConstraintViolation violation) {
-        String message = violation.getMessage();
-        message = message.substring(0, 1).toUpperCase() + message.substring(1);
-
-        message = "\n" + name + ": " + message;
-
-        if (message.charAt(message.length() - 1) != '.')
-            message += ".";
-
-        return message;
     }
 
     private String generateMessage(String format, Input input) {

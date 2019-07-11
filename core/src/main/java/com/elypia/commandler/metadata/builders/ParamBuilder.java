@@ -11,7 +11,7 @@ public class ParamBuilder {
     private AnnotatedElement annotatedElement;
     private String name;
     private String help;
-    private String[] defaultValue;
+    private String defaultValue;
 
     public ParamBuilder(Class<?> type, AnnotatedElement annotatedElement) {
         this.type = Objects.requireNonNull(type);
@@ -53,11 +53,11 @@ public class ParamBuilder {
         return this;
     }
 
-    public String[] getDefaultValue() {
+    public String getDefaultValue() {
         return defaultValue;
     }
 
-    public ParamBuilder setDefaultValue(String[] defaultValue) {
+    public ParamBuilder setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }

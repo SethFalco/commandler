@@ -10,7 +10,6 @@ import java.util.*;
  * whereever text may be required. This could be as a message, on a website
  * or anything that doesn't have debugging intent.
  */
-// TODO: Give this a better name
 public class LanguageManager<S> implements LanguageInterface {
 
     private static final Locale[] locales = {Locale.ENGLISH};

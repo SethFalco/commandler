@@ -90,7 +90,7 @@ public class AnnotationLoaderTest {
             () -> assertEquals(int.class, param.getType()),
             () -> assertEquals("count", param.getName()),
             () -> assertEquals("How many times?", param.getHelp()),
-            () -> assertEquals("1", param.getDefaultValue()[0])
+            () -> assertEquals("1", param.getDefaultValue())
         );
     }
 

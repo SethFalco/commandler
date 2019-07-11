@@ -3,11 +3,12 @@ package com.elypia.commandler.managers;
 import com.elypia.commandler.*;
 import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.exceptions.*;
-import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
 import com.google.inject.*;
 import org.slf4j.*;
 
+import javax.el.*;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -31,6 +32,7 @@ public class AdapterManager {
     /** Used to manage dependency injection when constructions param adapters. */
     private final InjectionManager injectionManager;
     private final Collection<MetaAdapter> adapters;
+    private final ExpressionFactory expressionFactory;
 
     public AdapterManager(InjectionManager injectionManager, MetaAdapter... adapters) {
         this(injectionManager, List.of(adapters));
@@ -39,6 +41,7 @@ public class AdapterManager {
     public AdapterManager(InjectionManager injectionManager, Collection<MetaAdapter> adapters) {
         this.injectionManager = Objects.requireNonNull(injectionManager);
         this.adapters = Objects.requireNonNull(adapters);
+        this.expressionFactory = ELManager.getExpressionFactory();
 
         for (MetaAdapter adapter : adapters)
             logger.debug("Adapter added for type {}.", adapter.getAdapterType().getSimpleName());
@@ -59,10 +62,37 @@ public class AdapterManager {
         List<Object> objects = new ArrayList<>();
 
         for (int i = 0; i < params.size(); i++) {
-            MetaParam param = params.get(i);
+            MetaParam metaParam = params.get(i);
+            List<String> param;
 
-            List<String> meh = (inputs.size() > i) ? inputs.get(i) : List.of(param.getDefaultValue());
-            Object object = adaptParam(input, event, param, meh);
+            if (inputs.size() > i)
+                param = inputs.get(i);
+            else {
+                // TODO: This is reconstructer for each optional parameter, this only needs to be done once.
+                // TODO: Make it possible for a this to use previous parameters.
+                ELContext context = new StandardELContext(expressionFactory);
+                VariableMapper mapper = context.getVariableMapper();
+                mapper.setVariable("event", expressionFactory.createValueExpression(event, CommandlerEvent.class));
+                mapper.setVariable("input", expressionFactory.createValueExpression(event.getInput(), Input.class));
+                mapper.setVariable("controller", expressionFactory.createValueExpression(event.getController(), Controller.class));
+                mapper.setVariable("source", expressionFactory.createValueExpression(event.getSource(), event.getSource().getClass()));
+
+                String defaultValue = metaParam.getDefaultValue();
+                ValueExpression ve = expressionFactory.createValueExpression(context, defaultValue, Object.class);
+                Object value = ve.getValue(context);
+
+                if (value instanceof String)
+                    param = List.of((String)value);
+                else if (value instanceof String[])
+                    param = List.of((String[])value);
+                else if (value instanceof List)
+                    param = (List<String>)value;
+                else
+                    throw new RuntimeException("Parameter ValueExpression (defaultValue) didn't compile to a String, String[] or List<String>.");
+
+            }
+
+            Object object = adaptParam(input, event, metaParam, param);
             objects.add(object);
         }
 

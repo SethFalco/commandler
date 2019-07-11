@@ -1,7 +1,5 @@
 package com.elypia.commandler.metadata;
 
-import com.elypia.commandler.interfaces.DynDefaultValue;
-
 import java.lang.reflect.AnnotatedElement;
 import java.util.Objects;
 
@@ -19,10 +17,7 @@ public class MetaParam {
     private String help;
 
     /** The default value if any else null. */
-    private String[] defaultValue;
-
-    /** The default value via method if any else null. */
-    private Class<? extends DynDefaultValue> dynDefaultValue;
+    private String defaultValue;
 
     /** If this parameter is required when executing the command. */
     private boolean isOptional;
@@ -30,14 +25,14 @@ public class MetaParam {
     /** If this is a single parameter, or a list parameter. */
     private boolean isList;
 
-    public MetaParam(Class<?> type, AnnotatedElement annotatedElement, String name, String help, String[] defaultValue) {
+    public MetaParam(Class<?> type, AnnotatedElement annotatedElement, String name, String help, String defaultValue) {
         this.type = Objects.requireNonNull(type);
         this.annotatedElement = Objects.requireNonNull(annotatedElement);
         this.name = Objects.requireNonNull(name);
         this.help = help;
         this.defaultValue = defaultValue;
 
-        isOptional = defaultValue != null && dynDefaultValue == null;
+        isOptional = defaultValue != null;
         isList = type.isArray();
     }
 
@@ -57,12 +52,8 @@ public class MetaParam {
         return help;
     }
 
-    public String[] getDefaultValue() {
+    public String getDefaultValue() {
         return defaultValue;
-    }
-
-    public Class<? extends DynDefaultValue> getDynDefaultValue() {
-        return dynDefaultValue;
     }
 
     public boolean isOptional() {
