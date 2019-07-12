@@ -1,7 +1,7 @@
 package com.elypia.commandler.test.adapters;
 
 import com.elypia.commandler.adapters.DurationAdapter;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
 import java.text.NumberFormat;
 import java.time.Duration;
@@ -32,7 +32,6 @@ public class DurationAdapterTest {
         );
     }
 
-    @Disabled("This is a known issue which will be fixed later.")
     @Test
     public void testNullWithPartialValid() {
         DurationAdapter adapter = new DurationAdapter();
@@ -49,6 +48,7 @@ public class DurationAdapterTest {
         assertAll("Check if all these return null.",
             () -> assertNull(adapter.adapt("invalid")),
             () -> assertNull(adapter.adapt("100 invalid")),
+            () -> assertNull(adapter.adapt("100")),
             () -> assertNull(adapter.adapt("this isn't even close to valid input"))
         );
     }

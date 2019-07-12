@@ -11,9 +11,7 @@ import java.util.Objects;
 public @interface Contains {
 
     String message() default "{com.elypia.commandler.constraints.Contains.message}";
-
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 
     String value();

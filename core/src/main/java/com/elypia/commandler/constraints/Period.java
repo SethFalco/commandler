@@ -12,9 +12,7 @@ import java.util.concurrent.TimeUnit;
 public @interface Period {
 
     String message() default "{com.elypia.commandler.constraints.Period.message}";
-
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 
     long min() default 0;

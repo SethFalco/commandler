@@ -13,16 +13,16 @@ import java.util.regex.*;
 import java.util.stream.Stream;
 
 /**
- * The default implementation of the CommandDispatcher, this implementation
+ * The default implementation of the StandardDispatcher, this implementation
  * heavily relies on regular expression to match content and map the tokens
  * to command input. This assumes a standard formatted command:<br>
  * <code>{prefix}{module} {command} {params}</code>
  * With exceptional circumstances.
  */
-public class CommandDispatcher implements Dispatcher {
+public class StandardDispatcher implements Dispatcher {
 
     /** SLF4J Logger */
-    private static final Logger logger = LoggerFactory.getLogger(CommandDispatcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(StandardDispatcher.class);
 
     /**
      * This matches every argument in the commands,
@@ -40,15 +40,15 @@ public class CommandDispatcher implements Dispatcher {
     private final Context context;
     private final Function<Object, String[]> prefixProvider;
 
-    public CommandDispatcher(Commandler commandler) {
+    public StandardDispatcher(Commandler commandler) {
         this(commandler, (String[])null);
     }
 
-    public CommandDispatcher(Commandler commandler, String... prefixes) {
+    public StandardDispatcher(Commandler commandler, String... prefixes) {
         this(commandler, (object) -> prefixes);
     }
 
-    public CommandDispatcher(Commandler commandler, Function<Object, String[]> prefixProvider) {
+    public StandardDispatcher(Commandler commandler, Function<Object, String[]> prefixProvider) {
         this.commandler = commandler;
         this.context = commandler.getContext();
         this.prefixProvider = prefixProvider;

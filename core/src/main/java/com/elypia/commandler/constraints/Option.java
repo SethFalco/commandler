@@ -10,9 +10,7 @@ import java.lang.annotation.*;
 public @interface Option {
 
     String message() default "{com.elypia.commandler.constraints.Option.message}";
-
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 
     /**

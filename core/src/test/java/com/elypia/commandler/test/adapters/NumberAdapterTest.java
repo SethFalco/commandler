@@ -41,6 +41,17 @@ public class NumberAdapterTest {
         );
     }
 
+    /** Tests cases where it starts with a number, but non-numeric text after. */
+    @Test
+    public void assertPartialMatch() {
+        NumberAdapter adapter = new NumberAdapter(NumberFormat.getInstance(Locale.UK));
+
+        assertAll("Check if all these return the number equivilent.",
+            () -> assertNull(adapter.adapt("20,000.456 no u", Double.class)),
+            () -> assertNull(adapter.adapt("-1,234,345pewpew"))
+        );
+    }
+
     @Test
     public void testNull() {
         NumberAdapter adapter = new NumberAdapter();

@@ -5,11 +5,10 @@ import com.elypia.commandler.annotations.Adapter;
 import com.elypia.commandler.interfaces.ParamAdapter;
 import com.elypia.commandler.metadata.MetaParam;
 
-import javax.inject.*;
+import javax.inject.Inject;
 import java.text.*;
 import java.util.Objects;
 
-@Singleton
 @Adapter({Number.class, double.class, float.class, long.class, int.class, short.class, byte.class})
 public class NumberAdapter implements ParamAdapter<Number> {
 
@@ -29,25 +28,25 @@ public class NumberAdapter implements ParamAdapter<Number> {
         Objects.requireNonNull(input);
         Objects.requireNonNull(type);
 
-        try {
-            Number number = defaultFormat.parse(input);
+        ParsePosition position = new ParsePosition(0);
+        Number number = defaultFormat.parse(input, position);
 
-            if (type == Double.class || type == double.class)
-                return number.doubleValue();
-            if (type == Float.class || type == float.class)
-                return number.floatValue();
-
-            if (type == Long.class || type == long.class)
-                return number.longValue();
-            if (type == Integer.class || type == int.class)
-                return number.intValue();
-            if (type == Short.class || type == short.class)
-                return number.shortValue();
-            if (type == Byte.class || type == byte.class)
-                return number.byteValue();
-        } catch (ParseException e) {
+        if (position.getErrorIndex() != -1 || input.length() != position.getIndex())
             return null;
-        }
+
+        if (type == Double.class || type == double.class)
+            return number.doubleValue();
+        if (type == Float.class || type == float.class)
+            return number.floatValue();
+
+        if (type == Long.class || type == long.class)
+            return number.longValue();
+        if (type == Integer.class || type == int.class)
+            return number.intValue();
+        if (type == Short.class || type == short.class)
+            return number.shortValue();
+        if (type == Byte.class || type == byte.class)
+            return number.byteValue();
 
         return null;
     }

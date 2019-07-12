@@ -33,7 +33,7 @@ public class DispatcherManager {
         return null;
     }
 
-    public void addDispatchers(Dispatcher... dispatchers) {
+    public void add(Dispatcher... dispatchers) {
         this.dispatchers.addAll(List.of(dispatchers));
     }
 }

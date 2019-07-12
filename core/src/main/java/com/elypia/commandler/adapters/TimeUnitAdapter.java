@@ -29,7 +29,9 @@ public class TimeUnitAdapter implements ParamAdapter<TimeUnit> {
 
     @Override
     public TimeUnit adapt(String input, Class<? extends TimeUnit> type, MetaParam param, CommandlerEvent<?> event) {
-        switch (input.toLowerCase()) {
+        Objects.requireNonNull(input);
+
+        switch (input.trim().toLowerCase()) {
             case "days": case "day": case "d":
                 return (units.contains(TimeUnit.DAYS)) ? TimeUnit.DAYS : null;
 
