@@ -12,26 +12,30 @@ public class ContextLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(ContextLoader.class);
 
-    /** The loaders to obtain metadata for this Context from. */
-    private final Collection<MetaLoader> loaders;
-
     private final Collection<ModuleBuilder> moduleBuilders;
     private final Collection<AdapterBuilder> adapterBuilders;
     private final Collection<ProviderBuilder> providerBuilders;
 
-    public ContextLoader(MetaLoader... loaders) {
-        this(List.of(loaders));
-    }
+    /** This {@link ContextLoader} will no longer allow new MetadataLoaders if true. */
+    private boolean locked;
 
     public ContextLoader(Collection<MetaLoader> loaders) {
-        this.loaders = loaders;
+        this(loaders.toArray(MetaLoader[]::new));
+    }
+
+    public ContextLoader(MetaLoader... loaders) {
         moduleBuilders = new ArrayList<>();
         adapterBuilders = new ArrayList<>();
         providerBuilders = new ArrayList<>();
+
+        load(loaders);
     }
 
     // TODO: This isn't using the merge method so it'll just add lots of duplicate builders
-    public ContextLoader load() {
+    public ContextLoader load(MetaLoader... loaders) {
+        if (locked)
+            throw new IllegalStateException("This context is locked, you can not load more data once it's started building.");
+
         for (MetaLoader loader : loaders) {
             List<ModuleBuilder> moduleBuilders = loader.getModules();
             logger.debug("{} succesfully loaded {} modules.", loader, moduleBuilders.size());
@@ -56,6 +60,7 @@ public class ContextLoader {
     }
 
     public Context build() {
+        locked = true;
         List<MetaModule> modules = new ArrayList<>();
 
         for (ModuleBuilder builder : moduleBuilders)
@@ -70,10 +75,6 @@ public class ContextLoader {
             .collect(Collectors.toUnmodifiableList());
 
         return new Context(modules, adapters, providers);
-    }
-
-    public Collection<MetaLoader> getMetaLoaders() {
-        return Collections.unmodifiableCollection(loaders);
     }
 
     public Collection<ModuleBuilder> getModuleBuilders() {

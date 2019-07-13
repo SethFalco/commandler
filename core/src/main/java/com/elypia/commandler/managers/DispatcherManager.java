@@ -15,8 +15,15 @@ public class DispatcherManager {
 
     private List<Dispatcher> dispatchers;
 
-    public DispatcherManager() {
-        dispatchers = new ArrayList<>();
+    public DispatcherManager(Dispatcher... dispatchers) {
+        this(List.of(dispatchers));
+    }
+
+    public DispatcherManager(Collection<Dispatcher> dispatchers) {
+        this.dispatchers = new ArrayList<>();
+
+        if (dispatchers != null)
+            this.dispatchers.addAll(dispatchers);
     }
 
     public Object dispatch(Controller controller, Object event, String content) {
@@ -34,6 +41,10 @@ public class DispatcherManager {
     }
 
     public void add(Dispatcher... dispatchers) {
-        this.dispatchers.addAll(List.of(dispatchers));
+        add(List.of(dispatchers));
+    }
+
+    public void add(Collection<Dispatcher> dispatchers) {
+        this.dispatchers.addAll(dispatchers);
     }
 }

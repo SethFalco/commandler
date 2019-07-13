@@ -16,7 +16,6 @@ public class AnnotationLoader extends SearchingLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(AnnotationLoader.class);
 
-    // TODO: This logic has been coded twice.
     /**
      * Bypass searching and only add the specified classes.
      *

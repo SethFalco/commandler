@@ -3,8 +3,9 @@ package com.elypia.commandler;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.managers.*;
 import com.elypia.commandler.misuse.CommandMisuseListener;
+import com.google.inject.Module;
 
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Commandler brings all components together to process
@@ -61,14 +62,14 @@ public class Commandler {
         this.adapterManager = Objects.requireNonNull(adapterManager);
         this.testManager = Objects.requireNonNull(testManager);
 
-        injectionManager.addModules(new CommandlerModule(this));
+        injectionManager.add(new CommandlerModule(this));
     }
 
     public Context getContext() {
         return context;
     }
 
-    public InjectionManager getInjector() {
+    public InjectionManager getInjectionManager() {
         return injectionManager;
     }
 
@@ -100,7 +101,18 @@ public class Commandler {
         return testManager;
     }
 
+    /**
+     * Builder pattern to build the {@link Commandler} instance
+     * as they're a lot of parameters near none of them
+     * are required.
+     */
     public static class Builder {
+
+        /** A list of modules to add to the {@link InjectionManager} as it's created. */
+        private Collection<Module> modules;
+
+        /** A list of dispatchers to add to the {@link DispatcherManager} as it's created. */
+        private Collection<Dispatcher> dispatchers;
 
         private Context context;
         private InjectionManager injectionManager;
@@ -113,6 +125,8 @@ public class Commandler {
         private TestManager testManager;
 
         public Builder(Context context) {
+            modules = new ArrayList<>();
+            dispatchers = new ArrayList<>();
             this.context = Objects.requireNonNull(context);
         }
 
@@ -124,10 +138,14 @@ public class Commandler {
                 languageManager = new LanguageManager<>();
 
             if (dispatcherManager == null)
-                dispatcherManager = new DispatcherManager();
+                dispatcherManager = new DispatcherManager(dispatchers);
+            else
+                dispatcherManager.add(dispatchers);
 
             if (injectionManager == null)
-                injectionManager = new InjectionManager();
+                injectionManager = new InjectionManager(modules);
+            else
+                injectionManager.add(modules);
 
             if (validationManager == null)
                 validationManager = new ValidationManager(injectionManager, context);
@@ -154,15 +172,25 @@ public class Commandler {
             );
         }
 
+        public Builder addModules(Module... modules) {
+            this.modules.addAll(List.of(modules));
+            return this;
+        }
+
+        public Builder addDispatchers(Dispatcher... dispatchers) {
+            this.dispatchers.addAll(List.of(dispatchers));
+            return this;
+        }
+
         public Context getContext() {
             return context;
         }
 
-        public InjectionManager getInjector() {
+        public InjectionManager getInjectionManager() {
             return injectionManager;
         }
 
-        public Builder setInjector(InjectionManager injectionManager) {
+        public Builder setInjectionManager(InjectionManager injectionManager) {
             this.injectionManager = injectionManager;
             return this;
         }

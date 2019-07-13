@@ -15,7 +15,7 @@ public class DurationAdapterTest {
     public void assertDurations() {
         DurationAdapter adapter = new DurationAdapter(NumberFormat.getInstance(Locale.UK));
 
-        assertAll("Check if all these the correct duration.",
+        assertAll("Check if all these become the correct duration.",
             () -> assertEquals(Duration.ofDays(10), adapter.adapt("10 days")),
             () -> assertEquals(Duration.ofMinutes(70), adapter.adapt("1 hour 10 minutes"))
         );

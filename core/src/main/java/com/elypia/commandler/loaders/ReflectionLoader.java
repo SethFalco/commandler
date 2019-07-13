@@ -11,7 +11,6 @@ import java.util.stream.*;
 
 public class ReflectionLoader extends SearchingLoader {
 
-    private static final Pattern nameMatcher = Pattern.compile(".+Module$");
     private static final Pattern pattern = Pattern.compile("[^a-z]+");
 
     /**

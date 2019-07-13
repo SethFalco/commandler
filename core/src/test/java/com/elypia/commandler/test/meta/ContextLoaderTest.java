@@ -19,7 +19,7 @@ public class ContextLoaderTest {
             new AnnotationLoader(MiscModule.class)
         );
 
-        assertFalse(loader.getMetaLoaders().isEmpty());
+        assertFalse(loader.getModuleBuilders().isEmpty());
     }
 
     @Test
