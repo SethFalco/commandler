@@ -29,7 +29,7 @@ public class BooleanAdapter implements ParamAdapter<Boolean> {
     );
 
     @Override
-    public Boolean adapt(String input, Class<? extends Boolean> type, MetaParam data, CommandlerEvent<?> event) {
+    public Boolean adapt(String input, Class<? extends Boolean> type, MetaParam data, CommandlerEvent<?, ?> event) {
         input = input.toLowerCase();
 
         if (TRUE.contains(input))

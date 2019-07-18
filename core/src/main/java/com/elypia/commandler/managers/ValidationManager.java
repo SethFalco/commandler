@@ -38,7 +38,7 @@ public class ValidationManager {
         exValidator = factory.getValidator().forExecutables();
     }
 
-    public <E> void validate(CommandlerEvent<E> event, Handler handler, Object[] parameters) throws ParamViolationException {
+    public <E> void validate(CommandlerEvent<E, ?> event, Handler handler, Object[] parameters) throws ParamViolationException {
         Method method = event.getInput().getCommand().getMethod();
         Set<ConstraintViolation<Handler>> violations = exValidator.validateParameters(handler, method, parameters);
 

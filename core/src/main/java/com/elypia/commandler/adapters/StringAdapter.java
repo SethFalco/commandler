@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 public class StringAdapter implements ParamAdapter<CharSequence> {
 
     @Override
-    public CharSequence adapt(String input, Class<? extends CharSequence> type, MetaParam data, CommandlerEvent<?> event) {
+    public CharSequence adapt(String input, Class<? extends CharSequence> type, MetaParam data, CommandlerEvent<?, ?> event) {
         return input;
     }
 }

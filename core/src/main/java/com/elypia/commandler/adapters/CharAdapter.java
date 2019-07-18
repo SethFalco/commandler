@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 public class CharAdapter implements ParamAdapter<Character> {
 
     @Override
-    public Character adapt(String input, Class<? extends Character> type, MetaParam data, CommandlerEvent<?> event) {
+    public Character adapt(String input, Class<? extends Character> type, MetaParam data, CommandlerEvent<?, ?> event) {
         if (input.length() == 1)
             return input.charAt(0);
 

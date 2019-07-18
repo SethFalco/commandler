@@ -66,7 +66,7 @@ public class DurationAdapter implements ParamAdapter<Duration> {
      * @return The Duration object this represents, or null if it failed to parse.
      */
     @Override
-    public Duration adapt(String input, Class<? extends Duration> type, MetaParam data, CommandlerEvent<?> event) {
+    public Duration adapt(String input, Class<? extends Duration> type, MetaParam data, CommandlerEvent<?, ?> event) {
         Map<TimeUnit, Long> units = new HashMap<>();
         ParsePosition position = new ParsePosition(0);
         char[] sequence = input.toCharArray();

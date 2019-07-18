@@ -19,7 +19,7 @@ public @interface Platform {
 
     Class<? extends Controller>[] value();
 
-    class Validator implements ConstraintValidator<Platform, CommandlerEvent<?>> {
+    class Validator implements ConstraintValidator<Platform, CommandlerEvent<?, ?>> {
 
         private Class<? extends Controller>[] controllerTypes;
 
@@ -29,7 +29,7 @@ public @interface Platform {
         }
 
         @Override
-        public boolean isValid(CommandlerEvent<?> event, ConstraintValidatorContext context) {
+        public boolean isValid(CommandlerEvent<?, ?> event, ConstraintValidatorContext context) {
             Controller controller = event.getController();
 
             for (Class<? extends Controller> type : controllerTypes) {

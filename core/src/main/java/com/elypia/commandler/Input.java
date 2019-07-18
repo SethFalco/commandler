@@ -11,9 +11,6 @@ import java.util.*;
  */
 public class Input {
 
-    /** Format used for {@link #toParamString()}. */
-    private static final String PARAM_FORMAT = "(%,d) %s";
-
     /** The actual content of the message. */
     private String content;
 
@@ -45,23 +42,22 @@ public class Input {
      * @return The parameters in a user displayable state.
      */
     public String toParamString() {
-        final StringJoiner paramJoiner = new StringJoiner(", ");
+        if (params.isEmpty())
+            return "None";
+
+        final StringJoiner joiner = new StringJoiner(" ");
+        int i = 1;
 
         for (List<String> items : params) {
+            joiner.add("(" + i++ + ")");
+
             if (items.size() == 1)
-                paramJoiner.add("'" + items.get(0) + "'");
-
-            else {
-                StringJoiner itemJoiner = new StringJoiner(", ");
-
-                for (String item : items)
-                    itemJoiner.add("'" + item + "'");
-
-                paramJoiner.add("[" + itemJoiner.toString() + "]");
-            }
+                joiner.add(items.get(0));
+            else
+                joiner.add("[" + String.join(", ", items) + "]");
         }
 
-        return String.format(PARAM_FORMAT, params.size(), paramJoiner.toString());
+        return joiner.toString();
     }
 
     public String getContent() {
@@ -89,6 +85,6 @@ public class Input {
 
     @Override
     public String toString() {
-        return module.getName() + " > " + command.getName() + " | (" + command.getParams().size() + ")";
+        return module.getName() + " > " + command.getName() + " | " + toParamString();
     }
 }

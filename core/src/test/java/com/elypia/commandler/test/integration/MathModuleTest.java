@@ -66,7 +66,7 @@ public class MathModuleTest {
             "Module: Math\n" +
             "Command: Sum\n" +
             "Required: [numbers]\n" +
-            "Provided: (2) ['1', '2', '3', '4'], 'true'";
+            "Provided: (1) [1, 2, 3, 4] (2) true";
         Object actual = dispatcher.dispatch(controller, event, event);
 
         assertAll("Check all",

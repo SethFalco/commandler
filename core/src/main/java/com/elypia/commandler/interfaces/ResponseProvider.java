@@ -25,5 +25,5 @@ public interface ResponseProvider<O, M> {
      * @param output The output from the {@link ParamAdapter} when parsing the input.
      * @return The message to response to the user.
      */
-    M provide(CommandlerEvent<?> event, O output);
+    M provide(CommandlerEvent<?, M> event, O output);
 }

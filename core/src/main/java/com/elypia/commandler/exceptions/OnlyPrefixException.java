@@ -1,6 +1,6 @@
 package com.elypia.commandler.exceptions;
 
-public class OnlyPrefixException extends Exception {
+public class OnlyPrefixException extends RuntimeException {
 
     public OnlyPrefixException() {
         super();

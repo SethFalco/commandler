@@ -9,7 +9,7 @@ import com.elypia.commandler.interfaces.ResponseProvider;
 public class NullBuilder implements ResponseProvider<Object, String> {
 
     @Override
-    public String provide(CommandlerEvent<?> event, Object output) {
+    public String provide(CommandlerEvent<?, String> event, Object output) {
         return null;
     }
 }

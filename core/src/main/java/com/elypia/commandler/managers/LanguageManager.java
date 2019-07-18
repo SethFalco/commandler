@@ -15,8 +15,8 @@ public class LanguageManager<S> implements LanguageInterface {
     private static final Locale[] locales = {Locale.ENGLISH};
 
     @Override
-    public <T> String get(CommandlerEvent<?> event, String key, Map<String, T> params) {
-        String script = ResourceBundle.getBundle("language", getLocale(event)).getString(key);
+    public <T> String get(CommandlerEvent<?, ?> event, String key, Map<String, T> params) {
+        String script = PropertyResourceBundle.getBundle("language", getLocale(event)).getString(key);
 
         if (params != null) {
             for (var entry : params.entrySet())
@@ -27,7 +27,7 @@ public class LanguageManager<S> implements LanguageInterface {
     }
 
     @Override
-    public Locale getLocale(CommandlerEvent<?> event) {
+    public Locale getLocale(CommandlerEvent<?, ?> event) {
         return locales[0];
     }
 

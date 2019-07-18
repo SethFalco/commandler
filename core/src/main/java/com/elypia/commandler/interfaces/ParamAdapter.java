@@ -25,7 +25,7 @@ public interface ParamAdapter<O> {
      * @param input The input from the user.
      * @return The parsed data-type, or null if we're unable to adapt the input.
      */
-    O adapt(String input, Class<? extends O> type, MetaParam param, CommandlerEvent<?> event);
+    O adapt(String input, Class<? extends O> type, MetaParam param, CommandlerEvent<?, ?> event);
 
     default O adapt(String input) {
         return adapt(input, null);

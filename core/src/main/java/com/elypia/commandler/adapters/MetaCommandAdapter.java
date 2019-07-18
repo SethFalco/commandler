@@ -21,7 +21,7 @@ public class MetaCommandAdapter implements ParamAdapter<MetaCommand> {
     }
 
     @Override
-    public MetaCommand adapt(String input, Class<? extends MetaCommand> type, MetaParam param, CommandlerEvent<?> event) {
+    public MetaCommand adapt(String input, Class<? extends MetaCommand> type, MetaParam param, CommandlerEvent<?, ?> event) {
         String[] args = CommandlerUtils.splitSpaces(input);
 
         if (args.length != 2)

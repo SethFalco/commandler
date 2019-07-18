@@ -22,7 +22,7 @@ public class NumberToStringProvider implements ResponseProvider<Number, String> 
     }
 
     @Override
-    public String provide(CommandlerEvent<?> event, Number output) {
+    public String provide(CommandlerEvent<?, String> event, Number output) {
         return format.format(output);
     }
 }

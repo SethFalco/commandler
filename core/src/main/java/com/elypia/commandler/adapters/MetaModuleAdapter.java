@@ -20,7 +20,7 @@ public class MetaModuleAdapter implements ParamAdapter<MetaModule> {
     }
 
     @Override
-    public MetaModule adapt(String input, Class<? extends MetaModule> type, MetaParam param, CommandlerEvent<?> event) {
+    public MetaModule adapt(String input, Class<? extends MetaModule> type, MetaParam param, CommandlerEvent<?, ?> event) {
         return context.getModule(input);
     }
 }

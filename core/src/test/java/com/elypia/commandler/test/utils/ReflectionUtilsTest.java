@@ -13,13 +13,13 @@ public class ReflectionUtilsTest {
     @Test
     public void getClassesFromClass() {
         Collection<Class<?>> types = ReflectionUtils.getClasses(ReflectionUtils.class);
-        assertEquals(3, types.size());
+        assertEquals(4, types.size());
     }
 
     @Test
     public void getClassesFromPackage() {
         Collection<Class<?>> types = ReflectionUtils.getClasses(ReflectionUtils.class.getPackage());
-        assertEquals(3, types.size());
+        assertEquals(4, types.size());
     }
 
     @Test

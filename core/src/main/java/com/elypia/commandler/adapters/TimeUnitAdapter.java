@@ -28,7 +28,7 @@ public class TimeUnitAdapter implements ParamAdapter<TimeUnit> {
     }
 
     @Override
-    public TimeUnit adapt(String input, Class<? extends TimeUnit> type, MetaParam param, CommandlerEvent<?> event) {
+    public TimeUnit adapt(String input, Class<? extends TimeUnit> type, MetaParam param, CommandlerEvent<?, ?>event) {
         Objects.requireNonNull(input);
 
         switch (input.trim().toLowerCase()) {

@@ -5,7 +5,6 @@ import com.elypia.commandler.annotations.*;
 import com.elypia.commandler.exceptions.*;
 import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
-import com.google.inject.*;
 import org.slf4j.*;
 
 import javax.el.*;
@@ -80,15 +79,20 @@ public class AdapterManager {
                 String defaultValue = metaParam.getDefaultValue();
                 ValueExpression ve = expressionFactory.createValueExpression(context, defaultValue, Object.class);
                 Object value = ve.getValue(context);
+                Class<?> type = value.getClass();
 
-                if (value instanceof String)
+                if (String.class.isAssignableFrom(type))
                     param = List.of((String)value);
-                else if (value instanceof String[])
+                else if (String[].class.isAssignableFrom(type))
                     param = List.of((String[])value);
-                else if (value instanceof List)
-                    param = (List<String>)value;
+                else if (List.class.isAssignableFrom(type))
+                    param = (List<String>)value; // TODO: Only checking if it's a list, not List<String>
+                else if (metaParam.getType().isAssignableFrom(type)) {
+                    objects.add(value);
+                    continue;
+                }
                 else
-                    throw new RuntimeException("Parameter ValueExpression (defaultValue) didn't compile to a String, String[] or List<String>.");
+                    throw new RuntimeException("defaultValue must be assignable to String, String[], List<String> or " + metaParam.getType().getSimpleName() + ".");
 
             }
 
@@ -180,10 +184,6 @@ public class AdapterManager {
         throw new ListUnsupportedException(input, param, items);
     }
 
-    public ParamAdapter getAdapter(Class<?> typeRequired) {
-        return getAdapter(typeRequired, Map.of());
-    }
-
     /**
      * <p>Iterate adapters and get the most appropriate one
      * for to adapt this type.</p>
@@ -196,7 +196,7 @@ public class AdapterManager {
      * @param typeRequired The type that needs adapting.
      * @return The adapter for this data into the required type.
      */
-    public <T> ParamAdapter<?> getAdapter(Class<?> typeRequired, Map<Class<T>, T> injectables) {
+    public <T> ParamAdapter<?> getAdapter(Class<?> typeRequired) {
         MetaAdapter adapter = null;
 
         for (MetaAdapter metaAdapter : adapters) {
@@ -215,15 +215,7 @@ public class AdapterManager {
             throw new AdapterRequiredException("Adapter required for type " + typeRequired + ".");
 
         logger.debug("Using `{}` adapter for parameter.", adapter.getAdapterType().getSimpleName());
-
-        Injector child = injectionManager.getInjector().createChildInjector(new AbstractModule() {
-
-            @Override
-            protected void configure() {
-                injectables.forEach((key, value) -> bind(key).toInstance(value));
-            }
-        });
-
-        return child.getInstance(adapter.getAdapterType());
+        // TODO: Add event objects and params to child injector
+        return injectionManager.getInjector().getInstance(adapter.getAdapterType());
     }
 }

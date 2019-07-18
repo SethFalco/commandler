@@ -24,7 +24,7 @@ public class NumberAdapter implements ParamAdapter<Number> {
     }
 
     @Override
-    public Number adapt(String input, Class<? extends Number> type, MetaParam param, CommandlerEvent<?> event) {
+    public Number adapt(String input, Class<? extends Number> type, MetaParam param, CommandlerEvent<?, ?> event) {
         Objects.requireNonNull(input);
         Objects.requireNonNull(type);
 

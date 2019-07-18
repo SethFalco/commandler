@@ -42,13 +42,16 @@ configure(publishedProjects) {
     sourceCompatibility = 11
     targetCompatibility = 11
 
-    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
     dependencies {
         // Logging
         implementation "org.slf4j:slf4j-api:1.7.26"
         testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+
+        // Testing
         testImplementation "org.junit.jupiter:junit-jupiter:5.4.2"
+        testImplementation "org.mockito:mockito-core:3.0.0"
     }
 
     /** Testing */

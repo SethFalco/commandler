@@ -39,14 +39,14 @@ public class InjectionManager {
     }
 
     /**
-     * It's much prefferred to use {@link #add(Module...)}
+     * It's much preferred to use {@link #add(Module...)}
      * unless only adding a single class.
      *
      * @param instance The instance of an object to add.
      * @param type The type of this object.
      * @param <T>
      */
-    public <T> void addInstance(T instance, Class<T> type) {
+    public <T> void add(T instance, Class<T> type) {
         add(new AbstractModule() {
 
             @Override

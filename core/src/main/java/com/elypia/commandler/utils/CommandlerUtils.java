@@ -6,6 +6,10 @@ public final class CommandlerUtils {
 
     private static final Pattern SPACE_SPLITTER = Pattern.compile("\\s+");
 
+    private CommandlerUtils() {
+        // Do nothing
+    }
+
     public static String[] splitSpaces(final String body) {
         return splitSpaces(body, 0);
     }

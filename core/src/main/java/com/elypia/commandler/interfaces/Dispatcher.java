@@ -1,7 +1,6 @@
 package com.elypia.commandler.interfaces;
 
 import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.exceptions.*;
 
 /**
  * The {@link Dispatcher} has the role of processing an event
@@ -9,6 +8,7 @@ import com.elypia.commandler.exceptions.*;
  * by Commandler, this should be used to verify if it's a command as well
  * adapt it into an input and event object to be used internally.
  */
+// TODO: Make an AIML dispatcher
 public interface Dispatcher {
 
     /**
@@ -26,7 +26,7 @@ public interface Dispatcher {
      * @return The response to this command, or null
      * if this wasn't a command at all.
      */
-    Object dispatch(Controller controller, Object event, String content);
+    <M> M dispatch(Controller<M> controller, Object event, String content);
 
     /**
      * Break the command down into it's individual components.
@@ -35,5 +35,5 @@ public interface Dispatcher {
      * @param content The content of the meessage.
      * @return The input the user provided or null if it's not a valid command.
      */
-    CommandlerEvent parse(Controller controller, Object source, String content) throws OnlyPrefixException, NoDefaultCommandException, ModuleNotFoundException, ParamCountMismatchException;
+    <M> CommandlerEvent parse(Controller<M> controller, Object source, String content);
 }

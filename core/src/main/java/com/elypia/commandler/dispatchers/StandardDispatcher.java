@@ -19,6 +19,8 @@ import java.util.stream.Stream;
  * <code>{prefix}{module} {command} {params}</code>
  * With exceptional circumstances.
  */
+// TODO: Make a greedy annotation (or some other means) to make parameters greedy, last param only
+// TODO: Make able to change the delimeter between module and command
 public class StandardDispatcher implements Dispatcher {
 
     /** SLF4J Logger */
@@ -55,9 +57,9 @@ public class StandardDispatcher implements Dispatcher {
     }
 
     @Override
-    public Object dispatch(Controller controller, Object source, String content) {
+    public <M> M dispatch(Controller<M> controller, Object source, String content) {
         Object response;
-        CommandlerEvent<?> event = null;
+        CommandlerEvent<?, ?> event = null;
 
         try {
             event = parse(controller, source, content);
@@ -76,12 +78,12 @@ public class StandardDispatcher implements Dispatcher {
             response = commandler.getMisuseManager().route(ex);
         }
 
-        Object object;
+        M object;
 
         if (response == null)
             return null;
 
-        object = commandler.getResponseManager().provide(event, controller, response);
+        object = commandler.getResponseManager().provide(event, response, controller);
         return object;
     }
 
@@ -101,7 +103,7 @@ public class StandardDispatcher implements Dispatcher {
     }
 
     @Override
-    public CommandlerEvent parse(Controller controller, Object source, String content) throws OnlyPrefixException, NoDefaultCommandException, ModuleNotFoundException, ParamCountMismatchException {
+    public <M> CommandlerEvent parse(Controller<M> controller, Object source, String content) {
         Objects.requireNonNull(controller);
         Objects.requireNonNull(source);
         Objects.requireNonNull(content);

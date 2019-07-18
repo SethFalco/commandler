@@ -29,8 +29,9 @@ public class HelpModule implements Handler {
         this.testManager = testManager;
     }
 
+    @Default
     @Command(name = "Groups", aliases = {"groups", "group"}, help = "List all groups.")
-    public String listGroups(CommandlerEvent<?> event) {
+    public String listGroups(CommandlerEvent<?, ?> event) {
         StringJoiner joiner = new StringJoiner("\n", "Groups", "");
 
         for (String group : context.getGroups(false).keySet())

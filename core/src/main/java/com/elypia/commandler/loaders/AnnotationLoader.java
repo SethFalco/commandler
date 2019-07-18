@@ -47,6 +47,9 @@ public class AnnotationLoader extends SearchingLoader {
                 boolean isModule = t.isAnnotationPresent(Module.class);
                 logger.debug("Checking if {} is module. (Handler: {} | Module: {})", t.getSimpleName(), isHandler, isModule);
 
+                if (isModule && !isHandler)
+                    logger.warn("Found a class annotated with @Module but doesn't implement Handler, this has not been registered.");
+
                 return isHandler && isModule;
             })
             .map((t) -> {

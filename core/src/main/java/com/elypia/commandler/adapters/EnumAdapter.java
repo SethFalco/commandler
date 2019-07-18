@@ -20,7 +20,7 @@ import java.util.Objects;
 public class EnumAdapter implements ParamAdapter<Enum> {
 
     @Override
-    public Enum adapt(String input, Class<? extends Enum> type, MetaParam data, CommandlerEvent<?> event) {
+    public Enum adapt(String input, Class<? extends Enum> type, MetaParam data, CommandlerEvent<?, ?> event) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(input);
         input = input.toLowerCase().replace(" ", "");

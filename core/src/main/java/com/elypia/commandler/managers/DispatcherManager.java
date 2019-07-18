@@ -26,7 +26,7 @@ public class DispatcherManager {
             this.dispatchers.addAll(dispatchers);
     }
 
-    public Object dispatch(Controller controller, Object event, String content) {
+    public <M> M dispatch(Controller<M> controller, Object event, String content) {
         logger.debug("Dispatched event with content: {}", content);
 
         for (Dispatcher dispatcher : dispatchers) {

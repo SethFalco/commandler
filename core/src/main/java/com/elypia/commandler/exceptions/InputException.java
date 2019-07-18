@@ -4,7 +4,7 @@ import com.elypia.commandler.Input;
 
 import java.util.Objects;
 
-public abstract class InputException extends Exception {
+public abstract class InputException extends RuntimeException {
 
     private Input input;
 

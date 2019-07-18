@@ -16,6 +16,8 @@ public class Context implements Iterable<MetaModule> {
     /** Logging using the SLF4J API. */
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
 
+    // TODO: This doesn't belong here as this is specific to the StandardDispatcher
+
     /** A distinct list of root aliases. (modules and static command aliases) */
     private Set<String> rootAliases;
 
@@ -108,12 +110,12 @@ public class Context implements Iterable<MetaModule> {
     /**
      * Get a group view of all modules.
      *
-     * @param includePrivate If to include public modules in the result.
+     * @param includeHidden If to include public modules in the result.
      * @return A unmodifiable map of modules and the groups they belong in.
      */
-    public Map<String, List<MetaModule>> getGroups(boolean includePrivate) {
+    public Map<String, List<MetaModule>> getGroups(boolean includeHidden) {
         Map<String, List<MetaModule>> groups = modules.stream()
-            .filter((m) -> !m.isHidden() || includePrivate)
+            .filter((m) -> !m.isHidden() || includeHidden)
             .sorted()
             .collect(Collectors.groupingBy(MetaModule::getGroup));
 

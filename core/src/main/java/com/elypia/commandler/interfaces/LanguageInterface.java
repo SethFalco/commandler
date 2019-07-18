@@ -14,11 +14,11 @@ public interface LanguageInterface {
         return get(null, key, params);
     }
 
-    default String get(CommandlerEvent<?> event, String key) {
+    default String get(CommandlerEvent<?, ?> event, String key) {
         return get(event, key, Map.of());
     }
 
-    <T> String get(CommandlerEvent<?> event, String key, Map<String, T> params);
-    Locale getLocale(CommandlerEvent<?> event);
+    <T> String get(CommandlerEvent<?, ?> event, String key, Map<String, T> params);
+    Locale getLocale(CommandlerEvent<?, ?> event);
     Locale[] getSupportedLocales();
 }

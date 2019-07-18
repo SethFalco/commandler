@@ -4,7 +4,7 @@ import com.elypia.commandler.metadata.MetaModule;
 
 import java.util.Objects;
 
-public class NoDefaultCommandException extends Exception {
+public class NoDefaultCommandException extends RuntimeException {
 
     private MetaModule module;
 

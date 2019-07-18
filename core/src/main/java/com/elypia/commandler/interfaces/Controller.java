@@ -1,5 +1,5 @@
 package com.elypia.commandler.interfaces;
 
-public interface Controller {
-    Class<?> getMessageType();
+public interface Controller<M> {
+    Class<M> getMessageType();
 }

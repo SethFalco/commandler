@@ -11,6 +11,10 @@ public final class ReflectionUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(ReflectionUtils.class);
 
+    private ReflectionUtils() {
+        // Do nothing
+    }
+
     /**
      * Add data for all modules found in the packages specified.
      *

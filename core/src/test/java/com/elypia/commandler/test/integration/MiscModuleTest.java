@@ -65,7 +65,7 @@ public class MiscModuleTest {
             "Module: Miscellaneous\n" +
             "Command: Repeat\n" +
             "Required: input, ?count\n" +
-            "Provided: (2) 'Hello', 'world'";
+            "Provided: (1) Hello (2) world";
         Object actual = dispatcher.dispatch(controller, event, event);
 
         assertAll("Check all",
@@ -82,7 +82,7 @@ public class MiscModuleTest {
             "Module: Miscellaneous\n" +
             "Command: Repeat\n" +
             "Required: input, ?count\n" +
-            "Provided: (1) ['Hello', 'world']";
+            "Provided: (1) [Hello, world]";
         Object actual = dispatcher.dispatch(controller, event, event);
 
         assertAll("Check all",

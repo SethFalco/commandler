@@ -13,7 +13,7 @@ import java.net.*;
 public class UrlAdapter implements ParamAdapter<URL> {
 
     @Override
-    public URL adapt(String input, Class<? extends URL> type, MetaParam data, CommandlerEvent<?> event) {
+    public URL adapt(String input, Class<? extends URL> type, MetaParam data, CommandlerEvent<?, ?> event) {
         try {
             return new URL(input);
         } catch (MalformedURLException e) {
