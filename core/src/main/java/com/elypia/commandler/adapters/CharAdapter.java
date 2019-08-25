@@ -1,18 +1,16 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.annotations.Adapter;
-import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.api.Adapter;
+import com.elypia.commandler.event.ActionEvent;
 import com.elypia.commandler.metadata.MetaParam;
 
 import javax.inject.Singleton;
 
 @Singleton
-@Adapter({Character.class, char.class})
-public class CharAdapter implements ParamAdapter<Character> {
+public class CharAdapter implements Adapter<Character> {
 
     @Override
-    public Character adapt(String input, Class<? extends Character> type, MetaParam data, CommandlerEvent<?, ?> event) {
+    public Character adapt(String input, Class<? extends Character> type, MetaParam data, ActionEvent<?, ?> event) {
         if (input.length() == 1)
             return input.charAt(0);
 

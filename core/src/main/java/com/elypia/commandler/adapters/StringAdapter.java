@@ -1,18 +1,16 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.annotations.Adapter;
-import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.api.Adapter;
+import com.elypia.commandler.event.ActionEvent;
 import com.elypia.commandler.metadata.MetaParam;
 
 import javax.inject.Singleton;
 
 @Singleton
-@Adapter({String.class})
-public class StringAdapter implements ParamAdapter<CharSequence> {
+public class StringAdapter implements Adapter<CharSequence> {
 
     @Override
-    public CharSequence adapt(String input, Class<? extends CharSequence> type, MetaParam data, CommandlerEvent<?, ?> event) {
+    public CharSequence adapt(String input, Class<? extends CharSequence> type, MetaParam data, ActionEvent<?, ?> event) {
         return input;
     }
 }

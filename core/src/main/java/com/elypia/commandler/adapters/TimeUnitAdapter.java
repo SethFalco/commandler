@@ -1,8 +1,7 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.annotations.Adapter;
-import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.api.Adapter;
+import com.elypia.commandler.event.ActionEvent;
 import com.elypia.commandler.metadata.MetaParam;
 
 import javax.inject.Singleton;
@@ -10,8 +9,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
-@Adapter(TimeUnit.class)
-public class TimeUnitAdapter implements ParamAdapter<TimeUnit> {
+public class TimeUnitAdapter implements Adapter<TimeUnit> {
 
     private final Collection<TimeUnit> units;
 
@@ -28,7 +26,7 @@ public class TimeUnitAdapter implements ParamAdapter<TimeUnit> {
     }
 
     @Override
-    public TimeUnit adapt(String input, Class<? extends TimeUnit> type, MetaParam param, CommandlerEvent<?, ?>event) {
+    public TimeUnit adapt(String input, Class<? extends TimeUnit> type, MetaParam metaParam, ActionEvent<?, ?> event) {
         Objects.requireNonNull(input);
 
         switch (input.trim().toLowerCase()) {

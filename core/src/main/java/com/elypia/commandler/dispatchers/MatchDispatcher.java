@@ -1,23 +1,25 @@
 package com.elypia.commandler.dispatchers;
 
-import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.exceptions.*;
-import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.api.*;
+import com.elypia.commandler.event.ActionEvent;
 
 public class MatchDispatcher implements Dispatcher {
 
+    /**
+     * Any message could match a potential regular expression.
+     * As a result all messages are valid Match commands.
+     *
+     * @param event The source event that called this command.
+     * @param content The content of the command.
+     * @return If this is a valid command or not.
+     */
     @Override
     public boolean isValid(Object event, String content) {
         return true;
     }
 
     @Override
-    public Object dispatch(Controller controller, Object event, String content) {
-        return null;
-    }
-
-    @Override
-    public CommandlerEvent parse(Controller controller, Object source, String content) throws OnlyPrefixException, NoDefaultCommandException, ModuleNotFoundException, ParamCountMismatchException {
+    public <S, M> ActionEvent<S, M> parse(Integration<S, M> controller, S source, String content) {
         return null;
     }
 }

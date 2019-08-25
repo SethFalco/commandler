@@ -1,9 +1,8 @@
 package com.elypia.commandler.managers;
 
-import com.elypia.commandler.*;
-import com.elypia.commandler.annotations.*;
+import com.elypia.commandler.api.*;
+import com.elypia.commandler.event.*;
 import com.elypia.commandler.exceptions.*;
-import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -12,13 +11,13 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 /**
- * <p>The {@link Param paramter} parser which is used to interpret
- * parameters specified in the {@link Command command} arguments.
+ * <p>The {@link MetaParam paramter} parser which is used to interpret
+ * parameters specified in the {@link MetaCommand command} arguments.
  * Before a type can be used as an argument a {@link Adapter}
  * must be specified and registered to the {@link AdapterManager}.</p>
  * <p>The {@link AdapterManager} is how {@link String} input provided
  * by the chat client is converted into the respective object and passed
- * to the method associated with the {@link Command}.</p>
+ * to the method associated with the {@link MetaCommand}.</p>
  */
 public class AdapterManager {
 
@@ -53,15 +52,15 @@ public class AdapterManager {
      * @param event The message event to take parameters from.
      * @return An array of all parameters adapted as required for the given method.
      */
-    public Object[] adaptEvent(CommandlerEvent event) throws ListUnsupportedException, ParamParseException {
-        Input input = event.getInput();
-        List<MetaParam> params = input.getCommand().getParams();
+    public Object[] adaptEvent(ActionEvent event) throws ListUnsupportedException, ParamParseException {
+        Action input = event.getAction();
+        List<MetaParam> metaParams = event.getMetaCommand().getMetaParams();
         List<List<String>> inputs = input.getParams();
 
         List<Object> objects = new ArrayList<>();
 
-        for (int i = 0; i < params.size(); i++) {
-            MetaParam metaParam = params.get(i);
+        for (int i = 0; i < metaParams.size(); i++) {
+            MetaParam metaParam = metaParams.get(i);
             List<String> param;
 
             if (inputs.size() > i)
@@ -71,10 +70,10 @@ public class AdapterManager {
                 // TODO: Make it possible for a this to use previous parameters.
                 ELContext context = new StandardELContext(expressionFactory);
                 VariableMapper mapper = context.getVariableMapper();
-                mapper.setVariable("event", expressionFactory.createValueExpression(event, CommandlerEvent.class));
-                mapper.setVariable("input", expressionFactory.createValueExpression(event.getInput(), Input.class));
-                mapper.setVariable("controller", expressionFactory.createValueExpression(event.getController(), Controller.class));
-                mapper.setVariable("source", expressionFactory.createValueExpression(event.getSource(), event.getSource().getClass()));
+                mapper.setVariable("e", expressionFactory.createValueExpression(event, ActionEvent.class));
+                mapper.setVariable("a", expressionFactory.createValueExpression(event.getAction(), Action.class));
+                mapper.setVariable("c", expressionFactory.createValueExpression(event.getIntegration(), Integration.class));
+                mapper.setVariable("s", expressionFactory.createValueExpression(event.getSource(), event.getSource().getClass()));
 
                 String defaultValue = metaParam.getDefaultValue();
                 ValueExpression ve = expressionFactory.createValueExpression(context, defaultValue, Object.class);
@@ -102,10 +101,10 @@ public class AdapterManager {
 
         Iterator<Object> iter = objects.iterator();
         List<Object> toReturn = new ArrayList<>();
-        Class<?>[] types = input.getCommand().getMethod().getParameterTypes();
+        Class<?>[] types = event.getMetaCommand().getMethod().getParameterTypes();
 
         for (Class<?> type : types) {
-            if (CommandlerEvent.class.isAssignableFrom(type))
+            if (ActionEvent.class.isAssignableFrom(type))
                 toReturn.add(event);
             else
                 toReturn.add(iter.next());
@@ -123,16 +122,16 @@ public class AdapterManager {
      * parameter is provided where lists are not supported.
      *
      * @param event The message event to take parameters from.
-     * @param param The static parameter data associated with the parameter.
+     * @param metaParam The static parameter data associated with the parameter.
      * @param items The input provided by the user, this will only contain
      *              more than one item if the user provided a list of items.
      * @return      The parsed object as required for the command, or null
      *              if we failed to adapt the input. (Usually user misuse.)
      */
-    protected Object adaptParam(Input input, CommandlerEvent event, MetaParam param, List<String> items) throws ParamParseException, ListUnsupportedException {
-        Class<?> type = param.getType();
+    protected Object adaptParam(Action action, ActionEvent event, MetaParam metaParam, List<String> items) throws ParamParseException, ListUnsupportedException {
+        Class<?> type = metaParam.getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
-        ParamAdapter adapter = this.getAdapter(componentType);
+        Adapter adapter = this.getAdapter(componentType);
 
         if (adapter == null)
             throw new RuntimeException(String.format("No adapters was created for the data-type %s.", componentType.getName()));
@@ -144,10 +143,10 @@ public class AdapterManager {
 
             for (int i = 0; i < size; i++) {
                 String item = items.get(i);
-                Object o = adapter.adapt(item, componentType, param, event);
+                Object o = adapter.adapt(item, componentType, metaParam, event);
 
                 if (o == null)
-                    throw new ParamParseException(input, param, item);
+                    throw new ParamParseException(event, metaParam, item);
 
                 if (componentType == boolean.class)
                     Array.setBoolean(output, i, (boolean)o);
@@ -173,15 +172,15 @@ public class AdapterManager {
         }
 
         if (size == 1) {
-            Object o = adapter.adapt(items.get(0), componentType, param, event);
+            Object o = adapter.adapt(items.get(0), componentType, metaParam, event);
 
             if (o == null)
-                throw new ParamParseException(input, param, items.get(0));
+                throw new ParamParseException(event, metaParam, items.get(0));
 
             return o;
         }
 
-        throw new ListUnsupportedException(input, param, items);
+        throw new ListUnsupportedException(event, metaParam, items);
     }
 
     /**
@@ -196,7 +195,7 @@ public class AdapterManager {
      * @param typeRequired The type that needs adapting.
      * @return The adapter for this data into the required type.
      */
-    public <T> ParamAdapter<?> getAdapter(Class<?> typeRequired) {
+    public <T> Adapter<?> getAdapter(Class<?> typeRequired) {
         MetaAdapter adapter = null;
 
         for (MetaAdapter metaAdapter : adapters) {

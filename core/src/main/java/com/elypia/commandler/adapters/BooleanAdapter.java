@@ -1,16 +1,14 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.annotations.Adapter;
-import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.api.Adapter;
+import com.elypia.commandler.event.ActionEvent;
 import com.elypia.commandler.metadata.MetaParam;
 
 import javax.inject.Singleton;
 import java.util.*;
 
 @Singleton
-@Adapter({Boolean.class, boolean.class})
-public class BooleanAdapter implements ParamAdapter<Boolean> {
+public class BooleanAdapter implements Adapter<Boolean> {
 
     private static final Collection<String> TRUE = List.of(
         "true", "t", // Formal responses
@@ -29,7 +27,7 @@ public class BooleanAdapter implements ParamAdapter<Boolean> {
     );
 
     @Override
-    public Boolean adapt(String input, Class<? extends Boolean> type, MetaParam data, CommandlerEvent<?, ?> event) {
+    public Boolean adapt(String input, Class<? extends Boolean> type, MetaParam data, ActionEvent<?, ?> event) {
         input = input.toLowerCase();
 
         if (TRUE.contains(input))

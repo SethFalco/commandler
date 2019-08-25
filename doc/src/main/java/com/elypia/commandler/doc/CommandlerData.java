@@ -1,11 +1,11 @@
 package com.elypia.commandler.doc;
 
-import com.elypia.commandler.metadata.MetaModule;
+import com.elypia.commandler.metadata.MetaController;
 
 public class CommandlerData {
 
     private Metadata metadata;
-    private MetaModule[] modules;
+    private MetaController[] modules;
 
     public Metadata getMetadata() {
         return metadata;
@@ -15,11 +15,11 @@ public class CommandlerData {
         this.metadata = metadata;
     }
 
-    public MetaModule[] getModules() {
+    public MetaController[] getModules() {
         return modules;
     }
 
-    public void setModules(MetaModule[] modules) {
+    public void setModules(MetaController[] modules) {
         this.modules = modules;
     }
 }

@@ -1,16 +1,14 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.annotations.Adapter;
-import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.api.Adapter;
+import com.elypia.commandler.event.ActionEvent;
 import com.elypia.commandler.metadata.MetaParam;
 
 import javax.inject.Inject;
 import java.text.*;
 import java.util.Objects;
 
-@Adapter({Number.class, double.class, float.class, long.class, int.class, short.class, byte.class})
-public class NumberAdapter implements ParamAdapter<Number> {
+public class NumberAdapter implements Adapter<Number> {
 
     private NumberFormat defaultFormat;
 
@@ -24,7 +22,7 @@ public class NumberAdapter implements ParamAdapter<Number> {
     }
 
     @Override
-    public Number adapt(String input, Class<? extends Number> type, MetaParam param, CommandlerEvent<?, ?> event) {
+    public Number adapt(String input, Class<? extends Number> type, MetaParam metaParam, ActionEvent<?, ?> event) {
         Objects.requireNonNull(input);
         Objects.requireNonNull(type);
 
@@ -48,7 +46,7 @@ public class NumberAdapter implements ParamAdapter<Number> {
         if (type == Byte.class || type == byte.class)
             return number.byteValue();
 
-        return null;
+        throw new IllegalStateException(NumberAdapter.class + " does not support the type " + type + ".");
     }
 
     /**

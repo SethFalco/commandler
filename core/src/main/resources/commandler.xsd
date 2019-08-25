@@ -1,0 +1,119 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://commandler.elypia.com"
+           xmlns="https://commandler.elypia.com"
+           elementFormDefault="qualified"
+           xml:lang="EN">
+
+  <xs:annotation>
+    <xs:documentation>
+      Commandler 4.0.0 - August 24th 2019
+      This is the XML Schema for the Commandler configuration file.
+      The file should be named "commandler.xml" in the classpath.
+    </xs:documentation>
+  </xs:annotation>
+
+  <xs:element name="configuration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="commandler">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="controller" type="controller" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="adapter" type="adapter" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="messenger" type="messenger" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:simpleType name="pojo">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(?i)[A-Z\d.]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="method">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(?i)[A-Z\d]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="array">
+    <xs:list itemType="xs:string"/>
+  </xs:simpleType>
+
+  <xs:complexType name="property">
+    <xs:attribute name="key" type="pojo"/>
+    <xs:attribute name="value" type="array" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="element">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="property" type="property" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="controller">
+    <xs:complexContent>
+      <xs:extension base="element">
+        <xs:all>
+          <xs:element name="group" type="xs:string" default="Miscellaneous" minOccurs="0"/>
+          <xs:element name="hidden" type="xs:boolean" default="false" minOccurs="0"/>
+          <xs:element name="command" type="command" minOccurs="0"/>
+        </xs:all>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="command">
+    <xs:complexContent>
+      <xs:extension base="element">
+        <xs:sequence>
+          <xs:element name="hidden" type="xs:boolean" default="false" minOccurs="0"/>
+          <xs:element name="static" type="xs:boolean" default="false" minOccurs="0"/>
+          <xs:element name="default" type="xs:boolean" default="false" minOccurs="0"/>
+          <xs:element name="param" type="param" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="method" type="method" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="param">
+    <xs:complexContent>
+      <xs:extension base="element">
+        <xs:sequence>
+          <xs:element name="defaultValue" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="compatible">
+    <xs:sequence>
+      <xs:element name="type" type="pojo" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="adapter">
+    <xs:sequence>
+      <xs:element name="compatible" type="compatible" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="type" type="pojo" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="messenger">
+    <xs:sequence>
+      <xs:element name="provides" type="pojo"/>
+      <xs:element name="compatible" type="compatible" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="type" type="pojo" use="required"/>
+  </xs:complexType>
+</xs:schema>

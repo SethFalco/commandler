@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<configuration>
+  <header>
+    <providers>
+      <provider config-tag="yaml" config-class="com.elypia.commandler.configuration.YAMLConfigurationProvider"/>
+    </providers>
+    <result>
+      <expressionEngine config-class="com.elypia.commandler.configuration.XmlExpressionEngine"/>
+    </result>
+    <combiner>
+      <additional>
+        <list-nodes>
+          <node>controller</node>
+          <node>command</node>
+          <node>param</node>
+          <node>adapter</node>
+          <node>messenger</node>
+          <node>type</node>
+        </list-nodes>
+      </additional>
+    </combiner>
+  </header>
+  <override>
+    <env/>
+    <system/>
+    <yaml fileName="commandler.yml" config-optional="true"/>
+    <yaml fileName="commandler.yaml" config-optional="true"/>
+    <xml fileName="commandler.xml" config-optional="true"/>
+  </override>
+</configuration>

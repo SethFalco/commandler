@@ -1,20 +1,14 @@
 package com.elypia.commandler.metadata;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.Objects;
+import java.util.*;
 
-public class MetaParam {
+public class MetaParam extends MetaComponent {
 
     private Class<?> type;
 
     /** The method or parameter that represents this param. */
     private AnnotatedElement annotatedElement;
-
-    /** The name of this  */
-    private String name;
-
-    /** Any helper description to let users know what this is. */
-    private String help;
 
     /** The default value if any else null. */
     private String defaultValue;
@@ -25,12 +19,13 @@ public class MetaParam {
     /** If this is a single parameter, or a list parameter. */
     private boolean isList;
 
-    public MetaParam(Class<?> type, AnnotatedElement annotatedElement, String name, String help, String defaultValue) {
+    public MetaParam(Class<?> type, AnnotatedElement annotatedElement, String name, String description, String defaultValue, Properties properties) {
         this.type = Objects.requireNonNull(type);
         this.annotatedElement = Objects.requireNonNull(annotatedElement);
         this.name = Objects.requireNonNull(name);
-        this.help = help;
+        this.description = description;
         this.defaultValue = defaultValue;
+        this.properties = properties;
 
         isOptional = defaultValue != null;
         isList = type.isArray();
@@ -42,14 +37,6 @@ public class MetaParam {
 
     public AnnotatedElement getAnnotatedElement() {
         return annotatedElement;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getHelp() {
-        return help;
     }
 
     public String getDefaultValue() {

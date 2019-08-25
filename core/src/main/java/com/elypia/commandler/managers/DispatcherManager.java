@@ -1,6 +1,7 @@
 package com.elypia.commandler.managers;
 
-import com.elypia.commandler.interfaces.*;
+import com.elypia.commandler.api.*;
+import com.elypia.commandler.event.ActionEvent;
 import org.slf4j.*;
 
 import java.util.*;
@@ -26,7 +27,7 @@ public class DispatcherManager {
             this.dispatchers.addAll(dispatchers);
     }
 
-    public <M> M dispatch(Controller<M> controller, Object event, String content) {
+    public <S, M> ActionEvent<S, M> dispatch(Integration<S, M> integration, S event, String content) {
         logger.debug("Dispatched event with content: {}", content);
 
         for (Dispatcher dispatcher : dispatchers) {
@@ -34,7 +35,7 @@ public class DispatcherManager {
                 continue;
 
             logger.debug("Using dispatcher for event: {}", dispatcher);
-            return dispatcher.dispatch(controller, event, content);
+            return dispatcher.parse(integration, event, content);
         }
 
         return null;

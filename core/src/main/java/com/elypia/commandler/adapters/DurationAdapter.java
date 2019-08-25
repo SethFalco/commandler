@@ -1,8 +1,7 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.annotations.Adapter;
-import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.api.Adapter;
+import com.elypia.commandler.event.ActionEvent;
 import com.elypia.commandler.metadata.MetaParam;
 
 import javax.inject.Inject;
@@ -15,8 +14,7 @@ import java.util.concurrent.TimeUnit;
  * Adapt user input into Java {@link Duration} objects.
  * (This will allow users to specify a duration of time.)
  */
-@Adapter(Duration.class)
-public class DurationAdapter implements ParamAdapter<Duration> {
+public class DurationAdapter implements Adapter<Duration> {
 
     /** The TimeUnits this is compatible with. */
     private static final TimeUnit[] units = {
@@ -34,9 +32,7 @@ public class DurationAdapter implements ParamAdapter<Duration> {
     /** Uses the default {@link TimeUnitAdapter} to get the units after numbers. */
     private final TimeUnitAdapter timeUnitAdapter;
 
-
     /**
-     * TODO: Make a means to dictate if duplicate of same value is allowed or ASC/DESC
      * Instantiate the DurationAdapter with a NumberFormat with the default Locale.
      */
     public DurationAdapter() {
@@ -66,7 +62,7 @@ public class DurationAdapter implements ParamAdapter<Duration> {
      * @return The Duration object this represents, or null if it failed to parse.
      */
     @Override
-    public Duration adapt(String input, Class<? extends Duration> type, MetaParam data, CommandlerEvent<?, ?> event) {
+    public Duration adapt(String input, Class<? extends Duration> type, MetaParam data, ActionEvent<?, ?> event) {
         Map<TimeUnit, Long> units = new HashMap<>();
         ParsePosition position = new ParsePosition(0);
         char[] sequence = input.toCharArray();
@@ -92,7 +88,10 @@ public class DurationAdapter implements ParamAdapter<Duration> {
             if (unit == null)
                 return null;
 
-            units.put(unit, number.longValue());
+            if (units.containsKey(unit))
+                units.put(unit, units.get(unit) + number.longValue());
+            else
+                units.putIfAbsent(unit, number.longValue());
         }
 
         if (units.size() == 0)

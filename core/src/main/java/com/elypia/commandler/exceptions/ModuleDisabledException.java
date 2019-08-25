@@ -1,18 +1,18 @@
 package com.elypia.commandler.exceptions;
 
-import com.elypia.commandler.Input;
+import com.elypia.commandler.event.ActionEvent;
 
-public class ModuleDisabledException extends InputException {
+public class ModuleDisabledException extends ActionException {
 
-    public ModuleDisabledException(Input input) {
-        super(input);
+    public ModuleDisabledException(ActionEvent<?, ?> action) {
+        super(action);
     }
 
-    public ModuleDisabledException(Input input, String message) {
-        super(input, message);
+    public ModuleDisabledException(ActionEvent<?, ?> action, String message) {
+        super(action, message);
     }
 
-    public ModuleDisabledException(Input input, String message, Throwable cause) {
-        super(input, message, cause);
+    public ModuleDisabledException(ActionEvent<?, ?> action, String message, Throwable cause) {
+        super(action, message, cause);
     }
 }

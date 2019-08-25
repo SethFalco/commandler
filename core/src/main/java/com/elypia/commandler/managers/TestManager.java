@@ -1,8 +1,8 @@
 package com.elypia.commandler.managers;
 
 import com.elypia.commandler.Context;
-import com.elypia.commandler.interfaces.Handler;
-import com.elypia.commandler.metadata.MetaModule;
+import com.elypia.commandler.api.Controller;
+import com.elypia.commandler.metadata.MetaController;
 import com.elypia.commandler.testing.*;
 import org.slf4j.*;
 
@@ -24,7 +24,7 @@ public class TestManager {
      * Mapping of modules / command testReports to the respective
      * report instances to view report data.
      */
-    private final Map<Class<? extends Handler>, ModuleReport> testReports;
+    private final Map<Class<? extends Controller>, ModuleReport> testReports;
 
     private final ScheduledExecutorService executor;
 
@@ -34,44 +34,44 @@ public class TestManager {
         executor = Executors.newSingleThreadScheduledExecutor();
 
         executor.scheduleAtFixedRate(() -> {
-            for (MetaModule data : context) {
-                Handler handler = injectionManager.getInjector().getInstance(data.getHandlerType());
+            for (MetaController data : context) {
+                Controller controller = injectionManager.getInjector().getInstance(data.getHandlerType());
 
-                if (handler == null) {
+                if (controller == null) {
                     logger.debug("Registered handler is not initalised, testing was skipped.");
                     continue;
                 }
 
-                Class<? extends Handler> type = handler.getClass();
-                Report report = test(handler);
+                Class<? extends Controller> type = controller.getClass();
+                Report report = test(controller);
 
                 if (!testReports.containsKey(type))
                     testReports.put(type, new ModuleReport());
 
-                ModuleReport moduleReport = testReports.get(handler.getClass());
+                ModuleReport moduleReport = testReports.get(controller.getClass());
                 moduleReport.add(report);
             }
         }, 0, 30000, TimeUnit.MINUTES);
     }
 
-    public Report test(Handler handler) {
+    public Report test(Controller controller) {
         long start = System.currentTimeMillis();
 
         try {
-            boolean passed = handler.test();
+            boolean passed = controller.test();
 
             if (!passed)
-                logger.warn("Test for module {} failed.", handler.getClass().getName());
+                logger.warn("Test for module {} failed.", controller.getClass().getName());
 
             return new Report(passed, System.currentTimeMillis() - start);
         } catch (Exception ex) {
-            logger.error("Test for module " + handler.getClass().getName() + " had an exception.", ex);
+            logger.error("Test for module " + controller.getClass().getName() + " had an exception.", ex);
             return new Report(false, System.currentTimeMillis() - start, ex);
         }
     }
 
-    public boolean isFailing(Handler handler) {
-        Class<? extends Handler> type = handler.getClass();
+    public boolean isFailing(Controller controller) {
+        Class<? extends Controller> type = controller.getClass();
 
         if (!testReports.containsKey(type))
             return false;

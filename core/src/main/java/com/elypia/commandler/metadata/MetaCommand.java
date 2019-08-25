@@ -5,22 +5,13 @@ import org.slf4j.*;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam> {
+public class MetaCommand extends MetaComponent implements Comparable<MetaCommand>, Iterable<MetaParam> {
 
     /** We use SLF4J for logging, be sure to include an implementation / binding. */
     private static final Logger logger = LoggerFactory.getLogger(MetaCommand.class);
 
     /** The actual method that is called when this command is performed. */
     private Method method;
-
-    /** The display-friendly name of this command. */
-    private String name;
-
-    /** A distinct list of aliases for this command. */
-    private Set<String> aliases;
-
-    /** A short helper description or message for what this command does. */
-    private String help;
 
     /** If this command is hidden from public help messages. */
     private boolean isHidden;
@@ -32,33 +23,25 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
     private boolean isDefault;
 
     /** The parameters this command requires. */
-    private List<MetaParam> params;
+    private List<MetaParam> metaParams;
 
-    public MetaCommand(Method method, String name, Set<String> aliases, String help, boolean isHidden, boolean isStatic, boolean isDefault, List<MetaParam> params) {
+    public MetaCommand(Method method, String name, String help, boolean isHidden, boolean isStatic, boolean isDefault, Properties properties, List<MetaParam> metaParams) {
         this.method = Objects.requireNonNull(method);
         this.name = Objects.requireNonNull(name);
-        this.aliases = Objects.requireNonNull(aliases);
-        this.help = help;
+        this.description = help;
         this.isHidden = isHidden;
         this.isStatic = isStatic;
         this.isDefault = isDefault;
-        this.params = Objects.requireNonNull(params);
-    }
-
-    /**
-     * @param input The input module by the user.
-     * @return If this command contains an entry of that command.
-     */
-    public boolean performed(String input) {
-        return aliases.contains(input.toLowerCase());
+        this.properties = properties;
+        this.metaParams = Objects.requireNonNull(metaParams);
     }
 
     public int getMinParams() {
-        return (int)params.stream().filter(MetaParam::isRequired).count();
+        return (int) metaParams.stream().filter(MetaParam::isRequired).count();
     }
 
     public int getMaxParams() {
-        return params.size();
+        return metaParams.size();
     }
 
     /**
@@ -80,18 +63,6 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
         return method;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Set<String> getAliases() {
-        return aliases;
-    }
-
-    public String getHelp() {
-        return help;
-    }
-
     public boolean isHidden() {
         return isHidden;
     }
@@ -108,8 +79,8 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
         return isStatic;
     }
 
-    public List<MetaParam> getParams() {
-        return Collections.unmodifiableList(params);
+    public List<MetaParam> getMetaParams() {
+        return Collections.unmodifiableList(metaParams);
     }
 
     @Override
@@ -120,14 +91,14 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
     public String toParamString() {
         StringJoiner itemJoiner = new StringJoiner(", ");
 
-        for (MetaParam param : params) {
-            String name = param.getName();
+        for (MetaParam metaParam : metaParams) {
+            String name = metaParam.getName();
             StringBuilder builder = new StringBuilder();
 
-            if (param.isOptional())
+            if (metaParam.isOptional())
                 builder.append("?");
 
-            if (param.isList())
+            if (metaParam.isList())
                 builder.append("[").append(name).append("]");
             else
                 builder.append(name);
@@ -151,6 +122,6 @@ public class MetaCommand implements Comparable<MetaCommand>, Iterable<MetaParam>
 
     @Override
     public Iterator<MetaParam> iterator() {
-        return params.iterator();
+        return metaParams.iterator();
     }
 }

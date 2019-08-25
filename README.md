@@ -1,20 +1,25 @@
 # Commandler [![Discord][discord-members]][discord] [![Download][bintray-download]][bintray] [![Documentation][docs-shield]][docs] [![GitLab Pipeline Status][gitlab-build]][gitlab] [![Coverage][gitlab-coverage]][gitlab] 
 The [Gradle][gradle]/[Maven][maven] import string can be found at the Download badge above!
 
-## Artifacts
-| Artifact      | Description                                                                                              |
-|---------------|----------------------------------------------------------------------------------------------------------|
-| `core`        | The core of Commandler, ready to implement with any service or library.                                  |
-| `file-config` | An extension for Commandler to allow configuring modules though files using [NightConfig][night-config]. |
-| `doc`         | The documentation tool to generate a static website based on existing modules.                           |
-
 ## About
-Commandler's a command handling framework for Java, it's purpose to to push as much of the
-reusable code and patterns that's put to making a command handler into a core so that
-applications requiring it such as chat bots or command processors are able to stick to just 
-creating the functionality they are intended for without having to worry about parameter parsing,
-validation, building responses; as well as makes an abstract core to start a command handler or 
-chat bot for any service, or even multiple services in a single application.
+Commandler's a command handling framework for Java. It's purpose is to try keep as much
+of the reusable code as possible into a core project which can be the heart of any chatbot.  
+You'll be able to get started quickly making clean, reliable, and reusable code 
+with the framework which will help manage dependency injection, validation, and even generate
+a website with all relevent documentation you define!
+
+### Why use Commandler?
+Commandler makes it a lot easier to get started making anything that requires command
+handling, namely chat bots. It's designed not to be too bloaty or take command away from you
+while putting together a stack of libraries and flow to work with.
+
+* The modules and metaCommands you write are portable, so long as they aren't tied down to any
+API specific functionality you can just plop them over to another project, or register another
+`Controller` and see the command port over to another service.
+* Commandler is under the hood is using familiar APIs such as Hibernate Validation,
+and Google Guice, which should massively reduce learning.
+* Using `Commandlerdoc` you can export your entire application as it's own website which
+for a better experience for your users to read. 
 
 ## Support
 Should any problems occur, come visit us over on [Discord][discord]! We're always around and
@@ -25,14 +30,11 @@ itself then we'll make sure to get it sorted.
 [discord-members]: https://discordapp.com/api/guilds/184657525990359041/widget.png "Discord Shield"
 [bintray]: https://bintray.com/elypia/Commandler/core/_latestVersion "Bintray Latest Version"
 [bintray-download]: https://api.bintray.com/packages/elypia/Commandler/core/images/download.svg "Bintray Download Shield"
-[docs]: https://commandler.elypia.com/ "Commandler Documentation"
+[docs]: https://elypia.gitlab.io/commandler "Commandler Documentation"
 [docs-shield]: https://img.shields.io/badge/Docs-Commandler-blue.svg "Commandler Documentation Shield"
 [gitlab]: https://gitlab.com/Elypia/commandler/commits/master "Repository on GitLab"
 [gitlab-build]: https://gitlab.com/Elypia/commandler/badges/master/pipeline.svg "GitLab Build Shield"
 [gitlab-coverage]: https://gitlab.com/Elypia/commandler/badges/master/coverage.svg "GitLab Coverage Shield"
-
 [gradle]: https://gradle.org/ "Depend via Gradle"
 [maven]: https://maven.apache.org/ "Depend via Maven"
-
 [elypia]: https://elypia.com/ "Elypia Homepage"
-[night-config]: https://github.com/TheElectronWill/Night-Config "GitHub Repo for Night-Config"

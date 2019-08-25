@@ -1,12 +1,15 @@
 package com.elypia.commandler.dispatchers;
 
 import com.elypia.commandler.*;
+import com.elypia.commandler.api.*;
+import com.elypia.commandler.event.*;
 import com.elypia.commandler.exceptions.*;
-import com.elypia.commandler.interfaces.*;
 import com.elypia.commandler.metadata.*;
-import com.elypia.commandler.utils.CommandlerUtils;
+import com.elypia.commandler.utils.ChatUtils;
 import org.slf4j.*;
 
+import javax.inject.*;
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.*;
@@ -19,8 +22,7 @@ import java.util.stream.Stream;
  * <code>{prefix}{module} {command} {params}</code>
  * With exceptional circumstances.
  */
-// TODO: Make a greedy annotation (or some other means) to make parameters greedy, last param only
-// TODO: Make able to change the delimeter between module and command
+@Singleton
 public class StandardDispatcher implements Dispatcher {
 
     /** SLF4J Logger */
@@ -38,53 +40,26 @@ public class StandardDispatcher implements Dispatcher {
      */
     private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.+?)(?<!\\\\)\"|(?<word>[^\\s,]+)");
 
-    private final Commandler commandler;
     private final Context context;
     private final Function<Object, String[]> prefixProvider;
 
-    public StandardDispatcher(Commandler commandler) {
-        this(commandler, (String[])null);
+    /**
+     * Create an instance of the StandardDispatcher with no prefix.
+     *
+     * @param context The {@link Commandler} {@link Context}.
+     */
+    @Inject
+    public StandardDispatcher(Context context) {
+        this(context, (String[])null);
     }
 
-    public StandardDispatcher(Commandler commandler, String... prefixes) {
-        this(commandler, (object) -> prefixes);
+    public StandardDispatcher(Context context, String... prefixes) {
+        this(context, (object) -> prefixes);
     }
 
-    public StandardDispatcher(Commandler commandler, Function<Object, String[]> prefixProvider) {
-        this.commandler = commandler;
-        this.context = commandler.getContext();
-        this.prefixProvider = prefixProvider;
-    }
-
-    @Override
-    public <M> M dispatch(Controller<M> controller, Object source, String content) {
-        Object response;
-        CommandlerEvent<?, ?> event = null;
-
-        try {
-            event = parse(controller, source, content);
-            Input input = event.getInput();
-            MetaModule module = input.getModule();
-            Handler handler = commandler.getInjectionManager().getInjector().getInstance(module.getHandlerType());
-            Object[] params = commandler.getAdapterManager().adaptEvent(event);
-            commandler.getValidationManager().validate(event, handler, params);
-
-            if (commandler.getTestManager().isFailing(handler))
-                throw new ModuleDisabledException(input);
-
-            MetaCommand command = input.getCommand();
-            response = command.getMethod().invoke(handler, params);
-        } catch (Exception ex) {
-            response = commandler.getMisuseManager().route(ex);
-        }
-
-        M object;
-
-        if (response == null)
-            return null;
-
-        object = commandler.getResponseManager().provide(event, response, controller);
-        return object;
+    public StandardDispatcher(Context context, Function<Object, String[]> prefixProvider) {
+        this.context = Objects.requireNonNull(context);
+        this.prefixProvider = Objects.requireNonNull(prefixProvider);
     }
 
     @Override
@@ -102,15 +77,21 @@ public class StandardDispatcher implements Dispatcher {
         return false;
     }
 
+    /**
+     * Map the command against Commandler using the StandardDispatcher.
+     * The StandardDispatcher uses the `com.elypia.commandler.dispatchers.StandardDispatcher.aliases`
+     * property to determine if a {@link MetaController} and {@link MetaCommand} support this
+     * dispatcher, both the parent {@link MetaController} and {@link MetaCommand} must
+     * have this set in order to be usable.
+     *
+     * @param integration
+     * @param source
+     * @param content The content of the meessage.
+     * @param <M>
+     * @return
+     */
     @Override
-    public <M> CommandlerEvent parse(Controller<M> controller, Object source, String content) {
-        Objects.requireNonNull(controller);
-        Objects.requireNonNull(source);
-        Objects.requireNonNull(content);
-
-        if (!isValid(source, content))
-            return null;
-
+    public <S, M> ActionEvent<S, M> parse(Integration<S, M> integration, S source, String content) {
         String[] prefixes = prefixProvider.apply(source);
 
         if (prefixes != null) {
@@ -119,35 +100,50 @@ public class StandardDispatcher implements Dispatcher {
                 .findAny();
 
             String prefix = optPrefix.orElseThrow(
-                () -> new IllegalStateException("This command isn't valid, but passed the valid check. (Prefix is defined but command doesn't start with it.)")
+                () -> new IllegalStateException("Do not call the #parse method if the command #isInvalid.")
             );
 
             content = content.substring(prefix.length());
         }
 
-        String[] command = CommandlerUtils.splitSpaces(content);
+        String[] command = ChatUtils.splitSpaces(content);
 
         if (command.length == 0)
-            throw new OnlyPrefixException();
+            throw new OnlyPrefixException("This message only contained the prefix, but no other content.");
 
-        String first = command[0];
-        MetaModule usedModule = null;
-        MetaCommand usedCommand = null;
+        String arg1 = command[0];
+        MetaController selectedMetaController = null;
+        MetaCommand selectedMetaCommand = null;
         String params = null;
 
-        for (MetaModule metaModule : context.getModules()) {
-            if (metaModule.performed(first)) {
-                usedModule = metaModule;
+        for (MetaController metaController : context.getMetaControllers()) {
+            Collection<String> controllerAliases = metaController.getProperties(this.getClass(), "aliases");
+
+            // TODO: Currently this would mean static commadns can't exist unless the parent module has an alias.
+            if (controllerAliases == null)
+                continue;
+
+            boolean controllerMatch = controllerAliases.contains(arg1.toLowerCase());
+
+            if (controllerMatch) {
+                selectedMetaController = metaController;
 
                 if (command.length > 1) {
-                    for (MetaCommand metaCommand : metaModule.getCommands()) {
-                        if (metaCommand.performed(command[1])) {
-                            usedCommand = metaCommand;
+                    for (MetaCommand metaCommand : metaController.getMetaCommands()) {
+                        Collection<String> controlAliases = metaCommand.getProperties(this.getClass(), "aliases");
+
+                        if (controlAliases == null)
+                            continue;
+
+                        boolean controlMatch = controlAliases.contains(command[1].toLowerCase());
+
+                        if (controlMatch) {
+                            selectedMetaCommand = metaCommand;
                             break;
                         }
                     }
 
-                    if (usedCommand == null)
+                    if (selectedMetaCommand == null)
                         throw new RuntimeException("Found module but command doesn't exist.");
 
                     params = content
@@ -155,12 +151,12 @@ public class StandardDispatcher implements Dispatcher {
                         .replace(command[1], "")
                         .trim();
                 } else {
-                    MetaCommand data = metaModule.getDefaultCommand();
+                    MetaCommand data = metaController.getDefaultControl();
 
                     if (data != null)
-                        usedCommand = data;
+                        selectedMetaCommand = data;
                     else
-                        throw new NoDefaultCommandException(metaModule);
+                        throw new NoDefaultCommandException(metaController);
 
                     params = content
                         .replace(command[0], "")
@@ -170,11 +166,16 @@ public class StandardDispatcher implements Dispatcher {
                 break;
             }
 
-            for (MetaCommand metaCommand : metaModule.getStaticCommands()) {
-                if (metaCommand.performed(command[0])) {
-                    usedModule = metaModule;
-                    usedCommand = metaCommand;
-                }
+            for (MetaCommand metaCommand : metaController.getStaticControls()) {
+                Collection<String> controlAliases = metaCommand.getProperties(this.getClass(), "aliases");
+
+                if (controlAliases == null)
+                    continue;
+
+                boolean controlMatch = controlAliases.contains(command[0].toLowerCase());
+
+                selectedMetaController = metaController;
+                selectedMetaCommand = metaCommand;
 
                 params = content
                     .replace(command[0], "")
@@ -182,7 +183,7 @@ public class StandardDispatcher implements Dispatcher {
             }
         }
 
-        if (usedModule == null)
+        if (selectedMetaController == null)
             throw new ModuleNotFoundException();
 
         List<List<String>> parameters = new ArrayList<>();
@@ -204,11 +205,24 @@ public class StandardDispatcher implements Dispatcher {
             }
         }
 
-        Input input = new Input(content, usedModule, usedCommand, parameters);
+        Serializable id = integration.getActionId(source);
 
-        if (!usedCommand.isValidParamCount(parameters.size()))
-            throw new ParamCountMismatchException(input);
+        if (id == null)
+            throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
 
-        return new CommandlerEvent<>(controller, source, input);
+        Action action = new Action(
+            integration.getActionId(source),
+            content,
+            selectedMetaController.getName(),
+            selectedMetaCommand.getName(),
+            parameters
+        );
+
+        ActionEvent<S, M> e = new ActionEvent<>(integration, source, action);
+
+        if (!selectedMetaCommand.isValidParamCount(parameters.size()))
+            throw new ParamCountMismatchException(e);
+
+        return e;
     }
 }

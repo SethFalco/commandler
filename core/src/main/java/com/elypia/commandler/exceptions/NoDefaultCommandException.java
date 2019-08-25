@@ -1,27 +1,27 @@
 package com.elypia.commandler.exceptions;
 
-import com.elypia.commandler.metadata.MetaModule;
+import com.elypia.commandler.metadata.MetaController;
 
 import java.util.Objects;
 
 public class NoDefaultCommandException extends RuntimeException {
 
-    private MetaModule module;
+    private MetaController module;
 
-    public NoDefaultCommandException(MetaModule module) {
+    public NoDefaultCommandException(MetaController module) {
         this(module, null);
     }
 
-    public NoDefaultCommandException(MetaModule module, String message) {
+    public NoDefaultCommandException(MetaController module, String message) {
         this(module, message, null);
     }
 
-    public NoDefaultCommandException(MetaModule module, String message, Throwable cause) {
+    public NoDefaultCommandException(MetaController module, String message, Throwable cause) {
         super(message, cause);
         this.module = Objects.requireNonNull(module);
     }
 
-    public MetaModule getModule() {
+    public MetaController getModule() {
         return module;
     }
 }

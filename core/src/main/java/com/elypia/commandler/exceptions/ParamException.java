@@ -1,36 +1,36 @@
 package com.elypia.commandler.exceptions;
 
-import com.elypia.commandler.Input;
+import com.elypia.commandler.event.ActionEvent;
 import com.elypia.commandler.metadata.MetaParam;
 
 import java.util.Objects;
 
-public abstract class ParamException extends InputException {
+public abstract class ParamException extends ActionException {
 
     /** The parameter metadata. */
-    private MetaParam param;
+    private MetaParam metaParam;
 
-    public ParamException(Input input, MetaParam param) {
-        super(input);
-        this.param = Objects.requireNonNull(param);
+    public ParamException(ActionEvent<?, ?> action, MetaParam metaParam) {
+        super(action);
+        this.metaParam = Objects.requireNonNull(metaParam);
     }
 
-    public ParamException(Input input, MetaParam param, String message) {
-        super(input, message);
-        this.param = Objects.requireNonNull(param);
+    public ParamException(ActionEvent<?, ?> action, MetaParam metaParam, String message) {
+        super(action, message);
+        this.metaParam = Objects.requireNonNull(metaParam);
     }
 
-    public ParamException(Input input, MetaParam param, String message, Throwable cause) {
-        super(input, message, cause);
-        this.param = Objects.requireNonNull(param);
+    public ParamException(ActionEvent<?, ?> action, MetaParam metaParam, String message, Throwable cause) {
+        super(action, message, cause);
+        this.metaParam = Objects.requireNonNull(metaParam);
     }
 
-    public ParamException(Input input, MetaParam param, Throwable cause) {
-        super(input, cause);
-        this.param = Objects.requireNonNull(param);
+    public ParamException(ActionEvent<?, ?> action, MetaParam metaParam, Throwable cause) {
+        super(action, cause);
+        this.metaParam = Objects.requireNonNull(metaParam);
     }
 
-    public MetaParam getParam() {
-        return param;
+    public MetaParam getMetaParam() {
+        return metaParam;
     }
 }

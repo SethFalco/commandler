@@ -8,8 +8,8 @@ before_script:
 
 cache:
   paths:
-    - .gradle
-    - build
+    - .gradle/
+    - build/
 
 build:
   stage: build

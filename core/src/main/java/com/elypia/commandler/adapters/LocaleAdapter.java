@@ -1,8 +1,7 @@
 package com.elypia.commandler.adapters;
 
-import com.elypia.commandler.CommandlerEvent;
-import com.elypia.commandler.annotations.Adapter;
-import com.elypia.commandler.interfaces.ParamAdapter;
+import com.elypia.commandler.api.Adapter;
+import com.elypia.commandler.event.ActionEvent;
 import com.elypia.commandler.metadata.MetaParam;
 import com.elypia.commandler.utils.ChatUtils;
 import org.slf4j.*;
@@ -11,15 +10,14 @@ import javax.inject.Singleton;
 import java.util.*;
 
 @Singleton
-@Adapter(Locale.class)
-public class LocaleAdapter implements ParamAdapter<Locale> {
+public class LocaleAdapter implements Adapter<Locale> {
 
     private static final Logger logger = LoggerFactory.getLogger(LocaleAdapter.class);
 
     private static final Locale[] LOCALES = Locale.getAvailableLocales();
 
     @Override
-    public Locale adapt(String input, Class<? extends Locale> type, MetaParam param, CommandlerEvent<?, ?> event) {
+    public Locale adapt(String input, Class<? extends Locale> type, MetaParam metaParam, ActionEvent<?, ?> event) {
         for (Locale locale : LOCALES) {
             if (input.equalsIgnoreCase(locale.toLanguageTag()))
                 return locale;
@@ -39,7 +37,7 @@ public class LocaleAdapter implements ParamAdapter<Locale> {
                     if (input.equalsIgnoreCase(locale.getISO3Country()))
                         return locale;
                 } catch (MissingResourceException ex) {
-                    // Do nothing, there is nothing wrong with this in this case.
+                    // Do nothing, there is nothing wrong with this.
                 }
             } else {
                 String l = locale.getLanguage();

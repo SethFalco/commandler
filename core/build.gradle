@@ -1,9 +1,18 @@
 dependencies {
+    // Configuration
+    // TODO: We don't want this be API as ideally the deafult way to use this should be
+    // though a Commandler interface.
+    api "org.apache.commons:commons-configuration2:2.5"
+    implementation "commons-beanutils:commons-beanutils:1.9.4"
+
+    // TODO: We don't want this to be API as ideally the default way to use this should be
+    // through a Commandler interface.
     // Dependency Injection
     api "com.google.inject:guice:4.2.2"
 
-    // Validation
-    api "javax.validation:validation-api:2.0.1.Final"
-    api "org.hibernate.validator:hibernate-validator:6.0.16.Final"
+    // Default Values and Hibernate Validation API
     implementation "org.glassfish:jakarta.el:3.0.2"
+
+    // TODO: We shouldn't force people to depend on YAML in case they don't use a YAML configuration.
+    runtimeOnly "org.yaml:snakeyaml:1.25"
 }

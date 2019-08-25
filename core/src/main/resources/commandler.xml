@@ -1,0 +1,90 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<configuration xmlns="https://commandler.elypia.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://commandler.elypia.com commandler.xsd">
+  <commandler>
+    <controller type="com.elypia.commandler.DefaultHelpController">
+      <name>Help</name>
+      <group>Guidance</group>
+      <description>Offer generic help through all the modules in this bot.</description>
+      <property key="com.elypia.commandler.dispatchers.StandardDispatcher.aliases" value="help, h"/>
+      <command method="getGroups">
+        <name>Show Groups</name>
+        <description>Display a list of all metaCommand categories.</description>
+        <default>true</default>
+        <property key="com.elypia.commandler.dispatchers.StandardDispatcher.aliases" value="groups, group"/>
+      </command>
+      <command method="getModules">
+        <name>Show Modules</name>
+        <description>Display a list of all modules in a category.</description>
+        <property key="com.elypia.commandler.dispatchers.StandardDispatcher.aliases" value="modules, module"/>
+        <param>
+          <name>group</name>
+          <description>The group to list modules for.</description>
+        </param>
+      </command>
+      <command method="getCommands">
+        <name>Show Commands</name>
+        <description>Display a list of all metaCommands in a module.</description>
+        <property key="com.elypia.commandler.dispatchers.StandardDispatcher.aliases" value="commands, command"/>
+        <param>
+          <name>modules</name>
+          <description>The module to list commands for.</description>
+        </param>
+      </command>
+    </controller>
+    <adapter type="com.elypia.commandler.adapters.BooleanAdapter">
+      <compatible>
+        <type>java.lang.Boolean</type>
+        <type>boolean</type>
+      </compatible>
+    </adapter>
+    <adapter type="com.elypia.commandler.adapters.CharAdapter">
+      <compatible>
+        <type>java.lang.Character</type>
+        <type>char</type>
+      </compatible>
+    </adapter>
+    <adapter type="com.elypia.commandler.adapters.DurationAdapter">
+      <compatible>
+        <type>java.time.Duration</type>
+      </compatible>
+    </adapter>
+    <adapter type="com.elypia.commandler.adapters.EnumAdapter">
+      <compatible>
+        <type>java.lang.Enum</type>
+      </compatible>
+    </adapter>
+    <adapter type="com.elypia.commandler.adapters.LocaleAdapter">
+      <compatible>
+        <type>java.util.Locale</type>
+      </compatible>
+    </adapter>
+    <adapter type="com.elypia.commandler.adapters.NumberAdapter">
+      <compatible>
+        <type>java.lang.Number</type>
+        <type>double</type>
+        <type>float</type>
+        <type>long</type>
+        <type>int</type>
+        <type>short</type>
+        <type>byte</type>
+      </compatible>
+    </adapter>
+    <adapter type="com.elypia.commandler.adapters.StringAdapter">
+      <compatible>
+        <type>java.lang.CharSequence</type>
+      </compatible>
+    </adapter>
+    <adapter type="com.elypia.commandler.adapters.TimeUnitAdapter">
+      <compatible>
+        <type>java.util.concurrent.TimeUnit</type>
+      </compatible>
+    </adapter>
+    <adapter type="com.elypia.commandler.adapters.UrlAdapter">
+      <compatible>
+        <type>java.net.URL</type>
+      </compatible>
+    </adapter>
+  </commandler>
+</configuration>

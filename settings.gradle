@@ -1,6 +1,19 @@
 rootProject.name = 'commandler'
 
-/** Library */
+/** The core of Commandler, has the bits that make it work. */
 include "core"
-include "file-config"
+
+/** The configuration extension, this gives access to a much more fluent configuration API. */
+include "configuration"
+
+/** Exports all metadata as documentation which can be provided to third-parties. */
 include "doc"
+
+/** Uses Hibernates Validation to validate Commandler commands and parmaters. */
+include "validation"
+
+/** Extension to dispatch commands from the console. */
+include "console"
+
+/** Configure Commandler though runtime annotatons in the source code. */
+include "annotation"

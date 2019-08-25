@@ -11,7 +11,7 @@ public class MetaParamSerializer implements JsonSerializer<MetaParam> {
     public JsonElement serialize(MetaParam src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
         object.addProperty("name", src.getName());
-        object.addProperty("help", src.getHelp());
+        object.addProperty("description", src.getDescription());
         object.addProperty("list", src.isList());
         object.addProperty("required", src.isRequired());
 

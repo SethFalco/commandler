@@ -15,31 +15,31 @@ import java.util.stream.Collectors;
  * for the application, or configuration for a service to work with.
  *
  * This will only export public metadata. For example where
- * {@link MetaModule#isPublic()} and {@link MetaCommand#isPublic} is true.
+ * {@link MetaController#isPublic()} and {@link MetaCommand#isPublic} is true.
  */
 public class CommandlerDoc {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandlerDoc.class);
 
     private static final Gson gson = new GsonBuilder()
-        .registerTypeAdapter(MetaModule.class, new MetaModuleSerializer())
-        .registerTypeAdapter(MetaCommand.class, new MetaCommandSerializer())
+        .registerTypeAdapter(MetaController.class, new MetaModuleSerializer())
+        .registerTypeAdapter(MetaCommand.class, new MetaControlSerializer())
         .registerTypeAdapter(MetaParam.class, new MetaParamSerializer())
         .create();
 
-    private List<MetaModule> modules;
+    private List<MetaController> modules;
 
     public CommandlerDoc(Context context) {
-        this(context.getModules());
+        this(context.getMetaControllers());
     }
 
-    public CommandlerDoc(MetaModule... modules) {
+    public CommandlerDoc(MetaController... modules) {
         this(List.of(modules));
     }
 
-    public CommandlerDoc(List<MetaModule> modules) {
+    public CommandlerDoc(List<MetaController> modules) {
         this.modules = modules.stream()
-            .filter(MetaModule::isPublic)
+            .filter(MetaController::isPublic)
             .sorted()
             .collect(Collectors.toUnmodifiableList());
     }
