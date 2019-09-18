@@ -1,10 +1,10 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<commandler xmlns="https://commandler.elypia.com"
+<commandler xmlns="https://commandler.elypia.org"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="https://commandler.elypia.com commandler.xsd">
+            xsi:schemaLocation="https://commandler.elypia.org commandler.xsd">
   <messengers>
     <messenger>
-      <type>com.elypia.commandler.console.messengers.MiscMessenger</type>
+      <type>org.elypia.commandler.console.messengers.MiscMessenger</type>
       <provides>java.lang.String</provides>
       <compatible>
         <type>java.lang.Boolean</type>
@@ -16,7 +16,7 @@
       </compatible>
     </messenger>
     <messenger>
-      <type>com.elypia.commandler.console.messengers.NumberMessenger</type>
+      <type>org.elypia.commandler.console.messengers.NumberMessenger</type>
       <provides>java.lang.Number</provides>
       <compatible>
         <type>java.lang.Number</type>

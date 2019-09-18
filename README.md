@@ -37,4 +37,4 @@ itself then we'll make sure to get it sorted.
 [gitlab-coverage]: https://gitlab.com/Elypia/commandler/badges/master/coverage.svg "GitLab Coverage Shield"
 [gradle]: https://gradle.org/ "Depend via Gradle"
 [maven]: https://maven.apache.org/ "Depend via Maven"
-[elypia]: https://elypia.com/ "Elypia Homepage"
+[elypia]: https://elypia.org/ "Elypia Homepage"

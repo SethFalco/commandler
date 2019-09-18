@@ -4,7 +4,6 @@ plugins {
 
 def publishedProjects = [
     project("core"),
-    project("configuration"),
     project("doc"),
     project("annotation"),
     project("validation"),
@@ -15,7 +14,7 @@ allprojects() {
     apply plugin: "idea"
     apply plugin: "jacoco"
 
-    group = "com.elypia.commandler"
+    group = "org.elypia.commandler"
     version = "4.0.0"
     description = "Commandler is a abstract command handling framework for dispatching events."
 
@@ -23,7 +22,7 @@ allprojects() {
         repoUrl = "https://gitlab.com/Elypia/commandler"
         gitUrl = "${repoUrl}.git"
         issueUrl = "${repoUrl}/issues"
-        website = "https://elypia.com/"
+        website = "https://elypia.org/"
     }
 
     repositories {
@@ -52,7 +51,7 @@ configure(publishedProjects) {
         testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
 
         // Testing
-        testImplementation "org.junit.jupiter:junit-jupiter:5.5.1"
+        testImplementation "org.junit.jupiter:junit-jupiter:5.5.2"
         testImplementation "org.mockito:mockito-core:3.0.0"
     }
 
@@ -154,7 +153,7 @@ configure(publishedProjects) {
                         developer {
                             id = "Seth"
                             name = "Seth"
-                            email = "seth@elypia.com"
+                            email = "seth@elypia.org"
                         }
                     }
                     scm {

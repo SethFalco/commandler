@@ -3,9 +3,6 @@ rootProject.name = 'commandler'
 /** The core of Commandler, has the bits that make it work. */
 include "core"
 
-/** The configuration extension, this gives access to a much more fluent configuration API. */
-include "configuration"
-
 /** Exports all metadata as documentation which can be provided to third-parties. */
 include "doc"
 

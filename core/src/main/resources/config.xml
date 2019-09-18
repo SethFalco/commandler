@@ -2,10 +2,10 @@
 <configuration>
   <header>
     <providers>
-      <provider config-tag="yaml" config-class="com.elypia.commandler.configuration.YAMLConfigurationProvider"/>
+      <provider config-tag="yaml" config-class="org.elypia.commandler.configuration.YAMLConfigurationProvider"/>
     </providers>
     <result>
-      <expressionEngine config-class="com.elypia.commandler.configuration.XmlExpressionEngine"/>
+      <expressionEngine config-class="org.elypia.commandler.configuration.XmlExpressionEngine"/>
     </result>
     <combiner>
       <additional>
