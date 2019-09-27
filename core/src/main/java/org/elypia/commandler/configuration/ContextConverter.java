@@ -1,8 +1,24 @@
+/*
+ * Copyright 2019-2019 Elypia CIC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.elypia.commandler.configuration;
 
 import org.apache.commons.configuration2.ImmutableHierarchicalConfiguration;
 import org.elypia.commandler.Commandler;
-import org.elypia.commandler.api.Controller;
+import org.elypia.commandler.api.*;
 import org.elypia.commandler.metadata.*;
 
 import javax.inject.*;
@@ -13,6 +29,8 @@ import java.util.*;
  * Convert the relevent parts of the {@link CommandlerConfiguration}
  * to the {@link org.elypia.commandler.Context} in order to contextualize
  * the metadata for the various components in {@link Commandler}.
+ *
+ * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
 public class ContextConverter {
@@ -24,9 +42,30 @@ public class ContextConverter {
         this.config = config;
     }
 
-    public List<MetaController> convert() {
-        List<MetaController> metaControllers = new ArrayList<>();
+    public List<Class<Integration<?, ?>>> convertIntegrations() {
+        List<String> integrations = config.getList(String.class, "commandler.integrations");
+        List<Class<Integration<?, ?>>> integrationTypes = new ArrayList<>();
 
+        for (String integration : integrations) {
+            Class<?> type;
+
+            try {
+                type = Class.forName(integration);
+
+                if (Integration.class.isAssignableFrom(type))
+                    integrationTypes.add((Class<Integration<?, ?>>)type);
+                else
+                    throw new RuntimeException();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return integrationTypes;
+    }
+
+    public List<MetaController> convertControllers() {
+        List<MetaController> metaControllers = new ArrayList<>();
         List<ImmutableHierarchicalConfiguration> controllers = config.getConfiguration().immutableConfigurationsAt("commandler.controller");
 
         for (ImmutableHierarchicalConfiguration controller : controllers) {
@@ -48,7 +87,7 @@ public class ContextConverter {
         return metaControllers;
     }
 
-    private List<MetaCommand> convertCommands(Class<?> type, ImmutableHierarchicalConfiguration controller) {
+    public List<MetaCommand> convertCommands(Class<?> type, ImmutableHierarchicalConfiguration controller) {
         List<ImmutableHierarchicalConfiguration> commandsConfig = controller.immutableConfigurationsAt("command");
 
         List<MetaCommand> metaCommands = new ArrayList<>();
@@ -66,7 +105,7 @@ public class ContextConverter {
         return metaCommands;
     }
 
-    private List<MetaParam> convertParams(Method method, ImmutableHierarchicalConfiguration command) {
+    public List<MetaParam> convertParams(Method method, ImmutableHierarchicalConfiguration command) {
         List<ImmutableHierarchicalConfiguration> paramsConfig = command.immutableConfigurationsAt("param");
 
         List<MetaParam> metaParams = new ArrayList<>();
@@ -80,7 +119,7 @@ public class ContextConverter {
         return metaParams;
     }
 
-    private ComponentConfig convertComponent(ImmutableHierarchicalConfiguration component) {
+    public ComponentConfig convertComponent(ImmutableHierarchicalConfiguration component) {
         String name = component.getString("name");
         String description = component.getString("description");
         Properties properties = convertProperties(component);
@@ -88,7 +127,7 @@ public class ContextConverter {
         return new ComponentConfig(name, description, properties);
     }
 
-    private Properties convertProperties(ImmutableHierarchicalConfiguration component) {
+    public Properties convertProperties(ImmutableHierarchicalConfiguration component) {
         List<ImmutableHierarchicalConfiguration> propertiesConfig = component.immutableConfigurationsAt("property");
 
         Properties properties = new Properties();
@@ -102,7 +141,7 @@ public class ContextConverter {
         return properties;
     }
 
-    private class ComponentConfig {
+    public class ComponentConfig {
 
         private String name;
         private String description;

@@ -1,13 +1,35 @@
+/*
+ * Copyright 2019-2019 Elypia CIC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.elypia.commandler.managers;
 
+import org.elypia.commandler.Context;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.AdapterRequiredException;
 import org.elypia.commandler.metadata.MetaMessenger;
 import org.slf4j.*;
 
+import javax.inject.*;
 import java.util.*;
 
+/**
+ * @author seth@elypia.org (Syed Shah)
+ */
+@Singleton
 public class MessengerManager {
 
     /** SLF4J Logger*/
@@ -18,15 +40,20 @@ public class MessengerManager {
 
     private final Collection<MetaMessenger> providers;
 
-    public MessengerManager(InjectionManager injectionManager, MetaMessenger... adapters) {
-        this(injectionManager, List.of(adapters));
+    @Inject
+    public MessengerManager(InjectionManager injectionManager, Context context) {
+        this(injectionManager, context.getMetaMessengers());
     }
 
-    public MessengerManager(InjectionManager injectionManager, Collection<MetaMessenger> providers) {
-        this.injectionManager = Objects.requireNonNull(injectionManager);
-        this.providers = Objects.requireNonNull(providers);
+    public MessengerManager(InjectionManager injectionManager, MetaMessenger... messengers) {
+        this(injectionManager, List.of(messengers));
+    }
 
-        for (MetaMessenger provider : providers)
+    public MessengerManager(InjectionManager injectionManager, Collection<MetaMessenger> messengers) {
+        this.injectionManager = Objects.requireNonNull(injectionManager);
+        this.providers = Objects.requireNonNull(messengers);
+
+        for (MetaMessenger provider : messengers)
             logger.debug("Provider added for type {}.", provider.getProviderType().getSimpleName());
     }
 

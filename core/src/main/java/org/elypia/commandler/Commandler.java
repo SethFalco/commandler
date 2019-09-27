@@ -1,9 +1,26 @@
+/*
+ * Copyright 2019-2019 Elypia CIC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.elypia.commandler;
 
+import com.google.inject.Module;
 import com.google.inject.*;
-import org.apache.commons.configuration2.Configuration;
 import org.elypia.commandler.api.*;
-import org.elypia.commandler.configuration.CommandlerConfiguration;
+import org.elypia.commandler.configuration.*;
+import org.elypia.commandler.event.ActionEvent;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -18,6 +35,8 @@ import java.util.List;
  * classpath or externally, and {@link java.lang.annotation.Annotation}s.
  * <strong>Dependency Injection Modules:</strong> This entails overriding runtime dependencies
  * for {@link Guice} to inject into dependencies and {@link Controller}s.
+ *
+ * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
 public class Commandler {
@@ -32,29 +51,39 @@ public class Commandler {
     private List<ActionListener> listeners;
 
     /**
-     * Instantiate the default instance of Commandler.
-     * This will load the {@link Configuration} from the default sources and add
-     * the defalt {@link ActionListener} implementation.
+     * Instantiate {@link Commandler} using the specified dependency injection
+     * modules, or with no arguments if no additional modules should be specified.
      *
-     * @see ActionHandler The default {@link ActionListener} implementation.
+     * @param modules Additional dependency injection modules to add.
      */
-    public Commandler() {
-        this(Guice.createInjector(Stage.PRODUCTION));
+    public Commandler(Module... modules) {
+        this.injector = Guice.createInjector(Stage.PRODUCTION, modules);
+        this.injector = injector.createChildInjector(new CommandlerModule(this));
+        this.config = injector.getInstance(CommandlerConfiguration.class);
     }
 
     /**
-     * Instantiate {@link Commandler} using a {@link CommandlerConfiguration} managed
-     * externally and passwed over.
-     *
-     * @param injector Dependency injector to configure and setup Commandler.
+     * Instantiate all {@link Integration}s and start receiving and
+     * handling {@link ActionEvent}s recieved.
      */
-    public Commandler(Injector injector) {
-        this(injector, injector.getInstance(CommandlerConfiguration.class));
+    public void run() {
+        var test = injector.getInstance(ContextConverter.class).convertIntegrations();
+
+        for (Class<Integration<?, ?>> integrationType : test)
+            injector.getInstance(integrationType);
+
+        listeners.add(injector.getInstance(ActionHandler.class));
     }
 
-    public Commandler(Injector injector, CommandlerConfiguration config) {
-        this.injector = injector;
-        this.config = config;
+    public <S, M> M onAction(Integration<S, M> integration, S source, String content) {
+        for (ActionListener listener : listeners) {
+            M object = listener.onAction(integration, source, content);
+
+            if (object != null)
+                return object;
+        }
+
+        return null;
     }
 
     public void addListeners(ActionListener... listeners) {

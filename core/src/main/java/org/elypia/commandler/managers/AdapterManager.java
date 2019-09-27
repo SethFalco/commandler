@@ -1,5 +1,22 @@
+/*
+ * Copyright 2019-2019 Elypia CIC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.elypia.commandler.managers;
 
+import org.elypia.commandler.Context;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.*;
@@ -7,6 +24,7 @@ import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
 import javax.el.*;
+import javax.inject.*;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -18,7 +36,10 @@ import java.util.*;
  * <p>The {@link AdapterManager} is how {@link String} input provided
  * by the chat client is converted into the respective object and passed
  * to the method associated with the {@link MetaCommand}.</p>
+ *
+ * @author seth@elypia.org (Syed Shah)
  */
+@Singleton
 public class AdapterManager {
 
     /**
@@ -31,6 +52,11 @@ public class AdapterManager {
     private final InjectionManager injectionManager;
     private final Collection<MetaAdapter> adapters;
     private final ExpressionFactory expressionFactory;
+
+    @Inject
+    public AdapterManager(InjectionManager injectionManager, Context context) {
+        this(injectionManager, context.getMetaAdapters());
+    }
 
     public AdapterManager(InjectionManager injectionManager, MetaAdapter... adapters) {
         this(injectionManager, List.of(adapters));

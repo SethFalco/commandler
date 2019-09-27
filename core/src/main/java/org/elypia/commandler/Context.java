@@ -1,6 +1,22 @@
+/*
+ * Copyright 2019-2019 Elypia CIC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.elypia.commandler;
 
-import org.elypia.commandler.api.Controller;
+import org.elypia.commandler.api.*;
 import org.elypia.commandler.configuration.ContextConverter;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
@@ -12,6 +28,8 @@ import java.util.stream.Collectors;
 /**
  * Within the same {@link Context} a single {@link MetaController}
  * is only ever constructed once.
+ *
+ * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
 public class Context implements Iterable<MetaController> {
@@ -28,9 +46,12 @@ public class Context implements Iterable<MetaController> {
     /** A collection of response providers. */
     private Collection<MetaMessenger> metaMessengers;
 
+    private Collection<Class<Integration<?, ?>>> integrations;
+
     @Inject
     public Context(final ContextConverter converter) {
-        this.metaControllers = converter.convert();
+        this.metaControllers = converter.convertControllers();
+        integrations = converter.convertIntegrations();
         this.metaAdapters = new ArrayList<>();
         this.metaMessengers = new ArrayList<>();
     }
@@ -118,6 +139,10 @@ public class Context implements Iterable<MetaController> {
             .map((m) -> (includeHidden) ? m.getMetaCommands() : m.getPublicCommands())
             .flatMap(List::stream)
             .collect(Collectors.toUnmodifiableList());
+    }
+
+    public Collection<Class<Integration<?, ?>>> getIntegrations() {
+        return integrations;
     }
 
     /**
