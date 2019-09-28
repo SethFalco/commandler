@@ -16,8 +16,7 @@
 
 package org.elypia.commandler.validation;
 
-import org.elypia.commandler.Context;
-import org.elypia.commandler.api.Controller;
+import org.elypia.commandler.AppContext;
 import org.elypia.commandler.metadata.*;
 
 import javax.validation.ParameterNameProvider;
@@ -30,10 +29,10 @@ import java.util.stream.Collectors;
  */
 public class CommandParamNameProvider implements ParameterNameProvider {
 
-    private Context context;
+    private AppContext appContext;
 
-    public CommandParamNameProvider(Context context) {
-        this.context = Objects.requireNonNull(context);
+    public CommandParamNameProvider(AppContext appContext) {
+        this.appContext = Objects.requireNonNull(appContext);
     }
 
     @Override
@@ -44,7 +43,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
     @Override
     public List<String> getParameterNames(Method method) {
         Class<?> type = method.getDeclaringClass();
-        MetaController module = context.getModule((Class<? extends Controller>)type);
+        MetaController module = (MetaController)appContext.getInjector().getInstance(type);
 
         if (module == null)
             return getJavaNames(method);

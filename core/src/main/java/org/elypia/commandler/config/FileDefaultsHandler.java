@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler;
+package org.elypia.commandler.config;
 
-import com.google.inject.AbstractModule;
-import org.elypia.commandler.managers.*;
+import org.apache.commons.configuration2.builder.DefaultParametersHandler;
+import org.apache.commons.configuration2.builder.fluent.FileBasedBuilderParameters;
+
+import java.nio.charset.StandardCharsets;
 
 /**
+ * Load all files as {@link StandardCharsets#UTF_8}.
+ *
  * @author seth@elypia.org (Syed Shah)
  */
-public class DefaultModule extends AbstractModule {
+public class FileDefaultsHandler implements DefaultParametersHandler<FileBasedBuilderParameters> {
+
+    private static final String UTF_8 = StandardCharsets.UTF_8.name();
 
     @Override
-    protected void configure() {
-        bind(DispatcherManager.class).to(DispatcherManager.class);
-        bind(InjectionManager.class).to(InjectionManager.class);
-        bind(AdapterManager.class).to(AdapterManager.class);
-        bind(TestManager.class).to(TestManager.class);
-        bind(DispatcherManager.class).to(DispatcherManager.class);
-        bind(ExceptionManager.class).to(ExceptionManager.class);
-        bind(MessengerManager.class).to(MessengerManager.class);
+    public void initializeDefaults(FileBasedBuilderParameters parameters) {
+        parameters.setEncoding(UTF_8);
     }
 }

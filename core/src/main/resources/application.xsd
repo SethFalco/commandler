@@ -25,7 +25,7 @@
     <xs:documentation>
       Commandler 4.0.0 - August 24th 2019
       This is the XML Schema for the Commandler configuration file.
-      The file should be named "commandler.xml" in the classpath.
+      The file should be named "application.xml" in the classpath.
     </xs:documentation>
   </xs:annotation>
 
@@ -35,6 +35,7 @@
         <xs:element name="commandler">
           <xs:complexType>
             <xs:sequence>
+              <xs:element name="config" type="types" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="controller" type="controller" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="adapter" type="adapter" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="messenger" type="messenger" minOccurs="0" maxOccurs="unbounded"/>
@@ -112,7 +113,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="compatible">
+  <xs:complexType name="types">
     <xs:sequence>
       <xs:element name="type" type="pojo" maxOccurs="unbounded"/>
     </xs:sequence>
@@ -120,7 +121,7 @@
 
   <xs:complexType name="adapter">
     <xs:sequence>
-      <xs:element name="compatible" type="compatible" maxOccurs="unbounded"/>
+      <xs:element name="compatible" type="types" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type" type="pojo" use="required"/>
   </xs:complexType>
@@ -128,7 +129,7 @@
   <xs:complexType name="messenger">
     <xs:sequence>
       <xs:element name="provides" type="pojo"/>
-      <xs:element name="compatible" type="compatible" maxOccurs="unbounded"/>
+      <xs:element name="compatible" type="types" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type" type="pojo" use="required"/>
   </xs:complexType>

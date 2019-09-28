@@ -16,10 +16,10 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.Context;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.AdapterRequiredException;
+import org.elypia.commandler.injection.InjectionService;
 import org.elypia.commandler.metadata.MetaMessenger;
 import org.slf4j.*;
 
@@ -36,21 +36,21 @@ public class MessengerManager {
     private static final Logger logger = LoggerFactory.getLogger(MessengerManager.class);
 
     /** Used to manage dependency injection when constructions param adapters. */
-    private final InjectionManager injectionManager;
+    private final InjectionService injectionService;
 
     private final Collection<MetaMessenger> providers;
 
     @Inject
-    public MessengerManager(InjectionManager injectionManager, Context context) {
-        this(injectionManager, context.getMetaMessengers());
+    public MessengerManager(InjectionService injectionService) {
+        this(injectionService, injectionService.getInstances(MetaMessenger.class));
     }
 
-    public MessengerManager(InjectionManager injectionManager, MetaMessenger... messengers) {
-        this(injectionManager, List.of(messengers));
+    public MessengerManager(InjectionService injectionService, MetaMessenger... messengers) {
+        this(injectionService, List.of(messengers));
     }
 
-    public MessengerManager(InjectionManager injectionManager, Collection<MetaMessenger> messengers) {
-        this.injectionManager = Objects.requireNonNull(injectionManager);
+    public MessengerManager(InjectionService injectionService, Collection<MetaMessenger> messengers) {
+        this.injectionService = Objects.requireNonNull(injectionService);
         this.providers = Objects.requireNonNull(messengers);
 
         for (MetaMessenger provider : messengers)
@@ -119,6 +119,6 @@ public class MessengerManager {
         if (provider == null)
             throw new AdapterRequiredException("ResponseBuilder required for type " + typeRequired + ".");
 
-        return injectionManager.getInjector().getInstance(provider.getProviderType());
+        return injectionService.getInstance(provider.getProviderType());
     }
 }

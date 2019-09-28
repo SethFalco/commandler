@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.api;
-
-import org.elypia.commandler.Commandler;
-
 /**
- * @param <S>
- * @param <M>
- * @author seth@elypia.org (Syed Shah)
+ * Contains all injection framework code for Commandler, this primiarly
+ * integrates with the chosen IoC container.
+ *
+ * Ideally this should use the repository pattern and outside of this package,
+ * the library in use shouldn't be used in favor of the abstraction this exposes.
  */
-public abstract class AbstractIntegration<S, M> implements Integration<S, M> {
-
-    protected Commandler commandler;
-
-    public M process(S source, String content) {
-        return null;
-    }
-
-    public Commandler getCommandler() {
-        return commandler;
-    }
-}
+package org.elypia.commandler.injection;

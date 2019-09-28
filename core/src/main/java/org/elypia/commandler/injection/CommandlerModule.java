@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.api;
+package org.elypia.commandler.injection;
 
+import com.google.inject.AbstractModule;
 import org.elypia.commandler.Commandler;
 
+import java.text.NumberFormat;
+
 /**
- * @param <S>
- * @param <M>
  * @author seth@elypia.org (Syed Shah)
  */
-public abstract class AbstractIntegration<S, M> implements Integration<S, M> {
+public class CommandlerModule extends AbstractModule {
 
-    protected Commandler commandler;
+    private final Commandler commandler;
 
-    public M process(S source, String content) {
-        return null;
+    public CommandlerModule(final Commandler commandler) {
+        this.commandler = commandler;
     }
 
-    public Commandler getCommandler() {
-        return commandler;
+    @Override
+    protected void configure() {
+        bind(Commandler.class).toInstance(commandler);
+
+        // TODO: This shouldn't be configured by Commandler itself.
+        bind(NumberFormat.class).toInstance(NumberFormat.getInstance());
     }
 }

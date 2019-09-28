@@ -16,8 +16,10 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.Context;
+import org.elypia.commandler.AppContext;
 import org.elypia.commandler.api.Controller;
+import org.elypia.commandler.config.CommandlerConfig;
+import org.elypia.commandler.injection.InjectionService;
 import org.elypia.commandler.metadata.MetaController;
 import org.elypia.commandler.testing.*;
 import org.slf4j.*;
@@ -49,14 +51,14 @@ public class TestManager {
 
     private final ScheduledExecutorService executor;
 
-    public TestManager(InjectionManager injectionManager, Context context) {
+    public TestManager(InjectionService injectionService, AppContext appContext) {
         started = Instant.now();
         testReports = new HashMap<>();
         executor = Executors.newSingleThreadScheduledExecutor();
 
         executor.scheduleAtFixedRate(() -> {
-            for (MetaController data : context) {
-                Controller controller = injectionManager.getInjector().getInstance(data.getHandlerType());
+            for (MetaController data : injectionService.getInstance(CommandlerConfig.class).getControllers()) {
+                Controller controller = injectionService.getInstance(data.getHandlerType());
 
                 if (controller == null) {
                     logger.debug("Registered handler is not initalised, testing was skipped.");

@@ -15,12 +15,11 @@
   ~ limitations under the License.
   -->
 
-<commandler xmlns="https://commandler.elypia.org"
+<configuration xmlns="https://commandler.elypia.org"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="https://commandler.elypia.org commandler.xsd">
-  <messengers>
-    <messenger>
-      <type>org.elypia.commandler.console.messengers.MiscMessenger</type>
+            xsi:schemaLocation="https://commandler.elypia.org application.xsd">
+  <commandler>
+    <messenger type="org.elypia.commandler.console.messengers.MiscMessenger">
       <provides>java.lang.String</provides>
       <compatible>
         <type>java.lang.Boolean</type>
@@ -31,8 +30,7 @@
         <type>char</type>
       </compatible>
     </messenger>
-    <messenger>
-      <type>org.elypia.commandler.console.messengers.NumberMessenger</type>
+    <messenger type="org.elypia.commandler.console.messengers.NumberMessenger">
       <provides>java.lang.Number</provides>
       <compatible>
         <type>java.lang.Number</type>
@@ -44,5 +42,5 @@
         <type>byte</type>
       </compatible>
     </messenger>
-  </messengers>
-</commandler>
+  </commandler>
+</configuration>

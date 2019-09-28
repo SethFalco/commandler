@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler;
+package org.elypia.commandler.config;
 
-import com.google.inject.AbstractModule;
-
-import java.text.NumberFormat;
+import javax.inject.*;
 
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class CommandlerModule extends AbstractModule {
+@Singleton
+public class AppConfig {
 
-    private final Commandler commandler;
+    private final String applicationName;
 
-    public CommandlerModule(final Commandler commandler) {
-        this.commandler = commandler;
+    @Inject
+    public AppConfig(final ConfigService configService) {
+        applicationName = configService.getString("application.name");
     }
 
-    @Override
-    protected void configure() {
-        bind(Commandler.class).toInstance(commandler);
-
-        // TODO: This shouldn't be configured by Commandler itself.
-        bind(NumberFormat.class).toInstance(NumberFormat.getInstance());
+    public String getApplicationName() {
+        return applicationName;
     }
 }

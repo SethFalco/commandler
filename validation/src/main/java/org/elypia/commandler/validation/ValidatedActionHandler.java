@@ -20,6 +20,7 @@ import org.elypia.commandler.ActionHandler;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.ModuleDisabledException;
+import org.elypia.commandler.injection.InjectionService;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
 
@@ -39,7 +40,7 @@ public class ValidatedActionHandler extends ActionHandler {
     @Inject
     public ValidatedActionHandler(
         DispatcherManager dispatcherManager,
-        InjectionManager injectionService,
+        InjectionService injectionService,
         AdapterManager adapterService,
         TestManager testService,
         ExceptionManager exceptionService,
@@ -67,7 +68,7 @@ public class ValidatedActionHandler extends ActionHandler {
             event = dispatcherManager.dispatch(integration, source, content);
             Action input = event.getAction();
             MetaController module = event.getMetaController();
-            Controller controller = injectionService.getInjector().getInstance(module.getHandlerType());
+            Controller controller = injectionService.getInstance(module.getHandlerType());
             Object[] params = adapterService.adaptEvent(event);
             validationService.validate(event, controller, params);
 

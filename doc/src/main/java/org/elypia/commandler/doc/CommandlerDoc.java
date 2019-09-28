@@ -17,12 +17,13 @@
 package org.elypia.commandler.doc;
 
 import com.google.gson.*;
-import org.elypia.commandler.Context;
+import org.elypia.commandler.AppContext;
+import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.doc.deserializers.*;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,15 +48,15 @@ public class CommandlerDoc {
 
     private List<MetaController> modules;
 
-    public CommandlerDoc(Context context) {
-        this(context.getMetaControllers());
+    public CommandlerDoc(AppContext appContext) {
+        this(appContext.getInjector().getInstance(CommandlerConfig.class).getControllers());
     }
 
     public CommandlerDoc(MetaController... modules) {
         this(List.of(modules));
     }
 
-    public CommandlerDoc(List<MetaController> modules) {
+    public CommandlerDoc(Collection<MetaController> modules) {
         this.modules = modules.stream()
             .filter(MetaController::isPublic)
             .sorted()

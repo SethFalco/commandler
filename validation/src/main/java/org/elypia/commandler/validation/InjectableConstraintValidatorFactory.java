@@ -16,8 +16,7 @@
 
 package org.elypia.commandler.validation;
 
-import com.google.inject.*;
-import org.elypia.commandler.managers.InjectionManager;
+import org.elypia.commandler.injection.InjectionService;
 
 import javax.validation.*;
 
@@ -26,16 +25,16 @@ import javax.validation.*;
  */
 public class InjectableConstraintValidatorFactory implements ConstraintValidatorFactory {
 
-    /** The {@link Guice} {@link Injector} to inject dependencies from. */
-    private InjectionManager injectionManager;
+    /** The Commandler injection service to inject dependencies. */
+    private InjectionService injectorService;
 
-    public InjectableConstraintValidatorFactory(InjectionManager injectionManager) {
-        this.injectionManager = injectionManager;
+    public InjectableConstraintValidatorFactory(InjectionService injectorService) {
+        this.injectorService = injectorService;
     }
 
     @Override
     public <T extends ConstraintValidator<?, ?>> T getInstance(Class<T> key) {
-        return injectionManager.getInjector().getInstance(key);
+        return injectorService.getInstance(key);
     }
 
     @Override

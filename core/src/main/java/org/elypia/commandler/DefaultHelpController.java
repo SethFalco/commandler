@@ -33,61 +33,61 @@ import java.util.*;
 @Singleton
 public class DefaultHelpController implements Controller {
 
-    private Context context;
+    private AppContext appContext;
     private TestManager testManager;
 
     @Inject
-    public DefaultHelpController(Context context, TestManager testManager) {
-        this.context = context;
+    public DefaultHelpController(AppContext appContext, TestManager testManager) {
+        this.appContext = appContext;
         this.testManager = testManager;
     }
 
-    public String getGroups(ActionEvent<?, ?> event) {
-        StringJoiner joiner = new StringJoiner("\n", "Groups", "");
-
-        for (String group : context.getGroups(false).keySet())
-            joiner.add("* " + group);
-
-        return joiner.toString();
-    }
-
-    public String getModules(String query) {
-        var groups = context.getGroups(false);
-
-        Optional<String> optGroupName = groups.keySet().stream().filter(
-            name -> name.equalsIgnoreCase(query)
-        ).findAny();
-
-        if (optGroupName.isEmpty())
-            return "No such group exists.";
-
-        String groupName = optGroupName.get();
-        List<MetaController> modules = groups.get(groupName);
-        boolean disabled = false;
-
-        StringJoiner joiner = new StringJoiner("\n", groupName, "");
-
-        for (MetaController module : modules) {
-            StringBuilder builder = new StringBuilder("* ")
-                .append(module.toString());
-
-            if (testManager.isFailing(this)) {
-                builder.append(" *");
-                disabled = true;
-            }
-
-            builder
-                .append("\n")
-                .append(module.getDescription());
-
-            joiner.add(builder.toString());
-        }
-
-        if (disabled)
-            joiner.add("* Disabled due to live issues.");
-
-        return joiner.toString();
-    }
+//    public String getGroups(ActionEvent<?, ?> event) {
+//        StringJoiner joiner = new StringJoiner("\n", "Groups", "");
+//
+//        for (String group : appContext.getGroups(false).keySet())
+//            joiner.add("* " + group);
+//
+//        return joiner.toString();
+//    }
+//
+//    public String getModules(String query) {
+//        var groups = appContext.getGroups(false);
+//
+//        Optional<String> optGroupName = groups.keySet().stream().filter(
+//            name -> name.equalsIgnoreCase(query)
+//        ).findAny();
+//
+//        if (optGroupName.isEmpty())
+//            return "No such group exists.";
+//
+//        String groupName = optGroupName.get();
+//        List<MetaController> modules = groups.get(groupName);
+//        boolean disabled = false;
+//
+//        StringJoiner joiner = new StringJoiner("\n", groupName, "");
+//
+//        for (MetaController module : modules) {
+//            StringBuilder builder = new StringBuilder("* ")
+//                .append(module.toString());
+//
+//            if (testManager.isFailing(this)) {
+//                builder.append(" *");
+//                disabled = true;
+//            }
+//
+//            builder
+//                .append("\n")
+//                .append(module.getDescription());
+//
+//            joiner.add(builder.toString());
+//        }
+//
+//        if (disabled)
+//            joiner.add("* Disabled due to live issues.");
+//
+//        return joiner.toString();
+//    }
 
     /**
      * The default help command for a {@link Controller},

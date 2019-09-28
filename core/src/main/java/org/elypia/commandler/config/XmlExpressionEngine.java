@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.configuration;
+package org.elypia.commandler.config;
 
 import org.apache.commons.configuration2.tree.*;
 import org.slf4j.*;

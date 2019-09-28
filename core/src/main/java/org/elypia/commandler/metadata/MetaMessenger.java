@@ -34,6 +34,10 @@ public class MetaMessenger {
     /** The types this provider is compatible for. */
     private Collection<Class<?>> compatible;
 
+    public MetaMessenger(Class<? extends ResponseBuilder<?, ?>> type, Class<?> builds, Class<?>... compatible) {
+        this(type, builds, List.of(compatible));
+    }
+
     public MetaMessenger(Class<? extends ResponseBuilder<?, ?>> type, Class<?> builds, Collection<Class<?>> compatible) {
         this.type = Objects.requireNonNull(type);
         this.builds = Objects.requireNonNull(builds);

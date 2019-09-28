@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.configuration;
+package org.elypia.commandler.config;
 
 import org.apache.commons.configuration2.ImmutableHierarchicalConfiguration;
-import org.elypia.commandler.Commandler;
+import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.metadata.*;
 
@@ -26,23 +26,35 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * Convert the relevent parts of the {@link CommandlerConfiguration}
- * to the {@link org.elypia.commandler.Context} in order to contextualize
+ * Convert the relevent parts of the {@link ConfigService}
+ * to the {@link AppContext} in order to contextualize
  * the metadata for the various components in {@link Commandler}.
  *
  * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
-public class ContextConverter {
+public class CommandlerConfig {
 
-    private CommandlerConfiguration config;
+    /** A collection of data for each controller within this {@link Commandler} context. */
+    private Collection<MetaController> controllers;
+
+    /** A collection parameter adapters. */
+    private Collection<MetaAdapter> adapters;
+
+    /** A collection of response providers. */
+    private Collection<MetaMessenger> messengers;
+
+    private Collection<Class<Integration<?, ?>>> integrations;
 
     @Inject
-    public ContextConverter(CommandlerConfiguration config) {
-        this.config = config;
+    public CommandlerConfig(final ConfigService config) {
+        this.controllers = convertControllers(config);
+        this.adapters = convertAdapters(config);
+        this.messengers = convertMessengers(config);
+        this.integrations = convertIntegrations(config);
     }
 
-    public List<Class<Integration<?, ?>>> convertIntegrations() {
+    public List<Class<Integration<?, ?>>> convertIntegrations(final ConfigService config) {
         List<String> integrations = config.getList(String.class, "commandler.integrations");
         List<Class<Integration<?, ?>>> integrationTypes = new ArrayList<>();
 
@@ -64,7 +76,51 @@ public class ContextConverter {
         return integrationTypes;
     }
 
-    public List<MetaController> convertControllers() {
+    private List<MetaAdapter> convertAdapters(final ConfigService config) {
+        List<ImmutableHierarchicalConfiguration> adapterConfig = config.getConfiguration().immutableConfigurationsAt("commandler.adapter");
+
+        List<MetaAdapter> metaAdapters = new ArrayList<>();
+
+        for (ImmutableHierarchicalConfiguration adapter : adapterConfig) {
+            Class<Adapter<?>> type;
+
+            try {
+                type = (Class<Adapter<?>>)Class.forName(adapter.getString("type"));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+
+            // TODO: Load compatible array.
+            metaAdapters.add(new MetaAdapter(type));
+        }
+
+        return metaAdapters;
+    }
+
+    private List<MetaMessenger> convertMessengers(final ConfigService config) {
+        List<ImmutableHierarchicalConfiguration> messengerConfig = config.getConfiguration().immutableConfigurationsAt("commandler.messenger");
+
+        List<MetaMessenger> metaMessengers = new ArrayList<>();
+
+        for (ImmutableHierarchicalConfiguration messenger : messengerConfig) {
+            Class<ResponseBuilder<?, ?>> type;
+            Class<?> provides;
+
+            try {
+                type = (Class<ResponseBuilder<?, ?>>)Class.forName(messenger.getString("type"));
+                provides = Class.forName(messenger.getString("provides"));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+
+            // TODO: Load compatible array.
+            metaMessengers.add(new MetaMessenger(type, provides));
+        }
+
+        return metaMessengers;
+    }
+
+    private List<MetaController> convertControllers(final ConfigService config) {
         List<MetaController> metaControllers = new ArrayList<>();
         List<ImmutableHierarchicalConfiguration> controllers = config.getConfiguration().immutableConfigurationsAt("commandler.controller");
 
@@ -87,7 +143,7 @@ public class ContextConverter {
         return metaControllers;
     }
 
-    public List<MetaCommand> convertCommands(Class<?> type, ImmutableHierarchicalConfiguration controller) {
+    private List<MetaCommand> convertCommands(Class<?> type, ImmutableHierarchicalConfiguration controller) {
         List<ImmutableHierarchicalConfiguration> commandsConfig = controller.immutableConfigurationsAt("command");
 
         List<MetaCommand> metaCommands = new ArrayList<>();
@@ -105,7 +161,7 @@ public class ContextConverter {
         return metaCommands;
     }
 
-    public List<MetaParam> convertParams(Method method, ImmutableHierarchicalConfiguration command) {
+    private List<MetaParam> convertParams(Method method, ImmutableHierarchicalConfiguration command) {
         List<ImmutableHierarchicalConfiguration> paramsConfig = command.immutableConfigurationsAt("param");
 
         List<MetaParam> metaParams = new ArrayList<>();
@@ -119,7 +175,7 @@ public class ContextConverter {
         return metaParams;
     }
 
-    public ComponentConfig convertComponent(ImmutableHierarchicalConfiguration component) {
+    private ComponentConfig convertComponent(ImmutableHierarchicalConfiguration component) {
         String name = component.getString("name");
         String description = component.getString("description");
         Properties properties = convertProperties(component);
@@ -127,7 +183,7 @@ public class ContextConverter {
         return new ComponentConfig(name, description, properties);
     }
 
-    public Properties convertProperties(ImmutableHierarchicalConfiguration component) {
+    private Properties convertProperties(ImmutableHierarchicalConfiguration component) {
         List<ImmutableHierarchicalConfiguration> propertiesConfig = component.immutableConfigurationsAt("property");
 
         Properties properties = new Properties();
@@ -141,7 +197,23 @@ public class ContextConverter {
         return properties;
     }
 
-    public class ComponentConfig {
+    public Collection<MetaController> getControllers() {
+        return controllers;
+    }
+
+    public Collection<MetaAdapter> getAdapters() {
+        return adapters;
+    }
+
+    public Collection<MetaMessenger> getMessengers() {
+        return messengers;
+    }
+
+    public Collection<Class<Integration<?, ?>>> getIntegrations() {
+        return integrations;
+    }
+
+    private static class ComponentConfig {
 
         private String name;
         private String description;

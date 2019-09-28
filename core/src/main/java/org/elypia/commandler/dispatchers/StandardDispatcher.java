@@ -18,6 +18,7 @@ package org.elypia.commandler.dispatchers;
 
 import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
+import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.*;
 import org.elypia.commandler.metadata.*;
@@ -58,25 +59,25 @@ public class StandardDispatcher implements Dispatcher {
      */
     private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.+?)(?<!\\\\)\"|(?<word>[^\\s,]+)");
 
-    private final Context context;
+    private final AppContext appContext;
     private final Function<Object, String[]> prefixProvider;
 
     /**
      * Create an instance of the StandardDispatcher with no prefix.
      *
-     * @param context The {@link Commandler} {@link Context}.
+     * @param appContext The {@link Commandler} {@link AppContext}.
      */
     @Inject
-    public StandardDispatcher(Context context) {
-        this(context, (String[])null);
+    public StandardDispatcher(AppContext appContext) {
+        this(appContext, (String[])null);
     }
 
-    public StandardDispatcher(Context context, String... prefixes) {
-        this(context, (object) -> prefixes);
+    public StandardDispatcher(AppContext appContext, String... prefixes) {
+        this(appContext, (object) -> prefixes);
     }
 
-    public StandardDispatcher(Context context, Function<Object, String[]> prefixProvider) {
-        this.context = Objects.requireNonNull(context);
+    public StandardDispatcher(AppContext appContext, Function<Object, String[]> prefixProvider) {
+        this.appContext = Objects.requireNonNull(appContext);
         this.prefixProvider = Objects.requireNonNull(prefixProvider);
     }
 
@@ -134,7 +135,7 @@ public class StandardDispatcher implements Dispatcher {
         MetaCommand selectedMetaCommand = null;
         String params = null;
 
-        for (MetaController metaController : context.getMetaControllers()) {
+        for (MetaController metaController : appContext.getInjector().getInstance(CommandlerConfig.class).getControllers()) {
             Collection<String> controllerAliases = metaController.getProperties(this.getClass(), "aliases");
 
             // TODO: Currently this would mean static commadns can't exist unless the parent module has an alias.

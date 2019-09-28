@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.configuration;
+package org.elypia.commandler.config;
 
 import org.apache.commons.configuration2.ImmutableHierarchicalConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -41,7 +41,7 @@ public class CommanderConfigurationTest {
     @Test
     public void testBasicLoad() {
         assertDoesNotThrow(() -> {
-            CommandlerConfiguration config = new CommandlerConfiguration();
+            ConfigService config = new ConfigService();
             config.getProperties().list(System.out);
         });
     }
@@ -53,7 +53,7 @@ public class CommanderConfigurationTest {
      */
     @Test
     public void testXmlPath() throws ConfigurationException {
-        CommandlerConfiguration config = new CommandlerConfiguration();
+        ConfigService config = new ConfigService();
         List<String> list = config.getList(String.class, "commandler.controller.type");
 
         int expected = 1;
@@ -64,7 +64,7 @@ public class CommanderConfigurationTest {
 
     @Test
     public void testIterator() throws ConfigurationException {
-        CommandlerConfiguration config = new CommandlerConfiguration();
+        ConfigService config = new ConfigService();
         List<ImmutableHierarchicalConfiguration> controllers = config.getConfiguration().immutableConfigurationsAt("commandler.controller");
 
         int expected = 1;
@@ -75,7 +75,7 @@ public class CommanderConfigurationTest {
 
     @Test
     public void testIteratorValues() throws ConfigurationException {
-        CommandlerConfiguration config = new CommandlerConfiguration();
+        ConfigService config = new ConfigService();
         List<ImmutableHierarchicalConfiguration> controllers = config.getConfiguration().immutableConfigurationsAt("commandler.controller");
         ImmutableHierarchicalConfiguration controller = controllers.get(0);
 
@@ -92,7 +92,7 @@ public class CommanderConfigurationTest {
      */
     @Test
     public void testXmlValue() throws ConfigurationException {
-        CommandlerConfiguration configuration = new CommandlerConfiguration();
+        ConfigService configuration = new ConfigService();
 
         String expected = "Offer generic help through all the modules in this bot.";
         String actual = configuration.getString("commandler.controller(0).description");

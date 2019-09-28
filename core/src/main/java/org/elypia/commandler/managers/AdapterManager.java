@@ -16,10 +16,10 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.Context;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.*;
+import org.elypia.commandler.injection.InjectionService;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -49,21 +49,21 @@ public class AdapterManager {
     private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
 
     /** Used to manage dependency injection when constructions param adapters. */
-    private final InjectionManager injectionManager;
+    private final InjectionService injectionService;
     private final Collection<MetaAdapter> adapters;
     private final ExpressionFactory expressionFactory;
 
     @Inject
-    public AdapterManager(InjectionManager injectionManager, Context context) {
-        this(injectionManager, context.getMetaAdapters());
+    public AdapterManager(InjectionService injectionService) {
+        this(injectionService, injectionService.getInstances(MetaAdapter.class));
     }
 
-    public AdapterManager(InjectionManager injectionManager, MetaAdapter... adapters) {
+    public AdapterManager(InjectionService injectionManager, MetaAdapter... adapters) {
         this(injectionManager, List.of(adapters));
     }
 
-    public AdapterManager(InjectionManager injectionManager, Collection<MetaAdapter> adapters) {
-        this.injectionManager = Objects.requireNonNull(injectionManager);
+    public AdapterManager(InjectionService injectionManager, Collection<MetaAdapter> adapters) {
+        this.injectionService = Objects.requireNonNull(injectionManager);
         this.adapters = Objects.requireNonNull(adapters);
         this.expressionFactory = ELManager.getExpressionFactory();
 
@@ -241,6 +241,6 @@ public class AdapterManager {
 
         logger.debug("Using `{}` adapter for parameter.", adapter.getAdapterType().getSimpleName());
         // TODO: Add event objects and params to child injector
-        return injectionManager.getInjector().getInstance(adapter.getAdapterType());
+        return injectionService.getInstance(adapter.getAdapterType());
     }
 }

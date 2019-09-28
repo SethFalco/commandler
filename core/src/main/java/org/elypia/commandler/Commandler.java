@@ -16,14 +16,10 @@
 
 package org.elypia.commandler;
 
-import com.google.inject.Module;
-import com.google.inject.*;
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.configuration.*;
+import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.event.ActionEvent;
 
 import javax.inject.Singleton;
-import java.util.List;
 
 /**
  * The root {@link Commandler} class, this ultimately enables your
@@ -34,32 +30,18 @@ import java.util.List;
  * <strong>Static Configuration:</strong> This entails configuration files either in the
  * classpath or externally, and {@link java.lang.annotation.Annotation}s.
  * <strong>Dependency Injection Modules:</strong> This entails overriding runtime dependencies
- * for {@link Guice} to inject into dependencies and {@link Controller}s.
+ * for the IoC container to use.
  *
  * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
 public class Commandler {
 
-    /** The configuration for this instance of {@link Commandler}. */
-    private CommandlerConfiguration config;
+    /** Metadata and configurationa associated with this Commandler instance. */
+    private final AppContext appContext;
 
-    /** The {@link Guice} {@link Injector} to inject dependencies for Commandler. */
-    private Injector injector;
-
-    /** A list of action listeners to send action events to. */
-    private List<ActionListener> listeners;
-
-    /**
-     * Instantiate {@link Commandler} using the specified dependency injection
-     * modules, or with no arguments if no additional modules should be specified.
-     *
-     * @param modules Additional dependency injection modules to add.
-     */
-    public Commandler(Module... modules) {
-        this.injector = Guice.createInjector(Stage.PRODUCTION, modules);
-        this.injector = injector.createChildInjector(new CommandlerModule(this));
-        this.config = injector.getInstance(CommandlerConfiguration.class);
+    public Commandler() {
+        appContext = new AppContext();
     }
 
     /**
@@ -67,30 +49,10 @@ public class Commandler {
      * handling {@link ActionEvent}s recieved.
      */
     public void run() {
-        var test = injector.getInstance(ContextConverter.class).convertIntegrations();
 
-        for (Class<Integration<?, ?>> integrationType : test)
-            injector.getInstance(integrationType);
-
-        listeners.add(injector.getInstance(ActionHandler.class));
     }
 
-    public <S, M> M onAction(Integration<S, M> integration, S source, String content) {
-        for (ActionListener listener : listeners) {
-            M object = listener.onAction(integration, source, content);
-
-            if (object != null)
-                return object;
-        }
-
-        return null;
-    }
-
-    public void addListeners(ActionListener... listeners) {
-        this.listeners.addAll(List.of(listeners));
-    }
-
-    public CommandlerConfiguration getConfig() {
-        return config;
+    public AppContext getAppContext() {
+        return appContext;
     }
 }

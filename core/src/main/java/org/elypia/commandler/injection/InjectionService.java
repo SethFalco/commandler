@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.managers;
+package org.elypia.commandler.injection;
 
 import com.google.inject.Module;
 import com.google.inject.*;
@@ -23,31 +23,27 @@ import javax.inject.Singleton;
 import java.util.*;
 
 /**
- * Small abstraction of the dependency injection library in use.
- * This centralised some of the code, and makes it easier to allow
- * various components to add more with interupting eachother.
+ * The injection service manages all runtime dependencies
+ * and abstracts the chosen IoC framework in use for Commandler.
+ *
+ * This will be used to manage injection, add or remove injection
+ * bindings in runtime, or tagging dependencies in order to get
+ * lists of relevent injectable Java objects regardless of how
+ * they are related.
  *
  * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
-public class InjectionManager {
+public class InjectionService {
 
     private Injector injector;
 
-    public InjectionManager(Module... modules) {
+    public InjectionService(Module... modules) {
         this(List.of(modules));
     }
 
-    public InjectionManager(Collection<Module> modules) {
-        this(Stage.PRODUCTION, modules);
-    }
-
-    public InjectionManager(Stage stage, Collection<Module> modules) {
-        this(Guice.createInjector(stage, modules));
-    }
-
-    public InjectionManager(Injector injector) {
-        this.injector = injector;
+    public InjectionService(Collection<Module> modules) {
+        Guice.createInjector(Stage.PRODUCTION, modules);
     }
 
     public void add(Module... modules) {
@@ -59,8 +55,7 @@ public class InjectionManager {
     }
 
     /**
-     * It's much preferred to use {@link #add(Module...)}
-     * unless only adding a single class.
+     * It's much preferred to use {@link #add(Module...)}.
      *
      * @param instance The instance of an object to add.
      * @param type The type of this object.
@@ -76,11 +71,11 @@ public class InjectionManager {
         });
     }
 
-    public Injector getInjector() {
-        return injector;
+    public <T> T getInstance(Class<T> type) {
+        return injector.getInstance(type);
     }
 
-    public void setInjector(Injector injector) {
-        this.injector = injector;
+    public <T> Collection<T> getInstances(Class<T> type) {
+        return null;
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.configuration;
+package org.elypia.commandler.config;
 
 import org.apache.commons.configuration2.*;
 import org.apache.commons.configuration2.builder.combined.CombinedConfigurationBuilder;
@@ -33,7 +33,7 @@ import java.util.*;
  * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
-public class CommandlerConfiguration {
+public class ConfigService {
 
     /**
      * An internal view of the {@link Configuration} loaded to define this
@@ -47,13 +47,15 @@ public class CommandlerConfiguration {
      */
     private final Properties properties;
 
+    private final Collection<Object> configs;
+
     /**
      * Creates and loads the {@link Configuration} using the default profile.
      *
      * @throws ConfigurationException If the configuration fails to initialize.
      */
     @Inject
-    public CommandlerConfiguration() throws ConfigurationException {
+    public ConfigService() throws ConfigurationException {
         this("default");
     }
 
@@ -61,7 +63,7 @@ public class CommandlerConfiguration {
      * @param profile The profile to load.
      * @throws ConfigurationException If the configuration fails to initialize.
      */
-    public CommandlerConfiguration(final String profile) throws ConfigurationException {
+    public ConfigService(final String profile) throws ConfigurationException {
         Objects.requireNonNull(profile);
 
         Parameters params = new Parameters();
@@ -73,6 +75,7 @@ public class CommandlerConfiguration {
 
         this.configuration = ConfigurationUtils.unmodifiableConfiguration(config);
         this.properties = ConfigurationConverter.getProperties(configuration);
+        this.configs = new ArrayList<>();
     }
 
     public <T> List<T> getList(Class<T> t, final String key) {
@@ -87,12 +90,16 @@ public class CommandlerConfiguration {
         return configuration.getInt(key);
     }
 
-    public double getDouble(final String key) {
-        return configuration.getDouble(key);
+    public long getLong(final String key) {
+        return configuration.getLong(key);
     }
 
     public float getFloat(final String key) {
         return configuration.getFloat(key);
+    }
+
+    public double getDouble(final String key) {
+        return configuration.getDouble(key);
     }
 
     /**

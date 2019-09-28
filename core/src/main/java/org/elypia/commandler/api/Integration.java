@@ -40,6 +40,8 @@ public interface Integration<S, M> {
     /**
      * @param source The event this integration has recieved.
      * @return A unique and {@link Serializable} ID that represents this action.
+     * This can also be a generated ID if the integration does not provide
+     * unique IDs itself.
      */
     Serializable getActionId(S source);
 }

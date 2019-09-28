@@ -18,14 +18,15 @@
 <configuration>
   <header>
     <providers>
-      <provider config-tag="yaml" config-class="org.elypia.commandler.configuration.YAMLConfigurationProvider"/>
+      <provider config-tag="yaml" config-class="org.elypia.commandler.config.YAMLConfigurationProvider"/>
     </providers>
     <result>
-      <expressionEngine config-class="org.elypia.commandler.configuration.XmlExpressionEngine"/>
+      <expressionEngine config-class="org.elypia.commandler.config.XmlExpressionEngine"/>
     </result>
     <combiner>
       <additional>
         <list-nodes>
+          <node>config</node>
           <node>controller</node>
           <node>command</node>
           <node>param</node>
@@ -39,8 +40,8 @@
   <override>
     <env/>
     <system/>
-    <yaml fileName="commandler.yml" config-optional="true"/>
-    <yaml fileName="commandler.yaml" config-optional="true"/>
-    <xml fileName="commandler.xml" config-optional="true"/>
+    <yaml fileName="application.yml" config-optional="true"/>
+    <yaml fileName="application.yaml" config-optional="true"/>
+    <xml fileName="application.xml" config-optional="true"/>
   </override>
 </configuration>

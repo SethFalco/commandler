@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.configuration;
+package org.elypia.commandler.config;
 
-import org.apache.commons.configuration2.builder.DefaultParametersHandler;
-import org.apache.commons.configuration2.builder.fluent.FileBasedBuilderParameters;
+import org.apache.commons.configuration2.YAMLConfiguration;
+import org.apache.commons.configuration2.builder.*;
+import org.apache.commons.configuration2.builder.combined.BaseConfigurationBuilderProvider;
 
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
- * Load all files as {@link StandardCharsets#UTF_8}.
- *
  * @author seth@elypia.org (Syed Shah)
  */
-public class FileDefaultsHandler implements DefaultParametersHandler<FileBasedBuilderParameters> {
+public class YAMLConfigurationProvider extends BaseConfigurationBuilderProvider {
 
-    private static final String UTF_8 = StandardCharsets.UTF_8.name();
-
-    @Override
-    public void initializeDefaults(FileBasedBuilderParameters parameters) {
-        parameters.setEncoding(UTF_8);
+    public YAMLConfigurationProvider() {
+        super(
+            FileBasedConfigurationBuilder.class.getName(),
+            ReloadingFileBasedConfigurationBuilder.class.getName(),
+            YAMLConfiguration.class.getName(),
+            List.of(FileBasedBuilderParametersImpl.class.getName())
+        );
     }
 }

@@ -17,8 +17,12 @@
 
 <configuration xmlns="https://commandler.elypia.org"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://commandler.elypia.org commandler.xsd">
+  xsi:schemaLocation="https://commandler.elypia.org application.xsd">
   <commandler>
+    <config>
+      <type>org.elypia.commandler.config.AppConfig</type>
+      <type>org.elypia.commandler.config.CommandlerConfig</type>
+    </config>
     <controller type="org.elypia.commandler.DefaultHelpController">
       <name>Help</name>
       <group>Guidance</group>
