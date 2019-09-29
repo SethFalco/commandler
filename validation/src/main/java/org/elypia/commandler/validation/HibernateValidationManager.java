@@ -19,7 +19,7 @@ package org.elypia.commandler.validation;
 import org.elypia.commandler.AppContext;
 import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.injection.InjectionService;
+import org.elypia.commandler.injection.InjectorService;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 import org.slf4j.*;
@@ -46,13 +46,13 @@ public class HibernateValidationManager {
     /** The actual validator object constructed and on use throughout Commandler. */
     private final ExecutableValidator exValidator;
 
-    public HibernateValidationManager(InjectionService injectionService, AppContext appContext) {
+    public HibernateValidationManager(InjectorService injectorService, AppContext appContext) {
         var locator = new PlatformResourceBundleLocator(USER_VALIDATION_MESSAGES, null, true);
 
         ValidatorFactory factory = Validation.byDefaultProvider()
             .configure()
             .messageInterpolator(new ResourceBundleMessageInterpolator(locator))
-            .constraintValidatorFactory(new InjectableConstraintValidatorFactory(injectionService))
+            .constraintValidatorFactory(new InjectableConstraintValidatorFactory(injectorService))
             .parameterNameProvider(new CommandParamNameProvider(appContext))
             .buildValidatorFactory();
 

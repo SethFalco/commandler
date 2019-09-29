@@ -17,7 +17,10 @@
 package org.elypia.commandler;
 
 import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.injection.InjectorService;
+import org.slf4j.*;
 
 import javax.inject.Singleton;
 
@@ -37,19 +40,43 @@ import javax.inject.Singleton;
 @Singleton
 public class Commandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
+
     /** Metadata and configurationa associated with this Commandler instance. */
     private final AppContext appContext;
 
+    /**
+     * Construct an instance of Commandler, in most cases this will be used
+     * to manage your application, but in some cases may just be a small instance amongst
+     * multiple instance or for a small part of your application.
+     *
+     * This will only load and initialize as much of Commandler as possible without
+     * actually connecting to any APIs or processing commands, this will ensure Commandler
+     * can load and validate everything before any attempt to go live to users.
+     */
     public Commandler() {
-        appContext = new AppContext();
+        logger.debug("Started Commandler, loading all configuration and dependencies.");
+        appContext = new AppContext(this);
+        logger.info("Loaded all configuration and dependencies in {}.", appContext.getTimeSinceStartupFormatted());
     }
 
     /**
      * Instantiate all {@link Integration}s and start receiving and
      * handling {@link ActionEvent}s recieved.
+     *
+     * This is actually run the Commandler instance and should be used to run any chat
+     * bots by whatever interactive means.
      */
     public void run() {
+        CommandlerConfig config = appContext.getConfig().getTypedConfig(CommandlerConfig.class);
+        InjectorService injector = appContext.getInjector();
 
+        for (Class<Integration<?, ?>> integrationType : config.getIntegrations()) {
+            logger.debug("Creating instance of {}.", integrationType);
+            injector.getInstance(integrationType);
+        }
+
+        injector.getInstance(ActionHandler.class);
     }
 
     public AppContext getAppContext() {

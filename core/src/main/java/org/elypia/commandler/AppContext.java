@@ -19,7 +19,7 @@ package org.elypia.commandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.config.ConfigService;
-import org.elypia.commandler.injection.InjectionService;
+import org.elypia.commandler.injection.*;
 import org.slf4j.*;
 
 import javax.inject.Singleton;
@@ -42,32 +42,44 @@ public class AppContext {
     private final ConfigService config;
 
     /** The injectotion framework abstraction to inject dependencies. */
-    private final InjectionService injector;
+    private final InjectorService injector;
 
     /** The unix epoch that this context was created. */
     private final long STARTUP_TIME;
 
-    public AppContext() {
+    public AppContext(Commandler commandler) {
         this.STARTUP_TIME = System.currentTimeMillis();
+        logger.debug("Generating Commandler AppContext at epoch: {}", STARTUP_TIME);
 
         try {
             config = new ConfigService();
+            logger.debug("Finished loading all configuration.");
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);
         }
 
-        injector = new InjectionService();
+        injector = new InjectorService();
+        injector.add(new CommandlerModule(commandler));
+        logger.debug("Added default injection bindings to {}.", InjectorService.class.getSimpleName());
     }
 
     public ConfigService getConfig() {
         return config;
     }
 
-    public InjectionService getInjector() {
+    public InjectorService getInjector() {
         return injector;
     }
 
     public long getStartupTime() {
         return STARTUP_TIME;
+    }
+
+    public long getTimeSinceStartup() {
+        return System.currentTimeMillis() - getStartupTime();
+    }
+
+    public String getTimeSinceStartupFormatted() {
+        return String.format("%,dms", getTimeSinceStartup());
     }
 }

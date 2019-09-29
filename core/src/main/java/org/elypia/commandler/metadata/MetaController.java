@@ -50,7 +50,7 @@ public class MetaController extends MetaComponent implements Comparable<MetaCont
 
     public MetaController(Class<? extends Controller> moduleClass, String groupName, String name, String description, boolean isHidden, Properties properties, List<MetaCommand> metaCommands) {
         this.type = Objects.requireNonNull(moduleClass);
-        this.groupName = Objects.requireNonNull(groupName);
+        this.groupName = Objects.requireNonNullElse(groupName, "Miscellaneous");
         this.name = Objects.requireNonNull(name);
         this.description = description;
         this.isHidden = isHidden;

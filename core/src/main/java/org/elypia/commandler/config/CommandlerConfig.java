@@ -30,10 +30,15 @@ import java.util.*;
  * to the {@link AppContext} in order to contextualize
  * the metadata for the various components in {@link Commandler}.
  *
+ * <strong>This configuration object is <em>required</em>
+ * when loading Commandler, Commandler will not work without it.</strong>
+ *
  * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
 public class CommandlerConfig {
+
+    private Collection<Class<?>> configs;
 
     /** A collection of data for each controller within this {@link Commandler} context. */
     private Collection<MetaController> controllers;
@@ -48,14 +53,30 @@ public class CommandlerConfig {
 
     @Inject
     public CommandlerConfig(final ConfigService config) {
+        this.configs = convertConfigs(config);
         this.controllers = convertControllers(config);
         this.adapters = convertAdapters(config);
         this.messengers = convertMessengers(config);
         this.integrations = convertIntegrations(config);
     }
 
-    public List<Class<Integration<?, ?>>> convertIntegrations(final ConfigService config) {
-        List<String> integrations = config.getList(String.class, "commandler.integrations");
+    private List<Class<?>> convertConfigs(final ConfigService config) {
+        List<String> configs = config.getList(String.class, "commandler.config.type");
+        List<Class<?>> configTypes = new ArrayList<>();
+
+        for (String conf : configs) {
+            try {
+                configTypes.add(Class.forName(conf));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return configTypes;
+    }
+
+    private List<Class<Integration<?, ?>>> convertIntegrations(final ConfigService config) {
+        List<String> integrations = config.getList(String.class, "commandler.integration");
         List<Class<Integration<?, ?>>> integrationTypes = new ArrayList<>();
 
         for (String integration : integrations) {
@@ -150,7 +171,10 @@ public class CommandlerConfig {
 
         for (ImmutableHierarchicalConfiguration command : commandsConfig) {
             ComponentConfig component = convertComponent(command);
-            Method method = Arrays.stream(type.getMethods()).filter(m -> m.getName().equals(command.getString("method"))).findAny().orElseThrow();
+            String methodName = command.getString("method");
+            Method method = Arrays.stream(type.getMethods()).filter(m -> m.getName().equals(methodName)).findAny().orElseThrow(() -> {
+                return new RuntimeException("Method #" + methodName + " doesn't exist in " + type + ".");
+            });
             boolean hidden = command.getBoolean("hidden", false);
             boolean isStatic = command.getBoolean("static", false);
             boolean isDefault = command.getBoolean("default", false);
@@ -211,6 +235,10 @@ public class CommandlerConfig {
 
     public Collection<Class<Integration<?, ?>>> getIntegrations() {
         return integrations;
+    }
+
+    public Collection<Class<?>> getConfigs() {
+        return configs;
     }
 
     private static class ComponentConfig {

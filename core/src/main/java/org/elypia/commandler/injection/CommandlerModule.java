@@ -17,7 +17,8 @@
 package org.elypia.commandler.injection;
 
 import com.google.inject.AbstractModule;
-import org.elypia.commandler.Commandler;
+import org.elypia.commandler.*;
+import org.elypia.commandler.config.ConfigService;
 
 import java.text.NumberFormat;
 
@@ -35,6 +36,11 @@ public class CommandlerModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(Commandler.class).toInstance(commandler);
+
+        AppContext appContext = commandler.getAppContext();
+        bind(AppContext.class).toInstance(appContext);
+        bind(InjectorService.class).toInstance(appContext.getInjector());
+        bind(ConfigService.class).toInstance(appContext.getConfig());
 
         // TODO: This shouldn't be configured by Commandler itself.
         bind(NumberFormat.class).toInstance(NumberFormat.getInstance());

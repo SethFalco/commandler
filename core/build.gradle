@@ -18,7 +18,7 @@ dependencies {
     // Configuration
     // TODO: We don't want this be API as ideally the deafult way to use this should be
     // though a Commandler interface.
-    api "org.apache.commons:commons-configuration2:2.5"
+    api "org.apache.commons:commons-configuration2:2.6"
     implementation "commons-beanutils:commons-beanutils:1.9.4"
 
     // TODO: We don't want this to be API as ideally the default way to use this should be
@@ -27,7 +27,7 @@ dependencies {
     api "com.google.inject:guice:4.2.2"
 
     // Default Values and Hibernate Validation API
-    implementation "org.glassfish:jakarta.el:3.0.2"
+    implementation "org.glassfish:jakarta.el:3.0.3"
 
     // TODO: We shouldn't force people to depend on YAML in case they don't use a YAML configuration.
     runtimeOnly "org.yaml:snakeyaml:1.25"

@@ -21,6 +21,7 @@ import org.apache.commons.configuration2.builder.combined.CombinedConfigurationB
 import org.apache.commons.configuration2.builder.fluent.*;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.elypia.commandler.Commandler;
+import org.slf4j.*;
 
 import javax.inject.*;
 import java.util.*;
@@ -35,6 +36,8 @@ import java.util.*;
 @Singleton
 public class ConfigService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ConfigService.class);
+
     /**
      * An internal view of the {@link Configuration} loaded to define this
      * {@link Commandler} applications runtime behaviour.
@@ -47,6 +50,16 @@ public class ConfigService {
      */
     private final Properties properties;
 
+    /**
+     * A collection of all typed configuration objects.
+     * Any typed objected that is detected as a configuration object will
+     * appear here.
+     *
+     * In a Commandler Application there can be a lot of properties and variables
+     * that are managed externally so it's generally recommended and more organised
+     * to collate groups of them into objects like {@link AppConfig} or {@link CommandlerConfig}
+     * and register them as configuration files which will load on start.
+     */
     private final Collection<Object> configs;
 
     /**
@@ -65,6 +78,7 @@ public class ConfigService {
      */
     public ConfigService(final String profile) throws ConfigurationException {
         Objects.requireNonNull(profile);
+        logger.debug("Loading configuration from all sources.");
 
         Parameters params = new Parameters();
         params.registerDefaultsHandler(FileBasedBuilderParameters.class, new FileDefaultsHandler());
@@ -76,6 +90,11 @@ public class ConfigService {
         this.configuration = ConfigurationUtils.unmodifiableConfiguration(config);
         this.properties = ConfigurationConverter.getProperties(configuration);
         this.configs = new ArrayList<>();
+        logger.debug("Finished loading configuration succesfully.");
+
+        logger.info("Loading default {} from loaded configuration sources, " +
+                    "this is required for Commandler to work.", CommandlerConfig.class.getSimpleName());
+        this.configs.add(new CommandlerConfig(this));
     }
 
     public <T> List<T> getList(Class<T> t, final String key) {
@@ -100,6 +119,15 @@ public class ConfigService {
 
     public double getDouble(final String key) {
         return configuration.getDouble(key);
+    }
+
+    public <T> T getTypedConfig(Class<T> type) {
+        for (Object config : configs) {
+            if (config.getClass() == type)
+                return type.cast(config);
+        }
+
+        return null;
     }
 
     /**

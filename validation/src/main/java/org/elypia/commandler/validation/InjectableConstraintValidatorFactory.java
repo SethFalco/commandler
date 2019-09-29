@@ -16,7 +16,7 @@
 
 package org.elypia.commandler.validation;
 
-import org.elypia.commandler.injection.InjectionService;
+import org.elypia.commandler.injection.InjectorService;
 
 import javax.validation.*;
 
@@ -26,9 +26,9 @@ import javax.validation.*;
 public class InjectableConstraintValidatorFactory implements ConstraintValidatorFactory {
 
     /** The Commandler injection service to inject dependencies. */
-    private InjectionService injectorService;
+    private InjectorService injectorService;
 
-    public InjectableConstraintValidatorFactory(InjectionService injectorService) {
+    public InjectableConstraintValidatorFactory(InjectorService injectorService) {
         this.injectorService = injectorService;
     }
 

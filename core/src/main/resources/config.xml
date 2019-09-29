@@ -14,7 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <configuration>
   <header>
     <providers>
@@ -28,7 +27,6 @@
         <list-nodes>
           <node>config</node>
           <node>controller</node>
-          <node>command</node>
           <node>param</node>
           <node>adapter</node>
           <node>messenger</node>

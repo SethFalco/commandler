@@ -18,6 +18,7 @@ package org.elypia.commandler.injection;
 
 import com.google.inject.Module;
 import com.google.inject.*;
+import org.slf4j.*;
 
 import javax.inject.Singleton;
 import java.util.*;
@@ -34,20 +35,23 @@ import java.util.*;
  * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
-public class InjectionService {
+public class InjectorService {
+
+    private static final Logger logger = LoggerFactory.getLogger(InjectorService.class);
 
     private Injector injector;
 
-    public InjectionService(Module... modules) {
+    public InjectorService(Module... modules) {
         this(List.of(modules));
     }
 
-    public InjectionService(Collection<Module> modules) {
-        Guice.createInjector(Stage.PRODUCTION, modules);
+    public InjectorService(Collection<Module> modules) {
+        injector = Guice.createInjector(Stage.PRODUCTION, modules);
+        logger.debug("Instantiated {} with {} bindings.", InjectorService.class.getSimpleName(), injector.getAllBindings().size());
     }
 
     public void add(Module... modules) {
-        injector = injector.createChildInjector(modules);
+        add(List.of(modules));
     }
 
     public void add(Collection<Module> modules) {
@@ -72,6 +76,7 @@ public class InjectionService {
     }
 
     public <T> T getInstance(Class<T> type) {
+        logger.debug("Injecting instance of {}.", type);
         return injector.getInstance(type);
     }
 

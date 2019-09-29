@@ -19,7 +19,7 @@ package org.elypia.commandler.managers;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.AdapterRequiredException;
-import org.elypia.commandler.injection.InjectionService;
+import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.metadata.MetaMessenger;
 import org.slf4j.*;
 
@@ -36,21 +36,21 @@ public class MessengerManager {
     private static final Logger logger = LoggerFactory.getLogger(MessengerManager.class);
 
     /** Used to manage dependency injection when constructions param adapters. */
-    private final InjectionService injectionService;
+    private final InjectorService injectorService;
 
     private final Collection<MetaMessenger> providers;
 
     @Inject
-    public MessengerManager(InjectionService injectionService) {
-        this(injectionService, injectionService.getInstances(MetaMessenger.class));
+    public MessengerManager(InjectorService injectorService) {
+        this(injectorService, injectorService.getInstances(MetaMessenger.class));
     }
 
-    public MessengerManager(InjectionService injectionService, MetaMessenger... messengers) {
-        this(injectionService, List.of(messengers));
+    public MessengerManager(InjectorService injectorService, MetaMessenger... messengers) {
+        this(injectorService, List.of(messengers));
     }
 
-    public MessengerManager(InjectionService injectionService, Collection<MetaMessenger> messengers) {
-        this.injectionService = Objects.requireNonNull(injectionService);
+    public MessengerManager(InjectorService injectorService, Collection<MetaMessenger> messengers) {
+        this.injectorService = Objects.requireNonNull(injectorService);
         this.providers = Objects.requireNonNull(messengers);
 
         for (MetaMessenger provider : messengers)
@@ -119,6 +119,6 @@ public class MessengerManager {
         if (provider == null)
             throw new AdapterRequiredException("ResponseBuilder required for type " + typeRequired + ".");
 
-        return injectionService.getInstance(provider.getProviderType());
+        return injectorService.getInstance(provider.getProviderType());
     }
 }

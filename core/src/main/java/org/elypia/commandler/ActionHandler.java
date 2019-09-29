@@ -19,7 +19,7 @@ package org.elypia.commandler;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.ModuleDisabledException;
-import org.elypia.commandler.injection.InjectionService;
+import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
 
@@ -39,7 +39,7 @@ import javax.inject.*;
 public class ActionHandler implements ActionListener {
 
     protected DispatcherManager dispatcherManager;
-    protected InjectionService injectionService;
+    protected InjectorService injectorService;
     protected AdapterManager adapterService;
     protected TestManager testService;
     protected ExceptionManager exceptionService;
@@ -48,14 +48,14 @@ public class ActionHandler implements ActionListener {
     @Inject
     public ActionHandler(
         DispatcherManager dispatcherManager,
-        InjectionService injectionService,
+        InjectorService injectorService,
         AdapterManager adapterService,
         TestManager testService,
         ExceptionManager exceptionService,
         MessengerManager messengerService
     ) {
         this.dispatcherManager = dispatcherManager;
-        this.injectionService = injectionService;
+        this.injectorService = injectorService;
         this.adapterService = adapterService;
         this.testService = testService;
         this.exceptionService = exceptionService;
@@ -78,7 +78,7 @@ public class ActionHandler implements ActionListener {
         try {
             event = dispatcherManager.dispatch(integration, source, content);
             MetaController module = event.getMetaController();
-            Controller controller = injectionService.getInstance(module.getHandlerType());
+            Controller controller = injectorService.getInstance(module.getHandlerType());
             Object[] params = adapterService.adaptEvent(event);
 
             if (testService.isFailing(controller))
