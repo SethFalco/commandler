@@ -60,7 +60,10 @@ public class ConsoleIntegration extends AbstractIntegration<String, String> {
                     throw ex;
                 }
 
-                System.out.println(response);
+                if (response != null)
+                    System.out.println(response);
+                else
+                    logger.info("A message was recieved in console, however it warranted no response.");
             }
         });
     }
@@ -72,6 +75,8 @@ public class ConsoleIntegration extends AbstractIntegration<String, String> {
 
     @Override
     public Serializable getActionId(String source) {
-        return i.addAndGet(1);
+        int id = i.addAndGet(1);
+        logger.debug("ID for message `{}`: {}", source, id);
+        return id;
     }
 }

@@ -39,7 +39,12 @@ public class InjectorService {
 
     private static final Logger logger = LoggerFactory.getLogger(InjectorService.class);
 
+    /**
+     * The {@link Guice} injector, this is mutable as child injectors
+     * may replace the parent injector during runtime.
+     */
     private Injector injector;
+
 
     public InjectorService(Module... modules) {
         this(List.of(modules));
@@ -48,14 +53,6 @@ public class InjectorService {
     public InjectorService(Collection<Module> modules) {
         injector = Guice.createInjector(Stage.PRODUCTION, modules);
         logger.debug("Instantiated {} with {} bindings.", InjectorService.class.getSimpleName(), injector.getAllBindings().size());
-    }
-
-    public void add(Module... modules) {
-        add(List.of(modules));
-    }
-
-    public void add(Collection<Module> modules) {
-        injector = injector.createChildInjector(modules);
     }
 
     /**
@@ -75,12 +72,22 @@ public class InjectorService {
         });
     }
 
+    public void add(Module... modules) {
+        add(List.of(modules));
+    }
+
+    public void add(Collection<Module> modules) {
+        logger.debug("Adding {} bindings to dependency injector service during runtime.", modules.size());
+        injector = injector.createChildInjector(modules);
+    }
+
     public <T> T getInstance(Class<T> type) {
         logger.debug("Injecting instance of {}.", type);
         return injector.getInstance(type);
     }
 
     public <T> Collection<T> getInstances(Class<T> type) {
-        return null;
+        // TODO: Actually return some classes preferably.
+        return List.of();
     }
 }

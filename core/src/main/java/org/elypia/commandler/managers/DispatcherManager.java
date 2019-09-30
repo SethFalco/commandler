@@ -17,10 +17,12 @@
 package org.elypia.commandler.managers;
 
 import org.elypia.commandler.api.*;
+import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.injection.InjectorService;
 import org.slf4j.*;
 
-import javax.inject.Singleton;
+import javax.inject.*;
 import java.util.*;
 
 /**
@@ -35,6 +37,19 @@ public class DispatcherManager {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherManager.class);
 
     private List<Dispatcher> dispatchers;
+
+    @Inject
+    public DispatcherManager(InjectorService injector, final CommandlerConfig config) {
+        List<Dispatcher> dispatchers = new ArrayList<>();
+
+        for (Class<Dispatcher> dispatcher : config.getDispatchers()) {
+            logger.debug("Creating instance of {}.", dispatcher);
+            dispatchers.add(injector.getInstance(dispatcher));
+        }
+
+        this.dispatchers = new ArrayList<>();
+        this.dispatchers.addAll(dispatchers);
+    }
 
     public DispatcherManager(Dispatcher... dispatchers) {
         this(List.of(dispatchers));

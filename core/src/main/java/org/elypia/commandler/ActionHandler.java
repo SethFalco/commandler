@@ -18,10 +18,11 @@ package org.elypia.commandler;
 
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
-import org.elypia.commandler.exceptions.ModuleDisabledException;
+import org.elypia.commandler.exceptions.ActionException;
 import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
+import org.slf4j.*;
 
 import javax.inject.*;
 
@@ -38,10 +39,12 @@ import javax.inject.*;
 @Singleton
 public class ActionHandler implements ActionListener {
 
+    private Logger logger = LoggerFactory.getLogger(ActionHandler.class);
+
     protected DispatcherManager dispatcherManager;
     protected InjectorService injectorService;
     protected AdapterManager adapterService;
-    protected TestManager testService;
+//    protected TestManager testService;
     protected ExceptionManager exceptionService;
     protected MessengerManager messengerService;
 
@@ -50,14 +53,14 @@ public class ActionHandler implements ActionListener {
         DispatcherManager dispatcherManager,
         InjectorService injectorService,
         AdapterManager adapterService,
-        TestManager testService,
+//        TestManager testService,
         ExceptionManager exceptionService,
         MessengerManager messengerService
     ) {
         this.dispatcherManager = dispatcherManager;
         this.injectorService = injectorService;
         this.adapterService = adapterService;
-        this.testService = testService;
+//        this.testService = testService;
         this.exceptionService = exceptionService;
         this.messengerService = messengerService;
     }
@@ -72,6 +75,8 @@ public class ActionHandler implements ActionListener {
      */
     @Override
     public <S, M> M onAction(Integration<S, M> integration, S source, String content) {
+        logger.debug("Message Received: {}", content);
+
         Object response;
         ActionEvent<S, M> event = null;
 
@@ -81,13 +86,17 @@ public class ActionHandler implements ActionListener {
             Controller controller = injectorService.getInstance(module.getHandlerType());
             Object[] params = adapterService.adaptEvent(event);
 
-            if (testService.isFailing(controller))
-                throw new ModuleDisabledException(event);
+//            if (testService.isFailing(controller))
+//                throw new ModuleDisabledException(event);
 
             MetaCommand metaCommand = event.getMetaCommand();
             response = metaCommand.getMethod().invoke(controller, params);
-        } catch (Exception ex) {
+        } catch (ActionException ex) {
+            logger.info("An action exception occured when handling a message. (A user probably did something wrong and the command panicked.)");
             response = exceptionService.handle(ex);
+        } catch (Exception ex) {
+            logger.error("An exception occured when handling a message.", ex);
+            return null;
         }
 
         if (response == null)

@@ -21,6 +21,7 @@ import org.elypia.commandler.*;
 import org.elypia.commandler.config.ConfigService;
 
 import java.text.NumberFormat;
+import java.util.Objects;
 
 /**
  * @author seth@elypia.org (Syed Shah)
@@ -28,19 +29,19 @@ import java.text.NumberFormat;
 public class CommandlerModule extends AbstractModule {
 
     private final Commandler commandler;
+    private final AppContext context;
 
-    public CommandlerModule(final Commandler commandler) {
-        this.commandler = commandler;
+    public CommandlerModule(final Commandler commandler, final AppContext context) {
+        this.commandler = Objects.requireNonNull(commandler);
+        this.context = Objects.requireNonNull(context);
     }
 
     @Override
     protected void configure() {
         bind(Commandler.class).toInstance(commandler);
-
-        AppContext appContext = commandler.getAppContext();
-        bind(AppContext.class).toInstance(appContext);
-        bind(InjectorService.class).toInstance(appContext.getInjector());
-        bind(ConfigService.class).toInstance(appContext.getConfig());
+        bind(AppContext.class).toInstance(context);
+        bind(InjectorService.class).toInstance(context.getInjector());
+        bind(ConfigService.class).toInstance(context.getConfig());
 
         // TODO: This shouldn't be configured by Commandler itself.
         bind(NumberFormat.class).toInstance(NumberFormat.getInstance());

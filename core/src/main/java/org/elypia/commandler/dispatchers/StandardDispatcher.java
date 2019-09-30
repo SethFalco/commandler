@@ -119,7 +119,7 @@ public class StandardDispatcher implements Dispatcher {
                 .findAny();
 
             String prefix = optPrefix.orElseThrow(
-                () -> new IllegalStateException("Do not call the #parse method if the command #isInvalid.")
+                () -> new IllegalStateException("Do not call the #parse method if the command is invalid.")
             );
 
             content = content.substring(prefix.length());

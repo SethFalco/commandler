@@ -19,7 +19,6 @@ package org.elypia.commandler.validation;
 import org.elypia.commandler.ActionHandler;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
-import org.elypia.commandler.exceptions.ModuleDisabledException;
 import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
@@ -42,12 +41,13 @@ public class ValidatedActionHandler extends ActionHandler {
         DispatcherManager dispatcherManager,
         InjectorService injectorService,
         AdapterManager adapterService,
-        TestManager testService,
+//        TestManager testService,
         ExceptionManager exceptionService,
         MessengerManager messengerService,
         HibernateValidationManager validationService
     ) {
-        super(dispatcherManager, injectorService, adapterService, testService, exceptionService, messengerService);
+//        super(dispatcherManager, injectorService, adapterService, testService, exceptionService, messengerService);
+        super(dispatcherManager, injectorService, adapterService, exceptionService, messengerService);
         this.validationService = validationService;
     }
 
@@ -72,8 +72,8 @@ public class ValidatedActionHandler extends ActionHandler {
             Object[] params = adapterService.adaptEvent(event);
             validationService.validate(event, controller, params);
 
-            if (testService.isFailing(controller))
-                throw new ModuleDisabledException(event);
+//            if (testService.isFailing(controller))
+//                throw new ModuleDisabledException(event);
 
             MetaCommand metaCommand = event.getMetaCommand();
             response = metaCommand.getMethod().invoke(controller, params);

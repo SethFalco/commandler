@@ -51,6 +51,8 @@ public class CommandlerConfig {
 
     private Collection<Class<Integration<?, ?>>> integrations;
 
+    private Collection<Class<Dispatcher>> dispatchers;
+
     @Inject
     public CommandlerConfig(final ConfigService config) {
         this.configs = convertConfigs(config);
@@ -58,6 +60,7 @@ public class CommandlerConfig {
         this.adapters = convertAdapters(config);
         this.messengers = convertMessengers(config);
         this.integrations = convertIntegrations(config);
+        this.dispatchers = convertDispatchers(config);
     }
 
     private List<Class<?>> convertConfigs(final ConfigService config) {
@@ -95,6 +98,28 @@ public class CommandlerConfig {
         }
 
         return integrationTypes;
+    }
+
+    private List<Class<Dispatcher>> convertDispatchers(final ConfigService config) {
+        List<String> dispatchers = config.getList(String.class, "commandler.dispatcher");
+        List<Class<Dispatcher>> dispatcherTypes = new ArrayList<>();
+
+        for (String dispatcher : dispatchers) {
+            Class<?> type;
+
+            try {
+                type = Class.forName(dispatcher);
+
+                if (Dispatcher.class.isAssignableFrom(type))
+                    dispatcherTypes.add((Class<Dispatcher>)type);
+                else
+                    throw new RuntimeException();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return dispatcherTypes;
     }
 
     private List<MetaAdapter> convertAdapters(final ConfigService config) {
@@ -239,6 +264,10 @@ public class CommandlerConfig {
 
     public Collection<Class<?>> getConfigs() {
         return configs;
+    }
+
+    public Collection<Class<Dispatcher>> getDispatchers() {
+        return dispatchers;
     }
 
     private static class ComponentConfig {

@@ -60,6 +60,7 @@ public abstract class MetaComponent {
     }
 
     public Collection<String> getProperties(String key) {
+        // TODO: This...
         return null;
     }
 }

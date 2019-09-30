@@ -16,7 +16,8 @@
 
 package org.elypia.commandler.api;
 
-import org.elypia.commandler.Commandler;
+import org.elypia.commandler.*;
+import org.slf4j.*;
 
 /**
  * @param <S>
@@ -25,10 +26,13 @@ import org.elypia.commandler.Commandler;
  */
 public abstract class AbstractIntegration<S, M> implements Integration<S, M> {
 
+    private static final Logger logger = LoggerFactory.getLogger(AbstractIntegration.class);
+
     protected Commandler commandler;
 
     public M process(S source, String content) {
-        return null;
+        logger.debug("Recieved `{}` from {}.", content, this.getClass());
+        return commandler.getAppContext().getInjector().getInstance(ActionHandler.class).onAction(this, source, content);
     }
 
     public Commandler getCommandler() {
