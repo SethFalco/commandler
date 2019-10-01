@@ -19,7 +19,7 @@ package org.elypia.commandler.exceptions;
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class AdapterRequiredException extends RuntimeException {
+public class AdapterRequiredException extends MisuseException {
 
     public AdapterRequiredException() {
         super();

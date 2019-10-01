@@ -24,14 +24,77 @@ import java.net.*;
 import java.util.*;
 
 /**
+ * Centralized and reusable utilities for reflection.
+ *
  * @author seth@elypia.org (Syed Shah)
  */
 public final class ReflectionUtils {
 
+    /** Logging with slf4j; make sure a implenting or binding is available at runtime. */
     private static final Logger logger = LoggerFactory.getLogger(ReflectionUtils.class);
 
+    /** <strong>Only use the methods in this class statically.</strong> */
     private ReflectionUtils() {
-        // Do nothing
+        // Don't construct this class.
+    }
+
+    public static Collection<Class<Object>> convertTypes(final String[] names) {
+        return convertTypes(List.of(names));
+    }
+
+    public static Collection<Class<Object>> convertTypes(final Collection<String> names) {
+        return convertTypes(names, Object.class);
+    }
+
+    public static <T> Collection<Class<T>> convertTypes(final String[] names, final Class<T> type) {
+        return convertTypes(List.of(names), type);
+    }
+
+    public static <T> Collection<Class<T>> convertTypes(final Collection<String> names, final Class<T> type) {
+        List<Class<T>> types = new ArrayList<>();
+
+        for (String name : names)
+            types.add(convertType(name, type));
+
+        return types;
+    }
+
+    /**
+     * @see #convertType(String, Class)
+     *
+     * @param name The name of the class to find.
+     * @return The Java {@link Class} of this type if one is found.
+     * @throws RuntimeException If the classpath does not contain such a class or if the class
+     * found is is not the type required.
+     */
+    public static Class<Object> convertType(final String name) {
+        return convertType(name, Object.class);
+    }
+
+    /**
+     * Convert a class string to an actual Java class.
+     *
+     * @param name The name of the class to find.
+     * @param type The type of class required.
+     * @param <T> The type of class required.
+     * @return The Java {@link Class} of this type if one is found.
+     * @throws RuntimeException If the classpath does not contain such a class or if the class
+     * found is is not the type required.
+     */
+    public static <T> Class<T> convertType(final String name, final Class<T> type) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(type);
+
+        try {
+            Class<?> typeFound = Class.forName(name);
+
+            if (!type.isAssignableFrom(typeFound))
+                throw new RuntimeException("Type found does not match type requires.");
+
+            return (Class<T>)typeFound;
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -87,10 +150,12 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Add all classes in the specified package recursivley.
+     * Add all classes in the specified package recursivley to the list
+     * provided.
      *
      * @param dir The directory we're loading from.
      * @param packageName The name of the package we're loading.
+     * @param list The list to add all classes that are found.
      */
     private static void addClasses(File dir, String packageName, Collection<Class<?>> list) {
         File[] files = dir.listFiles();

@@ -16,7 +16,7 @@
 
 package org.elypia.commandler;
 
-import org.elypia.commandler.api.ExceptionHandler;
+import org.elypia.commandler.api.MisuseHandler;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.*;
 import org.elypia.commandler.metadata.*;
@@ -25,19 +25,19 @@ import org.slf4j.*;
 import java.util.Objects;
 
 /**
- * A default implementation of {@link ExceptionHandler}.
+ * A default implementation of {@link MisuseHandler}.
  * You can use this to get started quickly and add more on top.
  *
  * It's recommend when configuring your own exceptions
  *
  * @author seth@elypia.org (Syed Shah)
  */
-public class DefaultExceptionHandler implements ExceptionHandler {
+public class DefaultMisuseHandler implements MisuseHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultMisuseHandler.class);
 
     @Override
-    public <X extends Exception> Object handle(X ex) {
+    public <X extends MisuseException> Object handle(X ex) {
         if (ex instanceof OnlyPrefixException)
             return onOnlyPrefix((OnlyPrefixException)ex);
         else if (ex instanceof ModuleNotFoundException)
@@ -53,12 +53,12 @@ public class DefaultExceptionHandler implements ExceptionHandler {
         else if (ex instanceof ModuleDisabledException)
             return onDisabled((ModuleDisabledException)ex);
         else
-            return onException(ex);
+            return onMisuseException(ex);
     }
 
     /**
      * @param ex The exception that occured.
-     * @return Don't send any messages.
+     * @return Always returns null.
      */
     private String onOnlyPrefix(OnlyPrefixException ex) {
         return null;
@@ -66,7 +66,7 @@ public class DefaultExceptionHandler implements ExceptionHandler {
 
     /**
      * @param ex The exception that occured.
-     * @return Don't send any messages.
+     * @return Always returns null.
      */
     private String onModuleNotFound(ModuleNotFoundException ex) {
         return null;
@@ -179,7 +179,7 @@ public class DefaultExceptionHandler implements ExceptionHandler {
      * @param ex The exception that occured.
      * @return Don't send any messages.
      */
-    private <X extends Exception> String onException(X ex) {
+    private <X extends MisuseException> String onMisuseException(X ex) {
         String text = "An unknown error occured.";
         logger.error(text, ex);
         return text;

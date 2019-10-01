@@ -35,7 +35,7 @@
         <xs:element name="commandler">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="config" type="types" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:element name="config" type="pojo" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="controller" type="controller" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="adapter" type="adapter" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="messenger" type="messenger" minOccurs="0" maxOccurs="unbounded"/>
@@ -45,7 +45,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-
 
   <xs:simpleType name="pojo">
     <xs:restriction base="xs:string">
@@ -113,24 +112,18 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="types">
-    <xs:sequence>
-      <xs:element name="type" type="pojo" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-
   <xs:complexType name="adapter">
     <xs:sequence>
-      <xs:element name="compatible" type="types" maxOccurs="unbounded"/>
+      <xs:element name="compatible" type="pojo" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type" type="pojo" use="required"/>
   </xs:complexType>
 
   <xs:complexType name="messenger">
     <xs:sequence>
-      <xs:element name="provides" type="pojo"/>
-      <xs:element name="compatible" type="types" maxOccurs="unbounded"/>
+      <xs:element name="compatible" type="pojo" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type" type="pojo" use="required"/>
+    <xs:attribute name="provides" type="pojo" use="required"/>
   </xs:complexType>
 </xs:schema>

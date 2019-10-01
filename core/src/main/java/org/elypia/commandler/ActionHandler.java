@@ -18,7 +18,7 @@ package org.elypia.commandler;
 
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
-import org.elypia.commandler.exceptions.ActionException;
+import org.elypia.commandler.exceptions.MisuseException;
 import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
@@ -45,7 +45,7 @@ public class ActionHandler implements ActionListener {
     protected InjectorService injectorService;
     protected AdapterManager adapterService;
 //    protected TestManager testService;
-    protected ExceptionManager exceptionService;
+    protected MisuseManager exceptionService;
     protected MessengerManager messengerService;
 
     @Inject
@@ -54,7 +54,7 @@ public class ActionHandler implements ActionListener {
         InjectorService injectorService,
         AdapterManager adapterService,
 //        TestManager testService,
-        ExceptionManager exceptionService,
+        MisuseManager exceptionService,
         MessengerManager messengerService
     ) {
         this.dispatcherManager = dispatcherManager;
@@ -91,8 +91,8 @@ public class ActionHandler implements ActionListener {
 
             MetaCommand metaCommand = event.getMetaCommand();
             response = metaCommand.getMethod().invoke(controller, params);
-        } catch (ActionException ex) {
-            logger.info("An action exception occured when handling a message. (A user probably did something wrong and the command panicked.)");
+        } catch (MisuseException ex) {
+            logger.info("An misuse exception occured when handling a message; command panicked.");
             response = exceptionService.handle(ex);
         } catch (Exception ex) {
             logger.error("An exception occured when handling a message.", ex);

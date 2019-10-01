@@ -16,7 +16,9 @@
 
 package org.elypia.commandler.managers;
 
+import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.*;
+import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.*;
 import org.elypia.commandler.injection.InjectorService;
@@ -29,10 +31,11 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 /**
- * <p>The {@link MetaParam paramter} parser which is used to interpret
- * parameters specified in the {@link MetaCommand command} arguments.
- * Before a type can be used as an argument a {@link Adapter}
- * must be specified and registered to the {@link AdapterManager}.</p>
+ * <p>The {@link MetaParam param} adapter which is used to interpret
+ * params specified in the {@link MetaCommand commands}.
+ * Before a type can be used as an param an {@link Adapter}
+ * must be specified and registered to the {@link Commandler}.</p>
+ *
  * <p>The {@link AdapterManager} is how {@link String} input provided
  * by the chat client is converted into the respective object and passed
  * to the method associated with the {@link MetaCommand}.</p>
@@ -49,26 +52,23 @@ public class AdapterManager {
     private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
 
     /** Used to manage dependency injection when constructions param adapters. */
-    private final InjectorService injectorService;
-    private final Collection<MetaAdapter> adapters;
+    private final InjectorService injector;
+
+    /** The configuration class which contains all metadata for this instance. */
+    private final CommandlerConfig commandlerConfig;
+
+    /** Used to evaluate expressions and build default values for parameters. */
     private final ExpressionFactory expressionFactory;
 
+    /**
+     * @param injector Injector service to inject adapters and dependencies.
+     * @param commandlerConfig Main commandler configuration.
+     */
     @Inject
-    public AdapterManager(InjectorService injectorService) {
-        this(injectorService, injectorService.getInstances(MetaAdapter.class));
-    }
-
-    public AdapterManager(InjectorService injectionManager, MetaAdapter... adapters) {
-        this(injectionManager, List.of(adapters));
-    }
-
-    public AdapterManager(InjectorService injectionManager, Collection<MetaAdapter> adapters) {
-        this.injectorService = Objects.requireNonNull(injectionManager);
-        this.adapters = Objects.requireNonNull(adapters);
+    public AdapterManager(final InjectorService injector, final CommandlerConfig commandlerConfig) {
+        this.injector = Objects.requireNonNull(injector);
+        this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
         this.expressionFactory = ELManager.getExpressionFactory();
-
-        for (MetaAdapter adapter : adapters)
-            logger.debug("Adapter added for type {}.", adapter.getAdapterType().getSimpleName());
     }
 
     /**
@@ -78,11 +78,10 @@ public class AdapterManager {
      * @param event The message event to take parameters from.
      * @return An array of all parameters adapted as required for the given method.
      */
-    public Object[] adaptEvent(ActionEvent event) throws ListUnsupportedException, ParamParseException {
+    public Object[] adaptEvent(ActionEvent event) {
         Action input = event.getAction();
         List<MetaParam> metaParams = event.getMetaCommand().getMetaParams();
         List<List<String>> inputs = input.getParams();
-
         List<Object> objects = new ArrayList<>();
 
         for (int i = 0; i < metaParams.size(); i++) {
@@ -140,22 +139,23 @@ public class AdapterManager {
     }
 
     /**
-     * This actually convertes an individual parameter into the type
+     * <p>This actually converts an individual param into the type
      * required for a command. If the type required is an array,
      * we convert each item in the array using the
-     * {@link Class#getComponentType() component type}. <br>
-     * This should return null if a parameter fails to adapt or list
-     * parameter is provided where lists are not supported.
+     * {@link Class#getComponentType() component type}.</p>
+     *
+     * <p>This should return null if a parameter fails to adapt or list
+     * parameter is provided where lists are not supported.</p>
      *
      * @param event The message event to take parameters from.
-     * @param metaParam The static parameter data associated with the parameter.
+     * @param param The static parameter data associated with the parameter.
      * @param items The input provided by the user, this will only contain
-     *              more than one item if the user provided a list of items.
-     * @return      The parsed object as required for the command, or null
-     *              if we failed to adapt the input. (Usually user misuse.)
+     * more than one item if the user provided a list of items.
+     * @return The parsed object as required for the command, or  null
+     * if we failed to adapt the input. (Usually user misuse.)
      */
-    protected Object adaptParam(Action action, ActionEvent event, MetaParam metaParam, List<String> items) throws ParamParseException, ListUnsupportedException {
-        Class<?> type = metaParam.getType();
+    protected Object adaptParam(Action action, ActionEvent event, MetaParam param, List<String> items) throws ParamParseException, ListUnsupportedException {
+        Class<?> type = param.getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
         Adapter adapter = this.getAdapter(componentType);
 
@@ -169,10 +169,10 @@ public class AdapterManager {
 
             for (int i = 0; i < size; i++) {
                 String item = items.get(i);
-                Object o = adapter.adapt(item, componentType, metaParam, event);
+                Object o = adapter.adapt(item, componentType, param, event);
 
                 if (o == null)
-                    throw new ParamParseException(event, metaParam, item);
+                    throw new ParamParseException(event, param, item);
 
                 if (componentType == boolean.class)
                     Array.setBoolean(output, i, (boolean)o);
@@ -198,15 +198,15 @@ public class AdapterManager {
         }
 
         if (size == 1) {
-            Object o = adapter.adapt(items.get(0), componentType, metaParam, event);
+            Object o = adapter.adapt(items.get(0), componentType, param, event);
 
             if (o == null)
-                throw new ParamParseException(event, metaParam, items.get(0));
+                throw new ParamParseException(event, param, items.get(0));
 
             return o;
         }
 
-        throw new ListUnsupportedException(event, metaParam, items);
+        throw new ListUnsupportedException(event, param, items);
     }
 
     /**
@@ -224,8 +224,8 @@ public class AdapterManager {
     public <T> Adapter<?> getAdapter(Class<?> typeRequired) {
         MetaAdapter adapter = null;
 
-        for (MetaAdapter metaAdapter : adapters) {
-            Collection<Class<?>> compatible = metaAdapter.getCompatibleTypes();
+        for (MetaAdapter metaAdapter : commandlerConfig.getAdapters()) {
+            Collection<Class<Object>> compatible = metaAdapter.getCompatibleTypes();
 
             if (compatible.contains(typeRequired)) {
                 adapter = metaAdapter;
@@ -241,6 +241,6 @@ public class AdapterManager {
 
         logger.debug("Using `{}` adapter for parameter.", adapter.getAdapterType().getSimpleName());
         // TODO: Add event objects and params to child injector
-        return injectorService.getInstance(adapter.getAdapterType());
+        return injector.getInstance(adapter.getAdapterType());
     }
 }

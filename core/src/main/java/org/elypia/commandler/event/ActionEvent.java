@@ -52,8 +52,10 @@ public class ActionEvent<S, M> {
     /** The locale associated with this event. */
     private Locale locale;
 
-    public ActionEvent(Integration<S, M> integration, S source, Action action) {
+    public ActionEvent(Integration<S, M> integration, MetaController metaController, MetaCommand metaCommand, S source, Action action) {
         this.integration = integration;
+        this.metaController = metaController;
+        this.metaCommand = metaCommand;
         this.source = source;
         this.action = action;
     }

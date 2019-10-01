@@ -19,28 +19,22 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="https://commandler.elypia.org application.xsd">
   <commandler>
-    <messenger type="org.elypia.commandler.console.messengers.MiscMessenger">
-      <provides>java.lang.String</provides>
-      <compatible>
-        <type>java.lang.Boolean</type>
-        <type>java.lang.CharSequence</type>
-        <type>java.lang.Character</type>
-        <type>java.net.URL</type>
-        <type>boolean</type>
-        <type>char</type>
-      </compatible>
+    <messenger type="org.elypia.commandler.console.messengers.MiscMessenger" provides="java.lang.String">
+      <compatible>java.lang.Boolean</compatible>
+      <compatible>java.lang.CharSequence</compatible>
+      <compatible>java.lang.Character</compatible>
+      <compatible>java.net.URL</compatible>
+      <compatible>boolean</compatible>
+      <compatible>char</compatible>
     </messenger>
-    <messenger type="org.elypia.commandler.console.messengers.NumberMessenger">
-      <provides>java.lang.Number</provides>
-      <compatible>
-        <type>java.lang.Number</type>
-        <type>double</type>
-        <type>float</type>
-        <type>long</type>
-        <type>int</type>
-        <type>short</type>
-        <type>byte</type>
-      </compatible>
+    <messenger type="org.elypia.commandler.console.messengers.NumberMessenger" provides="java.lang.Number">
+      <compatible>java.lang.Number</compatible>
+      <compatible>double</compatible>
+      <compatible>float</compatible>
+      <compatible>long</compatible>
+      <compatible>int</compatible>
+      <compatible>short</compatible>
+      <compatible>byte</compatible>
     </messenger>
   </commandler>
 </configuration>

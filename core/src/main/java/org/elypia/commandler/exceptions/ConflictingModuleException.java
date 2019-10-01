@@ -19,7 +19,7 @@ package org.elypia.commandler.exceptions;
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class ConflictingModuleException extends RuntimeException {
+public class ConflictingModuleException extends MisuseException {
 
     public ConflictingModuleException() {
         super();

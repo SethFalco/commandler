@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class NoDefaultCommandException extends RuntimeException {
+public class NoDefaultCommandException extends MisuseException {
 
     private MetaController module;
 

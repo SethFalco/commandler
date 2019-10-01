@@ -16,7 +16,8 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.api.ExceptionHandler;
+import org.elypia.commandler.api.MisuseHandler;
+import org.elypia.commandler.exceptions.MisuseException;
 import org.elypia.commandler.metadata.MetaCommand;
 
 import javax.inject.Singleton;
@@ -34,19 +35,19 @@ import java.util.*;
  * @author seth@elypia.org (Syed Shah)
  */
 @Singleton
-public class ExceptionManager {
+public class MisuseManager {
 
-    private Collection<ExceptionHandler> handlers;
+    private Collection<MisuseHandler> handlers;
 
-    public ExceptionManager() {
+    public MisuseManager() {
         this(new ArrayList<>());
     }
 
-    public ExceptionManager(ExceptionHandler... handlers) {
+    public MisuseManager(MisuseHandler... handlers) {
         this(new ArrayList<>(List.of(handlers)));
     }
 
-    public ExceptionManager(Collection<ExceptionHandler> handlers) {
+    public MisuseManager(Collection<MisuseHandler> handlers) {
         this.handlers = handlers;
     }
 
@@ -56,8 +57,8 @@ public class ExceptionManager {
      * @return The message to send due to this exception,
      * or null if there is no message to be sent.
      */
-    public <X extends Exception> Object handle(X ex) {
-        for (ExceptionHandler handler : handlers) {
+    public <X extends MisuseException> Object handle(X ex) {
+        for (MisuseHandler handler : handlers) {
             Object o = handler.handle(ex);
 
             if (o != null)

@@ -19,7 +19,7 @@ package org.elypia.commandler.exceptions;
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class OnlyPrefixException extends RuntimeException {
+public class OnlyPrefixException extends MisuseException {
 
     public OnlyPrefixException() {
         super();

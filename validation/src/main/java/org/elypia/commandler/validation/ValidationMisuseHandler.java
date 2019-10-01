@@ -18,6 +18,7 @@ package org.elypia.commandler.validation;
 
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.exceptions.MisuseException;
 
 import javax.validation.*;
 import java.util.*;
@@ -26,10 +27,10 @@ import java.util.stream.Collectors;
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class ValidationExceptionHandler implements ExceptionHandler {
+public class ValidationMisuseHandler implements MisuseHandler {
 
     @Override
-    public <X extends Exception> Object handle(X ex) {
+    public <X extends MisuseException> Object handle(X ex) {
         if (ex instanceof ViolationException)
             return onViolation((ViolationException)ex);
 

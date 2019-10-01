@@ -19,10 +19,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="https://commandler.elypia.org application.xsd">
   <commandler>
-    <config>
-      <type>org.elypia.commandler.config.AppConfig</type>
-      <type>org.elypia.commandler.config.CommandlerConfig</type>
-    </config>
+    <config>org.elypia.commandler.config.AppConfig</config>
+    <config>org.elypia.commandler.config.CommandlerConfig</config>
 <!--    <controller type="org.elypia.commandler.DefaultHelpController">-->
 <!--      <name>Help</name>-->
 <!--      <group>Guidance</group>-->
@@ -54,57 +52,39 @@
 <!--      </command>-->
 <!--    </controller>-->
     <adapter type="org.elypia.commandler.adapters.BooleanAdapter">
-      <compatible>
-        <type>java.lang.Boolean</type>
-        <type>boolean</type>
-      </compatible>
+      <compatible>java.lang.Boolean</compatible>
+<!--      <compatible>boolean</compatible>-->
     </adapter>
     <adapter type="org.elypia.commandler.adapters.CharAdapter">
-      <compatible>
-        <type>java.lang.Character</type>
-        <type>char</type>
-      </compatible>
+      <compatible>java.lang.Character</compatible>
+<!--      <compatible>char</compatible>-->
     </adapter>
     <adapter type="org.elypia.commandler.adapters.DurationAdapter">
-      <compatible>
-        <type>java.time.Duration</type>
-      </compatible>
+      <compatible>java.time.Duration</compatible>
     </adapter>
     <adapter type="org.elypia.commandler.adapters.EnumAdapter">
-      <compatible>
-        <type>java.lang.Enum</type>
-      </compatible>
+      <compatible>java.lang.Enum</compatible>
     </adapter>
     <adapter type="org.elypia.commandler.adapters.LocaleAdapter">
-      <compatible>
-        <type>java.util.Locale</type>
-      </compatible>
+      <compatible>java.util.Locale</compatible>
     </adapter>
     <adapter type="org.elypia.commandler.adapters.NumberAdapter">
-      <compatible>
-        <type>java.lang.Number</type>
-        <type>double</type>
-        <type>float</type>
-        <type>long</type>
-        <type>int</type>
-        <type>short</type>
-        <type>byte</type>
-      </compatible>
+      <compatible>java.lang.Number</compatible>
+<!--      <compatible>double</compatible>-->
+<!--      <compatible>float</compatible>-->
+<!--      <compatible>long</compatible>-->
+<!--      <compatible>int</compatible>-->
+<!--      <compatible>short</compatible>-->
+<!--      <compatible>byte</compatible>-->
     </adapter>
     <adapter type="org.elypia.commandler.adapters.StringAdapter">
-      <compatible>
-        <type>java.lang.CharSequence</type>
-      </compatible>
+      <compatible>java.lang.CharSequence</compatible>
     </adapter>
     <adapter type="org.elypia.commandler.adapters.TimeUnitAdapter">
-      <compatible>
-        <type>java.util.concurrent.TimeUnit</type>
-      </compatible>
+      <compatible>java.util.concurrent.TimeUnit</compatible>
     </adapter>
     <adapter type="org.elypia.commandler.adapters.UrlAdapter">
-      <compatible>
-        <type>java.net.URL</type>
-      </compatible>
+      <compatible>java.net.URL</compatible>
     </adapter>
   </commandler>
 </configuration>

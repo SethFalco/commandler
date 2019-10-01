@@ -17,6 +17,7 @@
 package org.elypia.commandler.managers;
 
 import org.elypia.commandler.api.*;
+import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.AdapterRequiredException;
 import org.elypia.commandler.injection.InjectorService;
@@ -35,26 +36,14 @@ public class MessengerManager {
     /** SLF4J Logger*/
     private static final Logger logger = LoggerFactory.getLogger(MessengerManager.class);
 
-    /** Used to manage dependency injection when constructions param adapters. */
-    private final InjectorService injectorService;
-
-    private final Collection<MetaMessenger> providers;
+    /** Used to manage dependency injection when injecting messengers. */
+    private final InjectorService injector;
+    private final CommandlerConfig commandlerConfig;
 
     @Inject
-    public MessengerManager(InjectorService injectorService) {
-        this(injectorService, injectorService.getInstances(MetaMessenger.class));
-    }
-
-    public MessengerManager(InjectorService injectorService, MetaMessenger... messengers) {
-        this(injectorService, List.of(messengers));
-    }
-
-    public MessengerManager(InjectorService injectorService, Collection<MetaMessenger> messengers) {
-        this.injectorService = Objects.requireNonNull(injectorService);
-        this.providers = Objects.requireNonNull(messengers);
-
-        for (MetaMessenger provider : messengers)
-            logger.debug("Provider added for type {}.", provider.getProviderType().getSimpleName());
+    public MessengerManager(final InjectorService injector, final CommandlerConfig commandlerConfig) {
+        this.injector = Objects.requireNonNull(injector);
+        this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
     }
 
     public <M> M provide(ActionEvent<?, M> event, Object object) {
@@ -101,8 +90,8 @@ public class MessengerManager {
     public <T> ResponseBuilder<?, ?> getProvider(Integration controller, Class<?> typeRequired) {
         MetaMessenger provider = null;
 
-        for (MetaMessenger metaMessenger : providers) {
-            Collection<Class<?>> compatible = metaMessenger.getCompatibleTypes();
+        for (MetaMessenger metaMessenger : commandlerConfig.getMessengers()) {
+            Collection<Class<Object>> compatible = metaMessenger.getCompatibleTypes();
 
             if (metaMessenger.getBuildType() != controller.getMessageType())
                 continue;
@@ -119,6 +108,6 @@ public class MessengerManager {
         if (provider == null)
             throw new AdapterRequiredException("ResponseBuilder required for type " + typeRequired + ".");
 
-        return injectorService.getInstance(provider.getProviderType());
+        return injector.getInstance(provider.getProviderType());
     }
 }

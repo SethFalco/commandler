@@ -17,46 +17,33 @@
 package org.elypia.commandler.exceptions;
 
 import org.elypia.commandler.api.MisuseHandler;
-import org.elypia.commandler.event.ActionEvent;
-
-import java.util.Objects;
 
 /**
  * All exceptions that should panic and stop processing a command
  * due to user error should extend this abstract class.
  *
- * The {@link ActionException} is intended to be thrown when
+ * The {@link MisuseException} is intended to be thrown when
  * users have done something wrong in order for a {@link MisuseHandler}
  * to pick up the error and return a clean and helpful error
  * message to users.
  *
  * @author seth@elypia.org (Syed Shah)
  */
-public abstract class ActionException extends MisuseException {
+public abstract class MisuseException extends RuntimeException {
 
-    private ActionEvent<?, ?> event;
-
-    public ActionException(ActionEvent<?, ?> event) {
+    public MisuseException() {
         super();
-        this.event = Objects.requireNonNull(event);
     }
 
-    public ActionException(ActionEvent<?, ?> event, String message) {
+    public MisuseException(String message) {
         super(message);
-        this.event = Objects.requireNonNull(event);
     }
 
-    public ActionException(ActionEvent<?, ?> event, String message, Throwable cause) {
+    public MisuseException(String message, Throwable cause) {
         super(message, cause);
-        this.event = Objects.requireNonNull(event);
     }
 
-    public ActionException(ActionEvent<?, ?> event, Throwable cause) {
+    public MisuseException(Throwable cause) {
         super(cause);
-        this.event = Objects.requireNonNull(event);
-    }
-
-    public ActionEvent<?, ?> getActionEvent() {
-        return event;
     }
 }

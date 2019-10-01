@@ -19,7 +19,7 @@ package org.elypia.commandler.exceptions;
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class ModuleNotFoundException extends RuntimeException {
+public class ModuleNotFoundException extends MisuseException {
 
     public ModuleNotFoundException() {
         super();

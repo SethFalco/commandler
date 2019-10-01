@@ -26,10 +26,10 @@ import java.util.*;
  */
 public abstract class MetaComponent {
 
-    /** The display-friendly name of this item. */
+    /** The user-friendly name of this item. */
     protected String name;
 
-    /** A short helper description or message for what this item does. */
+    /** A short help description or message for what this item does. */
     protected String description;
 
     /** Properties that determine how this propery acts in runtime. */
@@ -47,20 +47,33 @@ public abstract class MetaComponent {
         return properties;
     }
 
+    /**
+     * Recieve a property of this which may be prefixed by another class.
+     *
+     * @param type The prefix class name of the property.
+     * @param key The name of the property in this class.
+     * @return The property mapped under this key.
+     */
     public String getProperty(Class<?> type, String key) {
         return getProperty(type.getName() + "." + key);
     }
 
+    /**
+     * Retrieve a property by it's full key.
+     *
+     * @param key The name of the property to retrieve.
+     * @return The property mapped under this key.
+     */
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
 
+    // TODO: This
     public Collection<String> getProperties(Class<?> type, String key) {
         return getProperties(type.getName() + "." + key);
     }
 
     public Collection<String> getProperties(String key) {
-        // TODO: This...
         return null;
     }
 }

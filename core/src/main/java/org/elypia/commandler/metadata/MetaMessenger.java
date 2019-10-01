@@ -26,33 +26,33 @@ import java.util.*;
 public class MetaMessenger {
 
     /** The type of the provider itself. */
-    private Class<? extends ResponseBuilder<?, ?>> type;
+    private Class<? extends ResponseBuilder> type;
 
     /** The class this type provides. */
-    private Class<?> builds;
+    private Class<Object> builds;
 
     /** The types this provider is compatible for. */
-    private Collection<Class<?>> compatible;
+    private Collection<Class<Object>> compatible;
 
-    public MetaMessenger(Class<? extends ResponseBuilder<?, ?>> type, Class<?> builds, Class<?>... compatible) {
+    public MetaMessenger(Class<? extends ResponseBuilder> type, Class<Object> builds, Class<Object>... compatible) {
         this(type, builds, List.of(compatible));
     }
 
-    public MetaMessenger(Class<? extends ResponseBuilder<?, ?>> type, Class<?> builds, Collection<Class<?>> compatible) {
+    public MetaMessenger(Class<? extends ResponseBuilder> type, Class<Object> builds, Collection<Class<Object>> compatible) {
         this.type = Objects.requireNonNull(type);
         this.builds = Objects.requireNonNull(builds);
         this.compatible = Objects.requireNonNull(compatible);
     }
 
-    public Class<? extends ResponseBuilder<?, ?>> getProviderType() {
+    public Class<? extends ResponseBuilder> getProviderType() {
         return type;
     }
 
-    public Class<?> getBuildType() {
+    public Class<Object> getBuildType() {
         return builds;
     }
 
-    public Collection<Class<?>> getCompatibleTypes() {
+    public Collection<Class<Object>> getCompatibleTypes() {
         return compatible;
     }
 }

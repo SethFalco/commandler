@@ -19,7 +19,7 @@ package org.elypia.commandler.exceptions;
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class ProviderRequiredException extends RuntimeException {
+public class ProviderRequiredException extends MisuseException {
 
     public ProviderRequiredException() {
         super();

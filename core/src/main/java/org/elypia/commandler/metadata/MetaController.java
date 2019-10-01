@@ -102,7 +102,7 @@ public class MetaController extends MetaComponent implements Comparable<MetaCont
      * @return All commands in this module where
      * {@link MetaCommand#isStatic()} is true.
      */
-    public List<MetaCommand> getStaticControls() {
+    public List<MetaCommand> getStaticCommands() {
         return metaCommands.stream()
             .filter(MetaCommand::isStatic)
             .collect(Collectors.toUnmodifiableList());

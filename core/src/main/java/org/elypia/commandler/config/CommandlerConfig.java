@@ -20,6 +20,7 @@ import org.apache.commons.configuration2.ImmutableHierarchicalConfiguration;
 import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.metadata.*;
+import org.elypia.commandler.utils.ReflectionUtils;
 
 import javax.inject.*;
 import java.lang.reflect.Method;
@@ -38,7 +39,8 @@ import java.util.*;
 @Singleton
 public class CommandlerConfig {
 
-    private Collection<Class<?>> configs;
+    /** A collection of classes that represent object configuration. */
+    private Collection<Class<Object>> configs;
 
     /** A collection of data for each controller within this {@link Commandler} context. */
     private Collection<MetaController> controllers;
@@ -49,121 +51,81 @@ public class CommandlerConfig {
     /** A collection of response providers. */
     private Collection<MetaMessenger> messengers;
 
-    private Collection<Class<Integration<?, ?>>> integrations;
+    /** A collection of integrations that will be creates when this Commandler context is run. */
+    private Collection<Class<Integration>> integrations;
 
+    /** A collection of dispatchers that will be created when this Commandler context is run.  */
     private Collection<Class<Dispatcher>> dispatchers;
 
+    /**
+     * Create and instantiate this configuration object.
+     * This is the default configuration object which is required by Commandler
+     * for it to work and stores all core entities of a Commandler application.
+     *
+     * @param configService The configuration for this Commandler instance.
+     */
     @Inject
-    public CommandlerConfig(final ConfigService config) {
-        this.configs = convertConfigs(config);
-        this.controllers = convertControllers(config);
-        this.adapters = convertAdapters(config);
-        this.messengers = convertMessengers(config);
-        this.integrations = convertIntegrations(config);
-        this.dispatchers = convertDispatchers(config);
+    public CommandlerConfig(final ConfigService configService) {
+        this.configs = convertConfigs(configService);
+        this.controllers = convertControllers(configService);
+        this.adapters = convertAdapters(configService);
+        this.messengers = convertMessengers(configService);
+        this.integrations = convertIntegrations(configService);
+        this.dispatchers = convertDispatchers(configService);
     }
 
-    private List<Class<?>> convertConfigs(final ConfigService config) {
-        List<String> configs = config.getList(String.class, "commandler.config.type");
-        List<Class<?>> configTypes = new ArrayList<>();
-
-        for (String conf : configs) {
-            try {
-                configTypes.add(Class.forName(conf));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        return configTypes;
+    private Collection<Class<Object>> convertConfigs(final ConfigService configService) {
+        List<String> names = configService.getList(String.class, "commandler.config");
+        return ReflectionUtils.convertTypes(names);
     }
 
-    private List<Class<Integration<?, ?>>> convertIntegrations(final ConfigService config) {
-        List<String> integrations = config.getList(String.class, "commandler.integration");
-        List<Class<Integration<?, ?>>> integrationTypes = new ArrayList<>();
-
-        for (String integration : integrations) {
-            Class<?> type;
-
-            try {
-                type = Class.forName(integration);
-
-                if (Integration.class.isAssignableFrom(type))
-                    integrationTypes.add((Class<Integration<?, ?>>)type);
-                else
-                    throw new RuntimeException();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        return integrationTypes;
+    private Collection<Class<Integration>> convertIntegrations(final ConfigService configService) {
+        List<String> names = configService.getList(String.class, "commandler.integration");
+        return ReflectionUtils.convertTypes(names, Integration.class);
     }
 
-    private List<Class<Dispatcher>> convertDispatchers(final ConfigService config) {
-        List<String> dispatchers = config.getList(String.class, "commandler.dispatcher");
-        List<Class<Dispatcher>> dispatcherTypes = new ArrayList<>();
-
-        for (String dispatcher : dispatchers) {
-            Class<?> type;
-
-            try {
-                type = Class.forName(dispatcher);
-
-                if (Dispatcher.class.isAssignableFrom(type))
-                    dispatcherTypes.add((Class<Dispatcher>)type);
-                else
-                    throw new RuntimeException();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        return dispatcherTypes;
+    private Collection<Class<Dispatcher>> convertDispatchers(final ConfigService configService) {
+        List<String> names = configService.getList(String.class, "commandler.dispatcher");
+        return ReflectionUtils.convertTypes(names, Dispatcher.class);
     }
 
-    private List<MetaAdapter> convertAdapters(final ConfigService config) {
-        List<ImmutableHierarchicalConfiguration> adapterConfig = config.getConfiguration().immutableConfigurationsAt("commandler.adapter");
+    private List<MetaAdapter> convertAdapters(final ConfigService configService) {
+        List<ImmutableHierarchicalConfiguration> adapterConfigs = configService.getConfiguration()
+            .immutableConfigurationsAt("commandler.adapter");
+        List<MetaAdapter> adapters = new ArrayList<>();
 
-        List<MetaAdapter> metaAdapters = new ArrayList<>();
+        for (ImmutableHierarchicalConfiguration adapterConfig : adapterConfigs) {
+            String name = adapterConfig.getString("type");
+            Class<Adapter> adapterType = ReflectionUtils.convertType(name, Adapter.class);
 
-        for (ImmutableHierarchicalConfiguration adapter : adapterConfig) {
-            Class<Adapter<?>> type;
+            List<String> typeNames = adapterConfig.getList(String.class, "compatible");
+            Collection<Class<Object>> compatibleTypes = ReflectionUtils.convertTypes(typeNames);
 
-            try {
-                type = (Class<Adapter<?>>)Class.forName(adapter.getString("type"));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-
-            // TODO: Load compatible array.
-            metaAdapters.add(new MetaAdapter(type));
+            adapters.add(new MetaAdapter(adapterType, compatibleTypes));
         }
 
-        return metaAdapters;
+        return adapters;
     }
 
-    private List<MetaMessenger> convertMessengers(final ConfigService config) {
-        List<ImmutableHierarchicalConfiguration> messengerConfig = config.getConfiguration().immutableConfigurationsAt("commandler.messenger");
+    private List<MetaMessenger> convertMessengers(final ConfigService configService) {
+        List<ImmutableHierarchicalConfiguration> messengerConfigs = configService.getConfiguration()
+            .immutableConfigurationsAt("commandler.messenger");
+        List<MetaMessenger> messengers = new ArrayList<>();
 
-        List<MetaMessenger> metaMessengers = new ArrayList<>();
+        for (ImmutableHierarchicalConfiguration messengerConfig : messengerConfigs) {
+            String name = messengerConfig.getString("type");
+            Class<ResponseBuilder> adapterType = ReflectionUtils.convertType(name, ResponseBuilder.class);
 
-        for (ImmutableHierarchicalConfiguration messenger : messengerConfig) {
-            Class<ResponseBuilder<?, ?>> type;
-            Class<?> provides;
+            String provides = messengerConfig.getString("provides");
+            Class<Object> providesType = ReflectionUtils.convertType(provides);
 
-            try {
-                type = (Class<ResponseBuilder<?, ?>>)Class.forName(messenger.getString("type"));
-                provides = Class.forName(messenger.getString("provides"));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            List<String> typeNames = messengerConfig.getList(String.class, "compatible");
+            Collection<Class<Object>> compatibleTypes = ReflectionUtils.convertTypes(typeNames);
 
-            // TODO: Load compatible array.
-            metaMessengers.add(new MetaMessenger(type, provides));
+            messengers.add(new MetaMessenger(adapterType, providesType, compatibleTypes));
         }
 
-        return metaMessengers;
+        return messengers;
     }
 
     private List<MetaController> convertControllers(final ConfigService config) {
@@ -212,7 +174,6 @@ public class CommandlerConfig {
 
     private List<MetaParam> convertParams(Method method, ImmutableHierarchicalConfiguration command) {
         List<ImmutableHierarchicalConfiguration> paramsConfig = command.immutableConfigurationsAt("param");
-
         List<MetaParam> metaParams = new ArrayList<>();
 
         for (ImmutableHierarchicalConfiguration param : paramsConfig) {
@@ -234,11 +195,10 @@ public class CommandlerConfig {
 
     private Properties convertProperties(ImmutableHierarchicalConfiguration component) {
         List<ImmutableHierarchicalConfiguration> propertiesConfig = component.immutableConfigurationsAt("property");
-
         Properties properties = new Properties();
 
         for (ImmutableHierarchicalConfiguration property : propertiesConfig) {
-            String key = property.getString("key");
+            String key = property.getString("name");
             String value = property.getString("value");
             properties.put(key, value);
         }
@@ -258,11 +218,11 @@ public class CommandlerConfig {
         return messengers;
     }
 
-    public Collection<Class<Integration<?, ?>>> getIntegrations() {
+    public Collection<Class<Integration>> getIntegrations() {
         return integrations;
     }
 
-    public Collection<Class<?>> getConfigs() {
+    public Collection<Class<Object>> getConfigs() {
         return configs;
     }
 
@@ -270,6 +230,12 @@ public class CommandlerConfig {
         return dispatchers;
     }
 
+    /**
+     * Private object to  convert abstract data and put it in
+     * the implementations.
+     *
+     * @author seth@elypia.org (Syed Shah)
+     */
     private static class ComponentConfig {
 
         private String name;

@@ -93,7 +93,7 @@ public class ConfigService {
         logger.debug("Finished loading configuration succesfully.");
 
         logger.info("Loading default {} from loaded configuration sources, " +
-                    "this is required for Commandler to work.", CommandlerConfig.class.getSimpleName());
+                    "this is required for Commandler to work.", CommandlerConfig.class);
         this.configs.add(new CommandlerConfig(this));
     }
 

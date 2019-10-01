@@ -40,6 +40,7 @@ import javax.inject.Singleton;
 @Singleton
 public class Commandler {
 
+    /** Logging with slf4j. */
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
 
     /** Metadata and configurationa associated with this Commandler instance. */
@@ -68,10 +69,10 @@ public class Commandler {
      * bots by whatever interactive means.
      */
     public void run() {
-        CommandlerConfig config = appContext.getConfig().getTypedConfig(CommandlerConfig.class);
         InjectorService injector = appContext.getInjector();
+        CommandlerConfig config = appContext.getConfig().getTypedConfig(CommandlerConfig.class);
 
-        for (Class<Integration<?, ?>> integrationType : config.getIntegrations()) {
+        for (Class<Integration> integrationType : config.getIntegrations()) {
             logger.debug("Creating instance of {}.", integrationType);
             injector.getInstance(integrationType);
         }

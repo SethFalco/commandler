@@ -136,7 +136,7 @@ public class StandardDispatcher implements Dispatcher {
         String params = null;
 
         for (MetaController metaController : appContext.getInjector().getInstance(CommandlerConfig.class).getControllers()) {
-            Collection<String> controllerAliases = metaController.getProperties(this.getClass(), "aliases");
+            String controllerAliases = metaController.getProperty(this.getClass(), "aliases");
 
             // TODO: Currently this would mean static commadns can't exist unless the parent module has an alias.
             if (controllerAliases == null)
@@ -149,7 +149,7 @@ public class StandardDispatcher implements Dispatcher {
 
                 if (command.length > 1) {
                     for (MetaCommand metaCommand : metaController.getMetaCommands()) {
-                        Collection<String> controlAliases = metaCommand.getProperties(this.getClass(), "aliases");
+                        String controlAliases = metaCommand.getProperty(this.getClass(), "aliases");
 
                         if (controlAliases == null)
                             continue;
@@ -163,7 +163,7 @@ public class StandardDispatcher implements Dispatcher {
                     }
 
                     if (selectedMetaCommand == null)
-                        throw new RuntimeException("Found module but command doesn't exist.");
+                        throw new MisuseException("Found module but command doesn't exist."){};
 
                     params = content
                         .replace(command[0], "")
@@ -185,20 +185,24 @@ public class StandardDispatcher implements Dispatcher {
                 break;
             }
 
-            for (MetaCommand metaCommand : metaController.getStaticControls()) {
-                Collection<String> controlAliases = metaCommand.getProperties(this.getClass(), "aliases");
+            for (MetaCommand metaCommand : metaController.getStaticCommands()) {
+                String controlAliases = metaCommand.getProperty(this.getClass(), "aliases");
 
                 if (controlAliases == null)
                     continue;
 
                 boolean controlMatch = controlAliases.contains(command[0].toLowerCase());
 
-                selectedMetaController = metaController;
-                selectedMetaCommand = metaCommand;
+                if (controlMatch) {
+                    selectedMetaController = metaController;
+                    selectedMetaCommand = metaCommand;
 
-                params = content
-                    .replace(command[0], "")
-                    .trim();
+                    params = content
+                        .replace(command[0], "")
+                        .trim();
+
+                    break;
+                }
             }
         }
 
@@ -229,15 +233,8 @@ public class StandardDispatcher implements Dispatcher {
         if (id == null)
             throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
 
-        Action action = new Action(
-            integration.getActionId(source),
-            content,
-            selectedMetaController.getName(),
-            selectedMetaCommand.getName(),
-            parameters
-        );
-
-        ActionEvent<S, M> e = new ActionEvent<>(integration, source, action);
+        Action action = new Action(id, content, selectedMetaController.getName(), selectedMetaCommand.getName(), parameters);
+        ActionEvent<S, M> e = new ActionEvent<>(integration, selectedMetaController, selectedMetaCommand, source, action);
 
         if (!selectedMetaCommand.isValidParamCount(parameters.size()))
             throw new ParamCountMismatchException(e);

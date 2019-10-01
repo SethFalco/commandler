@@ -69,7 +69,7 @@ public class DispatcherManager {
             if (!dispatcher.isValid(event, content))
                 continue;
 
-            logger.debug("Using dispatcher for event: {}", dispatcher);
+            logger.debug("Using dispatcher for event: {}", dispatcher.getClass());
             return dispatcher.parse(integration, event, content);
         }
 

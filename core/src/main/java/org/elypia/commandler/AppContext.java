@@ -51,6 +51,8 @@ public class AppContext {
         this.STARTUP_TIME = System.currentTimeMillis();
         logger.debug("Generating Commandler AppContext at epoch: {}", STARTUP_TIME);
 
+        injector = new InjectorService();
+
         try {
             config = new ConfigService();
             logger.debug("Finished loading all configuration.");
@@ -58,7 +60,6 @@ public class AppContext {
             throw new RuntimeException(e);
         }
 
-        injector = new InjectorService();
         injector.add(new CommandlerModule(commandler, this));
         logger.debug("Added default injection bindings to {}.", InjectorService.class.getSimpleName());
     }

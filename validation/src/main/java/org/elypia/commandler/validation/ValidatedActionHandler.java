@@ -19,9 +19,11 @@ package org.elypia.commandler.validation;
 import org.elypia.commandler.ActionHandler;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
+import org.elypia.commandler.exceptions.MisuseException;
 import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
+import org.slf4j.*;
 
 import javax.inject.*;
 
@@ -34,7 +36,9 @@ import javax.inject.*;
 @Singleton
 public class ValidatedActionHandler extends ActionHandler {
 
-    protected HibernateValidationManager validationService;
+    private static final Logger logger = LoggerFactory.getLogger(ValidatedActionHandler.class);
+
+    private final HibernateValidationManager validationService;
 
     @Inject
     public ValidatedActionHandler(
@@ -42,7 +46,7 @@ public class ValidatedActionHandler extends ActionHandler {
         InjectorService injectorService,
         AdapterManager adapterService,
 //        TestManager testService,
-        ExceptionManager exceptionService,
+        MisuseManager exceptionService,
         MessengerManager messengerService,
         HibernateValidationManager validationService
     ) {
@@ -77,8 +81,12 @@ public class ValidatedActionHandler extends ActionHandler {
 
             MetaCommand metaCommand = event.getMetaCommand();
             response = metaCommand.getMethod().invoke(controller, params);
-        } catch (Exception ex) {
+        } catch (MisuseException ex) {
+            logger.info("An misuse exception occured when handling a message.");
             response = exceptionService.handle(ex);
+        } catch (Exception ex) {
+            logger.error("An exception occured when handling a message.", ex);
+            return null;
         }
 
         if (response == null)
