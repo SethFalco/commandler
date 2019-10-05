@@ -16,19 +16,18 @@
 
 dependencies {
     // Configuration
-    // TODO: We don't want this be API as ideally the deafult way to use this should be
-    // though a Commandler interface.
     api "org.apache.commons:commons-configuration2:2.6"
-    implementation "commons-beanutils:commons-beanutils:1.9.4"
+    runtimeOnly "commons-beanutils:commons-beanutils:1.9.4"
 
-    // TODO: We don't want this to be API as ideally the default way to use this should be
-    // through a Commandler interface.
     // Dependency Injection
-    api "com.google.inject:guice:4.2.2"
+    // When tailoring DI for your application it's best to try use what's built into
+    // Commandler and provided by the javax.inject API first before depending
+    // on the implementation of choice as the latter is more likely to lead to breaking
+    // changes in cases it receives a major update or Commandler replaces the implementation.
+    api "javax.inject:javax.inject:1"
+    implementation "com.google.inject:guice:4.2.2"
 
-    // Default Values and Hibernate Validation API
+    // Java EL (Evalulation Language) for Default Values
+    // Also for Hibernate Validation in org.elypia.commandler:validation module.
     implementation "org.glassfish:jakarta.el:3.0.3"
-
-    // TODO: We shouldn't force people to depend on YAML in case they don't use a YAML configuration.
-    runtimeOnly "org.yaml:snakeyaml:1.25"
 }

@@ -24,6 +24,7 @@ import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpo
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 import org.slf4j.*;
 
+import javax.inject.*;
 import javax.validation.*;
 import javax.validation.executable.ExecutableValidator;
 import java.lang.reflect.Method;
@@ -36,6 +37,7 @@ import java.util.Set;
  *
  * @author seth@elypia.org (Syed Shah)
  */
+@Singleton
 public class HibernateValidationManager {
 
     /** We use SLF4J to log, be sure to include a binding when using this API at runtime! */
@@ -46,6 +48,7 @@ public class HibernateValidationManager {
     /** The actual validator object constructed and on use throughout Commandler. */
     private final ExecutableValidator exValidator;
 
+    @Inject
     public HibernateValidationManager(InjectorService injectorService, AppContext appContext) {
         var locator = new PlatformResourceBundleLocator(USER_VALIDATION_MESSAGES, null, true);
 
