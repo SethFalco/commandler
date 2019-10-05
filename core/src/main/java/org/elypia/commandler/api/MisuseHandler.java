@@ -16,7 +16,7 @@
 
 package org.elypia.commandler.api;
 
-import org.elypia.commandler.exceptions.MisuseException;
+import org.elypia.commandler.exceptions.misuse.MisuseException;
 
 /**
  * This could handle a single exception, or route the

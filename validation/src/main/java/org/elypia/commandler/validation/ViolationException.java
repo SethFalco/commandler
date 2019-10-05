@@ -18,7 +18,7 @@ package org.elypia.commandler.validation;
 
 import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.exceptions.ActionException;
+import org.elypia.commandler.exceptions.misuse.ActionException;
 
 import javax.validation.ConstraintViolation;
 import java.util.*;

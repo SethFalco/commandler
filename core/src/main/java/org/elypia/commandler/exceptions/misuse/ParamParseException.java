@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.exceptions;
+package org.elypia.commandler.exceptions.misuse;
+
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.metadata.MetaParam;
+
+import java.util.Objects;
 
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class OnlyPrefixException extends MisuseException {
+public class ParamParseException extends ParamException {
 
-    public OnlyPrefixException() {
-        super();
+    /** The particular <strong>item</strong> that failed to adapt.*/
+    private String item;
+
+    public ParamParseException(ActionEvent<?, ?> action, MetaParam metaParam, String item) {
+        super(action, metaParam);
+        this.item = Objects.requireNonNull(item);
     }
 
-    public OnlyPrefixException(String message) {
-        super(message);
-    }
-
-    public OnlyPrefixException(String message, Throwable throwable) {
-        super(message, throwable);
+    public String getItem() {
+        return item;
     }
 }

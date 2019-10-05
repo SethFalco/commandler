@@ -20,7 +20,7 @@ import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.*;
-import org.elypia.commandler.exceptions.*;
+import org.elypia.commandler.exceptions.misuse.*;
 import org.elypia.commandler.metadata.*;
 import org.elypia.commandler.utils.ChatUtils;
 import org.slf4j.*;

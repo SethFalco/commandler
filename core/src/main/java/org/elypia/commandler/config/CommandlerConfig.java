@@ -17,6 +17,7 @@
 package org.elypia.commandler.config;
 
 import org.apache.commons.configuration2.ImmutableHierarchicalConfiguration;
+import org.apache.commons.lang3.ClassUtils;
 import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.metadata.*;
@@ -99,7 +100,7 @@ public class CommandlerConfig {
             Class<Adapter> adapterType = ReflectionUtils.convertType(name, Adapter.class);
 
             List<String> typeNames = adapterConfig.getList(String.class, "compatible");
-            Collection<Class<Object>> compatibleTypes = ReflectionUtils.convertTypes(typeNames);
+            Collection<Class<Object>> compatibleTypes = convertCompatible(typeNames);
 
             adapters.add(new MetaAdapter(adapterType, compatibleTypes));
         }
@@ -120,7 +121,7 @@ public class CommandlerConfig {
             Class<Object> providesType = ReflectionUtils.convertType(provides);
 
             List<String> typeNames = messengerConfig.getList(String.class, "compatible");
-            Collection<Class<Object>> compatibleTypes = ReflectionUtils.convertTypes(typeNames);
+            Collection<Class<Object>> compatibleTypes = convertCompatible(typeNames);
 
             messengers.add(new MetaMessenger(adapterType, providesType, compatibleTypes));
         }
@@ -128,24 +129,34 @@ public class CommandlerConfig {
         return messengers;
     }
 
+    private Collection<Class<Object>> convertCompatible(List<String> typeNames) {
+        Collection<Class<Object>> compatibleTypes = ReflectionUtils.convertTypes(typeNames);
+        Set<Class<Object>> primitiveTypes = new HashSet<>();
+
+        for (Class<Object> compatibleType : compatibleTypes) {
+            Class<?> primitive = ClassUtils.wrapperToPrimitive(compatibleType);
+
+            if (primitive != null)
+                primitiveTypes.add((Class<Object>)primitive);
+        }
+
+        primitiveTypes.addAll(compatibleTypes);
+        return primitiveTypes;
+    }
+
     private List<MetaController> convertControllers(final ConfigService config) {
+        List<ImmutableHierarchicalConfiguration> controllerConfigs = config.getConfiguration()
+            .immutableConfigurationsAt("commandler.controller");
         List<MetaController> metaControllers = new ArrayList<>();
-        List<ImmutableHierarchicalConfiguration> controllers = config.getConfiguration().immutableConfigurationsAt("commandler.controller");
 
-        for (ImmutableHierarchicalConfiguration controller : controllers) {
-            ComponentConfig component = convertComponent(controller);
-            Class<?> type;
-
-            try {
-                type = Class.forName(controller.getString("type"));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-
-            String group = controller.getString("group");
-            boolean hidden = controller.getBoolean("hidden", false);
-            List<MetaCommand> commands = convertCommands(type, controller);
-            metaControllers.add(new MetaController((Class<? extends Controller>)type, group, component.name, component.description, hidden, component.properties, commands));
+        for (ImmutableHierarchicalConfiguration controllerConfig : controllerConfigs) {
+            ComponentConfig component = convertComponent(controllerConfig);
+            String name = controllerConfig.getString("type");
+            Class<Controller> type = ReflectionUtils.convertType(name, Controller.class);
+            String group = controllerConfig.getString("group");
+            boolean hidden = controllerConfig.getBoolean("hidden", false);
+            List<MetaCommand> commands = convertCommands(type, controllerConfig);
+            metaControllers.add(new MetaController(type, group, component.name, component.description, hidden, component.properties, commands));
         }
 
         return metaControllers;
@@ -153,43 +164,41 @@ public class CommandlerConfig {
 
     private List<MetaCommand> convertCommands(Class<?> type, ImmutableHierarchicalConfiguration controller) {
         List<ImmutableHierarchicalConfiguration> commandsConfig = controller.immutableConfigurationsAt("command");
+        List<MetaCommand> commands = new ArrayList<>();
 
-        List<MetaCommand> metaCommands = new ArrayList<>();
-
-        for (ImmutableHierarchicalConfiguration command : commandsConfig) {
-            ComponentConfig component = convertComponent(command);
-            String methodName = command.getString("method");
+        for (ImmutableHierarchicalConfiguration commandConfig : commandsConfig) {
+            ComponentConfig component = convertComponent(commandConfig);
+            String methodName = commandConfig.getString("method");
             Method method = Arrays.stream(type.getMethods()).filter(m -> m.getName().equals(methodName)).findAny().orElseThrow(() -> {
                 return new RuntimeException("Method #" + methodName + " doesn't exist in " + type + ".");
             });
-            boolean hidden = command.getBoolean("hidden", false);
-            boolean isStatic = command.getBoolean("static", false);
-            boolean isDefault = command.getBoolean("default", false);
-            List<MetaParam> params = convertParams(method, command);
-            metaCommands.add(new MetaCommand(method, component.name, component.description, hidden, isStatic, isDefault, component.properties, params));
+            boolean hidden = commandConfig.getBoolean("hidden", false);
+            boolean isStatic = commandConfig.getBoolean("static", false);
+            boolean isDefault = commandConfig.getBoolean("default", false);
+            List<MetaParam> params = convertParams(method, commandConfig);
+            commands.add(new MetaCommand(method, component.name, component.description, hidden, isStatic, isDefault, component.properties, params));
         }
 
-        return metaCommands;
+        return commands;
     }
 
     private List<MetaParam> convertParams(Method method, ImmutableHierarchicalConfiguration command) {
         List<ImmutableHierarchicalConfiguration> paramsConfig = command.immutableConfigurationsAt("param");
-        List<MetaParam> metaParams = new ArrayList<>();
+        List<MetaParam> params = new ArrayList<>();
 
         for (ImmutableHierarchicalConfiguration param : paramsConfig) {
             ComponentConfig component = convertComponent(command);
             String defaultValue = param.getString("defaultValue");
-            metaParams.add(new MetaParam(String.class, method.getParameters()[0], component.name, component.description, defaultValue, component.properties));
+            params.add(new MetaParam(method.getParameters()[0].getType(), method.getParameters()[0], component.name, component.description, defaultValue, component.properties));
         }
 
-        return metaParams;
+        return params;
     }
 
     private ComponentConfig convertComponent(ImmutableHierarchicalConfiguration component) {
         String name = component.getString("name");
         String description = component.getString("description");
         Properties properties = convertProperties(component);
-
         return new ComponentConfig(name, description, properties);
     }
 
@@ -204,6 +213,10 @@ public class CommandlerConfig {
         }
 
         return properties;
+    }
+
+    public Collection<Class<Object>> getConfigs() {
+        return configs;
     }
 
     public Collection<MetaController> getControllers() {
@@ -222,16 +235,12 @@ public class CommandlerConfig {
         return integrations;
     }
 
-    public Collection<Class<Object>> getConfigs() {
-        return configs;
-    }
-
     public Collection<Class<Dispatcher>> getDispatchers() {
         return dispatchers;
     }
 
     /**
-     * Private object to  convert abstract data and put it in
+     * Private object to convert abstract data and put it in
      * the implementations.
      *
      * @author seth@elypia.org (Syed Shah)

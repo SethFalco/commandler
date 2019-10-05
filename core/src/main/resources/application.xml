@@ -53,11 +53,9 @@
 <!--    </controller>-->
     <adapter type="org.elypia.commandler.adapters.BooleanAdapter">
       <compatible>java.lang.Boolean</compatible>
-<!--      <compatible>boolean</compatible>-->
     </adapter>
     <adapter type="org.elypia.commandler.adapters.CharAdapter">
       <compatible>java.lang.Character</compatible>
-<!--      <compatible>char</compatible>-->
     </adapter>
     <adapter type="org.elypia.commandler.adapters.DurationAdapter">
       <compatible>java.time.Duration</compatible>
@@ -70,12 +68,12 @@
     </adapter>
     <adapter type="org.elypia.commandler.adapters.NumberAdapter">
       <compatible>java.lang.Number</compatible>
-<!--      <compatible>double</compatible>-->
-<!--      <compatible>float</compatible>-->
-<!--      <compatible>long</compatible>-->
-<!--      <compatible>int</compatible>-->
-<!--      <compatible>short</compatible>-->
-<!--      <compatible>byte</compatible>-->
+      <compatible>java.lang.Double</compatible>
+      <compatible>java.lang.Float</compatible>
+      <compatible>java.lang.Long</compatible>
+      <compatible>java.lang.Integer</compatible>
+      <compatible>java.lang.Short</compatible>
+      <compatible>java.lang.Byte</compatible>
     </adapter>
     <adapter type="org.elypia.commandler.adapters.StringAdapter">
       <compatible>java.lang.CharSequence</compatible>

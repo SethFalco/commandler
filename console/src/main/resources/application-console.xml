@@ -24,17 +24,15 @@
       <compatible>java.lang.CharSequence</compatible>
       <compatible>java.lang.Character</compatible>
       <compatible>java.net.URL</compatible>
-      <compatible>boolean</compatible>
-      <compatible>char</compatible>
     </messenger>
     <messenger type="org.elypia.commandler.console.messengers.NumberMessenger" provides="java.lang.Number">
       <compatible>java.lang.Number</compatible>
-      <compatible>double</compatible>
-      <compatible>float</compatible>
-      <compatible>long</compatible>
-      <compatible>int</compatible>
-      <compatible>short</compatible>
-      <compatible>byte</compatible>
+      <compatible>java.lang.Double</compatible>
+      <compatible>java.lang.Float</compatible>
+      <compatible>java.lang.Long</compatible>
+      <compatible>java.lang.Integer</compatible>
+      <compatible>java.lang.Short</compatible>
+      <compatible>java.lang.Byte</compatible>
     </messenger>
   </commandler>
 </configuration>

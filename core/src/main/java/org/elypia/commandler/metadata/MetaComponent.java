@@ -68,11 +68,11 @@ public abstract class MetaComponent {
         return properties.getProperty(key);
     }
 
-    // TODO: This
     public Collection<String> getProperties(Class<?> type, String key) {
         return getProperties(type.getName() + "." + key);
     }
 
+    // TODO: This
     public Collection<String> getProperties(String key) {
         return null;
     }

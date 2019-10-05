@@ -18,7 +18,7 @@ package org.elypia.commandler;
 
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
-import org.elypia.commandler.exceptions.MisuseException;
+import org.elypia.commandler.exceptions.misuse.MisuseException;
 import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;

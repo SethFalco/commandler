@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.exceptions;
+package org.elypia.commandler.exceptions.misuse;
 
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.metadata.MetaParam;
-
-import java.util.*;
 
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class ListUnsupportedException extends ParamException {
+public class ModuleDisabledException extends ActionException {
 
-    /** The particular <strong>item</strong> that failed to adapt.*/
-    private List<String> items;
-
-    public ListUnsupportedException(ActionEvent<?, ?> action, MetaParam metaParam, List<String> items) {
-        super(action, metaParam);
-        this.items = Objects.requireNonNull(items);
+    public ModuleDisabledException(ActionEvent<?, ?> action) {
+        super(action);
     }
 
-    public List<String> getItems() {
-        return items;
+    public ModuleDisabledException(ActionEvent<?, ?> action, String message) {
+        super(action, message);
+    }
+
+    public ModuleDisabledException(ActionEvent<?, ?> action, String message, Throwable cause) {
+        super(action, message, cause);
     }
 }

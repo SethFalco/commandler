@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.exceptions;
+package org.elypia.commandler.exceptions.misuse;
 
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class ModuleNotFoundException extends MisuseException {
+public class OnlyPrefixException extends MisuseException {
 
-    public ModuleNotFoundException() {
+    public OnlyPrefixException() {
         super();
     }
 
-    public ModuleNotFoundException(String message) {
+    public OnlyPrefixException(String message) {
         super(message);
     }
 
-    public ModuleNotFoundException(String message, Throwable throwable) {
+    public OnlyPrefixException(String message, Throwable throwable) {
         super(message, throwable);
     }
 }

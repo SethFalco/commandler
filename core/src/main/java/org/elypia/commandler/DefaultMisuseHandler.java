@@ -18,7 +18,7 @@ package org.elypia.commandler;
 
 import org.elypia.commandler.api.MisuseHandler;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.exceptions.*;
+import org.elypia.commandler.exceptions.misuse.*;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 

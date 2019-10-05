@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.exceptions;
+package org.elypia.commandler.exceptions.misuse;
 
 import org.elypia.commandler.api.MisuseHandler;
 

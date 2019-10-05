@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.exceptions;
-
-import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.metadata.MetaParam;
-
-import java.util.Objects;
+package org.elypia.commandler.exceptions.misuse;
 
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-public class ParamParseException extends ParamException {
+public class ModuleNotFoundException extends MisuseException {
 
-    /** The particular <strong>item</strong> that failed to adapt.*/
-    private String item;
-
-    public ParamParseException(ActionEvent<?, ?> action, MetaParam metaParam, String item) {
-        super(action, metaParam);
-        this.item = Objects.requireNonNull(item);
+    public ModuleNotFoundException() {
+        super();
     }
 
-    public String getItem() {
-        return item;
+    public ModuleNotFoundException(String message) {
+        super(message);
+    }
+
+    public ModuleNotFoundException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 }

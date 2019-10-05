@@ -17,7 +17,7 @@
 package org.elypia.commandler.managers;
 
 import org.elypia.commandler.api.MisuseHandler;
-import org.elypia.commandler.exceptions.MisuseException;
+import org.elypia.commandler.exceptions.misuse.MisuseException;
 import org.elypia.commandler.metadata.MetaCommand;
 
 import javax.inject.Singleton;
