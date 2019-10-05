@@ -42,8 +42,6 @@ public class CommandlerModule extends AbstractModule {
         bind(AppContext.class).toInstance(context);
         bind(InjectorService.class).toInstance(context.getInjector());
         bind(ConfigService.class).toInstance(context.getConfig());
-
-        // TODO: This shouldn't be configured by Commandler itself.
         bind(NumberFormat.class).toInstance(NumberFormat.getInstance());
     }
 }

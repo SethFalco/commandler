@@ -27,7 +27,7 @@ dependencies {
     api "javax.inject:javax.inject:1"
     implementation "com.google.inject:guice:4.2.2"
 
-    // Java EL (Evalulation Language) for Default Values
+    // Java EL (Expression Language) for Default Values
     // Also for Hibernate Validation in org.elypia.commandler:validation module.
     implementation "org.glassfish:jakarta.el:3.0.3"
 }

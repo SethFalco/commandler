@@ -60,7 +60,7 @@ public class InjectorService {
      *
      * @param instance The instance of an object to add.
      * @param type The type of this object.
-     * @param <T>
+     * @param <T> The type to bind this implementation to.
      */
     public <T> void add(T instance, Class<T> type) {
         add(new AbstractModule() {
@@ -84,10 +84,5 @@ public class InjectorService {
     public <T> T getInstance(Class<T> type) {
         logger.debug("Injecting instance of {}.", type);
         return injector.getInstance(type);
-    }
-
-    public <T> Collection<T> getInstances(Class<T> type) {
-        // TODO: Actually return some classes preferably.
-        return List.of();
     }
 }

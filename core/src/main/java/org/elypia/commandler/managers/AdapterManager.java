@@ -92,8 +92,6 @@ public class AdapterManager {
             if (inputs.size() > i)
                 param = inputs.get(i);
             else {
-                // TODO: This is reconstructer for each optional parameter, this only needs to be done once.
-                // TODO: Make it possible for a this to use previous parameters.
                 ELContext context = new StandardELContext(expressionFactory);
                 VariableMapper mapper = context.getVariableMapper();
                 mapper.setVariable("e", expressionFactory.createValueExpression(event, ActionEvent.class));

@@ -47,6 +47,14 @@ public abstract class MetaComponent {
         return properties;
     }
 
+    public Collection<String> getProperties(Class<?> type, String key) {
+        return getProperties(type.getName() + "." + key);
+    }
+
+    public Collection<String> getProperties(String key) {
+        return List.of(getProperty(key).split("\\s+"));
+    }
+
     /**
      * Recieve a property of this which may be prefixed by another class.
      *
@@ -66,14 +74,5 @@ public abstract class MetaComponent {
      */
     public String getProperty(String key) {
         return properties.getProperty(key);
-    }
-
-    public Collection<String> getProperties(Class<?> type, String key) {
-        return getProperties(type.getName() + "." + key);
-    }
-
-    // TODO: This
-    public Collection<String> getProperties(String key) {
-        return null;
     }
 }
