@@ -238,7 +238,7 @@ public class AdapterManager {
         if (adapter == null)
             throw new AdapterRequiredException("Adapter required for type " + typeRequired + ".");
 
-        logger.debug("Using `{}` adapter for parameter.", adapter.getAdapterType().getSimpleName());
+        logger.debug("Using `{}` to parse parameter.", adapter.getAdapterType());
         // TODO: Add event objects and params to child injector
         return injector.getInstance(adapter.getAdapterType());
     }

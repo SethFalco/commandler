@@ -22,6 +22,7 @@ import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.metadata.*;
 import org.elypia.commandler.utils.ReflectionUtils;
+import org.slf4j.*;
 
 import javax.inject.*;
 import java.lang.reflect.Method;
@@ -39,6 +40,8 @@ import java.util.*;
  */
 @Singleton
 public class CommandlerConfig {
+
+    private final static Logger logger = LoggerFactory.getLogger(CommandlerConfig.class);
 
     /** A collection of classes that represent object configuration. */
     private Collection<Class<Object>> configs;
@@ -58,6 +61,10 @@ public class CommandlerConfig {
     /** A collection of dispatchers that will be created when this Commandler context is run.  */
     private Collection<Class<Dispatcher>> dispatchers;
 
+    private Collection<Class<MisuseHandler>> misuseHandlers;
+
+    private Class<? extends ActionListener> actionListener;
+
     /**
      * Create and instantiate this configuration object.
      * This is the default configuration object which is required by Commandler
@@ -73,21 +80,61 @@ public class CommandlerConfig {
         this.messengers = convertMessengers(configService);
         this.integrations = convertIntegrations(configService);
         this.dispatchers = convertDispatchers(configService);
+        this.misuseHandlers = convertMisuseHandlers(configService);
+        this.actionListener = getActionListener(configService);
+    }
+
+    private Class<? extends ActionListener> getActionListener(final ConfigService configService) {
+        String name = configService.getString("commandler.action-handler");
+
+        if (name == null)
+            return ActionHandler.class;
+
+        return ReflectionUtils.convertType(name, ActionListener.class);
     }
 
     private Collection<Class<Object>> convertConfigs(final ConfigService configService) {
         List<String> names = configService.getList(String.class, "commandler.config");
+
+        if (names == null) {
+            logger.debug("Commandler did not find any additional configurations defined in the configuration.");
+            return List.of();
+        }
+
         return ReflectionUtils.convertTypes(names);
     }
 
     private Collection<Class<Integration>> convertIntegrations(final ConfigService configService) {
         List<String> names = configService.getList(String.class, "commandler.integration");
+
+        if (names == null) {
+            logger.debug("Commandler did not find any integrations defined in the configuration.");
+            return List.of();
+        }
+
         return ReflectionUtils.convertTypes(names, Integration.class);
     }
 
     private Collection<Class<Dispatcher>> convertDispatchers(final ConfigService configService) {
         List<String> names = configService.getList(String.class, "commandler.dispatcher");
+
+        if (names == null) {
+            logger.debug("Commandler did not find any dispatchers defined in the configuration.");
+            return List.of();
+        }
+
         return ReflectionUtils.convertTypes(names, Dispatcher.class);
+    }
+
+    private Collection<Class<MisuseHandler>> convertMisuseHandlers(final ConfigService configService) {
+        List<String> names = configService.getList(String.class, "commandler.misuse");
+
+        if (names == null) {
+            logger.debug("Commandler did not find any misuse handlers defined in the configuration.");
+            return List.of();
+        }
+
+        return ReflectionUtils.convertTypes(names, MisuseHandler.class);
     }
 
     private List<MetaAdapter> convertAdapters(final ConfigService configService) {
@@ -169,9 +216,9 @@ public class CommandlerConfig {
         for (ImmutableHierarchicalConfiguration commandConfig : commandsConfig) {
             ComponentConfig component = convertComponent(commandConfig);
             String methodName = commandConfig.getString("method");
-            Method method = Arrays.stream(type.getMethods()).filter(m -> m.getName().equals(methodName)).findAny().orElseThrow(() -> {
-                return new RuntimeException("Method #" + methodName + " doesn't exist in " + type + ".");
-            });
+            Method method = Arrays.stream(type.getMethods()).filter(m -> m.getName().equals(methodName)).findAny().orElseThrow(() ->
+                new RuntimeException("Method #" + methodName + " doesn't exist in " + type + ".")
+            );
             boolean hidden = commandConfig.getBoolean("hidden", false);
             boolean isStatic = commandConfig.getBoolean("static", false);
             boolean isDefault = commandConfig.getBoolean("default", false);
@@ -187,7 +234,7 @@ public class CommandlerConfig {
         List<MetaParam> params = new ArrayList<>();
 
         for (ImmutableHierarchicalConfiguration param : paramsConfig) {
-            ComponentConfig component = convertComponent(command);
+            ComponentConfig component = convertComponent(param);
             String defaultValue = param.getString("defaultValue");
             params.add(new MetaParam(method.getParameters()[0].getType(), method.getParameters()[0], component.name, component.description, defaultValue, component.properties));
         }
@@ -237,6 +284,14 @@ public class CommandlerConfig {
 
     public Collection<Class<Dispatcher>> getDispatchers() {
         return dispatchers;
+    }
+
+    public Collection<Class<MisuseHandler>> getMisuseHandlers() {
+        return misuseHandlers;
+    }
+
+    public Class<? extends ActionListener> getActionListener() {
+        return actionListener;
     }
 
     /**

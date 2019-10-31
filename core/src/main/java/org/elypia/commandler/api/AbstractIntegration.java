@@ -17,6 +17,7 @@
 package org.elypia.commandler.api;
 
 import org.elypia.commandler.*;
+import org.elypia.commandler.config.CommandlerConfig;
 import org.slf4j.*;
 
 /**
@@ -32,7 +33,9 @@ public abstract class AbstractIntegration<S, M> implements Integration<S, M> {
 
     public M process(S source, String content) {
         logger.debug("Recieved `{}` from {}.", content, this.getClass());
-        return commandler.getAppContext().getInjector().getInstance(ActionHandler.class).onAction(this, source, content);
+        AppContext context = commandler.getAppContext();
+        Class<? extends ActionListener> listener = context.getConfig().getTypedConfig(CommandlerConfig.class).getActionListener();
+        return context.getInjector().getInstance(listener).onAction(this, source, content);
     }
 
     public Commandler getCommandler() {

@@ -87,11 +87,16 @@ public class ConfigService {
             .configure(params.fileBased().setFileName("config.xml"));
         CombinedConfiguration config = builder.getConfiguration();
 
+        logger.info("Loaded {} configurations.", config.getNumberOfConfigurations());
+
+        for (Configuration c : config.getConfigurations())
+            logger.debug("Configuration {} with size of {}.", c.getClass(), c.size());
+
         this.configuration = ConfigurationUtils.unmodifiableConfiguration(config);
         this.properties = ConfigurationConverter.getProperties(configuration);
+
         this.configs = new ArrayList<>();
         logger.debug("Finished loading configuration succesfully.");
-
         logger.info("Loading default {} from loaded configuration sources, " +
                     "this is required for Commandler to work.", CommandlerConfig.class);
         this.configs.add(new CommandlerConfig(this));

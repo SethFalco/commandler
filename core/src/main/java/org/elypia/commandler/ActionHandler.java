@@ -45,7 +45,7 @@ public class ActionHandler implements ActionListener {
     protected InjectorService injectorService;
     protected AdapterManager adapterService;
 //    protected TestManager testService;
-    protected MisuseManager exceptionService;
+    protected MisuseManager misuseManager;
     protected MessengerManager messengerService;
 
     @Inject
@@ -54,14 +54,14 @@ public class ActionHandler implements ActionListener {
         InjectorService injectorService,
         AdapterManager adapterService,
 //        TestManager testService,
-        MisuseManager exceptionService,
+        MisuseManager misuseManager,
         MessengerManager messengerService
     ) {
         this.dispatcherManager = dispatcherManager;
         this.injectorService = injectorService;
         this.adapterService = adapterService;
 //        this.testService = testService;
-        this.exceptionService = exceptionService;
+        this.misuseManager = misuseManager;
         this.messengerService = messengerService;
     }
 
@@ -92,8 +92,8 @@ public class ActionHandler implements ActionListener {
             MetaCommand metaCommand = event.getMetaCommand();
             response = metaCommand.getMethod().invoke(controller, params);
         } catch (MisuseException ex) {
-            logger.info("An misuse exception occured when handling a message; command panicked.");
-            response = exceptionService.handle(ex);
+            logger.info("A misuse exception occured when handling a message; command panicked.");
+            response = misuseManager.handle(ex);
         } catch (Exception ex) {
             logger.error("An exception occured when handling a message.", ex);
             return null;

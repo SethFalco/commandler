@@ -23,6 +23,7 @@ import org.elypia.commandler.injection.InjectorService;
 import org.slf4j.*;
 
 import javax.inject.Singleton;
+import java.util.Collection;
 
 /**
  * The root {@link Commandler} class, this ultimately enables your
@@ -71,13 +72,19 @@ public class Commandler {
     public void run() {
         InjectorService injector = appContext.getInjector();
         CommandlerConfig config = appContext.getConfig().getTypedConfig(CommandlerConfig.class);
+        Collection<Class<Integration>> integrations = config.getIntegrations();
 
-        for (Class<Integration> integrationType : config.getIntegrations()) {
+        injector.getInstance(config.getActionListener());
+
+        if (integrations == null || integrations.size() < 1) {
+            logger.warn("Commandler has not instantiated any integrations, it will likely exit following initialization.");
+            return;
+        }
+
+        for (Class<Integration> integrationType : integrations) {
             logger.debug("Creating instance of {}.", integrationType);
             injector.getInstance(integrationType);
         }
-
-        injector.getInstance(ActionHandler.class);
     }
 
     public AppContext getAppContext() {

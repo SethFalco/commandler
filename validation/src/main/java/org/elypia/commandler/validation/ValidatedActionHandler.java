@@ -18,7 +18,7 @@ package org.elypia.commandler.validation;
 
 import org.elypia.commandler.ActionHandler;
 import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.*;
+import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.misuse.MisuseException;
 import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.managers.*;
@@ -65,12 +65,13 @@ public class ValidatedActionHandler extends ActionHandler {
      */
     @Override
     public <S, M> M onAction(Integration<S, M> integration, S source, String content) {
+        logger.debug("Message Received: {}", content);
+
         Object response;
         ActionEvent<S, M> event = null;
 
         try {
             event = dispatcherManager.dispatch(integration, source, content);
-            Action input = event.getAction();
             MetaController module = event.getMetaController();
             Controller controller = injectorService.getInstance(module.getHandlerType());
             Object[] params = adapterService.adaptEvent(event);
@@ -82,8 +83,8 @@ public class ValidatedActionHandler extends ActionHandler {
             MetaCommand metaCommand = event.getMetaCommand();
             response = metaCommand.getMethod().invoke(controller, params);
         } catch (MisuseException ex) {
-            logger.info("An misuse exception occured when handling a message.");
-            response = exceptionService.handle(ex);
+            logger.info("A misuse exception occured when handling a message; command panicked.");
+            response = misuseManager.handle(ex);
         } catch (Exception ex) {
             logger.error("An exception occured when handling a message.", ex);
             return null;

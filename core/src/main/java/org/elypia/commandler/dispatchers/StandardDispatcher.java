@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  * heavily relies on regular expression to match content and map the tokens
  * to command input. This assumes a standard formatted command:<br>
  * <code>{prefix}{module} {command} {params}</code>
- * With exceptional circumstances.
+ * with exceptional circumstances such as default or static commands.
  *
  * @author seth@elypia.org (Syed Shah)
  */
@@ -49,15 +49,16 @@ public class StandardDispatcher implements Dispatcher {
 
     /**
      * This matches every argument in the commands,
-     * any comma seperated <strong>args</strong> will be split by {@link #itemsPattern} as a list.
+     * any comma seperated <strong>args</strong> will be
+     * split by {@link #itemsPattern} as a list.
      */
     private static final Pattern paramsPattern = Pattern.compile("(?:(?:\"(?:\\\\\"|[^\"])*\"|[^\\s,]+)(?:\\s*,\\s*)?)+");
 
     /**
-     * The default item regex, this matches every item within a list of parameters.
+     * The item regex, this matches every item within a list of parameters.
      * This is for list parameters as a single parameter can contain multiple items.
      */
-    private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.+?)(?<!\\\\)\"|(?<word>[^\\s,]+)");
+    private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.+?)(?<!\\\\)\"|(?<word>[^\\s]+(?<!,))");
 
     private final AppContext appContext;
     private final Function<Object, String[]> prefixProvider;
@@ -103,11 +104,12 @@ public class StandardDispatcher implements Dispatcher {
      * dispatcher, both the parent {@link MetaController} and {@link MetaCommand} must
      * have this set in order to be usable.
      *
-     * @param integration
-     * @param source
+     * @param integration The integration that received the message.
+     * @param source The source event that triggered this.
      * @param content The content of the meessage.
-     * @param <M>
-     * @return
+     * @param <S> The type of source event from the integration.
+     * @param <M> The type of message that was received.
+     * @return An ActionEvent all event data parsed in a way Commandler is happy to proceed with the request.
      */
     @Override
     public <S, M> ActionEvent<S, M> parse(Integration<S, M> integration, S source, String content) {
@@ -209,24 +211,7 @@ public class StandardDispatcher implements Dispatcher {
         if (selectedMetaController == null)
             throw new ModuleNotFoundException();
 
-        List<List<String>> parameters = new ArrayList<>();
-
-        if (!params.isBlank()) {
-            Matcher paramMatcher = paramsPattern.matcher(params);
-
-            while (paramMatcher.find()) {
-                String group = paramMatcher.group();
-                Matcher splitMatcher = itemsPattern.matcher(group);
-
-                List<String> list = new ArrayList<>();
-                while (splitMatcher.find()) {
-                    String quote = splitMatcher.group("quote");
-                    list.add(quote != null ? quote : splitMatcher.group("word"));
-                }
-
-                parameters.add(list);
-            }
-        }
+        List<List<String>> parameters = parseParameters(params);
 
         Serializable id = integration.getActionId(source);
 
@@ -240,5 +225,34 @@ public class StandardDispatcher implements Dispatcher {
             throw new ParamCountMismatchException(e);
 
         return e;
+    }
+
+    /**
+     * @param paramsString The string of parameters provided by the ser.
+     * @return A list of list of strings that represent all params and items.
+     */
+    private List<List<String>> parseParameters(String paramsString) {
+        List<List<String>> params = new ArrayList<>();
+
+        if (paramsString.isBlank())
+            return params;
+
+        Matcher paramMatcher = paramsPattern.matcher(paramsString);
+
+        while (paramMatcher.find()) {
+            List<String> list = new ArrayList<>();
+
+            String group = paramMatcher.group();
+            Matcher splitMatcher = itemsPattern.matcher(group);
+
+            while (splitMatcher.find()) {
+                String quote = splitMatcher.group("quote");
+                list.add((quote != null) ? quote : splitMatcher.group("word"));
+            }
+
+            params.add(list);
+        }
+
+        return params;
     }
 }

@@ -81,7 +81,7 @@ public class DefaultMisuseHandler implements MisuseHandler {
         ActionEvent<?, ?> event = ex.getActionEvent();
         MetaCommand metaCommand = event.getMetaCommand();
         String format =
-            "Command failed: you provided the wrong number of parameters.\n" +
+            "Command failed: you provided the wrong amount of parameters.\n" +
             "Module: %s\n" +
             "Command: %s\n" +
             "Required: %s\n" +

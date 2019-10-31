@@ -68,7 +68,7 @@ configure(publishedProjects) {
 
         // Testing
         testImplementation "org.junit.jupiter:junit-jupiter:5.5.2"
-        testImplementation "org.mockito:mockito-core:3.0.0"
+        testImplementation "org.mockito:mockito-core:3.1.0"
     }
 
     /** Testing */

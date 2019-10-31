@@ -18,5 +18,5 @@ dependencies {
     implementation project(":core")
 
     // Hibernate Validation
-    api "org.hibernate.validator:hibernate-validator:6.0.17.Final"
+    api "org.hibernate.validator:hibernate-validator:6.1.0.Final"
 }

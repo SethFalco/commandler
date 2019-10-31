@@ -21,36 +21,8 @@
   <commandler>
     <config>org.elypia.commandler.config.AppConfig</config>
     <config>org.elypia.commandler.config.CommandlerConfig</config>
-<!--    <controller type="org.elypia.commandler.DefaultHelpController">-->
-<!--      <name>Help</name>-->
-<!--      <group>Guidance</group>-->
-<!--      <description>Offer generic help through all the modules in this bot.</description>-->
-<!--      <property key="org.elypia.commandler.dispatchers.StandardDispatcher.aliases" value="help, h"/>-->
-<!--      <command method="getGroups">-->
-<!--        <name>Show Groups</name>-->
-<!--        <description>Display a list of all metaCommand categories.</description>-->
-<!--        <default>true</default>-->
-<!--        <property key="org.elypia.commandler.dispatchers.StandardDispatcher.aliases" value="groups, group"/>-->
-<!--      </command>-->
-<!--      <command method="getModules">-->
-<!--        <name>Show Modules</name>-->
-<!--        <description>Display a list of all modules in a category.</description>-->
-<!--        <property key="org.elypia.commandler.dispatchers.StandardDispatcher.aliases" value="modules, module"/>-->
-<!--        <param>-->
-<!--          <name>group</name>-->
-<!--          <description>The group to list modules for.</description>-->
-<!--        </param>-->
-<!--      </command>-->
-<!--      <command method="getCommands">-->
-<!--        <name>Show Commands</name>-->
-<!--        <description>Display a list of all metaCommands in a module.</description>-->
-<!--        <property key="org.elypia.commandler.dispatchers.StandardDispatcher.aliases" value="commands, command"/>-->
-<!--        <param>-->
-<!--          <name>modules</name>-->
-<!--          <description>The module to list commands for.</description>-->
-<!--        </param>-->
-<!--      </command>-->
-<!--    </controller>-->
+    <action-handler>org.elypia.commandler.ActionHandler</action-handler>
+    <misuse>org.elypia.commandler.DefaultMisuseHandler</misuse>
     <adapter type="org.elypia.commandler.adapters.BooleanAdapter">
       <compatible>java.lang.Boolean</compatible>
     </adapter>

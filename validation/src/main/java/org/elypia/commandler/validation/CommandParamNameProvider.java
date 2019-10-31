@@ -17,7 +17,10 @@
 package org.elypia.commandler.validation;
 
 import org.elypia.commandler.AppContext;
+import org.elypia.commandler.api.Controller;
+import org.elypia.commandler.config.*;
 import org.elypia.commandler.metadata.*;
+import org.slf4j.*;
 
 import javax.validation.ParameterNameProvider;
 import java.lang.reflect.*;
@@ -28,6 +31,8 @@ import java.util.stream.Collectors;
  * @author seth@elypia.org (Syed Shah)
  */
 public class CommandParamNameProvider implements ParameterNameProvider {
+
+    private static final Logger logger = LoggerFactory.getLogger(CommandParamNameProvider.class);
 
     private AppContext appContext;
 
@@ -42,11 +47,26 @@ public class CommandParamNameProvider implements ParameterNameProvider {
 
     @Override
     public List<String> getParameterNames(Method method) {
+        logger.debug("Getting parameter names for method: {}", method);
         Class<?> type = method.getDeclaringClass();
-        MetaController module = (MetaController)appContext.getInjector().getInstance(type);
 
-        if (module == null)
+        if (!(Controller.class.isAssignableFrom(type)))
             return getJavaNames(method);
+
+        ConfigService configService = appContext.getConfig();
+        CommandlerConfig commandlerConfig = configService.getTypedConfig(CommandlerConfig.class);
+        Collection<MetaController> metaControllers = commandlerConfig.getControllers();
+
+        List<MetaController> filtered = metaControllers.stream()
+           .filter((metaController) -> metaController.getHandlerType() == type)
+           .collect(Collectors.toList());
+
+        if (filtered.size() == 0)
+            throw new IllegalStateException("Attempted to validate Controller which wasn't added to Commandler on initialization.");
+        else if (filtered.size() > 1)
+            throw new IllegalStateException("Found more than 1 MetaController for the same Controller implementation.");
+
+        MetaController module = filtered.get(0);
 
         List<MetaParam> metaParams = null;
 

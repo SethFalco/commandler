@@ -50,7 +50,19 @@ public final class ReflectionUtils {
         return convertTypes(List.of(names), type);
     }
 
+    /**
+     * Convert a list of class names to a list of classes.
+     *
+     * @param names All the class names to convert to classes.
+     * @param type The type of object each class is expected to be a class of.
+     * @param <T> The type of {@link Collection} to return.
+     * @return A collection of {@link Class}es from the named types, or an empty
+     * list if names is null.
+     */
     public static <T> Collection<Class<T>> convertTypes(final Collection<String> names, final Class<T> type) {
+        Objects.requireNonNull(names);
+        Objects.requireNonNull(type);
+
         List<Class<T>> types = new ArrayList<>();
 
         for (String name : names)
@@ -108,8 +120,7 @@ public final class ReflectionUtils {
     }
 
     /**
-     *
-     * @param pkge
+     * @param pkge The package to find all classes and load from.
      * @return A collection of classes found under this package.
      */
     public static Collection<Class<?>> getClasses(Package pkge) {
@@ -122,10 +133,8 @@ public final class ReflectionUtils {
     }
 
     /**
-     * <p>The package name to search through, for example:</p>
+     * @param pkge <p>The package name to search through, for example:</p>
      * <code>org.elypia.alexis.commandler</code>
-
-     * @param pkge The package to search.
      * @return A collection of classes found under this package.
      */
     public static Collection<Class<?>> getClasses(String pkge) throws IOException {

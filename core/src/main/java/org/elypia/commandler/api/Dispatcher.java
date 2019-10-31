@@ -21,8 +21,8 @@ import org.elypia.commandler.event.ActionEvent;
 /**
  * The {@link Dispatcher} has the role of processing an event
  * from your respective platform into something that can be interperted
- * by Commandler, this should be used to verify if it's a command as well
- * adapt it into an input and event object to be used internally.
+ * by Commandler, this should be used to verify if it's a command as well as
+ * parse it into an input and event object to be used internally.
  *
  * @author seth@elypia.org (Syed Shah)
  */

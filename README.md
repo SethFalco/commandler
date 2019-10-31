@@ -13,13 +13,17 @@ Commandler makes it a lot easier to get started making anything that requires co
 handling, namely chat bots. It's designed not to be too bloaty or take command away from you
 while putting together a stack of libraries and flow to work with.
 
-* The modules and metaCommands you write are portable, so long as they aren't tied down to any
+* The controllers and commands you write are portable, so long as they aren't tied down to any
 API specific functionality you can just plop them over to another project, or register another
 `Controller` and see the command port over to another service.
-* Commandler is under the hood is using familiar APIs such as Hibernate Validation,
-and Google Guice, which should massively reduce learning.
-* Using `Commandlerdoc` you can export your entire application as it's own website which
-for a better experience for your users to read. 
+* Commandler under the hood is using familiar APIs such as Hibernate Validation,
+and Google Guice, which should massively reduce the learning curve.
+* Using `Commandlerdoc` you can export your controllers/command as it's own website which
+may offer users a better experience when reading your chatbots documentation. 
+
+## Open-Source
+This project is licenced under the Apache 2.0 project, don't be afraid to derive or reference
+from this project all you want!
 
 ## Support
 Should any problems occur, come visit us over on [Discord][discord]! We're always around and

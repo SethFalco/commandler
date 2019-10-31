@@ -107,8 +107,12 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
         return name + " | " + toParamString();
     }
 
+    /**
+     * @return The {@link #metaParams params} names displayed
+     * in a user friendly that shows more info about them inline.
+     */
     public String toParamString() {
-        StringJoiner itemJoiner = new StringJoiner(", ");
+        StringJoiner itemJoiner = new StringJoiner(" ");
 
         for (MetaParam metaParam : metaParams) {
             String name = metaParam.getName();
@@ -125,7 +129,7 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
             itemJoiner.add(builder.toString());
         }
 
-        return itemJoiner.toString();
+        return "(" + metaParams.size() + ") " + itemJoiner.toString();
     }
 
     /**

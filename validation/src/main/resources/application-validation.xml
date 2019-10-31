@@ -1,3 +1,4 @@
+<?xml version="1.1" encoding="UTF-8"?>
 <!--
   ~ Copyright 2019-2019 Elypia CIC
   ~
@@ -14,17 +15,11 @@
   ~ limitations under the License.
   -->
 
-<configuration>
-    <logger name="org.hibernate.validator" level="WARN"/>
-    <logger name="org.jboss" level="WARN"/>
-
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%highlight([%-5p]) [%blue(%d{MM/dd, UTC}) %green(%d{HH:mm:ss, UTC})] %blue([%logger]) %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <root level="ALL">
-        <appender-ref ref="STDOUT"/>
-    </root>
+<configuration xmlns="https://commandler.elypia.org"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://commandler.elypia.org application.xsd">
+  <commandler>
+    <action-handler>org.elypia.commandler.validation.ValidatedActionHandler</action-handler>
+    <misuse>org.elypia.commandler.validation.ValidationMisuseHandler</misuse>
+  </commandler>
 </configuration>

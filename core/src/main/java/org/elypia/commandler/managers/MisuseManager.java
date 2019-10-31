@@ -17,11 +17,14 @@
 package org.elypia.commandler.managers;
 
 import org.elypia.commandler.api.MisuseHandler;
+import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.exceptions.misuse.MisuseException;
+import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.metadata.MetaCommand;
+import org.slf4j.*;
 
-import javax.inject.Singleton;
-import java.util.*;
+import javax.inject.*;
+import java.util.Objects;
 
 /**
  * Whenever exceptions occur, this could be logical exceptions in the application,
@@ -37,18 +40,22 @@ import java.util.*;
 @Singleton
 public class MisuseManager {
 
-    private Collection<MisuseHandler> handlers;
+    /**
+     * We're using SLF4J to manage logging, remember to use a binding / implementation
+     * and configure logging for when testing or running an application.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
 
-    public MisuseManager() {
-        this(new ArrayList<>());
-    }
+    /** Used to manage dependency injection when constructions param adapters. */
+    private final InjectorService injector;
 
-    public MisuseManager(MisuseHandler... handlers) {
-        this(new ArrayList<>(List.of(handlers)));
-    }
+    /** The configuration class which contains all metadata for this instance. */
+    private final CommandlerConfig commandlerConfig;
 
-    public MisuseManager(Collection<MisuseHandler> handlers) {
-        this.handlers = handlers;
+    @Inject
+    public MisuseManager(final InjectorService injector, final CommandlerConfig commandlerConfig) {
+        this.injector = Objects.requireNonNull(injector);
+        this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
     }
 
     /**
@@ -58,8 +65,8 @@ public class MisuseManager {
      * or null if there is no message to be sent.
      */
     public <X extends MisuseException> Object handle(X ex) {
-        for (MisuseHandler handler : handlers) {
-            Object o = handler.handle(ex);
+        for (Class<MisuseHandler> type : commandlerConfig.getMisuseHandlers()) {
+            Object o = injector.getInstance(type).handle(ex);
 
             if (o != null)
                 return o;

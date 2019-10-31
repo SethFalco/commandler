@@ -20,26 +20,37 @@
       <provider config-tag="yaml" config-class="org.elypia.commandler.config.YAMLConfigurationProvider"/>
     </providers>
     <result>
+      <nodeCombiner config-class="org.apache.commons.configuration2.tree.UnionCombiner"/>
       <expressionEngine config-class="org.elypia.commandler.config.XmlExpressionEngine"/>
     </result>
     <combiner>
       <additional>
         <list-nodes>
           <node>config</node>
+          <node>misuse</node>
+          <node>integration</node>
+          <node>dispatcher</node>
           <node>controller</node>
+          <node>command</node>
           <node>param</node>
           <node>adapter</node>
           <node>messenger</node>
-          <node>type</node>
+          <node>compatible</node>
         </list-nodes>
       </additional>
     </combiner>
   </header>
   <override>
+    <!-- Developer configuration for their Commandler Application. -->
     <env/>
     <system/>
     <yaml fileName="application.yml" config-optional="true"/>
     <yaml fileName="application.yaml" config-optional="true"/>
     <xml fileName="application.xml" config-optional="true"/>
+
+    <!-- Internal configuration, setting defaults for Commandler. -->
+    <xml fileName="application-console.xml" config-optional="true"/>
+    <xml fileName="application-validation.xml" config-optional="true"/>
+    <xml fileName="application-default.xml" config-optional="true"/>
   </override>
 </configuration>

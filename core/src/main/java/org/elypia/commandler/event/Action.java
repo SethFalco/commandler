@@ -63,10 +63,10 @@ public class Action implements Serializable {
      *
      * @param content The content the user has sent.
      * @param controllerName The name of the {@link MetaController}.
-     * @param controlName The name of the {@link MetaCommand}.
+     * @param commandName The name of the {@link MetaCommand}.
      */
-    public Action(String content, String controllerName, String controlName) {
-        this(0, content, controllerName, controlName);
+    public Action(String content, String controllerName, String commandName) {
+        this(0, content, controllerName, commandName);
     }
 
     /**
