@@ -17,10 +17,7 @@
 package org.elypia.commandler.config;
 
 import org.elypia.commandler.Commandler;
-import org.junit.jupiter.api.Test;
 import org.slf4j.*;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * This is using the internally managed and contained default configuration
@@ -32,13 +29,4 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 public class ConfigServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigServiceTest.class);
-
-    /** Verify we can load the configuration without a fatal exception. */
-    @Test
-    public void testBasicLoad() {
-        assertDoesNotThrow(() -> {
-            ConfigService config = new ConfigService();
-            config.getProperties().list(System.out);
-        });
-    }
 }
