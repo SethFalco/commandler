@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.data;
+package org.elypia.commandler.annotation;
 
 import java.lang.annotation.*;
 
 /**
- * The Command annotation is used to supply metadata
- * to commands. This can be aliases, or the help to
- * let people know how to use this commands.
- *
- * All static data will be stored in an annotation, reserving the
- * method body for what it's meant for, logic.
+ * The parameter annotation allows us to give parameters for commands
+ * a name and short description for what the parameter is or
+ * what you need.
  *
  * @author seth@elypia.org (Syed Shah)
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Command {
+public @interface Param {
 
-	/**
-	 * @return If this module should be hidden from documentation.
-	 */
-	boolean hidden() default false;
+	/** Set the default key to a literal string.*/
+	String defaultValue() default AnnotationUtils.EFFECTIVELY_NULL;
 }
+

@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.properties;
-
-import org.elypia.commandler.annotation.data.*;
-import org.elypia.commandler.dispatchers.StandardDispatcher;
+package org.elypia.commandler.annotation;
 
 import java.lang.annotation.*;
 
 /**
- * Denotes that this is a module or command that can be accessed
- * under aliases.
- *
  * @author seth@elypia.org (Syed Shah)
  */
-@PropertyWrapper(type = StandardDispatcher.class)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Aliases {
+public @interface Messenger {
 
     /**
-     * @return The aliases for a command to execute this command.
+     * @return What this provider produces.
      */
-    @Property(key = "aliases")
-    String[] value();
+    Class<?> provides();
+
+    /**
+     * @return The types this is compatible with working with.
+     */
+    Class<?>[] value();
 }

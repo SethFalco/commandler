@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.data;
+package org.elypia.commandler.annotation;
+
+import org.elypia.commandler.dispatchers.MatchDispatcher;
 
 import java.lang.annotation.*;
 
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-@Target({ElementType.ANNOTATION_TYPE})
+@PropertyWrapper(type = MatchDispatcher.class)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PropertyWrapper {
+public @interface Match {
 
     /**
-     * @return The type of object that owns and will use this property.
-     * Type is seperated here so Commandler can internally call {@link Class#toString()}
-     * which can improve compile time validation.
+     * @return The regular expression that will be used to
+     * match portions of the event.
      */
-    Class<?> type();
+    @Property(key = "pattern")
+    String value();
 }

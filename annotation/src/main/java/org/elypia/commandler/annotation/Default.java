@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.data;
+package org.elypia.commandler.annotation;
 
 import java.lang.annotation.*;
 

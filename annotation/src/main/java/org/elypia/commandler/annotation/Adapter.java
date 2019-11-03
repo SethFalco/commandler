@@ -14,29 +14,19 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.data;
-
-import org.elypia.commandler.annotation.AnnotationUtils;
-import org.elypia.commandler.annotation.properties.Aliases;
+package org.elypia.commandler.annotation;
 
 import java.lang.annotation.*;
 
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Property {
+public @interface Adapter {
 
     /**
-     * @return The name of the property this is setting.
+     * @return The types this is compatible with working with.
      */
-    String key();
-
-    /**
-     * @return The key to set this property to, this should be
-     * {@link AnnotationUtils#EFFECTIVELY_NULL} if this is for a Annotation wrapper
-     * for a property such as {@link Aliases}.
-     */
-    String value() default AnnotationUtils.EFFECTIVELY_NULL;
+    Class<?>[] value();
 }

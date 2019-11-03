@@ -23,6 +23,7 @@ import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A default implementation of {@link MisuseHandler}.
@@ -107,8 +108,11 @@ public class DefaultMisuseHandler implements MisuseHandler {
             "\n" +
             "See the help command for more information.";
 
-        MetaController module = ex.getModule();
-        return String.format(format, module.getName(), module);
+        MetaController metaController = ex.getModule();
+        String commands = metaController.getPublicCommands().stream()
+            .map(MetaCommand::toString)
+            .collect(Collectors.joining("\n"));
+        return String.format(format, metaController.getName(), commands);
     }
 
     /**

@@ -48,7 +48,9 @@
     <yaml fileName="application.yaml" config-optional="true"/>
     <xml fileName="application.xml" config-optional="true"/>
 
+    <!-- TODO: This is kinda bad, it should be more dynamic, not a hard-coded list. -->
     <!-- Internal configuration, setting defaults for Commandler. -->
+    <xml fileName="application-comcord.xml" config-optional="true"/>
     <xml fileName="application-console.xml" config-optional="true"/>
     <xml fileName="application-validation.xml" config-optional="true"/>
     <xml fileName="application-default.xml" config-optional="true"/>

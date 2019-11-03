@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.data;
+package org.elypia.commandler.annotation;
+
+import org.elypia.commandler.dispatchers.StandardDispatcher;
 
 import java.lang.annotation.*;
 
 /**
+ * A static commands is a commands which can be done globally,
+ * for example the {@link StandardDispatcher} uses this property
+ * to determine if a {@link CommandData} really needs the {@link Aliases alias}
+ * of it's parent {@link ControllerData} before it can be performed.
+ *
+ * Different Dispatchers may choose to treat this differnetly.
+ *
  * @author seth@elypia.org (Syed Shah)
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Adapter {
+public @interface Static {
 
-    /**
-     * @return The types this is compatible with working with.
-     */
-    Class<?>[] value();
 }

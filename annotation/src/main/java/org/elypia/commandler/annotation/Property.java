@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.properties;
-
-import org.elypia.commandler.annotation.data.*;
-import org.elypia.commandler.dispatchers.MatchDispatcher;
+package org.elypia.commandler.annotation;
 
 import java.lang.annotation.*;
 
 /**
  * @author seth@elypia.org (Syed Shah)
  */
-@PropertyWrapper(type = MatchDispatcher.class)
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Match {
+public @interface Property {
 
     /**
-     * @return The regular expression that will be used to
-     * match portions of the event.
+     * @return The name of the property this is setting.
      */
-    @Property(key = "pattern")
-    String value();
+    String key();
+
+    /**
+     * @return The key to set this property to, this should be
+     * {@link AnnotationUtils#EFFECTIVELY_NULL} if this is for a Annotation wrapper
+     * for a property such as {@link Aliases}.
+     */
+    String value() default AnnotationUtils.EFFECTIVELY_NULL;
 }

@@ -72,6 +72,10 @@ public class ValidatedActionHandler extends ActionHandler {
 
         try {
             event = dispatcherManager.dispatch(integration, source, content);
+
+            if (event == null)
+                throw new IllegalStateException("Dispatching completed without panicking, but event is null.");
+
             MetaController module = event.getMetaController();
             Controller controller = injectorService.getInstance(module.getHandlerType());
             Object[] params = adapterService.adaptEvent(event);
@@ -87,7 +91,7 @@ public class ValidatedActionHandler extends ActionHandler {
             response = misuseManager.handle(ex);
         } catch (Exception ex) {
             logger.error("An exception occured when handling a message.", ex);
-            return null;
+            response = "Something has gone wrong!";
         }
 
         if (response == null)

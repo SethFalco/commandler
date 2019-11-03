@@ -19,6 +19,7 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="https://commandler.elypia.org application.xsd">
   <commandler>
+    <integration>org.elypia.commandler.console.ConsoleIntegration</integration>
     <messenger type="org.elypia.commandler.console.messengers.MiscMessenger" provides="java.lang.String">
       <compatible>java.lang.Boolean</compatible>
       <compatible>java.lang.CharSequence</compatible>

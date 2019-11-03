@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.data;
-
-import org.elypia.commandler.annotation.AnnotationUtils;
+package org.elypia.commandler.annotation;
 
 import java.lang.annotation.*;
 
 /**
+ * The Command annotation is used to supply metadata
+ * to commands. This can be aliases, or the help to
+ * let people know how to use this commands.
+ *
+ * All static data will be stored in an annotation, reserving the
+ * method body for what it's meant for, logic.
+ *
  * @author seth@elypia.org (Syed Shah)
  */
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Help {
+public @interface CommandData {
 
-    /** The display name of this item. */
-    String name() default AnnotationUtils.EFFECTIVELY_NULL;
-
-    /** A small description of what this does or contains. */
-    String description() default AnnotationUtils.EFFECTIVELY_NULL;
+	/**
+	 * @return If this module should be hidden from documentation.
+	 */
+	boolean hidden() default false;
 }

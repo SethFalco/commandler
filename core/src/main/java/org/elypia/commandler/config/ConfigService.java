@@ -110,6 +110,10 @@ public class ConfigService {
         return configuration.getString(key);
     }
 
+    public boolean getBoolean(final String key) {
+        return configuration.getBoolean(key);
+    }
+
     public int getInt(final String key) {
         return configuration.getInt(key);
     }

@@ -23,7 +23,7 @@
 
   <xs:annotation>
     <xs:documentation>
-      Commandler 4.0.0 - August 24th 2019
+      Commandler 4.0.0 - November 03rd 2019
       This is the XML Schema for the Commandler configuration file.
       The file should be named "application.xml" in the classpath.
     </xs:documentation>
@@ -37,6 +37,7 @@
             <xs:sequence>
               <xs:element name="config" type="pojo" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="action-handler" type="pojo" minOccurs="0" maxOccurs="1"/>
+              <xs:element name="integration" type="pojo" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="misuse" type="pojo" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="controller" type="controller" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="adapter" type="adapter" minOccurs="0" maxOccurs="unbounded"/>
@@ -65,7 +66,7 @@
   </xs:simpleType>
 
   <xs:complexType name="property">
-    <xs:attribute name="key" type="pojo"/>
+    <xs:attribute name="name" type="pojo" use="required"/>
     <xs:attribute name="value" type="array" use="required"/>
   </xs:complexType>
 
@@ -110,6 +111,7 @@
         <xs:sequence>
           <xs:element name="defaultValue" type="xs:string" minOccurs="0"/>
         </xs:sequence>
+        <xs:attribute name="index" type="xs:int"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

@@ -235,8 +235,9 @@ public class CommandlerConfig {
 
         for (ImmutableHierarchicalConfiguration param : paramsConfig) {
             ComponentConfig component = convertComponent(param);
+            int index = param.getInt("index", params.size());
             String defaultValue = param.getString("defaultValue");
-            params.add(new MetaParam(method.getParameters()[0].getType(), method.getParameters()[0], component.name, component.description, defaultValue, component.properties));
+            params.add(new MetaParam(method.getParameters()[index].getType(), method.getParameters()[index], component.name, component.description, defaultValue, component.properties));
         }
 
         return params;

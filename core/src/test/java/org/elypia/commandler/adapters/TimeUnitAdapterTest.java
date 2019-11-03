@@ -45,12 +45,12 @@ public class TimeUnitAdapterTest {
     @Test
     public void assertTimeUnits() {
         assertAll("Check that they all return the correct type.",
-            () -> assertEquals(TimeUnit.SECONDS, adapter.adapt("seconds")),
-            () -> assertEquals(TimeUnit.HOURS, adapter.adapt("h")),
+            () -> assertEquals(TimeUnit.SECONDS,      adapter.adapt("seconds")),
+            () -> assertEquals(TimeUnit.HOURS,        adapter.adapt("h")),
             () -> assertEquals(TimeUnit.MICROSECONDS, adapter.adapt("mic")),
-            () -> assertEquals(TimeUnit.MINUTES, adapter.adapt("mins")),
-            () -> assertEquals(TimeUnit.NANOSECONDS, adapter.adapt("n")),
-            () -> assertEquals(TimeUnit.SECONDS, adapter.adapt("secs"))
+            () -> assertEquals(TimeUnit.MINUTES,      adapter.adapt("mins")),
+            () -> assertEquals(TimeUnit.NANOSECONDS,  adapter.adapt("n")),
+            () -> assertEquals(TimeUnit.SECONDS,      adapter.adapt("secs"))
         );
     }
 

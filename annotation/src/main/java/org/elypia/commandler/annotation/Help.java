@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.data;
-
-import org.elypia.commandler.annotation.AnnotationUtils;
+package org.elypia.commandler.annotation;
 
 import java.lang.annotation.*;
 
 /**
- * The parameter annotation allows us to give parameters for commands
- * a name and short description for what the parameter is or
- * what you need.
- *
  * @author seth@elypia.org (Syed Shah)
  */
-@Target({ElementType.PARAMETER, ElementType.FIELD})
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Param {
+public @interface Help {
 
-	/** Set the default key to a literal string.*/
-	String defaultValue() default AnnotationUtils.EFFECTIVELY_NULL;
+    /** The display name of this item. */
+    String name() default AnnotationUtils.EFFECTIVELY_NULL;
+
+    /** A small description of what this does or contains. */
+    String description() default AnnotationUtils.EFFECTIVELY_NULL;
 }
-

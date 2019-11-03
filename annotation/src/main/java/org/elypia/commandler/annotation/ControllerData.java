@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.data;
+package org.elypia.commandler.annotation;
 
 import org.elypia.commandler.Commandler;
-import org.elypia.commandler.annotation.AnnotationUtils;
 
 import java.lang.annotation.*;
 
 /**
- * A {@link Controller} in {@link Commandler} is a subset of {@link Command}s
- * and how all {@link Command}s should be registered. <br>
+ * A {@link ControllerData} in {@link Commandler} is a subset of {@link CommandData}s
+ * and how all {@link CommandData}s should be registered. <br>
  * See {@link Static} and {@link Default} for making simple commands
  * in {@link org.elypia.commandler.api.Controller}s.
  *
- * A {@link Controller} can be thought of as a module of commands.
- * A {@link Command} can be thought of as a single command.
+ * A {@link ControllerData} can be thought of as a module of commands.
+ * A {@link CommandData} can be thought of as a single command.
  *
  * @author seth@elypia.org (Syed Shah)
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Controller {
+public @interface ControllerData {
 
 	/**
 	 * @return The group this module belongs too, this is used for
