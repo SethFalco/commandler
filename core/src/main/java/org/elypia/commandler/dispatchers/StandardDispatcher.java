@@ -140,7 +140,6 @@ public class StandardDispatcher implements Dispatcher {
         for (MetaController metaController : appContext.getInjector().getInstance(CommandlerConfig.class).getControllers()) {
             String controllerAliases = metaController.getProperty(this.getClass(), "aliases");
 
-            // TODO: Currently this would mean static commadns can't exist unless the parent module has an alias.
             if (controllerAliases == null)
                 continue;
 

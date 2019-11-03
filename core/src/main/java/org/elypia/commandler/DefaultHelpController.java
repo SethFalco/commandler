@@ -101,7 +101,6 @@ public class DefaultHelpController implements Controller {
     public String getCommands(ActionEvent event, MetaController module) {
         StringBuilder builder = new StringBuilder(module.getName());
 
-        // TODO: Have this print aliases again.
         builder
             .append(" (")
             .append(String.join(", "))
@@ -119,7 +118,6 @@ public class DefaultHelpController implements Controller {
             MetaCommand metaCommand = metaCommandIt.next();
             builder.append(metaCommand.getName());
 
-            // TODO: Have this print aliases again.
             builder
                 .append(" (")
                 .append(String.join(", "))

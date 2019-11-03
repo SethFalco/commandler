@@ -115,7 +115,7 @@ public class AdapterManager {
                     continue;
                 }
                 else
-                    throw new RuntimeException("defaultValue must be assignable to String, String[], List<String> or " + metaParam.getType().getSimpleName() + ".");
+                    throw new RuntimeException("defaultValue must be assignable to String, String[], List<String> or " + metaParam.getType() + ".");
 
             }
 
@@ -239,7 +239,6 @@ public class AdapterManager {
             throw new AdapterRequiredException("Adapter required for type " + typeRequired + ".");
 
         logger.debug("Using `{}` to parse parameter.", adapter.getAdapterType());
-        // TODO: Add event objects and params to child injector
         return injector.getInstance(adapter.getAdapterType());
     }
 }
