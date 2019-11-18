@@ -23,7 +23,7 @@ import org.slf4j.*;
 /**
  * @param <S>
  * @param <M>
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public abstract class AbstractIntegration<S, M> implements Integration<S, M> {
 
@@ -31,11 +31,11 @@ public abstract class AbstractIntegration<S, M> implements Integration<S, M> {
 
     protected Commandler commandler;
 
-    public M process(S source, String content) {
+    public M process(S source, M message, String content) {
         logger.debug("Recieved `{}` from {}.", content, this.getClass());
         AppContext context = commandler.getAppContext();
         Class<? extends ActionListener> listener = context.getConfig().getTypedConfig(CommandlerConfig.class).getActionListener();
-        return context.getInjector().getInstance(listener).onAction(this, source, content);
+        return context.getInjector().getInstance(listener).onAction(this, source, message, content);
     }
 
     public Commandler getCommandler() {

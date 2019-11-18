@@ -22,7 +22,7 @@ import org.elypia.commandler.metadata.MetaParam;
 import java.util.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class ListUnsupportedException extends ParamException {
 

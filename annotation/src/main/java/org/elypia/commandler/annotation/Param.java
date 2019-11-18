@@ -23,7 +23,7 @@ import java.lang.annotation.*;
  * a name and short description for what the parameter is or
  * what you need.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

@@ -16,17 +16,17 @@
 
 package org.elypia.commandler.metadata;
 
-import org.elypia.commandler.api.ResponseBuilder;
+import org.elypia.commandler.api.Messenger;
 
 import java.util.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class MetaMessenger {
 
     /** The type of the provider itself. */
-    private Class<? extends ResponseBuilder> type;
+    private Class<? extends Messenger> type;
 
     /** The class this type provides. */
     private Class<Object> builds;
@@ -34,17 +34,17 @@ public class MetaMessenger {
     /** The types this provider is compatible for. */
     private Collection<Class<Object>> compatible;
 
-    public MetaMessenger(Class<? extends ResponseBuilder> type, Class<Object> builds, Class<Object>... compatible) {
+    public MetaMessenger(Class<? extends Messenger> type, Class<Object> builds, Class<Object>... compatible) {
         this(type, builds, List.of(compatible));
     }
 
-    public MetaMessenger(Class<? extends ResponseBuilder> type, Class<Object> builds, Collection<Class<Object>> compatible) {
+    public MetaMessenger(Class<? extends Messenger> type, Class<Object> builds, Collection<Class<Object>> compatible) {
         this.type = Objects.requireNonNull(type);
         this.builds = Objects.requireNonNull(builds);
         this.compatible = Objects.requireNonNull(compatible);
     }
 
-    public Class<? extends ResponseBuilder> getProviderType() {
+    public Class<? extends Messenger> getProviderType() {
         return type;
     }
 

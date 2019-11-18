@@ -16,7 +16,7 @@
 
 package org.elypia.commandler.console.messengers;
 
-import org.elypia.commandler.api.ResponseBuilder;
+import org.elypia.commandler.api.Messenger;
 import org.elypia.commandler.event.ActionEvent;
 
 import javax.inject.Singleton;
@@ -25,10 +25,10 @@ import javax.inject.Singleton;
  * A provider for types that can make desireable output from
  * just the {@link Object#toString()} method.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
-public class MiscMessenger implements ResponseBuilder<Object, String> {
+public class MiscMessenger implements Messenger<Object, String> {
 
     @Override
     public String provide(ActionEvent<?, String> event, Object output) {

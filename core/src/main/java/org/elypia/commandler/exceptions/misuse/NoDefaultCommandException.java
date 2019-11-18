@@ -21,7 +21,7 @@ import org.elypia.commandler.metadata.MetaController;
 import java.util.Objects;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class NoDefaultCommandException extends MisuseException {
 

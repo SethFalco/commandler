@@ -24,7 +24,7 @@ import org.elypia.commandler.event.ActionEvent;
  * by Commandler, this should be used to verify if it's a command as well as
  * parse it into an input and event object to be used internally.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public interface Dispatcher {
 
@@ -44,5 +44,5 @@ public interface Dispatcher {
      * @param content The content of the meessage.
      * @return The input the user provided or null if it's not a valid command.
      */
-    <S, M> ActionEvent<S, M> parse(Integration<S, M> integration, S source, String content);
+    <S, M> ActionEvent<S, M> parse(Integration<S, M> integration, S source, M message, String content);
 }

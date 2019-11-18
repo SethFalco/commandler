@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * Centralized and reusable utilities for reflection.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public final class ReflectionUtils {
 

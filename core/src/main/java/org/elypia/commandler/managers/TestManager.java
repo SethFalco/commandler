@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class TestManager {

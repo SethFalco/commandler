@@ -20,7 +20,7 @@ import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class MatchDispatcher implements Dispatcher {
 
@@ -38,7 +38,7 @@ public class MatchDispatcher implements Dispatcher {
     }
 
     @Override
-    public <S, M> ActionEvent<S, M> parse(Integration<S, M> controller, S source, String content) {
+    public <S, M> ActionEvent<S, M> parse(Integration<S, M> controller, S source, M message, String content) {
         return null;
     }
 }

@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * Adapt user input into Java {@link Duration} objects.
  * (This will allow users to specify a duration of time.)
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class DurationAdapter implements Adapter<Duration> {
 

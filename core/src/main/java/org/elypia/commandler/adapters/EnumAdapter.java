@@ -31,7 +31,7 @@ import java.util.Objects;
  * This simply checks if the names are the same after removing
  * spaces, under scores, and converting to lower case.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class EnumAdapter implements Adapter<Enum> {

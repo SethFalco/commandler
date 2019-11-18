@@ -21,7 +21,7 @@ import org.elypia.commandler.injection.InjectorService;
 import javax.validation.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class InjectableConstraintValidatorFactory implements ConstraintValidatorFactory {
 

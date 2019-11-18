@@ -28,7 +28,6 @@ import org.slf4j.*;
 import javax.inject.*;
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.*;
 import java.util.stream.Stream;
 
@@ -39,7 +38,7 @@ import java.util.stream.Stream;
  * <code>{prefix}{module} {command} {params}</code>
  * with exceptional circumstances such as default or static commands.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class StandardDispatcher implements Dispatcher {
@@ -61,7 +60,8 @@ public class StandardDispatcher implements Dispatcher {
     private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.+?)(?<!\\\\)\"|(?<word>[^\\s]+(?<!,))");
 
     private final AppContext appContext;
-    private final Function<Object, String[]> prefixProvider;
+
+    private final CommandlerConfig commandlerConfig;
 
     /**
      * Create an instance of the StandardDispatcher with no prefix.
@@ -69,22 +69,14 @@ public class StandardDispatcher implements Dispatcher {
      * @param appContext The {@link Commandler} {@link AppContext}.
      */
     @Inject
-    public StandardDispatcher(AppContext appContext) {
-        this(appContext, (String[])null);
-    }
-
-    public StandardDispatcher(AppContext appContext, String... prefixes) {
-        this(appContext, (object) -> prefixes);
-    }
-
-    public StandardDispatcher(AppContext appContext, Function<Object, String[]> prefixProvider) {
+    public StandardDispatcher(final AppContext appContext, final CommandlerConfig commandlerConfig) {
         this.appContext = Objects.requireNonNull(appContext);
-        this.prefixProvider = Objects.requireNonNull(prefixProvider);
+        this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
     }
 
     @Override
     public boolean isValid(Object source, String content) {
-        String[] prefixes = prefixProvider.apply(source);
+        String[] prefixes = null;
 
         if (prefixes == null)
             return true;
@@ -112,8 +104,117 @@ public class StandardDispatcher implements Dispatcher {
      * @return An ActionEvent all event data parsed in a way Commandler is happy to proceed with the request.
      */
     @Override
-    public <S, M> ActionEvent<S, M> parse(Integration<S, M> integration, S source, String content) {
-        String[] prefixes = prefixProvider.apply(source);
+    public <S, M> ActionEvent<S, M> parse(Integration<S, M> integration, S source, M message, String content) {
+        String input = parsePrefix(content);
+        String[] command = ChatUtils.splitSpaces(input);
+
+        if (command.length == 0)
+            throw new OnlyPrefixException("This message only contained the prefix, but no other content.");
+
+        String arg1 = command[0];
+        MetaController selectedMetaController = null;
+        MetaCommand selectedMetaCommand = null;
+        String params = null;
+
+        for (MetaController metaController : commandlerConfig.getControllers()) {
+            String controllerAliases = metaController.getProperty(this.getClass(), "aliases");
+
+            if (controllerAliases == null)
+                continue;
+
+            boolean controllerMatch = controllerAliases.equalsIgnoreCase(arg1.toLowerCase());
+
+            if (controllerMatch) {
+                selectedMetaController = metaController;
+
+                if (command.length > 1) {
+                    for (MetaCommand metaCommand : metaController.getMetaCommands()) {
+                        String controlAliases = metaCommand.getProperty(this.getClass(), "aliases");
+
+                        if (controlAliases == null)
+                            continue;
+
+                        boolean controlMatch = controlAliases.equalsIgnoreCase(command[1].toLowerCase());
+
+                        if (controlMatch) {
+                            selectedMetaCommand = metaCommand;
+                            params = input
+                                .replaceFirst("\\Q" + command[0] + "\\E", "")
+                                .replaceFirst("\\Q" + command[1] + "\\E", "")
+                                .trim();
+                            break;
+                        }
+                    }
+
+                    if (selectedMetaCommand == null) {
+                        selectedMetaCommand = metaController.getDefaultControl();
+
+                        if (selectedMetaCommand == null)
+                            throw new NoDefaultCommandException(selectedMetaController);
+                        else
+                            params = input.replaceFirst("\\Q" + command[0] + "\\E", "").trim();
+                    }
+                } else {
+                    MetaCommand data = metaController.getDefaultControl();
+
+                    if (data != null)
+                        selectedMetaCommand = data;
+                    else
+                        throw new NoDefaultCommandException(metaController);
+
+                    params = input
+                        .replaceFirst("\\Q" + command[0] + "\\E", "")
+                        .trim();
+                }
+
+                break;
+            }
+
+            for (MetaCommand metaCommand : metaController.getStaticCommands()) {
+                String controlAliases = metaCommand.getProperty(this.getClass(), "aliases");
+
+                if (controlAliases == null)
+                    continue;
+
+                boolean controlMatch = controlAliases.equalsIgnoreCase(command[0].toLowerCase());
+
+                if (controlMatch) {
+                    selectedMetaController = metaController;
+                    selectedMetaCommand = metaCommand;
+
+                    params = input
+                        .replaceFirst("\\Q" + command[0] + "\\E", "")
+                        .trim();
+
+                    break;
+                }
+            }
+        }
+
+        if (selectedMetaController == null)
+            throw new ModuleNotFoundException();
+
+        List<List<String>> parameters = parseParameters(params);
+        Serializable id = integration.getActionId(source);
+
+        if (id == null)
+            throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
+
+        Action action = new Action(id, content, selectedMetaController.getName(), selectedMetaCommand.getName(), parameters);
+        ActionEvent<S, M> e = new ActionEvent<>(integration, selectedMetaController, selectedMetaCommand, source, message, action);
+
+        if (!selectedMetaCommand.isValidParamCount(parameters.size()))
+            throw new ParamCountMismatchException(e);
+
+        return e;
+    }
+
+    /**
+     * @param content The command the user sent it.
+     * @return The input without the prefix.
+     */
+    private String parsePrefix(String content) {
+        String[] prefixes = null;
 
         if (prefixes != null) {
             Optional<String> optPrefix = Stream.of(prefixes)
@@ -127,103 +228,7 @@ public class StandardDispatcher implements Dispatcher {
             content = content.substring(prefix.length());
         }
 
-        String[] command = ChatUtils.splitSpaces(content);
-
-        if (command.length == 0)
-            throw new OnlyPrefixException("This message only contained the prefix, but no other content.");
-
-        String arg1 = command[0];
-        MetaController selectedMetaController = null;
-        MetaCommand selectedMetaCommand = null;
-        String params = null;
-
-        for (MetaController metaController : appContext.getInjector().getInstance(CommandlerConfig.class).getControllers()) {
-            String controllerAliases = metaController.getProperty(this.getClass(), "aliases");
-
-            if (controllerAliases == null)
-                continue;
-
-            boolean controllerMatch = controllerAliases.contains(arg1.toLowerCase());
-
-            if (controllerMatch) {
-                selectedMetaController = metaController;
-
-                if (command.length > 1) {
-                    for (MetaCommand metaCommand : metaController.getMetaCommands()) {
-                        String controlAliases = metaCommand.getProperty(this.getClass(), "aliases");
-
-                        if (controlAliases == null)
-                            continue;
-
-                        boolean controlMatch = controlAliases.contains(command[1].toLowerCase());
-
-                        if (controlMatch) {
-                            selectedMetaCommand = metaCommand;
-                            break;
-                        }
-                    }
-
-                    if (selectedMetaCommand == null)
-                        throw new MisuseException("Found module but command doesn't exist."){};
-
-                    params = content
-                        .replace(command[0], "")
-                        .replace(command[1], "")
-                        .trim();
-                } else {
-                    MetaCommand data = metaController.getDefaultControl();
-
-                    if (data != null)
-                        selectedMetaCommand = data;
-                    else
-                        throw new NoDefaultCommandException(metaController);
-
-                    params = content
-                        .replace(command[0], "")
-                        .trim();
-                }
-
-                break;
-            }
-
-            for (MetaCommand metaCommand : metaController.getStaticCommands()) {
-                String controlAliases = metaCommand.getProperty(this.getClass(), "aliases");
-
-                if (controlAliases == null)
-                    continue;
-
-                boolean controlMatch = controlAliases.contains(command[0].toLowerCase());
-
-                if (controlMatch) {
-                    selectedMetaController = metaController;
-                    selectedMetaCommand = metaCommand;
-
-                    params = content
-                        .replace(command[0], "")
-                        .trim();
-
-                    break;
-                }
-            }
-        }
-
-        if (selectedMetaController == null)
-            throw new ModuleNotFoundException();
-
-        List<List<String>> parameters = parseParameters(params);
-
-        Serializable id = integration.getActionId(source);
-
-        if (id == null)
-            throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
-
-        Action action = new Action(id, content, selectedMetaController.getName(), selectedMetaCommand.getName(), parameters);
-        ActionEvent<S, M> e = new ActionEvent<>(integration, selectedMetaController, selectedMetaCommand, source, action);
-
-        if (!selectedMetaCommand.isValidParamCount(parameters.size()))
-            throw new ParamCountMismatchException(e);
-
-        return e;
+        return content;
     }
 
     /**

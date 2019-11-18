@@ -29,7 +29,7 @@ import org.elypia.commandler.metadata.MetaParam;
  * as a parameter in commands.
  *
  * @param <O> The type of data we want to adapt our input as.
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public interface Adapter<O> {
 

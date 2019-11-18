@@ -41,7 +41,7 @@ import java.util.*;
  * by the chat client is converted into the respective object and passed
  * to the method associated with the {@link MetaCommand}.</p>
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class AdapterManager {
@@ -103,6 +103,7 @@ public class AdapterManager {
                 ValueExpression ve = expressionFactory.createValueExpression(context, defaultValue, Object.class);
                 Object value = ve.getValue(context);
                 Class<?> type = value.getClass();
+                Class<?> parameterType = metaParam.getParameter().getType();
 
                 if (String.class.isAssignableFrom(type))
                     param = List.of((String)value);
@@ -110,12 +111,12 @@ public class AdapterManager {
                     param = List.of((String[])value);
                 else if (List.class.isAssignableFrom(type))
                     param = (List<String>)value; // TODO: Only checking if it's a list, not List<String>
-                else if (metaParam.getType().isAssignableFrom(type)) {
+                else if (parameterType.isAssignableFrom(type)) {
                     objects.add(value);
                     continue;
                 }
                 else
-                    throw new RuntimeException("defaultValue must be assignable to String, String[], List<String> or " + metaParam.getType() + ".");
+                    throw new RuntimeException("defaultValue must be assignable to String, String[], List<String> or " + parameterType + ".");
 
             }
 
@@ -154,7 +155,7 @@ public class AdapterManager {
      * if we failed to adapt the input. (Usually user misuse.)
      */
     protected Object adaptParam(Action action, ActionEvent event, MetaParam param, List<String> items) throws ParamParseException, ListUnsupportedException {
-        Class<?> type = param.getType();
+        Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
         Adapter adapter = this.getAdapter(componentType);
 

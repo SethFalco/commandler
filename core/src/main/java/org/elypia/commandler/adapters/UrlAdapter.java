@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 import java.net.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class UrlAdapter implements Adapter<URL> {

@@ -16,18 +16,18 @@
 
 package org.elypia.commandler.metadata;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Parameter;
 import java.util.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class MetaParam extends MetaComponent {
 
-    private Class<?> type;
+    /** Parameter index in the method it is defined in. */
+    private int index;
 
-    /** The method or parameter that represents this param. */
-    private AnnotatedElement annotatedElement;
+    private Parameter parameter;
 
     /** The default value if any else null. */
     private String defaultValue;
@@ -38,24 +38,24 @@ public class MetaParam extends MetaComponent {
     /** If this is a single parameter, or a list parameter. */
     private boolean isList;
 
-    public MetaParam(Class<?> type, AnnotatedElement annotatedElement, String name, String description, String defaultValue, Properties properties) {
-        this.type = Objects.requireNonNull(type);
-        this.annotatedElement = Objects.requireNonNull(annotatedElement);
+    public MetaParam(int index, Parameter parameter, String name, String description, String defaultValue, Properties properties) {
+        this.index = index;
+        this.parameter = Objects.requireNonNull(parameter);
         this.name = Objects.requireNonNull(name);
         this.description = description;
         this.defaultValue = defaultValue;
         this.properties = properties;
 
         isOptional = defaultValue != null;
-        isList = type.isArray();
+        isList = parameter.getType().isArray();
     }
 
-    public Class<?> getType() {
-        return type;
+    public int getIndex() {
+        return index;
     }
 
-    public AnnotatedElement getAnnotatedElement() {
-        return annotatedElement;
+    public Parameter getParameter() {
+        return parameter;
     }
 
     public String getDefaultValue() {

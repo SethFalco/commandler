@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 import java.util.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class BooleanAdapter implements Adapter<Boolean> {

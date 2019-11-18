@@ -22,7 +22,7 @@ import org.elypia.commandler.metadata.MetaParam;
 import java.lang.reflect.Type;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class MetaParamSerializer implements JsonSerializer<MetaParam> {
 

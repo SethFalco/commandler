@@ -24,7 +24,7 @@ import java.text.NumberFormat;
 import java.util.Objects;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class CommandlerModule extends AbstractModule {
 

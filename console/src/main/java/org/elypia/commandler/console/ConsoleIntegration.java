@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * This is a minimal integration designed to handle console input.
  *
- * @author seth@elypia.com (Syed Shah)
+ * @author seth@elypia.com (Seth Falco)
  */
 @Singleton
 public class ConsoleIntegration extends AbstractIntegration<String, String> {
@@ -43,7 +43,7 @@ public class ConsoleIntegration extends AbstractIntegration<String, String> {
      *
      */
     @Inject
-    public ConsoleIntegration(Commandler commandler) {
+    public ConsoleIntegration(final Commandler commandler) {
         this.commandler = commandler;
         Scanner scanner = new Scanner(System.in);
 
@@ -54,7 +54,7 @@ public class ConsoleIntegration extends AbstractIntegration<String, String> {
                 String response;
 
                 try {
-                    response = process(nextLine, nextLine);
+                    response = process(nextLine, nextLine, nextLine);
                 } catch (Exception ex) {
                     logger.error("Failed to process Console event.", ex);
                     throw ex;

@@ -19,7 +19,7 @@ package org.elypia.commandler.annotation;
 import java.lang.annotation.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

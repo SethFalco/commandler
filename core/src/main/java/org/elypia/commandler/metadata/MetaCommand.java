@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class MetaCommand extends MetaComponent implements Comparable<MetaCommand>, Iterable<MetaParam> {
 

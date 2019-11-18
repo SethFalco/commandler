@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  *
  * It's recommend when configuring your own exceptions
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class DefaultMisuseHandler implements MisuseHandler {
 
@@ -122,7 +122,7 @@ public class DefaultMisuseHandler implements MisuseHandler {
     private String onParamParse(ParamParseException ex) {
         Objects.requireNonNull(ex);
         String format =
-            "Command failed; I couldn't interpret '%s', as the parameter '%s' (%s).\n" +
+            "Command failed; I couldn't interpret '%s', as the parameter '%s'.\n" +
             "Module: %s\n" +
             "Command: %s\n" +
             "Required: %s\n" +
@@ -136,7 +136,6 @@ public class DefaultMisuseHandler implements MisuseHandler {
             format,
             ex.getItem(),
             metaParam.getName(),
-            metaParam.getDescription(),
             input.getMetaController().getName(),
             metaCommand.getName(),
             metaCommand.toParamString(),

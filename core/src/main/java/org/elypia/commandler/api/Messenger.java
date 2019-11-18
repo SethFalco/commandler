@@ -27,9 +27,9 @@ import org.elypia.commandler.event.ActionEvent;
  *
  * @param <O> The object convert into a message.
  * @param <M> The message we're returning.
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
-public interface ResponseBuilder<O, M> {
+public interface Messenger<O, M> {
 
     /**
      * The default load method, this adapters should be the default

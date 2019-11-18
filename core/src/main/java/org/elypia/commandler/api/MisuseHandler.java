@@ -22,7 +22,7 @@ import org.elypia.commandler.exceptions.misuse.MisuseException;
  * This could handle a single exception, or route the
  * exeception to a method to handle that particular exception.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @FunctionalInterface
 public interface MisuseHandler {

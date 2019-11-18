@@ -32,7 +32,7 @@ import java.util.*;
  * lists of relevent injectable Java objects regardless of how
  * they are related.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class InjectorService {

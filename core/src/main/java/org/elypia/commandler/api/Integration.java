@@ -28,7 +28,7 @@ import java.io.Serializable;
  * @param <S> The type of source event this integration consumes. If there
  * are multiple types, specify the highest level expected to be used.
  * @param <M> The type of message this platform sends and receives.
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public interface Integration<S, M> {
 

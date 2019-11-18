@@ -30,7 +30,7 @@ import javax.inject.Singleton;
  * meta data, contruct controllers or other core objects on-demand and receive
  * messages from {@link Integration}s.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class AppContext {

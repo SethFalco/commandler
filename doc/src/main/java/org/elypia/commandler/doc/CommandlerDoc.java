@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * This will only export public metadata. For example where
  * {@link MetaController#isPublic()} and {@link MetaCommand#isPublic} is true.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class CommandlerDoc {
 

@@ -26,7 +26,7 @@
       <compatible>java.lang.Character</compatible>
       <compatible>java.net.URL</compatible>
     </messenger>
-    <messenger type="org.elypia.commandler.console.messengers.NumberMessenger" provides="java.lang.Number">
+    <messenger type="org.elypia.commandler.console.messengers.NumberMessenger" provides="java.lang.String">
       <compatible>java.lang.Number</compatible>
       <compatible>java.lang.Double</compatible>
       <compatible>java.lang.Float</compatible>

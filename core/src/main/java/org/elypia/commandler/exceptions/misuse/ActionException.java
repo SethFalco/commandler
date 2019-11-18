@@ -30,7 +30,7 @@ import java.util.Objects;
  * to pick up the error and return a clean and helpful error
  * message to users.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public abstract class ActionException extends MisuseException {
 

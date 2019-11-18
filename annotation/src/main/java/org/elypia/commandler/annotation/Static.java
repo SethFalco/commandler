@@ -28,7 +28,7 @@ import java.lang.annotation.*;
  *
  * Different Dispatchers may choose to treat this differnetly.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

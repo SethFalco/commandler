@@ -36,7 +36,7 @@ import java.util.*;
  * It's strongly recommended to implement this yourself with something
  * more persistent such as a database.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public interface ActionCache extends Iterable<Action> {
 

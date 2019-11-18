@@ -23,7 +23,7 @@ import java.util.*;
 /**
  * The metadata-data associated with a parameter adapters.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class MetaAdapter {
 

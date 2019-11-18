@@ -30,7 +30,7 @@ import java.util.*;
  * Modules, Commands, and Params closest to the functionality, however
  * can make code slighly messy.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class AnnotationConfiguration extends AbstractConfiguration {
 

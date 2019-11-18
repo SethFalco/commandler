@@ -25,10 +25,10 @@ import org.slf4j.*;
 import javax.validation.ParameterNameProvider;
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class CommandParamNameProvider implements ParameterNameProvider {
 
@@ -68,21 +68,24 @@ public class CommandParamNameProvider implements ParameterNameProvider {
 
         MetaController module = filtered.get(0);
 
-        List<MetaParam> metaParams = null;
+        MetaCommand command = null;
 
         for (MetaCommand metaCommand : module.getMetaCommands()) {
             if (method.equals(metaCommand.getMethod())) {
-                metaParams = metaCommand.getMetaParams();
+                command = metaCommand;
                 break;
             }
         }
 
-        List<String> names = metaParams.stream()
-            .map(MetaParam::getName)
-            .collect(Collectors.toList());
+        if (command == null)
+            return getJavaNames(method);
 
-        while (names.size() < method.getParameterCount())
-            names.add("");
+        Parameter[] parameters = command.getMethod().getParameters();
+        List<String> names = Stream.of(parameters).map((p) -> "").collect(Collectors.toList());
+        List<MetaParam> metaParams =  command.getMetaParams();;
+
+        for (MetaParam metaParam : metaParams)
+            names.set(metaParam.getIndex(), metaParam.getName());
 
         return names;
     }

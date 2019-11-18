@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * can process commands; it holds information on the commands in a
  * form convinient to access to {@link Commandler} and any other APIs.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class MetaController extends MetaComponent implements Comparable<MetaController>, Iterable<MetaCommand> {
 

@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * Generic utilities for which can be used in chat.
  * Most utilities provided are required by Commandler.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public final class ChatUtils {
 

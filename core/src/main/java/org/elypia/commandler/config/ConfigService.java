@@ -31,7 +31,7 @@ import java.util.*;
  * This should contain all configuration for the Commandedler instance regardless
  * of sources.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class ConfigService {

@@ -22,7 +22,7 @@ import java.util.*;
  * Abstract class that represents a type with documentable elements
  * such as a {@link MetaController}, {@link MetaCommand}, and {@link MetaParam}.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public abstract class MetaComponent {
 
@@ -67,6 +67,16 @@ public abstract class MetaComponent {
     }
 
     /**
+     * @param type The prefix class name of the property.
+     * @param key The name of the property in this class.
+     * @param defaultValue The default value if the property is not found.
+     * @return Either the value found for this property, or the default value.
+     */
+    public String getProperty(Class<?> type, String key, Object defaultValue) {
+        return getProperty(type.getName() + "." + key, defaultValue.toString());
+    }
+
+    /**
      * Retrieve a property by it's full key.
      *
      * @param key The name of the property to retrieve.
@@ -74,5 +84,14 @@ public abstract class MetaComponent {
      */
     public String getProperty(String key) {
         return properties.getProperty(key);
+    }
+
+    /**
+     * @param key The name of the property to retrieve.
+     * @param defaultValue The default value if the property is not found.
+     * @return Either the value found for this property, or the default value.
+     */
+    public String getProperty(String key, Object defaultValue) {
+        return properties.getProperty(key, defaultValue.toString());
     }
 }

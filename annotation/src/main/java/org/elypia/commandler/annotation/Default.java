@@ -25,7 +25,7 @@ import java.lang.annotation.*;
  * The default will be called if either no command is specified or
  * the "command" specified isn't a valid commands in the module. (Potentially a parameter.)
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

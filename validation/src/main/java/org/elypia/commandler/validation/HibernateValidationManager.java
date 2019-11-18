@@ -35,7 +35,7 @@ import java.util.Set;
  * they are within the bounds that is specified relative to the input
  * provided when performing the commands.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class HibernateValidationManager {
@@ -64,6 +64,7 @@ public class HibernateValidationManager {
 
     public <S> void validate(ActionEvent<S, ?> event, Controller controller, Object[] parameters) throws RuntimeException {
         Method method = event.getMetaCommand().getMethod();
+        logger.debug("Validating {} with parameters {} parameters.", event.getMetaCommand(), parameters.length);
         Set<ConstraintViolation<Controller>> violations = exValidator.validateParameters(controller, method, parameters);
 
         if (!violations.isEmpty())

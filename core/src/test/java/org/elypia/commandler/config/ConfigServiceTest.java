@@ -24,7 +24,7 @@ import org.slf4j.*;
  * for {@link Commandler}, this tests the general configuration as
  * well as well as our particular configuration files.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class ConfigServiceTest {
 

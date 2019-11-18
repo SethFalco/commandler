@@ -22,10 +22,16 @@ import org.elypia.commandler.exceptions.misuse.MisuseException;
 
 import javax.validation.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * An implementation of the {@link MisuseHandler}
+ * that covers the {@link ViolationException}, which is
+ * concrete implemntation of the {@link MisuseException}.
+ *
+ * This checks and addresses validation violations that
+ * may occur in commands from the {@link javax.validation} package.
+ *
+ * @author seth@elypia.org (Seth Falco)
  */
 public class ValidationMisuseHandler implements MisuseHandler {
 
@@ -40,28 +46,32 @@ public class ValidationMisuseHandler implements MisuseHandler {
     /**
      * @param ex The exception that occured.
      * @return An error String reporting all violations.
+     * @throws NullPointerException if exception is null.
      */
     private String onViolation(ViolationException ex) {
         Objects.requireNonNull(ex);
-        Set<ConstraintViolation<Controller>> violations = ex.getViolations();
-        var commandViolations = violations.stream()
-            .filter((v) -> v.getInvalidValue() instanceof ActionEvent)
-            .collect(Collectors.toList());
 
-        var parameterViolations = new ArrayList<>(violations);
-        parameterViolations.removeAll(commandViolations);
+        List<ConstraintViolation<Controller>> commandViolations = new ArrayList<>();
+        List<ConstraintViolation<Controller>> paramViolations = new ArrayList<>();
+
+        for (ConstraintViolation<Controller> violation : ex.getViolations()) {
+            if (violation.getInvalidValue() instanceof ActionEvent)
+                commandViolations.add(violation);
+            else
+                paramViolations.add(violation);
+        }
 
         StringJoiner invalidType = new StringJoiner(" ");
 
         if (!commandViolations.isEmpty())
             invalidType.add("the command");
-        if (!parameterViolations.isEmpty())
+        if (!paramViolations.isEmpty())
             invalidType.add("a parameter");
 
         String format =
             "Command failed; " + invalidType.toString() + " was invalidated.\n" +
-                "Module: %s\n" +
-                "Command: %s\n";
+            "Module: %s\n" +
+            "Command: %s\n";
 
         for (var violation : commandViolations)
             format += "command: " + violation.getMessage();
@@ -69,7 +79,7 @@ public class ValidationMisuseHandler implements MisuseHandler {
         if (!commandViolations.isEmpty())
             format += "\n";
 
-        for (var violation : parameterViolations) {
+        for (var violation : paramViolations) {
             Iterator<Path.Node> iter = violation.getPropertyPath().iterator();
             Path.Node last = null;
 

@@ -26,7 +26,7 @@ import java.lang.annotation.*;
 /**
  * This constraint is {@link Commandler} specific.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

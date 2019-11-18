@@ -21,7 +21,7 @@ import org.elypia.commandler.dispatchers.MatchDispatcher;
 import java.lang.annotation.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @PropertyWrapper(type = MatchDispatcher.class)
 @Target(ElementType.METHOD)

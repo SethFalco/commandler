@@ -35,7 +35,7 @@ import java.util.Objects;
  * appropriate message to users. If a type of {@link Exception} is not
  * handled, then no message it sent to users.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class MisuseManager {

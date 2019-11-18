@@ -29,7 +29,7 @@ import java.lang.annotation.*;
  * A {@link ControllerData} can be thought of as a module of commands.
  * A {@link CommandData} can be thought of as a single command.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

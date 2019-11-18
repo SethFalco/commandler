@@ -24,7 +24,7 @@ import javax.validation.ConstraintViolation;
 import java.util.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class ViolationException extends ActionException {
 

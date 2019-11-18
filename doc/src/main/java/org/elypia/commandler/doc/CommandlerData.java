@@ -19,7 +19,7 @@ package org.elypia.commandler.doc;
 import org.elypia.commandler.metadata.MetaController;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class CommandlerData {
 

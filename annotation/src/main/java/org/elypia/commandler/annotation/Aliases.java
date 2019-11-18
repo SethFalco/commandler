@@ -24,7 +24,7 @@ import java.lang.annotation.*;
  * Denotes that this is a module or command that can be accessed
  * under aliases.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @PropertyWrapper(type = StandardDispatcher.class)
 @Target({ElementType.TYPE, ElementType.METHOD})

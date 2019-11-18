@@ -28,7 +28,7 @@ import javax.inject.*;
 import java.util.*;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class MessengerManager {
@@ -55,21 +55,21 @@ public class MessengerManager {
 
     /**
      * Build an message object to send back to the client using
-     * the respective {@link ResponseBuilder}.
+     * the respective {@link Messenger}.
      *
      * @param controller The controller that received this event.
-     * @param object The user input after already being parsed by the {@link AdapterManager}.
+     * @param object The object that should be sent in chat.
      * @return A built message ready to send to the client.
      */
     public <T> T provide(ActionEvent<?, ?> event, Object object, Integration controller, Class<T> type) {
         Objects.requireNonNull(controller);
         Objects.requireNonNull(object);
-        ResponseBuilder responseBuilder = getProvider(controller, object.getClass());
+        Messenger messenger = getProvider(controller, object.getClass());
 
-        Object content = responseBuilder.provide(event, object);
+        Object content = messenger.provide(event, object);
 
         if (content == null)
-            throw new IllegalStateException(String.format("String adapter `%s`returned null.", responseBuilder.getClass().getName()));
+            throw new IllegalStateException(String.format("String adapter `%s`returned null.", messenger.getClass().getName()));
 
         if (type.isAssignableFrom(content.getClass()))
             return (T)content;
@@ -83,11 +83,14 @@ public class MessengerManager {
      * data-type.
      *
      * @param typeRequired The data-type we need to load from.
-     * @return The adapters to convert this to a message.
-     * @throws IllegalArgumentException If no {@link ResponseBuilder} is
+     * @param <S> The source event the {@link Integration} provides.
+     * @param <M> The type of message the {@link Integration} sends and receives.
+     * @param <O> The object which a provider is required for.
+     * @return The messenger to convert this to a message.
+     * @throws IllegalArgumentException If no {@link Messenger} is
      * registered for this data-type.
      */
-    public <T> ResponseBuilder<?, ?> getProvider(Integration controller, Class<?> typeRequired) {
+    public <S, M, O> Messenger<O, M> getProvider(Integration<S, M> controller, Class<O> typeRequired) {
         MetaMessenger provider = null;
 
         for (MetaMessenger metaMessenger : commandlerConfig.getMessengers()) {

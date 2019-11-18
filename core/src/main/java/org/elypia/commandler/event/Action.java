@@ -33,7 +33,7 @@ import java.util.*;
  * Action should only contain serializable information that is relevent
  * for all command types.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class Action implements Serializable {
 
@@ -134,7 +134,7 @@ public class Action implements Serializable {
         return controllerName;
     }
 
-    public String getControlName() {
+    public String getCommandName() {
         return controlName;
     }
 

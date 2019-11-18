@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class TimeUnitAdapter implements Adapter<TimeUnit> {

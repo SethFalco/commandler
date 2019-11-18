@@ -17,7 +17,7 @@
 package org.elypia.commandler.annotation;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public final class AnnotationUtils {
 

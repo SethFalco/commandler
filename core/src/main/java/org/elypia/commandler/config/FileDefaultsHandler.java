@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Load all files as {@link StandardCharsets#UTF_8}.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class FileDefaultsHandler implements DefaultParametersHandler<FileBasedBuilderParameters> {
 

@@ -30,7 +30,7 @@ import java.util.Locale;
  * @param <S> The source event that this is wrapping around.
  * @param <M> The type of message supported by this {@link Integration},
  *            this is specified for stricter typing and to reduce the need to cast.
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public class ActionEvent<S, M> {
 
@@ -39,6 +39,9 @@ public class ActionEvent<S, M> {
 
     /** The event that was fired from the controller. */
     private final S source;
+
+    /** The message or otherwise relevent object that contains the content of the action. */
+    private final M message;
 
     /** Represents the action performed by user, like as module/command and params. */
     private final Action action;
@@ -52,11 +55,12 @@ public class ActionEvent<S, M> {
     /** The locale associated with this event. */
     private Locale locale;
 
-    public ActionEvent(Integration<S, M> integration, MetaController metaController, MetaCommand metaCommand, S source, Action action) {
+    public ActionEvent(Integration<S, M> integration, MetaController metaController, MetaCommand metaCommand, S source, M message, Action action) {
         this.integration = integration;
         this.metaController = metaController;
         this.metaCommand = metaCommand;
         this.source = source;
+        this.message = message;
         this.action = action;
     }
 
@@ -66,6 +70,10 @@ public class ActionEvent<S, M> {
 
     public S getSource() {
         return source;
+    }
+
+    public M getMessage() {
+        return message;
     }
 
     public Action getAction() {

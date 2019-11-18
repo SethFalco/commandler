@@ -28,7 +28,7 @@ import java.util.*;
  * The default help module, this is an optional module
  * one can add to provide some basic help functionality.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class DefaultHelpController implements Controller {

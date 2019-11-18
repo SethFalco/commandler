@@ -29,7 +29,7 @@ import java.util.*;
  * An ordered list of dispatchers to dispatch events
  * that are received appropriately.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class DispatcherManager {
@@ -62,7 +62,7 @@ public class DispatcherManager {
             this.dispatchers.addAll(dispatchers);
     }
 
-    public <S, M> ActionEvent<S, M> dispatch(Integration<S, M> integration, S event, String content) {
+    public <S, M> ActionEvent<S, M> dispatch(Integration<S, M> integration, S event, M message, String content) {
         logger.debug("Dispatched event with content: {}", content);
 
         for (Dispatcher dispatcher : dispatchers) {
@@ -70,7 +70,7 @@ public class DispatcherManager {
                 continue;
 
             logger.debug("Using dispatcher for event: {}", dispatcher.getClass());
-            return dispatcher.parse(integration, event, content);
+            return dispatcher.parse(integration, event, message, content);
         }
 
         return null;

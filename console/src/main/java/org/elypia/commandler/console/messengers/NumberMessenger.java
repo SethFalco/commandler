@@ -16,16 +16,16 @@
 
 package org.elypia.commandler.console.messengers;
 
-import org.elypia.commandler.api.ResponseBuilder;
+import org.elypia.commandler.api.Messenger;
 import org.elypia.commandler.event.ActionEvent;
 
 import javax.inject.Inject;
 import java.text.NumberFormat;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
-public class NumberMessenger implements ResponseBuilder<Number, String> {
+public class NumberMessenger implements Messenger<Number, String> {
 
     private NumberFormat format;
 

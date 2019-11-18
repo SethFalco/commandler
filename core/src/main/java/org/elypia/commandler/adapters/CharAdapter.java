@@ -23,7 +23,7 @@ import org.elypia.commandler.metadata.MetaParam;
 import javax.inject.Singleton;
 
 /**
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class CharAdapter implements Adapter<Character> {

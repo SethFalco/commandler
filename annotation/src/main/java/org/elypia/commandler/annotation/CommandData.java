@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  * All static data will be stored in an annotation, reserving the
  * method body for what it's meant for, logic.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

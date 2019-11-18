@@ -25,7 +25,7 @@ import org.elypia.commandler.*;
  * One {@link ActionListener} implementation is provided by default which
  * is the {@link ActionHandler}.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 public interface ActionListener {
 
@@ -36,5 +36,5 @@ public interface ActionListener {
      * @param <M> The type of message this {@link Integration} sends and received.
      * @return The response to this action, or null if no response was given.
      */
-    <S, M> M onAction(Integration<S, M> integration, S source, String content);
+    <S, M> M onAction(Integration<S, M> integration, S source, M message, String content);
 }

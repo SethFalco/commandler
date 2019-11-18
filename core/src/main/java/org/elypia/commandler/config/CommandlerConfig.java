@@ -36,7 +36,7 @@ import java.util.*;
  * <strong>This configuration object is <em>required</em>
  * when loading Commandler, Commandler will not work without it.</strong>
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class CommandlerConfig {
@@ -162,7 +162,7 @@ public class CommandlerConfig {
 
         for (ImmutableHierarchicalConfiguration messengerConfig : messengerConfigs) {
             String name = messengerConfig.getString("type");
-            Class<ResponseBuilder> adapterType = ReflectionUtils.convertType(name, ResponseBuilder.class);
+            Class<Messenger> adapterType = ReflectionUtils.convertType(name, Messenger.class);
 
             String provides = messengerConfig.getString("provides");
             Class<Object> providesType = ReflectionUtils.convertType(provides);
@@ -237,7 +237,7 @@ public class CommandlerConfig {
             ComponentConfig component = convertComponent(param);
             int index = param.getInt("index", params.size());
             String defaultValue = param.getString("defaultValue");
-            params.add(new MetaParam(method.getParameters()[index].getType(), method.getParameters()[index], component.name, component.description, defaultValue, component.properties));
+            params.add(new MetaParam(index, method.getParameters()[index], component.name, component.description, defaultValue, component.properties));
         }
 
         return params;
@@ -299,7 +299,7 @@ public class CommandlerConfig {
      * Private object to convert abstract data and put it in
      * the implementations.
      *
-     * @author seth@elypia.org (Syed Shah)
+     * @author seth@elypia.org (Seth Falco)
      */
     private static class ComponentConfig {
 

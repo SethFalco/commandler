@@ -36,7 +36,7 @@ import java.util.Collection;
  * <strong>Dependency Injection Modules:</strong> This entails overriding runtime dependencies
  * for the IoC container to use.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class Commandler {

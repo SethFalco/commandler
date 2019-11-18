@@ -34,7 +34,7 @@ import javax.inject.*;
  * an {@link Action} as {@link Dispatcher#isValid(Object, String)}
  * until one returns an object to respond to the user.
  *
- * @author seth@elypia.org (Syed Shah)
+ * @author seth@elypia.org (Seth Falco)
  */
 @Singleton
 public class ActionHandler implements ActionListener {
@@ -74,14 +74,14 @@ public class ActionHandler implements ActionListener {
      * if this wasn't a command at all.
      */
     @Override
-    public <S, M> M onAction(Integration<S, M> integration, S source, String content) {
+    public <S, M> M onAction(Integration<S, M> integration, S source, M message, String content) {
         logger.debug("Message Received: {}", content);
 
         Object response;
         ActionEvent<S, M> event = null;
 
         try {
-            event = dispatcherManager.dispatch(integration, source, content);
+            event = dispatcherManager.dispatch(integration, source, message, content);
 
             if (event == null)
                 throw new IllegalStateException("Dispatching completed without panicking, but event is null.");
