@@ -34,7 +34,7 @@ Should any problems occur, come visit us over on [Discord]! We're always around 
 there are ample developers that would be willing to help; if it's a problem with
 the library itself then we'll make sure to get it sorted.
 
-[Discord]: https://discord.gg/hprGMaM "Discord Invite"
+[Discord]: https://discordapp.com/invite/hprGMaM "Discord Invite"
 [bintray]: https://bintray.com/elypia/Commandler/core/_latestVersion "Bintray Latest Version"
 [docs]: https://elypia.gitlab.io/commandler "Commandler Documentation"
 [gitlab]: https://gitlab.com/Elypia/commandler/commits/master "Repository on GitLab"
