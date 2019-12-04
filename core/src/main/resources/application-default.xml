@@ -19,8 +19,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="https://commandler.elypia.org application.xsd">
   <commandler>
-    <config>org.elypia.commandler.config.AppConfig</config>
-    <config>org.elypia.commandler.config.CommandlerConfig</config>
     <action-handler>org.elypia.commandler.ActionHandler</action-handler>
     <misuse>org.elypia.commandler.DefaultMisuseHandler</misuse>
     <adapter type="org.elypia.commandler.adapters.BooleanAdapter">

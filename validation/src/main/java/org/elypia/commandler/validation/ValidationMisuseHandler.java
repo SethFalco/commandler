@@ -29,7 +29,7 @@ import java.util.*;
  * concrete implemntation of the {@link MisuseException}.
  *
  * This checks and addresses validation violations that
- * may occur in commands from the {@link javax.validation} package.
+ * may occur in commands from the validation API.
  *
  * @author seth@elypia.org (Seth Falco)
  */

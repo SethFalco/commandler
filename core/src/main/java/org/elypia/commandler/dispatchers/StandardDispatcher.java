@@ -18,7 +18,7 @@ package org.elypia.commandler.dispatchers;
 
 import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
-import org.elypia.commandler.config.CommandlerConfig;
+import org.elypia.commandler.config.*;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.misuse.*;
 import org.elypia.commandler.metadata.*;
@@ -29,7 +29,6 @@ import javax.inject.*;
 import java.io.Serializable;
 import java.util.*;
 import java.util.regex.*;
-import java.util.stream.Stream;
 
 /**
  * The default implementation of the StandardDispatcher, this implementation
@@ -59,30 +58,31 @@ public class StandardDispatcher implements Dispatcher {
      */
     private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.+?)(?<!\\\\)\"|(?<word>[^\\s]+(?<!,))");
 
-    private final AppContext appContext;
+    /** The main {@link Commandler} configuration; this contains all metadata on commands. */
+    private final ConfigService configService;
 
-    private final CommandlerConfig commandlerConfig;
+    /** The configuration for the main metadata for controllers and commands. */
+    private final ControllerConfig controllerConfig;
 
     /**
-     * Create an instance of the StandardDispatcher with no prefix.
-     *
-     * @param appContext The {@link Commandler} {@link AppContext}.
+     * @param configService The configuration service which has all Commandler configuration.
+     * @throws NullPointerException If the configuration provided is null.
      */
     @Inject
-    public StandardDispatcher(final AppContext appContext, final CommandlerConfig commandlerConfig) {
-        this.appContext = Objects.requireNonNull(appContext);
-        this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
+    public StandardDispatcher(final ConfigService configService, final ControllerConfig controllerConfig) {
+        this.configService = Objects.requireNonNull(configService);
+        this.controllerConfig = Objects.requireNonNull(controllerConfig);
     }
 
     @Override
-    public boolean isValid(Object source, String content) {
-        String[] prefixes = null;
+    public <S, M> boolean isValid(Request<S, M> request) {
+        List<String> prefixes = getPrefixes(request);
 
         if (prefixes == null)
             return true;
 
         for (String prefix : prefixes) {
-            if (content.startsWith(prefix))
+            if (request.getContent().startsWith(prefix))
                 return true;
         }
 
@@ -96,17 +96,20 @@ public class StandardDispatcher implements Dispatcher {
      * dispatcher, both the parent {@link MetaController} and {@link MetaCommand} must
      * have this set in order to be usable.
      *
-     * @param integration The integration that received the message.
-     * @param source The source event that triggered this.
-     * @param content The content of the meessage.
+     * @param request The request received by the {@link Integration}.
      * @param <S> The type of source event from the integration.
      * @param <M> The type of message that was received.
      * @return An ActionEvent all event data parsed in a way Commandler is happy to proceed with the request.
      */
     @Override
-    public <S, M> ActionEvent<S, M> parse(Integration<S, M> integration, S source, M message, String content) {
-        String input = parsePrefix(content);
-        String[] command = ChatUtils.splitSpaces(input);
+    public <S, M> ActionEvent<S, M> parse(Request<S, M> request) {
+        String prefix = parsePrefix(request);
+        String content = request.getContent();
+
+        if (prefix != null)
+            content = content.substring(prefix.length()).trim();
+
+        String[] command = ChatUtils.splitSpaces(content);
 
         if (command.length == 0)
             throw new OnlyPrefixException("This message only contained the prefix, but no other content.");
@@ -116,7 +119,7 @@ public class StandardDispatcher implements Dispatcher {
         MetaCommand selectedMetaCommand = null;
         String params = null;
 
-        for (MetaController metaController : commandlerConfig.getControllers()) {
+        for (MetaController metaController : controllerConfig.getControllers()) {
             String controllerAliases = metaController.getProperty(this.getClass(), "aliases");
 
             if (controllerAliases == null)
@@ -138,7 +141,7 @@ public class StandardDispatcher implements Dispatcher {
 
                         if (controlMatch) {
                             selectedMetaCommand = metaCommand;
-                            params = input
+                            params = content
                                 .replaceFirst("\\Q" + command[0] + "\\E", "")
                                 .replaceFirst("\\Q" + command[1] + "\\E", "")
                                 .trim();
@@ -152,7 +155,7 @@ public class StandardDispatcher implements Dispatcher {
                         if (selectedMetaCommand == null)
                             throw new NoDefaultCommandException(selectedMetaController);
                         else
-                            params = input.replaceFirst("\\Q" + command[0] + "\\E", "").trim();
+                            params = content.replaceFirst("\\Q" + command[0] + "\\E", "").trim();
                     }
                 } else {
                     MetaCommand data = metaController.getDefaultControl();
@@ -162,7 +165,7 @@ public class StandardDispatcher implements Dispatcher {
                     else
                         throw new NoDefaultCommandException(metaController);
 
-                    params = input
+                    params = content
                         .replaceFirst("\\Q" + command[0] + "\\E", "")
                         .trim();
                 }
@@ -182,7 +185,7 @@ public class StandardDispatcher implements Dispatcher {
                     selectedMetaController = metaController;
                     selectedMetaCommand = metaCommand;
 
-                    params = input
+                    params = content
                         .replaceFirst("\\Q" + command[0] + "\\E", "")
                         .trim();
 
@@ -195,13 +198,13 @@ public class StandardDispatcher implements Dispatcher {
             throw new ModuleNotFoundException();
 
         List<List<String>> parameters = parseParameters(params);
-        Serializable id = integration.getActionId(source);
+        Serializable id = request.getIntegration().getActionId(request.getSource());
 
         if (id == null)
             throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
 
-        Action action = new Action(id, content, selectedMetaController.getName(), selectedMetaCommand.getName(), parameters);
-        ActionEvent<S, M> e = new ActionEvent<>(integration, selectedMetaController, selectedMetaCommand, source, message, action);
+        Action action = new Action(id, request.getContent(), selectedMetaController.getName(), selectedMetaCommand.getName(), parameters);
+        ActionEvent<S, M> e = new ActionEvent<>(request, action, selectedMetaController, selectedMetaCommand);
 
         if (!selectedMetaCommand.isValidParamCount(parameters.size()))
             throw new ParamCountMismatchException(e);
@@ -209,26 +212,66 @@ public class StandardDispatcher implements Dispatcher {
         return e;
     }
 
+    private static final Pattern VAR_PATTERN = Pattern.compile("(?i)^\\$\\{(?<KEY>[A-Z\\d_-]+)(?:\\:(?<DEFAULT>.*))?\\}$");
+
     /**
-     * @param content The command the user sent it.
-     * @return The input without the prefix.
+     * TODO: We shouldn't pollute this class with configuration code.
+     *
+     * @param request The action request containiner all request info and headers.
+     * @return The list of prefixes valid for this {@link Request}, or null
+     * if no prefixes are configured.
      */
-    private String parsePrefix(String content) {
-        String[] prefixes = null;
+    private List<String> getPrefixes(Request<?, ?> request) {
+        List<String> prefixConfig = configService.getList(String.class, "commandler.dispatcher.prefix");
+
+        if (prefixConfig == null || prefixConfig.isEmpty())
+            return null;
+
+        List<String> prefixes = new ArrayList<>();
+
+        for (String config : prefixConfig) {
+            Matcher matcher = VAR_PATTERN.matcher(config);
+
+            if (matcher.find()) {
+                String key = matcher.group("KEY");
+                String value = request.getHeaders().get(key);
+
+                if (value == null || value.isBlank()) {
+                    String defaultValue = matcher.group("DEFAULT");
+
+                    if (defaultValue != null)
+                        prefixes.add(defaultValue);
+                }
+                else
+                    prefixes.add(value);
+            } else {
+                prefixes.add(config);
+            }
+        }
+
+        return prefixes;
+    }
+
+    /**
+     * @param request The action request containiner all request info and headers.
+     * @return The prefix that was used, or null if no prefix was used.
+     */
+    private <S, M> String parsePrefix(Request<S, M> request) {
+        List<String> prefixes = getPrefixes(request);
 
         if (prefixes != null) {
-            Optional<String> optPrefix = Stream.of(prefixes)
-                .filter(content::startsWith)
+            Optional<String> optPrefix = prefixes.stream()
+                .filter(request.getContent()::startsWith)
                 .findAny();
 
             String prefix = optPrefix.orElseThrow(
                 () -> new IllegalStateException("Do not call the #parse method if the command is invalid.")
             );
 
-            content = content.substring(prefix.length());
+            return prefix;
         }
 
-        return content;
+        return null;
     }
 
     /**

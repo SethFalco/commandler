@@ -96,8 +96,8 @@ public class AdapterManager {
                 VariableMapper mapper = context.getVariableMapper();
                 mapper.setVariable("e", expressionFactory.createValueExpression(event, ActionEvent.class));
                 mapper.setVariable("a", expressionFactory.createValueExpression(event.getAction(), Action.class));
-                mapper.setVariable("c", expressionFactory.createValueExpression(event.getIntegration(), Integration.class));
-                mapper.setVariable("s", expressionFactory.createValueExpression(event.getSource(), event.getSource().getClass()));
+                mapper.setVariable("c", expressionFactory.createValueExpression(event.getRequest().getIntegration(), Integration.class));
+                mapper.setVariable("s", expressionFactory.createValueExpression(event.getRequest().getSource(), event.getRequest().getClass()));
 
                 String defaultValue = metaParam.getDefaultValue();
                 ValueExpression ve = expressionFactory.createValueExpression(context, defaultValue, Object.class);

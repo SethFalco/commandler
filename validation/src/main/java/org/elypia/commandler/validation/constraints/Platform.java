@@ -51,7 +51,7 @@ public @interface Platform {
 
         @Override
         public boolean isValid(ActionEvent<?, ?> event, ConstraintValidatorContext context) {
-            Integration controller = event.getIntegration();
+            Integration controller = event.getRequest().getIntegration();
 
             for (Class<? extends Integration> type : controllerTypes) {
                 if (type == controller.getClass())

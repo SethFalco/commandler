@@ -19,7 +19,4 @@ dependencies {
 
     // Hibernate Validation
     api "org.hibernate.validator:hibernate-validator:6.1.0.Final"
-
-    // TODO: Try delete my implementation and use DeltaSpikes is feasible.
-    implementation "org.apache.deltaspike.modules:deltaspike-bean-validation-module-impl:1.9.1"
 }

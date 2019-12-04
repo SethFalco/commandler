@@ -52,7 +52,7 @@ public class LocaleAdapterTest {
     public void findLocaleByEmote() {
         LocaleAdapter adapter = new LocaleAdapter();
         Locale locale = adapter.adapt("\uD83C\uDDEC\uD83C\uDDE7");
-        assertEquals("en", locale.getLanguage());
+        assertEquals("GB", locale.getCountry());
     }
 
     @Test
@@ -60,6 +60,18 @@ public class LocaleAdapterTest {
         LocaleAdapter adapter = new LocaleAdapter();
         Locale locale = adapter.adapt("pol");
         assertEquals("pl", locale.getLanguage());
+    }
+
+    /**
+     * When searching for locale, but only a single item is
+     * provided such as "fr", we should return the more specific
+     * match first rather than first match.
+     */
+    @Test
+    public void findLocaleByIsoByRegionWithMatchingLanguage() {
+        LocaleAdapter adapter = new LocaleAdapter();
+        Locale locale = adapter.adapt("fr");
+        assertEquals("fr", locale.toString());
     }
 
     @Test

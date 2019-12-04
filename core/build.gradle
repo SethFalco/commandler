@@ -17,7 +17,7 @@
 dependencies {
     // Configuration
     api "org.apache.commons:commons-configuration2:2.6"
-    runtimeOnly "commons-beanutils:commons-beanutils:1.9.4"
+    implementation "commons-beanutils:commons-beanutils:1.9.4"
 
     // Dependency Injection
     // When tailoring DI for your application it's best to try use what's built into

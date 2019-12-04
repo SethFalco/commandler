@@ -18,6 +18,7 @@ package org.elypia.commandler.validation;
 
 import org.elypia.commandler.AppContext;
 import org.elypia.commandler.api.Controller;
+import org.elypia.commandler.config.ControllerConfig;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.injection.InjectorService;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
@@ -49,14 +50,14 @@ public class HibernateValidationManager {
     private final ExecutableValidator exValidator;
 
     @Inject
-    public HibernateValidationManager(InjectorService injectorService, AppContext appContext) {
+    public HibernateValidationManager(final InjectorService injectorService, final AppContext appContext, final ControllerConfig controllerConfig) {
         var locator = new PlatformResourceBundleLocator(USER_VALIDATION_MESSAGES, null, true);
 
         ValidatorFactory factory = Validation.byDefaultProvider()
             .configure()
             .messageInterpolator(new ResourceBundleMessageInterpolator(locator))
             .constraintValidatorFactory(new InjectableConstraintValidatorFactory(injectorService))
-            .parameterNameProvider(new CommandParamNameProvider(appContext))
+            .parameterNameProvider(new CommandParamNameProvider(controllerConfig))
             .buildValidatorFactory();
 
         exValidator = factory.getValidator().forExecutables();
@@ -64,7 +65,7 @@ public class HibernateValidationManager {
 
     public <S> void validate(ActionEvent<S, ?> event, Controller controller, Object[] parameters) throws RuntimeException {
         Method method = event.getMetaCommand().getMethod();
-        logger.debug("Validating {} with parameters {} parameters.", event.getMetaCommand(), parameters.length);
+        logger.debug("Validating `{}` with {} parameters.", event.getMetaCommand(), parameters.length);
         Set<ConstraintViolation<Controller>> violations = exValidator.validateParameters(controller, method, parameters);
 
         if (!violations.isEmpty())

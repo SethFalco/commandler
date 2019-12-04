@@ -17,7 +17,7 @@
 package org.elypia.commandler;
 
 import org.elypia.commandler.api.Integration;
-import org.elypia.commandler.config.CommandlerConfig;
+import org.elypia.commandler.config.*;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.injection.InjectorService;
 import org.slf4j.*;
@@ -71,10 +71,11 @@ public class Commandler {
      */
     public void run() {
         InjectorService injector = appContext.getInjector();
-        CommandlerConfig config = appContext.getConfig().getTypedConfig(CommandlerConfig.class);
-        Collection<Class<Integration>> integrations = config.getIntegrations();
 
-        injector.getInstance(config.getActionListener());
+        IntegrationConfig integrationConfig = injector.getInstance(IntegrationConfig.class);
+        ActionConfig actionConfig = injector.getInstance(ActionConfig.class);
+        Collection<Class<Integration>> integrations = integrationConfig.getIntegrationTypes();
+        injector.getInstance(actionConfig.getListenerType());
 
         if (integrations == null || integrations.size() < 1) {
             logger.warn("Commandler has not instantiated any integrations, it will likely exit following initialization.");

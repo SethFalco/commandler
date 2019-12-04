@@ -61,7 +61,7 @@ public class AppContext {
         }
 
         injector.add(new CommandlerModule(commandler, this));
-        logger.debug("Added default injection bindings to {}.", InjectorService.class.getSimpleName());
+        logger.debug("Added default injection bindings to {}.", InjectorService.class);
     }
 
     public ConfigService getConfig() {

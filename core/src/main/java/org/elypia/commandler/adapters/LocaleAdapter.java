@@ -37,6 +37,15 @@ public class LocaleAdapter implements Adapter<Locale> {
 
     @Override
     public Locale adapt(String input, Class<? extends Locale> type, MetaParam metaParam, ActionEvent<?, ?> event) {
+        Objects.requireNonNull(input);
+
+        // If using regional indicators, for example emojis, make them the textual equivilent.
+        String country = null;
+        if (input.length() == 4)
+            country = ChatUtils.replaceFromIndicators(input);
+
+        Locale temp = null;
+
         for (Locale locale : LOCALES) {
             if (input.equalsIgnoreCase(locale.toLanguageTag()))
                 return locale;
@@ -46,10 +55,11 @@ public class LocaleAdapter implements Adapter<Locale> {
                 String dc = locale.getDisplayCountry(Locale.US);
                 String dcl = locale.getDisplayCountry(locale);
 
-                if (input.equalsIgnoreCase(c) || input.equalsIgnoreCase(dc) || input.equalsIgnoreCase(dcl))
-                    return locale;
+                // Checks flag emote.
+                if (input.equalsIgnoreCase(c) || (country != null && country.equalsIgnoreCase(c)))
+                    temp = locale;
 
-                if (input.equalsIgnoreCase(ChatUtils.replaceWithIndictors(c)))
+                if (input.equalsIgnoreCase(dc) || input.equalsIgnoreCase(dcl))
                     return locale;
 
                 try {
@@ -58,17 +68,20 @@ public class LocaleAdapter implements Adapter<Locale> {
                 } catch (MissingResourceException ex) {
                     // Do nothing, there is nothing wrong with this.
                 }
-            } else {
-                String l = locale.getLanguage();
-                String dl = locale.getDisplayLanguage(Locale.US);
-                String dll = locale.getDisplayLanguage(locale);
-                String lc = locale.getISO3Language();
-
-                if (input.equalsIgnoreCase(l) || input.equalsIgnoreCase(dl) || input.equalsIgnoreCase(dll) || input.equalsIgnoreCase(lc))
-                    return locale;
             }
+
+            String l = locale.getLanguage();
+            String dl = locale.getDisplayLanguage(Locale.US);
+            String dll = locale.getDisplayLanguage(locale);
+            String lc = locale.getISO3Language();
+
+            if (input.equalsIgnoreCase(l))
+                temp = locale;
+
+            if (input.equalsIgnoreCase(dl) || input.equalsIgnoreCase(dll) || input.equalsIgnoreCase(lc))
+                return locale;
         }
 
-        return null;
+        return temp;
     }
 }

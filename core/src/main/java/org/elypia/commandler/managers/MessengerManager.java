@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.managers;
 
+import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.ActionEvent;
@@ -46,33 +47,27 @@ public class MessengerManager {
         this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
     }
 
-    public <M> M provide(ActionEvent<?, M> event, Object object) {
-        return provide(event, object, event.getIntegration());
-    }
-    public <M> M provide(ActionEvent<?, M> event, Object object, Integration<?, M> controller) {
-        return provide(event, object, controller, controller.getMessageType());
-    }
-
     /**
      * Build an message object to send back to the client using
      * the respective {@link Messenger}.
      *
-     * @param controller The controller that received this event.
+     * @param event The action event the was processed by {@link Commandler}.
      * @param object The object that should be sent in chat.
+     * @param integration The integration that receives this event.
      * @return A built message ready to send to the client.
      */
-    public <T> T provide(ActionEvent<?, ?> event, Object object, Integration controller, Class<T> type) {
-        Objects.requireNonNull(controller);
+    public <M> M provide(ActionEvent<?, M> event, Object object, Integration<?, M> integration) {
+        Objects.requireNonNull(integration);
         Objects.requireNonNull(object);
-        Messenger messenger = getProvider(controller, object.getClass());
+        Messenger messenger = getProvider(integration, object.getClass());
 
         Object content = messenger.provide(event, object);
 
         if (content == null)
             throw new IllegalStateException(String.format("String adapter `%s`returned null.", messenger.getClass().getName()));
 
-        if (type.isAssignableFrom(content.getClass()))
-            return (T)content;
+        if (integration.getMessageType().isAssignableFrom(content.getClass()))
+            return integration.getMessageType().cast(content);
 
         throw new RuntimeException("Provider did not produce the type required.");
     }

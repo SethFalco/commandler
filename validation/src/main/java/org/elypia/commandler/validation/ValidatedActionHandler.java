@@ -16,7 +16,7 @@
 
 package org.elypia.commandler.validation;
 
-import org.elypia.commandler.ActionHandler;
+import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.misuse.MisuseException;
@@ -44,14 +44,15 @@ public class ValidatedActionHandler extends ActionHandler {
     public ValidatedActionHandler(
         DispatcherManager dispatcherManager,
         InjectorService injectorService,
+        HeaderManager headerManager,
         AdapterManager adapterService,
-//        TestManager testService,
-        MisuseManager exceptionService,
+        //        TestManager testService,
+        MisuseManager misuseManager,
         MessengerManager messengerService,
         HibernateValidationManager validationService
     ) {
 //        super(dispatcherManager, injectorService, adapterService, testService, exceptionService, messengerService);
-        super(dispatcherManager, injectorService, adapterService, exceptionService, messengerService);
+        super(dispatcherManager, injectorService, headerManager, adapterService, misuseManager, messengerService);
         this.validationService = validationService;
     }
 
@@ -65,16 +66,18 @@ public class ValidatedActionHandler extends ActionHandler {
      */
     @Override
     public <S, M> M onAction(Integration<S, M> integration, S source, M message, String content) {
-        logger.debug("Message Received: {}", content);
+        Request<S, M> request = new Request<>(integration, source, message, content);
+        headerManager.bindHeaders(request);
+        logger.debug("Received action request with content: {}", content);
 
         Object response;
         ActionEvent<S, M> event = null;
 
         try {
-            event = dispatcherManager.dispatch(integration, source, message, content);
+            event = dispatcherManager.dispatch(request);
 
             if (event == null)
-                throw new IllegalStateException("Dispatching completed without panicking, but event is null.");
+                return null;
 
             MetaController module = event.getMetaController();
             Controller controller = injectorService.getInstance(module.getHandlerType());

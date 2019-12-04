@@ -26,7 +26,7 @@
     <combiner>
       <additional>
         <list-nodes>
-          <node>config</node>
+          <node>binder</node>
           <node>misuse</node>
           <node>integration</node>
           <node>dispatcher</node>

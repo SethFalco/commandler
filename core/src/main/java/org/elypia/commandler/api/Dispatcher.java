@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.api;
 
+import org.elypia.commandler.Request;
 import org.elypia.commandler.event.ActionEvent;
 
 /**
@@ -29,20 +30,22 @@ import org.elypia.commandler.event.ActionEvent;
 public interface Dispatcher {
 
     /**
-     * @param event The source event that called this command.
-     * @param content The content of the command.
+     * @param request The action request made by the {@link Integration}.
+     * @param <S>
+     * @param <M>
      * @return If this is a valid command or not.
      * This does not mean it is a command, it's just for checking if the text
      * is formatted in a way that it fits the formatting of a command.
      */
-    boolean isValid(Object event, String content);
+    <S, M> boolean isValid(Request<S, M> request);
 
     /**
      * Break the command down into it's individual components.
      *
-     * @param integration The controller that dispatched this event.
-     * @param content The content of the meessage.
+     * @param request The action request made by the {@link Integration}.
+     * @param <S>
+     * @param <M>
      * @return The input the user provided or null if it's not a valid command.
      */
-    <S, M> ActionEvent<S, M> parse(Integration<S, M> integration, S source, M message, String content);
+    <S, M> ActionEvent<S, M> parse(Request<S, M> request);
 }

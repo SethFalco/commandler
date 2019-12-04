@@ -70,9 +70,16 @@ public final class ChatUtils {
      * @param input The source string to replace from.
      * @return The new string with all upper case characters replaced.
      */
-    public static String replaceWithIndictors(String input) {
+    public static String replaceWithIndicators(String input) {
         for (Map.Entry<String, String> entry : regionalIndicators.entrySet())
             input = input.replace(entry.getKey(), entry.getValue());
+
+        return input;
+    }
+
+    public static String replaceFromIndicators(String input) {
+        for (Map.Entry<String, String> entry : regionalIndicators.entrySet())
+            input = input.replace(entry.getValue(), entry.getKey());
 
         return input;
     }

@@ -18,7 +18,7 @@ package org.elypia.commandler.managers;
 
 import org.elypia.commandler.AppContext;
 import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.config.CommandlerConfig;
+import org.elypia.commandler.config.ControllerConfig;
 import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.metadata.MetaController;
 import org.elypia.commandler.testing.*;
@@ -57,7 +57,7 @@ public class TestManager {
         executor = Executors.newSingleThreadScheduledExecutor();
 
         executor.scheduleAtFixedRate(() -> {
-            for (MetaController data : injectorService.getInstance(CommandlerConfig.class).getControllers()) {
+            for (MetaController data : injectorService.getInstance(ControllerConfig.class).getControllers()) {
                 Controller controller = injectorService.getInstance(data.getHandlerType());
 
                 if (controller == null) {

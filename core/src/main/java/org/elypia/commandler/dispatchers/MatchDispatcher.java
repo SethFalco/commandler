@@ -16,29 +16,130 @@
 
 package org.elypia.commandler.dispatchers;
 
+import org.elypia.commandler.Request;
 import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.config.ControllerConfig;
+import org.elypia.commandler.event.*;
+import org.elypia.commandler.exceptions.misuse.ParamCountMismatchException;
+import org.elypia.commandler.metadata.*;
+import org.slf4j.*;
+
+import javax.inject.*;
+import java.io.Serializable;
+import java.util.*;
+import java.util.regex.*;
 
 /**
+ * <p>
+ *    The {@link MatchDispatcher} is a {@link Dispatcher} implementation
+ *    which uses regular expression to match commands and matching groups
+ *    as command parameters.
+ * </p>
+ *
+ * <p>For example the following {@link Pattern}:</p>
+ * <p><strong><code>(?i)\b([\d,.]+)\h*(KG|LBS?)\b</code></strong></p>
+ *
+ * <p>
+ *    May be matched by any of the following messages:
+ *    <ul>
+ *        <li>I weigh 103KG!</li>
+ *        <li>Yeah the laptop on the last LinusTechTips video was like 4.5 Lbs.</li>
+ *    </ul>
+ * </p>
+ *
+ * In each case the parameters would be the capture groups, in this case
+ * capturing a numeric value, then the units next to it.
+ *
  * @author seth@elypia.org (Seth Falco)
  */
+@Singleton
 public class MatchDispatcher implements Dispatcher {
+
+    /** Logging with SLF4J. */
+    private static final Logger logger = LoggerFactory.getLogger(MatchDispatcher.class);
+
+    /**
+     * Rather than compiling patterns each time they're required,
+     * we can store them in a map as we compile them and get them back,
+     * when required again.
+     */
+    private static final Map<String, Pattern> PATTERNS = new HashMap<>();
+
+    private final ControllerConfig controllerConfig;
+
+    @Inject
+    public MatchDispatcher(final ControllerConfig controllerConfig) {
+        this.controllerConfig = Objects.requireNonNull(controllerConfig);
+    }
 
     /**
      * Any message could match a potential regular expression.
      * As a result all messages are valid Match commands.
      *
-     * @param event The source event that called this command.
-     * @param content The content of the command.
+     * @param request The action request made by the {@link Integration}.
+     * @param <S>
+     * @param <M>
      * @return If this is a valid command or not.
      */
     @Override
-    public boolean isValid(Object event, String content) {
+    public <S, M> boolean isValid(Request<S, M> request) {
         return true;
     }
 
     @Override
-    public <S, M> ActionEvent<S, M> parse(Integration<S, M> controller, S source, M message, String content) {
-        return null;
+    public <S, M> ActionEvent<S, M> parse(Request<S, M> request) {
+        MetaController selectedMetaController = null;
+        MetaCommand selectedMetaCommand = null;
+        List<List<String>> parameters = null;
+
+        for (MetaController metaController : controllerConfig.getControllers()) {
+            for (MetaCommand metaCommand : metaController.getMetaCommands()) {
+                String patternString = metaCommand.getProperty(this.getClass(), "pattern");
+
+                if (patternString == null)
+                    continue;
+
+                final Pattern pattern;
+
+                if (!PATTERNS.containsKey(patternString)) {
+                    pattern = Pattern.compile(patternString);
+                    PATTERNS.put(patternString, pattern);
+                } else {
+                    pattern = PATTERNS.get(patternString);
+                }
+
+                Matcher matcher = pattern.matcher(request.getContent());
+
+                if (!matcher.find())
+                    return null;
+
+                selectedMetaController = metaController;
+                selectedMetaCommand = metaCommand;
+                parameters = new ArrayList<>();
+
+                for (int i = 0; i < matcher.groupCount(); i++) {
+                    String group = matcher.group(i + 1);
+                    parameters.add(List.of(group));
+                }
+
+                break;
+            }
+        }
+
+        if (selectedMetaController == null)
+            return null;
+
+        Serializable id = request.getIntegration().getActionId(request.getSource());
+
+        if (id == null)
+            throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
+
+        Action action = new Action(id, request.getContent(), selectedMetaController.getName(), selectedMetaCommand.getName(), parameters);
+        ActionEvent<S, M> e = new ActionEvent<>(request, action, selectedMetaController, selectedMetaCommand);
+
+        if (!selectedMetaCommand.isValidParamCount(parameters.size()))
+            throw new ParamCountMismatchException(e);
+
+        return e;
     }
 }

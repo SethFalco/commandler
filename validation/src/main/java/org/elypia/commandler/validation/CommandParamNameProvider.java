@@ -16,9 +16,9 @@
 
 package org.elypia.commandler.validation;
 
-import org.elypia.commandler.AppContext;
+import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.config.*;
+import org.elypia.commandler.config.ControllerConfig;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -28,16 +28,24 @@ import java.util.*;
 import java.util.stream.*;
 
 /**
+ * Overrides how the validation implementation obtains names
+ * for validation error messages.
+ *
+ * This ensures that invalidated parameters use their
+ * {@link Commandler} {@link MetaParam} names.
+ *
  * @author seth@elypia.org (Seth Falco)
  */
 public class CommandParamNameProvider implements ParameterNameProvider {
 
+    /** Logging with SLF4J */
     private static final Logger logger = LoggerFactory.getLogger(CommandParamNameProvider.class);
 
-    private AppContext appContext;
+    /** Metadata for all {@link MetaController}s, {@link MetaCommand}s, and {@link MetaParam}s. */
+    private final ControllerConfig controllerConfig;
 
-    public CommandParamNameProvider(AppContext appContext) {
-        this.appContext = Objects.requireNonNull(appContext);
+    public CommandParamNameProvider(final ControllerConfig controllerConfig) {
+        this.controllerConfig = Objects.requireNonNull(controllerConfig);
     }
 
     @Override
@@ -53,9 +61,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
         if (!(Controller.class.isAssignableFrom(type)))
             return getJavaNames(method);
 
-        ConfigService configService = appContext.getConfig();
-        CommandlerConfig commandlerConfig = configService.getTypedConfig(CommandlerConfig.class);
-        Collection<MetaController> metaControllers = commandlerConfig.getControllers();
+        Collection<MetaController> metaControllers = controllerConfig.getControllers();
 
         List<MetaController> filtered = metaControllers.stream()
            .filter((metaController) -> metaController.getHandlerType() == type)

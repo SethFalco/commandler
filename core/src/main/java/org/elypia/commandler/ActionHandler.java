@@ -31,7 +31,7 @@ import javax.inject.*;
  * that come through Commandler regardless of service.
  *
  * This will iterate the registered {@link Dispatcher}s that report
- * an {@link Action} as {@link Dispatcher#isValid(Object, String)}
+ * an {@link Action} as {@link Dispatcher#isValid(Request)}
  * until one returns an object to respond to the user.
  *
  * @author seth@elypia.org (Seth Falco)
@@ -43,6 +43,7 @@ public class ActionHandler implements ActionListener {
 
     protected DispatcherManager dispatcherManager;
     protected InjectorService injectorService;
+    protected HeaderManager headerManager;
     protected AdapterManager adapterService;
 //    protected TestManager testService;
     protected MisuseManager misuseManager;
@@ -52,6 +53,7 @@ public class ActionHandler implements ActionListener {
     public ActionHandler(
         DispatcherManager dispatcherManager,
         InjectorService injectorService,
+        HeaderManager headerManager,
         AdapterManager adapterService,
 //        TestManager testService,
         MisuseManager misuseManager,
@@ -59,6 +61,7 @@ public class ActionHandler implements ActionListener {
     ) {
         this.dispatcherManager = dispatcherManager;
         this.injectorService = injectorService;
+        this.headerManager = headerManager;
         this.adapterService = adapterService;
 //        this.testService = testService;
         this.misuseManager = misuseManager;
@@ -75,16 +78,18 @@ public class ActionHandler implements ActionListener {
      */
     @Override
     public <S, M> M onAction(Integration<S, M> integration, S source, M message, String content) {
-        logger.debug("Message Received: {}", content);
+        Request<S, M> request = new Request<>(integration, source, message, content);
+        headerManager.bindHeaders(request);
+        logger.debug("Received action request with content: {}", content);
 
         Object response;
         ActionEvent<S, M> event = null;
 
         try {
-            event = dispatcherManager.dispatch(integration, source, message, content);
+            event = dispatcherManager.dispatch(request);
 
             if (event == null)
-                throw new IllegalStateException("Dispatching completed without panicking, but event is null.");
+                return null;
 
             MetaController module = event.getMetaController();
             Controller controller = injectorService.getInstance(module.getHandlerType());

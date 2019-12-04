@@ -17,7 +17,7 @@
 package org.elypia.commandler.managers;
 
 import org.elypia.commandler.api.MisuseHandler;
-import org.elypia.commandler.config.CommandlerConfig;
+import org.elypia.commandler.config.MisuseConfig;
 import org.elypia.commandler.exceptions.misuse.MisuseException;
 import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.metadata.MetaCommand;
@@ -50,12 +50,12 @@ public class MisuseManager {
     private final InjectorService injector;
 
     /** The configuration class which contains all metadata for this instance. */
-    private final CommandlerConfig commandlerConfig;
+    private final MisuseConfig misuseConfig;
 
     @Inject
-    public MisuseManager(final InjectorService injector, final CommandlerConfig commandlerConfig) {
+    public MisuseManager(final InjectorService injector, final MisuseConfig misuseConfig) {
         this.injector = Objects.requireNonNull(injector);
-        this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
+        this.misuseConfig = Objects.requireNonNull(misuseConfig);
     }
 
     /**
@@ -65,7 +65,7 @@ public class MisuseManager {
      * or null if there is no message to be sent.
      */
     public <X extends MisuseException> Object handle(X ex) {
-        for (Class<MisuseHandler> type : commandlerConfig.getMisuseHandlers()) {
+        for (Class<? extends MisuseHandler> type : misuseConfig.getMisuseHandlerTypes()) {
             Object o = injector.getInstance(type).handle(ex);
 
             if (o != null)

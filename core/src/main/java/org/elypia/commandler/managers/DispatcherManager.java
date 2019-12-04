@@ -16,8 +16,9 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.config.CommandlerConfig;
+import org.elypia.commandler.Request;
+import org.elypia.commandler.api.Dispatcher;
+import org.elypia.commandler.config.DispatcherConfig;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.injection.InjectorService;
 import org.slf4j.*;
@@ -39,10 +40,10 @@ public class DispatcherManager {
     private List<Dispatcher> dispatchers;
 
     @Inject
-    public DispatcherManager(InjectorService injector, final CommandlerConfig config) {
+    public DispatcherManager(final DispatcherConfig config, InjectorService injector) {
         List<Dispatcher> dispatchers = new ArrayList<>();
 
-        for (Class<Dispatcher> dispatcher : config.getDispatchers()) {
+        for (Class<Dispatcher> dispatcher : config.getDispatcherTypes()) {
             logger.debug("Creating instance of {}.", dispatcher);
             dispatchers.add(injector.getInstance(dispatcher));
         }
@@ -62,15 +63,19 @@ public class DispatcherManager {
             this.dispatchers.addAll(dispatchers);
     }
 
-    public <S, M> ActionEvent<S, M> dispatch(Integration<S, M> integration, S event, M message, String content) {
-        logger.debug("Dispatched event with content: {}", content);
-
+    public <S, M> ActionEvent<S, M> dispatch(Request<S, M> request) {
         for (Dispatcher dispatcher : dispatchers) {
-            if (!dispatcher.isValid(event, content))
+            if (!dispatcher.isValid(request))
                 continue;
 
-            logger.debug("Using dispatcher for event: {}", dispatcher.getClass());
-            return dispatcher.parse(integration, event, message, content);
+            ActionEvent<S, M> event = dispatcher.parse(request);
+
+            if (event == null)
+                continue;
+
+            logger.debug("Used dispatcher for event: {}", dispatcher.getClass());
+
+            return event;
         }
 
         return null;

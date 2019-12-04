@@ -2,37 +2,37 @@
 The [Gradle]/[Maven] import string can be found at the Download badge above!
 
 ## About
-Commandler's a command handling framework for Java. It's purpose is to try keep as much
+Commandler is a command handling framework for Java. It's purpose is to try keep as much
 of the reusable code as possible into a core project which can be the heart of any chatbot.  
 You'll be able to get started quickly making clean, reliable, and reusable code 
-with the framework which will help manage dependency injection, validation, and even generate
-a website with all relevent documentation you define!
+with the framework which will help manage dependency injection, validation, and
+even generate a website with all relevent documentation you define!
 
 ### Why use Commandler?
 Commandler makes it a lot easier to get started making anything that requires command
-handling, namely chat bots. It's designed not to be too bloaty or take command away from you
-while putting together a stack of libraries and flow to work with.
+handling, namely chatbots. It's designed not to be too bloaty or take control
+away from you while putting together a stack of libraries and flow to work with.
 
-* The controllers and commands you write are portable, so long as they aren't tied down to any
-API specific functionality you can just plop them over to another project, or register another
-`Controller` and see the command port over to another service.
-* Commandler under the hood is using familiar APIs such as Hibernate Validation,
-and Google Guice, which should massively reduce the learning curve.
-* Using `Commandlerdoc` you can export your controllers/command as it's own website which
-may offer users a better experience when reading your chatbots documentation. 
+* The controllers and commands you write are portable, so long as they aren't tied
+down to any API specific functionality you can just plop them over to another project,
+or register another `Integration` and see the command port over to another service.
+* Commandler under the hood is using familiar APIs such as Apache Commons, 
+Hibernate, and Google Guice, which should massively reduce the learning curve.
+* Using `Commandlerdoc` you can export your controllers/command as it's own website
+which may offer users a better experience when reading your chatbots documentation. 
 
 ## Open-Source
-This project is licenced under the Apache 2.0 project, don't be afraid to derive or reference
-from this project all you want!
+This project is licenced under the Apache 2.0 project, don't be afraid to
+derive or reference from this project all you want!
 
 **All non-code files including videos, models, audio, bitmaps, vectors, and 
 animations such as gifs, are not under the aforementioned license; all rights
-are reserved by Elypia CIC.** 
+are reserved by Elypia CIC.**
 
 ## Support
 Should any problems occur, come visit us over on [Discord]! We're always around and
-there are ample developers that would be willing to help; if it's a problem with the library
-itself then we'll make sure to get it sorted.
+there are ample developers that would be willing to help; if it's a problem with
+the library itself then we'll make sure to get it sorted.
 
 [Discord]: https://discord.gg/hprGMaM "Discord Invite"
 [bintray]: https://bintray.com/elypia/Commandler/core/_latestVersion "Bintray Latest Version"

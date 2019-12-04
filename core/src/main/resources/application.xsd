@@ -35,8 +35,8 @@
         <xs:element name="commandler">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="config" type="pojo" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="action-handler" type="pojo" minOccurs="0" maxOccurs="1"/>
+              <xs:element name="dispatcher" type="pojo" minOccurs="0" maxOccurs="1"/>
               <xs:element name="integration" type="pojo" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="misuse" type="pojo" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="controller" type="controller" minOccurs="0" maxOccurs="unbounded"/>

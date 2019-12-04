@@ -52,7 +52,7 @@ public class InjectorService {
 
     public InjectorService(Collection<Module> modules) {
         injector = Guice.createInjector(Stage.PRODUCTION, modules);
-        logger.debug("Instantiated {} with {} bindings.", InjectorService.class.getSimpleName(), injector.getAllBindings().size());
+        logger.debug("Instantiated {} with {} bindings.", InjectorService.class, injector.getAllBindings().size());
     }
 
     /**

@@ -51,18 +51,6 @@ public class ConfigService {
     private final Properties properties;
 
     /**
-     * A collection of all typed configuration objects.
-     * Any typed objected that is detected as a configuration object will
-     * appear here.
-     *
-     * In a Commandler Application there can be a lot of properties and variables
-     * that are managed externally so it's generally recommended and more organised
-     * to collate groups of them into objects like {@link AppConfig} or {@link CommandlerConfig}
-     * and register them as configuration files which will load on start.
-     */
-    private final Collection<Object> configs;
-
-    /**
      * Creates and loads the {@link Configuration} using the default profile.
      *
      * @throws ConfigurationException If the configuration fails to initialize.
@@ -95,11 +83,7 @@ public class ConfigService {
         this.configuration = ConfigurationUtils.unmodifiableConfiguration(config);
         this.properties = ConfigurationConverter.getProperties(configuration);
 
-        this.configs = new ArrayList<>();
         logger.debug("Finished loading configuration succesfully.");
-        logger.info("Loading default {} from loaded configuration sources, " +
-                    "this is required for Commandler to work.", CommandlerConfig.class);
-        this.configs.add(new CommandlerConfig(this));
     }
 
     public <T> List<T> getList(Class<T> t, final String key) {
@@ -110,33 +94,48 @@ public class ConfigService {
         return configuration.getString(key);
     }
 
+    public String getString(final String key, final String def) {
+        return configuration.getString(key, def);
+    }
+
     public boolean getBoolean(final String key) {
         return configuration.getBoolean(key);
+    }
+
+    public boolean getBoolean(final String key, final boolean def) {
+        return configuration.getBoolean(key, def);
     }
 
     public int getInt(final String key) {
         return configuration.getInt(key);
     }
 
+    public int getInt(final String key, final int def) {
+        return configuration.getInt(key, def);
+    }
+
     public long getLong(final String key) {
         return configuration.getLong(key);
+    }
+
+    public long getLong(final String key, final long def) {
+        return configuration.getLong(key, def);
     }
 
     public float getFloat(final String key) {
         return configuration.getFloat(key);
     }
 
+    public float getFloat(final String key, final float def) {
+        return configuration.getFloat(key, def);
+    }
+
     public double getDouble(final String key) {
         return configuration.getDouble(key);
     }
 
-    public <T> T getTypedConfig(Class<T> type) {
-        for (Object config : configs) {
-            if (config.getClass() == type)
-                return type.cast(config);
-        }
-
-        return null;
+    public double getDouble(final String key, final double def) {
+        return configuration.getDouble(key, def);
     }
 
     /**

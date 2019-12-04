@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-public class ActionTest {
+class ActionTest {
 
     @Test
     public void testGetContent() {

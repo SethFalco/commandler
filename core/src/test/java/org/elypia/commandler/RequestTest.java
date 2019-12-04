@@ -16,9 +16,12 @@
 
 package org.elypia.commandler;
 
-/**
- * @author seth@elypia.org (Seth Falco)
- */
-class AdapterManagerTest {
+import org.junit.jupiter.api.Test;
 
+class RequestTest {
+
+    @Test
+    void getIntegration() {
+
+    }
 }
