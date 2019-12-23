@@ -17,8 +17,14 @@
 
 <configuration xmlns="https://commandler.elypia.org"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://commandler.elypia.org application.xsd">
+  xsi:schemaLocation="https://commandler.elypia.org schema.xsd">
   <commandler>
+    <activator property="org.elypia.commandler.dispatchers.StandardDispatcher.aliases">
+      <display-name>Aliases</display-name>
+    </activator>
+    <activator property="org.elypia.commandler.dispatchers.MatchDispatcher.pattern">
+      <display-name>Pattern</display-name>
+    </activator>
     <action-handler>org.elypia.commandler.ActionHandler</action-handler>
     <misuse>org.elypia.commandler.DefaultMisuseHandler</misuse>
     <adapter type="org.elypia.commandler.adapters.BooleanAdapter">
@@ -35,6 +41,9 @@
     </adapter>
     <adapter type="org.elypia.commandler.adapters.LocaleAdapter">
       <compatible>java.util.Locale</compatible>
+    </adapter>
+    <adapter type="org.elypia.commandler.adapters.MetaControllerAdapter">
+      <compatible>org.elypia.commandler.metadata.MetaController</compatible>
     </adapter>
     <adapter type="org.elypia.commandler.adapters.NumberAdapter">
       <compatible>java.lang.Number</compatible>

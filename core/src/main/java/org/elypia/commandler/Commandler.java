@@ -77,7 +77,7 @@ public class Commandler {
         Collection<Class<Integration>> integrations = integrationConfig.getIntegrationTypes();
         injector.getInstance(actionConfig.getListenerType());
 
-        if (integrations == null || integrations.size() < 1) {
+        if (integrations == null || integrations.isEmpty()) {
             logger.warn("Commandler has not instantiated any integrations, it will likely exit following initialization.");
             return;
         }

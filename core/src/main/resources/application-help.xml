@@ -17,7 +17,7 @@
 
 <configuration xmlns="https://commandler.elypia.org"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://commandler.elypia.org application.xsd">
+  xsi:schemaLocation="https://commandler.elypia.org schema.xsd">
   <commandler>
     <controller type="org.elypia.commandler.DefaultHelpController">
       <name>Help</name>

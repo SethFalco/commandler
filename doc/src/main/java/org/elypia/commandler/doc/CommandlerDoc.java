@@ -17,9 +17,10 @@
 package org.elypia.commandler.doc;
 
 import com.google.gson.*;
-import org.elypia.commandler.AppContext;
-import org.elypia.commandler.config.ControllerConfig;
+import org.elypia.commandler.*;
+import org.elypia.commandler.config.*;
 import org.elypia.commandler.doc.deserializers.*;
+import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -40,31 +41,45 @@ public class CommandlerDoc {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandlerDoc.class);
 
-    private static final Gson gson = new GsonBuilder()
-        .registerTypeAdapter(MetaController.class, new MetaModuleSerializer())
-        .registerTypeAdapter(MetaCommand.class, new MetaControlSerializer())
-        .registerTypeAdapter(MetaParam.class, new MetaParamSerializer())
-        .create();
+    private final Gson gson;
 
     private List<MetaController> modules;
 
+    public CommandlerDoc(Commandler commandler) {
+        this(commandler.getAppContext());
+    }
+
     public CommandlerDoc(AppContext appContext) {
-        this(appContext.getInjector().getInstance(ControllerConfig.class).getControllers());
+        this(appContext.getInjector());
     }
 
-    public CommandlerDoc(MetaController... modules) {
-        this(List.of(modules));
+    public CommandlerDoc(InjectorService injector) {
+        this(injector.getInstance(ActivatorConfig.class), injector.getInstance(ControllerConfig.class));
     }
 
-    public CommandlerDoc(Collection<MetaController> modules) {
-        this.modules = modules.stream()
+    public CommandlerDoc(ActivatorConfig activatorConfig, ControllerConfig controllerConfig) {
+        this(activatorConfig, controllerConfig.getControllers());
+    }
+
+    public CommandlerDoc(ActivatorConfig activatorConfig, MetaController... modules) {
+        this(activatorConfig, List.of(modules));
+    }
+
+    public CommandlerDoc(ActivatorConfig activatorConfig, Collection<MetaController> controllers) {
+        this.modules = controllers.stream()
             .filter(MetaController::isPublic)
             .sorted()
             .collect(Collectors.toUnmodifiableList());
+
+        gson = new GsonBuilder()
+            .registerTypeAdapter(MetaController.class, new MetaControllerSerializer(activatorConfig))
+            .registerTypeAdapter(MetaCommand.class, new MetaControlSerializer(activatorConfig))
+            .registerTypeAdapter(MetaParam.class, new MetaParamSerializer())
+            .create();
     }
 
     public String toJson() {
-        String json = gson.toJson(modules);
+        String json = "{\"controllers\":" + gson.toJson(modules) + "}";
         logger.info("Exported JSON: {}", json);
         return json;
     }

@@ -17,7 +17,7 @@
 
 <configuration xmlns="https://commandler.elypia.org"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="https://commandler.elypia.org application.xsd">
+               xsi:schemaLocation="https://commandler.elypia.org schema.xsd">
   <commandler>
     <action-handler>org.elypia.commandler.validation.ValidatedActionHandler</action-handler>
     <misuse>org.elypia.commandler.validation.ValidationMisuseHandler</misuse>

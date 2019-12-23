@@ -43,7 +43,7 @@ public class ControllerConfig {
     private final static Logger logger = LoggerFactory.getLogger(ControllerConfig.class);
 
     /** A collection of data for each controller within this {@link Commandler} context. */
-    private Collection<MetaController> controllers;
+    private List<MetaController> controllers;
 
     /**
      * Create and instantiate this configuration object.
@@ -124,8 +124,8 @@ public class ControllerConfig {
         return properties;
     }
 
-    public Collection<MetaController> getControllers() {
-        return controllers;
+    public List<MetaController> getControllers() {
+        return Collections.unmodifiableList(controllers);
     }
 
     /**

@@ -15,6 +15,9 @@
  */
 
 dependencies {
+    // TODO: This is temporarily required due to a bug in our configuration.
+    implementation "org.yaml:snakeyaml:1.25"
+
     // Configuration
     api "org.apache.commons:commons-configuration2:2.6"
     implementation "commons-beanutils:commons-beanutils:1.9.4"

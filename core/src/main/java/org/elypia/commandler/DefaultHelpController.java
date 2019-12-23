@@ -17,12 +17,12 @@
 package org.elypia.commandler;
 
 import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.managers.TestManager;
+import org.elypia.commandler.config.*;
 import org.elypia.commandler.metadata.*;
 
 import javax.inject.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The default help module, this is an optional module
@@ -33,61 +33,50 @@ import java.util.*;
 @Singleton
 public class DefaultHelpController implements Controller {
 
-    private AppContext appContext;
-    private TestManager testManager;
+    private final ControllerConfig controllerConfig;
+    private final ActivatorConfig activatorConfig;
 
     @Inject
-    public DefaultHelpController(AppContext appContext, TestManager testManager) {
-        this.appContext = appContext;
-        this.testManager = testManager;
+    public DefaultHelpController(final ControllerConfig controllerConfig, final ActivatorConfig activatorConfig) {
+        this.controllerConfig = controllerConfig;
+        this.activatorConfig = activatorConfig;
     }
 
-//    public String getGroups(ActionEvent<?, ?> event) {
-//        StringJoiner joiner = new StringJoiner("\n", "Groups", "");
-//
-//        for (String group : appContext.getGroups(false).keySet())
-//            joiner.add("* " + group);
-//
-//        return joiner.toString();
-//    }
-//
-//    public String getModules(String query) {
-//        var groups = appContext.getGroups(false);
-//
-//        Optional<String> optGroupName = groups.keySet().stream().filter(
-//            name -> name.equalsIgnoreCase(query)
-//        ).findAny();
-//
-//        if (optGroupName.isEmpty())
-//            return "No such group exists.";
-//
-//        String groupName = optGroupName.get();
-//        List<MetaController> modules = groups.get(groupName);
-//        boolean disabled = false;
-//
-//        StringJoiner joiner = new StringJoiner("\n", groupName, "");
-//
-//        for (MetaController module : modules) {
-//            StringBuilder builder = new StringBuilder("* ")
-//                .append(module.toString());
-//
-//            if (testManager.isFailing(this)) {
-//                builder.append(" *");
-//                disabled = true;
-//            }
-//
-//            builder
-//                .append("\n")
-//                .append(module.getDescription());
-//
-//            joiner.add(builder.toString());
-//        }
-//
-//        if (disabled)
-//            joiner.add("* Disabled due to live issues.");
-//
-//        return joiner.toString();
-//    }
+    public String getGroups() {
+        List<MetaController> controllers = controllerConfig.getControllers();
+        List<String> groups = controllers.stream()
+            .filter(MetaController::isPublic)
+            .map(MetaController::getGroup)
+            .distinct()
+            .collect(Collectors.toList());
+
+        StringBuilder builder = new StringBuilder("Groups");
+
+        for (String group : groups)
+            builder.append("\n* ").append(group);
+
+        return builder.toString();
+    }
+
+    public String getControllers(String query) {
+        List<MetaController> controllers = controllerConfig.getControllers();
+        List<MetaController> group = controllers.stream()
+            .filter((c) -> c.getGroup().equalsIgnoreCase(query))
+            .collect(Collectors.toList());
+
+        if (group.isEmpty())
+            return "There is no group by the name.";
+
+        StringBuilder builder = new StringBuilder();
+
+        for (MetaController controller : group) {
+            builder.append(controller.getName()).append("\n").append(controller.getDescription());
+            appendActivators(builder, controller);
+            builder.append("\n\n");
+        }
+
+        return builder.toString();
+    }
 
     /**
      * The default help command for a {@link Controller},
@@ -95,35 +84,24 @@ public class DefaultHelpController implements Controller {
      * this {@link Controller} to display helpful information
      * to the user.
      *
-     * @param event The {@link ActionEvent event} produced by Commandler.
      * @return The message to send to the end user.
      */
-    public String getCommands(ActionEvent event, MetaController module) {
-        StringBuilder builder = new StringBuilder(module.getName());
+    public String getCommands(MetaController controller) {
+        StringBuilder builder = new StringBuilder(controller.getName())
+            .append("\n")
+            .append(controller.getDescription());
 
-        builder
-            .append(" (")
-            .append(String.join(", "))
-            .append(")\n")
-            .append(module.getDescription());
-
-        if (testManager.isFailing(this))
-            builder.append("\n").append("This module is failing it's tests");
-
+        appendActivators(builder, controller);
         builder.append("\n\n");
 
-        Iterator<MetaCommand> metaCommandIt = module.getPublicCommands().iterator();
+        Iterator<MetaCommand> metaCommandIt = controller.getPublicCommands().iterator();
 
         while (metaCommandIt.hasNext()) {
             MetaCommand metaCommand = metaCommandIt.next();
-            builder.append(metaCommand.getName());
-
-            builder
-                .append(" (")
-                .append(String.join(", "))
-                .append(")\n")
+            builder.append(metaCommand.getName())
+                .append("\n")
                 .append(metaCommand.getDescription());
-
+            appendActivators(builder, metaCommand);
             List<MetaParam> metaParams = metaCommand.getMetaParams();
 
             metaParams.forEach((param) -> {
@@ -136,5 +114,14 @@ public class DefaultHelpController implements Controller {
         }
 
         return builder.toString();
+    }
+
+    private void appendActivators(final StringBuilder builder, final MetaComponent metaComponent) {
+        activatorConfig.getActivators().forEach((forProperty, displayName) -> {
+            String value = metaComponent.getProperty(forProperty);
+
+            if (value != null)
+                builder.append("\n").append(displayName).append(": ").append(value);
+        });
     }
 }
