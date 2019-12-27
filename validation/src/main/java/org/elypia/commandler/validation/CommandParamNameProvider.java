@@ -67,7 +67,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
            .filter((metaController) -> metaController.getHandlerType() == type)
            .collect(Collectors.toList());
 
-        if (filtered.size() == 0)
+        if (filtered.isEmpty())
             throw new IllegalStateException("Attempted to validate Controller which wasn't added to Commandler on initialization.");
         else if (filtered.size() > 1)
             throw new IllegalStateException("Found more than 1 MetaController for the same Controller implementation.");

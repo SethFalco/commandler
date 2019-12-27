@@ -16,10 +16,10 @@
 
 package org.elypia.commandler.managers;
 
+import org.elypia.commandler.CdiInjector;
 import org.elypia.commandler.api.MisuseHandler;
 import org.elypia.commandler.config.MisuseConfig;
 import org.elypia.commandler.exceptions.misuse.MisuseException;
-import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.metadata.MetaCommand;
 import org.slf4j.*;
 
@@ -47,13 +47,13 @@ public class MisuseManager {
     private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
 
     /** Used to manage dependency injection when constructions param adapters. */
-    private final InjectorService injector;
+    private final CdiInjector injector;
 
     /** The configuration class which contains all metadata for this instance. */
     private final MisuseConfig misuseConfig;
 
     @Inject
-    public MisuseManager(final InjectorService injector, final MisuseConfig misuseConfig) {
+    public MisuseManager(final CdiInjector injector, final MisuseConfig misuseConfig) {
         this.injector = Objects.requireNonNull(injector);
         this.misuseConfig = Objects.requireNonNull(misuseConfig);
     }

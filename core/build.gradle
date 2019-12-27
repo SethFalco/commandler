@@ -18,19 +18,18 @@ dependencies {
     // TODO: This is temporarily required due to a bug in our configuration.
     implementation "org.yaml:snakeyaml:1.25"
 
+    // Dependency Injection
+    api "javax.enterprise:cdi-api:2.0"
+    implementation "org.jboss.weld.se:weld-se-core:3.1.3.Final"
+
+    // DeltaSpike
+    api "org.apache.deltaspike.core:deltaspike-core-api:${deltaSpikeVersion}"
+    runtimeOnly "org.apache.deltaspike.core:deltaspike-core-impl:${deltaSpikeVersion}"
+
+    // Java EL (Expression Language) for Default Values and Hibernate Validation
+    implementation "org.glassfish:jakarta.el:3.0.3"
+
     // Configuration
     api "org.apache.commons:commons-configuration2:2.6"
     implementation "commons-beanutils:commons-beanutils:1.9.4"
-
-    // Dependency Injection
-    // When tailoring DI for your application it's best to try use what's built into
-    // Commandler and provided by the javax.inject API first before depending
-    // on the implementation of choice as the latter is more likely to lead to breaking
-    // changes in cases it receives a major update or Commandler replaces the implementation.
-    api "javax.inject:javax.inject:1"
-    implementation "com.google.inject:guice:4.2.2"
-
-    // Java EL (Expression Language) for Default Values
-    // Also for Hibernate Validation in org.elypia.commandler:validation module.
-    implementation "org.glassfish:jakarta.el:3.0.3"
 }

@@ -16,12 +16,11 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.Commandler;
+import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.AdapterRequiredException;
-import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.metadata.MetaMessenger;
 import org.slf4j.*;
 
@@ -38,11 +37,11 @@ public class MessengerManager {
     private static final Logger logger = LoggerFactory.getLogger(MessengerManager.class);
 
     /** Used to manage dependency injection when injecting messengers. */
-    private final InjectorService injector;
+    private final CdiInjector injector;
     private final CommandlerConfig commandlerConfig;
 
     @Inject
-    public MessengerManager(final InjectorService injector, final CommandlerConfig commandlerConfig) {
+    public MessengerManager(final CdiInjector injector, final CommandlerConfig commandlerConfig) {
         this.injector = Objects.requireNonNull(injector);
         this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
     }

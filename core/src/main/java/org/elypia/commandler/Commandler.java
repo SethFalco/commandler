@@ -19,10 +19,11 @@ package org.elypia.commandler;
 import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.config.*;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.injection.InjectorService;
 import org.slf4j.*;
 
-import javax.inject.Singleton;
+import javax.enterprise.inject.Produces;
+import javax.inject.*;
+import java.text.NumberFormat;
 import java.util.Collection;
 
 /**
@@ -44,8 +45,10 @@ public class Commandler {
     /** Logging with slf4j. */
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
 
+    private CdiInjector injector;
+
     /** Metadata and configurationa associated with this Commandler instance. */
-    private final AppContext appContext;
+    private AppContext appContext;
 
     /**
      * Construct an instance of Commandler, in most cases this will be used
@@ -56,22 +59,35 @@ public class Commandler {
      * actually connecting to any APIs or processing commands, this will ensure Commandler
      * can load and validate everything before any attempt to go live to users.
      */
+    @Inject
     public Commandler() {
+        // The #create() method will handle initialization.
+    }
+
+    public static Commandler create(Class<?>... packageClasses) {
         logger.debug("Started Commandler, loading all configuration and dependencies.");
-        appContext = new AppContext(this);
+        AppContext appContext = new AppContext();
+        CdiInjector injector = new CdiInjector(appContext.getConfig(), packageClasses);
+
+        AppConfig app = injector.getInstance(AppConfig.class);
+        logger.info("Initialization application with name {}.", app.getApplicationName());
+
+        Commandler commandler = injector.getInstance(Commandler.class);
+        commandler.appContext = appContext;
+        commandler.injector = injector;
         logger.info("Loaded all configuration and dependencies in {}.", appContext.getTimeSinceStartupFormatted());
+
+        return commandler;
     }
 
     /**
      * Instantiate all {@link Integration}s and start receiving and
      * handling {@link ActionEvent}s recieved.
      *
-     * This is actually run the Commandler instance and should be used to run any chat
+     * This actually runs the Commandler instance and should be used to run any chat
      * bots by whatever interactive means.
      */
     public void run() {
-        InjectorService injector = appContext.getInjector();
-
         IntegrationConfig integrationConfig = injector.getInstance(IntegrationConfig.class);
         ActionConfig actionConfig = injector.getInstance(ActionConfig.class);
         Collection<Class<Integration>> integrations = integrationConfig.getIntegrationTypes();
@@ -86,6 +102,16 @@ public class Commandler {
             logger.debug("Creating instance of {}.", integrationType);
             injector.getInstance(integrationType);
         }
+    }
+
+    @Produces
+    public NumberFormat getNumberFormat() {
+        return NumberFormat.getInstance();
+    }
+
+    @Produces
+    public CdiInjector getInjector() {
+        return injector;
     }
 
     public AppContext getAppContext() {

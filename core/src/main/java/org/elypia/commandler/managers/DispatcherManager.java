@@ -16,11 +16,10 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.Request;
+import org.elypia.commandler.*;
 import org.elypia.commandler.api.Dispatcher;
 import org.elypia.commandler.config.DispatcherConfig;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.injection.InjectorService;
 import org.slf4j.*;
 
 import javax.inject.*;
@@ -40,7 +39,7 @@ public class DispatcherManager {
     private List<Dispatcher> dispatchers;
 
     @Inject
-    public DispatcherManager(final DispatcherConfig config, InjectorService injector) {
+    public DispatcherManager(final DispatcherConfig config, CdiInjector injector) {
         List<Dispatcher> dispatchers = new ArrayList<>();
 
         for (Class<Dispatcher> dispatcher : config.getDispatcherTypes()) {

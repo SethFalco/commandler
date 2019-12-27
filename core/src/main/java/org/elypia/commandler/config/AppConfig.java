@@ -16,20 +16,16 @@
 
 package org.elypia.commandler.config;
 
-import javax.inject.*;
+import org.apache.deltaspike.core.api.config.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@Configuration(prefix = "application.")
 public class AppConfig {
 
-    private final String applicationName;
-
-    @Inject
-    public AppConfig(final ConfigService configService) {
-        applicationName = configService.getString("application.name");
-    }
+    @ConfigProperty(name = "name")
+    private String applicationName;
 
     public String getApplicationName() {
         return applicationName;

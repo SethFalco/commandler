@@ -16,10 +16,9 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.Request;
+import org.elypia.commandler.*;
 import org.elypia.commandler.api.HeaderBinder;
 import org.elypia.commandler.config.HeadersConfig;
-import org.elypia.commandler.injection.InjectorService;
 import org.slf4j.*;
 
 import javax.inject.*;
@@ -45,12 +44,12 @@ public class HeaderManager {
     private final HeadersConfig config;
 
     /** Used to get the implementations of each {@link HeaderBinder}. */
-    private InjectorService injector;
+    private CdiInjector injector;
 
     private Collection<Class<HeaderBinder>> binders;
 
     @Inject
-    public HeaderManager(final HeadersConfig config, final InjectorService injector) {
+    public HeaderManager(final HeadersConfig config, final CdiInjector injector) {
         this.config = config;
 
         if (config == null) {

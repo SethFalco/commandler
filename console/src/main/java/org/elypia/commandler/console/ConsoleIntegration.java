@@ -40,7 +40,6 @@ public class ConsoleIntegration extends AbstractIntegration<String, String> {
 
     /**
      * Creates a scanner and prompts for input on a new thread.
-     *
      */
     @Inject
     public ConsoleIntegration(final Commandler commandler) {

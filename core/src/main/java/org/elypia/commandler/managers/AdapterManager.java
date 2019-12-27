@@ -16,13 +16,12 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.Commandler;
+import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.AdapterRequiredException;
 import org.elypia.commandler.exceptions.misuse.*;
-import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -53,7 +52,7 @@ public class AdapterManager {
     private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
 
     /** Used to manage dependency injection when constructions param adapters. */
-    private final InjectorService injector;
+    private final CdiInjector injector;
 
     /** The configuration class which contains all metadata for this instance. */
     private final CommandlerConfig commandlerConfig;
@@ -66,7 +65,7 @@ public class AdapterManager {
      * @param commandlerConfig Main commandler configuration.
      */
     @Inject
-    public AdapterManager(final InjectorService injector, final CommandlerConfig commandlerConfig) {
+    public AdapterManager(final CdiInjector injector, final CommandlerConfig commandlerConfig) {
         this.injector = Objects.requireNonNull(injector);
         this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
         this.expressionFactory = ELManager.getExpressionFactory();

@@ -20,7 +20,6 @@ import com.google.gson.*;
 import org.elypia.commandler.*;
 import org.elypia.commandler.config.*;
 import org.elypia.commandler.doc.deserializers.*;
-import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -46,14 +45,10 @@ public class CommandlerDoc {
     private List<MetaController> modules;
 
     public CommandlerDoc(Commandler commandler) {
-        this(commandler.getAppContext());
+        this(commandler.getInjector());
     }
 
-    public CommandlerDoc(AppContext appContext) {
-        this(appContext.getInjector());
-    }
-
-    public CommandlerDoc(InjectorService injector) {
+    public CommandlerDoc(CdiInjector injector) {
         this(injector.getInstance(ActivatorConfig.class), injector.getInstance(ControllerConfig.class));
     }
 

@@ -19,4 +19,7 @@ dependencies {
 
     // Hibernate Validation
     api "org.hibernate.validator:hibernate-validator:6.1.0.Final"
+
+    // DeltaSpike
+    implementation "org.apache.deltaspike.modules:deltaspike-bean-validation-module-impl:${deltaSpikeVersion}"
 }

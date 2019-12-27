@@ -19,7 +19,6 @@ package org.elypia.commandler;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.misuse.MisuseException;
-import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
@@ -42,7 +41,7 @@ public class ActionHandler implements ActionListener {
     private Logger logger = LoggerFactory.getLogger(ActionHandler.class);
 
     protected DispatcherManager dispatcherManager;
-    protected InjectorService injectorService;
+    protected CdiInjector cdiInjector;
     protected HeaderManager headerManager;
     protected AdapterManager adapterService;
 //    protected TestManager testService;
@@ -52,7 +51,7 @@ public class ActionHandler implements ActionListener {
     @Inject
     public ActionHandler(
         DispatcherManager dispatcherManager,
-        InjectorService injectorService,
+        CdiInjector cdiInjector,
         HeaderManager headerManager,
         AdapterManager adapterService,
 //        TestManager testService,
@@ -60,7 +59,7 @@ public class ActionHandler implements ActionListener {
         MessengerManager messengerService
     ) {
         this.dispatcherManager = dispatcherManager;
-        this.injectorService = injectorService;
+        this.cdiInjector = cdiInjector;
         this.headerManager = headerManager;
         this.adapterService = adapterService;
 //        this.testService = testService;
@@ -92,7 +91,7 @@ public class ActionHandler implements ActionListener {
                 return null;
 
             MetaController module = event.getMetaController();
-            Controller controller = injectorService.getInstance(module.getHandlerType());
+            Controller controller = cdiInjector.getInstance(module.getHandlerType());
             Object[] params = adapterService.adaptEvent(event);
 
 //            if (testService.isFailing(controller))

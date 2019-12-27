@@ -16,6 +16,7 @@
 
 plugins {
     id "com.jfrog.bintray" version "1.8.4" apply false
+    id "io.spring.dependency-management" version "1.0.8.RELEASE" apply false
 }
 
 def publishedProjects = [
@@ -39,6 +40,8 @@ allprojects() {
         gitUrl = "${repoUrl}.git"
         issueUrl = "${repoUrl}/issues"
         website = "https://elypia.org/"
+
+        deltaSpikeVersion = "1.9.2"
     }
 
     repositories {
@@ -55,11 +58,18 @@ configure(publishedProjects) {
     apply plugin: "maven"
     apply plugin: "maven-publish"
     apply plugin: "com.jfrog.bintray"
+    apply plugin: "io.spring.dependency-management"
 
     sourceCompatibility = 11
     targetCompatibility = 11
 
     [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.apache.deltaspike.distribution:distributions-bom:${deltaSpikeVersion}"
+        }
+    }
 
     dependencies {
         // Logging

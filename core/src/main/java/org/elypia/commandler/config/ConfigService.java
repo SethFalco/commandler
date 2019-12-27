@@ -154,4 +154,13 @@ public class ConfigService {
     public Properties getProperties() {
         return properties;
     }
+
+    /**
+     * @return A view of {@link #properties} as a {@link Map}.
+     */
+    public Map<String, Object> getPropertyMap() {
+        Map<String, Object> map = new HashMap<>();
+        properties.forEach((k, v) -> map.put(k.toString(), v));
+        return Collections.unmodifiableMap(map);
+    }
 }

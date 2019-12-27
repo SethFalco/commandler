@@ -20,7 +20,6 @@ import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.misuse.MisuseException;
-import org.elypia.commandler.injection.InjectorService;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
@@ -43,7 +42,7 @@ public class ValidatedActionHandler extends ActionHandler {
     @Inject
     public ValidatedActionHandler(
         DispatcherManager dispatcherManager,
-        InjectorService injectorService,
+        CdiInjector cdiInjector,
         HeaderManager headerManager,
         AdapterManager adapterService,
         //        TestManager testService,
@@ -51,8 +50,8 @@ public class ValidatedActionHandler extends ActionHandler {
         MessengerManager messengerService,
         HibernateValidationManager validationService
     ) {
-//        super(dispatcherManager, injectorService, adapterService, testService, exceptionService, messengerService);
-        super(dispatcherManager, injectorService, headerManager, adapterService, misuseManager, messengerService);
+//        super(dispatcherManager, cdiInjector, adapterService, testService, exceptionService, messengerService);
+        super(dispatcherManager, cdiInjector, headerManager, adapterService, misuseManager, messengerService);
         this.validationService = validationService;
     }
 
@@ -80,7 +79,7 @@ public class ValidatedActionHandler extends ActionHandler {
                 return null;
 
             MetaController module = event.getMetaController();
-            Controller controller = injectorService.getInstance(module.getHandlerType());
+            Controller controller = cdiInjector.getInstance(module.getHandlerType());
             Object[] params = adapterService.adaptEvent(event);
             validationService.validate(event, controller, params);
 
