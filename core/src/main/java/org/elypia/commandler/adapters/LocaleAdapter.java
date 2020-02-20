@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import org.elypia.commandler.metadata.MetaParam;
 import org.elypia.commandler.utils.ChatUtils;
 import org.slf4j.*;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class LocaleAdapter implements Adapter<Locale> {
 
     private static final Logger logger = LoggerFactory.getLogger(LocaleAdapter.class);

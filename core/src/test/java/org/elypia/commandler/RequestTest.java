@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,9 @@
 
 package org.elypia.commandler;
 
-import org.junit.jupiter.api.Test;
+/**
+ * @author seth@elypia.org (Seth Falco)
+ */
+public class RequestTest {
 
-class RequestTest {
-
-    @Test
-    void getIntegration() {
-
-    }
 }

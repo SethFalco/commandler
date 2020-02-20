@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.CdiInjector;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.api.MisuseHandler;
 import org.elypia.commandler.config.MisuseConfig;
 import org.elypia.commandler.exceptions.misuse.MisuseException;
 import org.elypia.commandler.metadata.MetaCommand;
 import org.slf4j.*;
 
-import javax.inject.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import java.util.Objects;
 
 /**
@@ -37,24 +39,23 @@ import java.util.Objects;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class MisuseManager {
 
     /**
      * We're using SLF4J to manage logging, remember to use a binding / implementation
      * and configure logging for when testing or running an application.
      */
-    private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(MisuseManager.class);
 
-    /** Used to manage dependency injection when constructions param adapters. */
-    private final CdiInjector injector;
+    private final BeanManager beanManager;
 
     /** The configuration class which contains all metadata for this instance. */
     private final MisuseConfig misuseConfig;
 
     @Inject
-    public MisuseManager(final CdiInjector injector, final MisuseConfig misuseConfig) {
-        this.injector = Objects.requireNonNull(injector);
+    public MisuseManager(final BeanManager beanManager, final MisuseConfig misuseConfig) {
+        this.beanManager = beanManager;
         this.misuseConfig = Objects.requireNonNull(misuseConfig);
     }
 
@@ -66,7 +67,7 @@ public class MisuseManager {
      */
     public <X extends MisuseException> Object handle(X ex) {
         for (Class<? extends MisuseHandler> type : misuseConfig.getMisuseHandlerTypes()) {
-            Object o = injector.getInstance(type).handle(ex);
+            Object o = BeanProvider.getContextualReference(type).handle(ex);
 
             if (o != null)
                 return o;

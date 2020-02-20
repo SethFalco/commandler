@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,16 +68,17 @@ public class ValidationMisuseHandler implements MisuseHandler {
         if (!paramViolations.isEmpty())
             invalidType.add("a parameter");
 
-        String format =
+        StringBuilder format = new StringBuilder(
             "Command failed; " + invalidType.toString() + " was invalidated.\n" +
             "Module: %s\n" +
-            "Command: %s\n";
+            "Command: %s\n"
+        );
 
         for (var violation : commandViolations)
-            format += "command: " + violation.getMessage();
+            format.append("command: ").append(violation.getMessage());
 
         if (!commandViolations.isEmpty())
-            format += "\n";
+            format.append("\n");
 
         for (var violation : paramViolations) {
             Iterator<Path.Node> iter = violation.getPropertyPath().iterator();
@@ -86,12 +87,14 @@ public class ValidationMisuseHandler implements MisuseHandler {
             while (iter.hasNext())
                 last = iter.next();
 
-            format += last.getName() + ": " + violation.getMessage();
+            Objects.requireNonNull(last);
+
+            format.append(last.getName()).append(": ").append(violation.getMessage());
         }
 
         String module = ex.getActionEvent().getMetaController().getName();
         String command = ex.getActionEvent().getMetaCommand().getName();
 
-        return String.format(format, module, command);
+        return String.format(format.toString(), module, command);
     }
 }

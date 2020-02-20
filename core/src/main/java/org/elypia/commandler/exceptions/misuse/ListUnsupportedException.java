@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.*;
 public class ListUnsupportedException extends ParamException {
 
     /** The particular <strong>item</strong> that failed to adapt.*/
-    private List<String> items;
+    private final List<String> items;
 
     public ListUnsupportedException(ActionEvent<?, ?> action, MetaParam metaParam, List<String> items) {
         super(action, metaParam);

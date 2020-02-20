@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ dependencies {
     implementation project(":core")
 
     // Hibernate Validation
-    api "org.hibernate.validator:hibernate-validator:6.1.0.Final"
+    api "org.hibernate.validator:hibernate-validator:6.1.2.Final"
 
     // DeltaSpike
     implementation "org.apache.deltaspike.modules:deltaspike-bean-validation-module-impl:${deltaSpikeVersion}"

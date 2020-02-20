@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.*;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.ActionEvent;
@@ -24,25 +25,27 @@ import org.elypia.commandler.exceptions.AdapterRequiredException;
 import org.elypia.commandler.metadata.MetaMessenger;
 import org.slf4j.*;
 
-import javax.inject.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import java.util.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class MessengerManager {
 
     /** SLF4J Logger*/
     private static final Logger logger = LoggerFactory.getLogger(MessengerManager.class);
 
-    /** Used to manage dependency injection when injecting messengers. */
-    private final CdiInjector injector;
+    private final BeanManager beanManager;
+
     private final CommandlerConfig commandlerConfig;
 
     @Inject
-    public MessengerManager(final CdiInjector injector, final CommandlerConfig commandlerConfig) {
-        this.injector = Objects.requireNonNull(injector);
+    public MessengerManager(final BeanManager beanManager, final CommandlerConfig commandlerConfig) {
+        this.beanManager = beanManager;
         this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
     }
 
@@ -105,6 +108,6 @@ public class MessengerManager {
         if (provider == null)
             throw new AdapterRequiredException("ResponseBuilder required for type " + typeRequired + ".");
 
-        return injector.getInstance(provider.getProviderType());
+        return BeanProvider.getContextualReference(provider.getProviderType());
     }
 }

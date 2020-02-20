@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.validation;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
@@ -24,7 +25,9 @@ import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
-import javax.inject.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 /**
  * This extends the {@link ActionHandler} and handles everything the same way
@@ -32,7 +35,7 @@ import javax.inject.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class ValidatedActionHandler extends ActionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ValidatedActionHandler.class);
@@ -41,8 +44,8 @@ public class ValidatedActionHandler extends ActionHandler {
 
     @Inject
     public ValidatedActionHandler(
+        BeanManager beanManager,
         DispatcherManager dispatcherManager,
-        CdiInjector cdiInjector,
         HeaderManager headerManager,
         AdapterManager adapterService,
         //        TestManager testService,
@@ -51,7 +54,7 @@ public class ValidatedActionHandler extends ActionHandler {
         HibernateValidationManager validationService
     ) {
 //        super(dispatcherManager, cdiInjector, adapterService, testService, exceptionService, messengerService);
-        super(dispatcherManager, cdiInjector, headerManager, adapterService, misuseManager, messengerService);
+        super(beanManager, dispatcherManager, headerManager, adapterService, misuseManager, messengerService);
         this.validationService = validationService;
     }
 
@@ -79,7 +82,7 @@ public class ValidatedActionHandler extends ActionHandler {
                 return null;
 
             MetaController module = event.getMetaController();
-            Controller controller = cdiInjector.getInstance(module.getHandlerType());
+            Controller controller = BeanProvider.getContextualReference(module.getHandlerType());
             Object[] params = adapterService.adaptEvent(event);
             validationService.validate(event, controller, params);
 

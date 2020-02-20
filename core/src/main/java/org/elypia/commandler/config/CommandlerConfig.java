@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ import org.elypia.commandler.metadata.*;
 import org.elypia.commandler.utils.ReflectionUtils;
 import org.slf4j.*;
 
-import javax.inject.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.*;
 
 /**
@@ -37,10 +38,10 @@ import java.util.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class CommandlerConfig {
 
-    private final static Logger logger = LoggerFactory.getLogger(CommandlerConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommandlerConfig.class);
 
     /** A collection parameter adapters. */
     private Collection<MetaAdapter> adapters;
@@ -57,14 +58,14 @@ public class CommandlerConfig {
      */
     @Inject
     public CommandlerConfig(final ConfigService configService) {
-        this.adapters = convertAdapters(configService);
-        this.messengers = convertMessengers(configService);
+        convertAdapters(configService);
+        convertMessengers(configService);
     }
 
-    private List<MetaAdapter> convertAdapters(final ConfigService configService) {
+    private void convertAdapters(final ConfigService configService) {
         List<ImmutableHierarchicalConfiguration> adapterConfigs = configService.getConfiguration()
             .immutableConfigurationsAt("commandler.adapter");
-        List<MetaAdapter> adapters = new ArrayList<>();
+        adapters = new ArrayList<>();
 
         for (ImmutableHierarchicalConfiguration adapterConfig : adapterConfigs) {
             String name = adapterConfig.getString("type");
@@ -75,14 +76,12 @@ public class CommandlerConfig {
 
             adapters.add(new MetaAdapter(adapterType, compatibleTypes));
         }
-
-        return adapters;
     }
 
-    private List<MetaMessenger> convertMessengers(final ConfigService configService) {
+    private void convertMessengers(final ConfigService configService) {
         List<ImmutableHierarchicalConfiguration> messengerConfigs = configService.getConfiguration()
             .immutableConfigurationsAt("commandler.messenger");
-        List<MetaMessenger> messengers = new ArrayList<>();
+        messengers = new ArrayList<>();
 
         for (ImmutableHierarchicalConfiguration messengerConfig : messengerConfigs) {
             String name = messengerConfig.getString("type");
@@ -96,8 +95,6 @@ public class CommandlerConfig {
 
             messengers.add(new MetaMessenger(adapterType, providesType, compatibleTypes));
         }
-
-        return messengers;
     }
 
     private Collection<Class<Object>> convertCompatible(List<String> typeNames) {

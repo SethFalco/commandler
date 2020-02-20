@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,15 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.*;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.Request;
 import org.elypia.commandler.api.HeaderBinder;
 import org.elypia.commandler.config.HeadersConfig;
 import org.slf4j.*;
 
-import javax.inject.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import java.util.*;
 
 /**
@@ -30,11 +33,13 @@ import java.util.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class HeaderManager {
 
     /** Logging with SLF4J. */
     private static final Logger logger = LoggerFactory.getLogger(HeaderManager.class);
+
+    private final BeanManager beanManager;
 
     /**
      * A collection of header binders, used to bindHeaders metadata for
@@ -43,13 +48,11 @@ public class HeaderManager {
      */
     private final HeadersConfig config;
 
-    /** Used to get the implementations of each {@link HeaderBinder}. */
-    private CdiInjector injector;
-
     private Collection<Class<HeaderBinder>> binders;
 
     @Inject
-    public HeaderManager(final HeadersConfig config, final CdiInjector injector) {
+    public HeaderManager(final BeanManager beanManager, final HeadersConfig config) {
+        this.beanManager = beanManager;
         this.config = config;
 
         if (config == null) {
@@ -57,13 +60,12 @@ public class HeaderManager {
             return;
         }
 
-        this.injector = Objects.requireNonNull(injector);
         this.binders = config.getHeaderBindersType();
     }
 
     public <S, M> void bindHeaders(Request<S, M> request) {
         for (Class<HeaderBinder> binderType : binders) {
-            Map<String, String> h = injector.getInstance(binderType).bind(request);
+            Map<String, String> h = BeanProvider.getContextualReference(binderType).bind(request);
 
             for (Map.Entry<String, String> entry : h.entrySet())
                 request.setHeader(entry.getKey(), entry.getValue());

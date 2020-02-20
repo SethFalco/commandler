@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ import org.elypia.commandler.metadata.*;
 import org.elypia.commandler.utils.ChatUtils;
 import org.slf4j.*;
 
-import javax.inject.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.*;
 import java.util.regex.*;
@@ -39,7 +40,7 @@ import java.util.regex.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class StandardDispatcher implements Dispatcher {
 
     /** SLF4J Logger */
@@ -264,11 +265,9 @@ public class StandardDispatcher implements Dispatcher {
                 .filter(request.getContent()::startsWith)
                 .findAny();
 
-            String prefix = optPrefix.orElseThrow(
+            return optPrefix.orElseThrow(
                 () -> new IllegalStateException("Do not call the #parse method if the command is invalid.")
             );
-
-            return prefix;
         }
 
         return null;

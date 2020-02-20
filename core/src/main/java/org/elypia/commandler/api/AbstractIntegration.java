@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,12 @@
 
 package org.elypia.commandler.api;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.Commandler;
 import org.elypia.commandler.config.ActionConfig;
 import org.slf4j.*;
+
+import javax.enterprise.inject.spi.BeanManager;
 
 /**
  * @param <S>
@@ -29,12 +32,13 @@ public abstract class AbstractIntegration<S, M> implements Integration<S, M> {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractIntegration.class);
 
+    protected BeanManager beanManager;
     protected Commandler commandler;
 
     public M process(S source, M message, String content) {
         logger.debug("Recieved `{}` from {}.", content, this.getClass());
-        Class<? extends ActionListener> listener = commandler.getInjector().getInstance(ActionConfig.class).getListenerType();
-        return commandler.getInjector().getInstance(listener).onAction(this, source, message, content);
+        Class<? extends ActionListener> listener = BeanProvider.getContextualReference(ActionConfig.class, false).getListenerType();
+        return BeanProvider.getContextualReference(listener).onAction(this, source, message, content);
     }
 
     public Commandler getCommandler() {

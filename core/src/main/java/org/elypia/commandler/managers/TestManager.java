@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,17 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.*;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.AppContext;
 import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.config.ControllerConfig;
 import org.elypia.commandler.metadata.MetaController;
 import org.elypia.commandler.testing.*;
 import org.slf4j.*;
 
-import javax.inject.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
@@ -31,7 +34,7 @@ import java.util.concurrent.*;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class TestManager {
 
     private static final Logger logger = LoggerFactory.getLogger(TestManager.class);
@@ -48,17 +51,20 @@ public class TestManager {
      */
     private final Map<Class<? extends Controller>, ModuleReport> testReports;
 
+    private final BeanManager beanManager;
+
     private final ScheduledExecutorService executor;
 
     @Inject
-    public TestManager(CdiInjector cdiInjector, AppContext appContext) {
+    public TestManager(final BeanManager beanManager, final AppContext appContext) {
+        this.beanManager = beanManager;
         started = Instant.now();
         testReports = new HashMap<>();
         executor = Executors.newSingleThreadScheduledExecutor();
 
         executor.scheduleAtFixedRate(() -> {
-            for (MetaController data : cdiInjector.getInstance(ControllerConfig.class).getControllers()) {
-                Controller controller = cdiInjector.getInstance(data.getHandlerType());
+            for (MetaController data : BeanProvider.getContextualReference(ControllerConfig.class, false).getControllers()) {
+                Controller controller = BeanProvider.getContextualReference(data.getHandlerType());
 
                 if (controller == null) {
                     logger.debug("Registered handler is not initalised, testing was skipped.");

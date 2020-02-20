@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.Objects;
 public abstract class ParamException extends ActionException {
 
     /** The parameter metadata. */
-    private MetaParam metaParam;
+    private final transient MetaParam metaParam;
 
     public ParamException(ActionEvent<?, ?> action, MetaParam metaParam) {
         super(action);

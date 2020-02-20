@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.elypia.commandler.doc;
 
 import com.google.gson.*;
-import org.elypia.commandler.*;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.config.*;
 import org.elypia.commandler.doc.deserializers.*;
 import org.elypia.commandler.metadata.*;
@@ -44,12 +44,8 @@ public class CommandlerDoc {
 
     private List<MetaController> modules;
 
-    public CommandlerDoc(Commandler commandler) {
-        this(commandler.getInjector());
-    }
-
-    public CommandlerDoc(CdiInjector injector) {
-        this(injector.getInstance(ActivatorConfig.class), injector.getInstance(ControllerConfig.class));
+    public CommandlerDoc() {
+        this(BeanProvider.getContextualReference(ActivatorConfig.class, false), BeanProvider.getContextualReference(ControllerConfig.class, false));
     }
 
     public CommandlerDoc(ActivatorConfig activatorConfig, ControllerConfig controllerConfig) {

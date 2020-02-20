@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.*;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.*;
@@ -26,7 +27,9 @@ import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
 import javax.el.*;
-import javax.inject.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -42,7 +45,7 @@ import java.util.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class AdapterManager {
 
     /**
@@ -51,8 +54,7 @@ public class AdapterManager {
      */
     private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
 
-    /** Used to manage dependency injection when constructions param adapters. */
-    private final CdiInjector injector;
+    private final BeanManager beanManager;
 
     /** The configuration class which contains all metadata for this instance. */
     private final CommandlerConfig commandlerConfig;
@@ -61,12 +63,11 @@ public class AdapterManager {
     private final ExpressionFactory expressionFactory;
 
     /**
-     * @param injector Injector service to inject adapters and dependencies.
      * @param commandlerConfig Main commandler configuration.
      */
     @Inject
-    public AdapterManager(final CdiInjector injector, final CommandlerConfig commandlerConfig) {
-        this.injector = Objects.requireNonNull(injector);
+    public AdapterManager(final BeanManager beanManager, final CommandlerConfig commandlerConfig) {
+        this.beanManager = beanManager;
         this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
         this.expressionFactory = ELManager.getExpressionFactory();
     }
@@ -109,7 +110,7 @@ public class AdapterManager {
                 else if (String[].class.isAssignableFrom(type))
                     param = List.of((String[])value);
                 else if (List.class.isAssignableFrom(type))
-                    param = (List<String>)value; // TODO: Only checking if it's a list, not List<String>
+                    param = (List<String>)value;
                 else if (parameterType.isAssignableFrom(type)) {
                     objects.add(value);
                     continue;
@@ -153,7 +154,7 @@ public class AdapterManager {
      * @return The parsed object as required for the command, or  null
      * if we failed to adapt the input. (Usually user misuse.)
      */
-    protected Object adaptParam(Action action, ActionEvent event, MetaParam param, List<String> items) throws ParamParseException, ListUnsupportedException {
+    protected Object adaptParam(Action action, ActionEvent event, MetaParam param, List<String> items) {
         Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
         Adapter adapter = this.getAdapter(componentType);
@@ -239,6 +240,6 @@ public class AdapterManager {
             throw new AdapterRequiredException("Adapter required for type " + typeRequired + ".");
 
         logger.debug("Using `{}` to parse parameter.", adapter.getAdapterType());
-        return injector.getInstance(adapter.getAdapterType());
+        return BeanProvider.getContextualReference(adapter.getAdapterType());
     }
 }

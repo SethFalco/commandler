@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,16 @@
 
 package org.elypia.commandler.managers;
 
-import org.elypia.commandler.*;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.Request;
 import org.elypia.commandler.api.Dispatcher;
 import org.elypia.commandler.config.DispatcherConfig;
 import org.elypia.commandler.event.ActionEvent;
 import org.slf4j.*;
 
-import javax.inject.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import java.util.*;
 
 /**
@@ -31,35 +34,24 @@ import java.util.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class DispatcherManager {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherManager.class);
 
+    private final BeanManager beanManager;
+
     private List<Dispatcher> dispatchers;
 
     @Inject
-    public DispatcherManager(final DispatcherConfig config, CdiInjector injector) {
-        List<Dispatcher> dispatchers = new ArrayList<>();
+    public DispatcherManager(final BeanManager beanManager, final DispatcherConfig config) {
+        this.beanManager = beanManager;
+        dispatchers = new ArrayList<>();
 
         for (Class<Dispatcher> dispatcher : config.getDispatcherTypes()) {
             logger.debug("Creating instance of {}.", dispatcher);
-            dispatchers.add(injector.getInstance(dispatcher));
+            dispatchers.add(BeanProvider.getContextualReference(dispatcher));
         }
-
-        this.dispatchers = new ArrayList<>();
-        this.dispatchers.addAll(dispatchers);
-    }
-
-    public DispatcherManager(Dispatcher... dispatchers) {
-        this(List.of(dispatchers));
-    }
-
-    public DispatcherManager(Collection<Dispatcher> dispatchers) {
-        this.dispatchers = new ArrayList<>();
-
-        if (dispatchers != null)
-            this.dispatchers.addAll(dispatchers);
     }
 
     public <S, M> ActionEvent<S, M> dispatch(Request<S, M> request) {

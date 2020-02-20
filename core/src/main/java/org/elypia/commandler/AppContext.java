@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.config.ConfigService;
 import org.slf4j.*;
 
+import javax.enterprise.context.ApplicationScoped;
+
 /**
  * The Application Context is the heart of any Commandler application or instance.
  * This contains all objects that ultimately allow the application to run, find
@@ -29,6 +31,7 @@ import org.slf4j.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
+@ApplicationScoped
 public class AppContext {
 
     /** Logging using the SLF4J API. */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,11 @@ import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.AbstractIntegration;
 import org.slf4j.*;
 
-import javax.inject.*;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author seth@elypia.com (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class ConsoleIntegration extends AbstractIntegration<String, String> {
 
     private static final Logger logger = LoggerFactory.getLogger(ConsoleIntegration.class);
@@ -43,10 +46,16 @@ public class ConsoleIntegration extends AbstractIntegration<String, String> {
      */
     @Inject
     public ConsoleIntegration(final Commandler commandler) {
+        logger.debug("Construsted instance of ConsoleIntegration.");
         this.commandler = commandler;
-        Scanner scanner = new Scanner(System.in);
+    }
+
+    @PostConstruct
+    public void post() {
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
 
         Executors.newSingleThreadExecutor().submit(() -> {
+            logger.info("Started listening to events via console.");
             String nextLine;
 
             while ((nextLine = scanner.nextLine()) != null) {
@@ -56,11 +65,11 @@ public class ConsoleIntegration extends AbstractIntegration<String, String> {
                     response = process(nextLine, nextLine, nextLine);
                 } catch (Exception ex) {
                     logger.error("Failed to process Console event.", ex);
-                    throw ex;
+                    continue;
                 }
 
                 if (response != null)
-                    System.out.println(response);
+                    logger.info("Response to command was: {}", response);
                 else
                     logger.info("A message was recieved in console, however it warranted no response.");
             }

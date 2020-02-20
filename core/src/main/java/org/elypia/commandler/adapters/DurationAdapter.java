@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class DurationAdapter implements Adapter<Duration> {
 
     /** The TimeUnits this is compatible with. */
-    private static final TimeUnit[] units = {
+    private static final TimeUnit[] UNITS = {
         TimeUnit.DAYS,
         TimeUnit.HOURS,
         TimeUnit.MINUTES,
@@ -47,7 +47,7 @@ public class DurationAdapter implements Adapter<Duration> {
     /** Java NumberFormatter instance, this has a locale set so we know how to parse it. */
     private final NumberFormat format;
 
-    /** Uses the default {@link TimeUnitAdapter} to get the units after numbers. */
+    /** Uses the default {@link TimeUnitAdapter} to get the UNITS after numbers. */
     private final TimeUnitAdapter timeUnitAdapter;
 
     /**
@@ -59,7 +59,7 @@ public class DurationAdapter implements Adapter<Duration> {
 
     /** Instantiate the DurationAdapter with the default TimeUnitAdapter. */
     public DurationAdapter(NumberFormat format) {
-        this(format, new TimeUnitAdapter(units));
+        this(format, new TimeUnitAdapter(UNITS));
     }
 
     @Inject
@@ -81,7 +81,7 @@ public class DurationAdapter implements Adapter<Duration> {
      */
     @Override
     public Duration adapt(String input, Class<? extends Duration> type, MetaParam data, ActionEvent<?, ?> event) {
-        Map<TimeUnit, Long> units = new HashMap<>();
+        Map<TimeUnit, Long> units = new EnumMap<>(TimeUnit.class);
         ParsePosition position = new ParsePosition(0);
         char[] sequence = input.toCharArray();
 
@@ -131,7 +131,7 @@ public class DurationAdapter implements Adapter<Duration> {
     }
 
     /**
-     * Take the map if timeunits to units and put it together into a
+     * Take the map if timeunits to UNITS and put it together into a
      * Duration object which reflects the total time.
      *
      * @param units Each timeunit mapped against the value of time.

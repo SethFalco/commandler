@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 plugins {
     id "com.jfrog.bintray" version "1.8.4" apply false
-    id "io.spring.dependency-management" version "1.0.8.RELEASE" apply false
+    id "io.spring.dependency-management" version "1.0.9.RELEASE" apply false
 }
 
 def publishedProjects = [
@@ -41,7 +41,7 @@ allprojects() {
         issueUrl = "${repoUrl}/issues"
         website = "https://elypia.org/"
 
-        deltaSpikeVersion = "1.9.2"
+        deltaSpikeVersion = "1.9.3"
     }
 
     repositories {
@@ -71,14 +71,24 @@ configure(publishedProjects) {
         }
     }
 
+    sourceSets {
+        main {
+            output.resourcesDir = output.classesDirs.singleFile
+        }
+
+        test {
+            output.resourcesDir = output.classesDirs.singleFile
+        }
+    }
+
     dependencies {
         // Logging
-        implementation "org.slf4j:slf4j-api:1.7.29"
+        implementation "org.slf4j:slf4j-api:1.7.30"
         testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
 
         // Testing
-        testImplementation "org.junit.jupiter:junit-jupiter:5.5.2"
-        testImplementation "org.mockito:mockito-core:3.2.0"
+        testImplementation "org.junit.jupiter:junit-jupiter:5.6.0"
+        testImplementation "org.mockito:mockito-core:3.2.4"
     }
 
     /** Testing */

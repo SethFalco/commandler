@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,17 @@
 
 package org.elypia.commandler;
 
+import org.apache.deltaspike.cdise.api.*;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.config.*;
 import org.elypia.commandler.event.ActionEvent;
 import org.slf4j.*;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.*;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import java.text.NumberFormat;
 import java.util.Collection;
 
@@ -39,16 +43,16 @@ import java.util.Collection;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@Singleton
+@ApplicationScoped
 public class Commandler {
 
     /** Logging with slf4j. */
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
 
-    private CdiInjector injector;
-
     /** Metadata and configurationa associated with this Commandler instance. */
-    private AppContext appContext;
+    private final AppContext appContext;
+
+    private final BeanManager beanManager;
 
     /**
      * Construct an instance of Commandler, in most cases this will be used
@@ -60,24 +64,24 @@ public class Commandler {
      * can load and validate everything before any attempt to go live to users.
      */
     @Inject
-    public Commandler() {
-        // The #create() method will handle initialization.
+    public Commandler(final AppContext context, final BeanManager beanManager) {
+        this.appContext = context;
+        this.beanManager = beanManager;
+        logger.info("Loaded all configuration and dependencies in {}.", appContext.getTimeSinceStartupFormatted());
     }
 
-    public static Commandler create(Class<?>... packageClasses) {
+    public static Commandler create() {
         logger.debug("Started Commandler, loading all configuration and dependencies.");
-        AppContext appContext = new AppContext();
-        CdiInjector injector = new CdiInjector(appContext.getConfig(), packageClasses);
 
-        AppConfig app = injector.getInstance(AppConfig.class);
+        CdiContainer container = CdiContainerLoader.getCdiContainer();
+        container.boot();
+        container.getContextControl().startContexts();
+        logger.debug("Initialized {} for dependency injection.", CdiContainer.class);
+
+        AppConfig app = BeanProvider.getContextualReference(AppConfig.class, false);
         logger.info("Initialization application with name {}.", app.getApplicationName());
 
-        Commandler commandler = injector.getInstance(Commandler.class);
-        commandler.appContext = appContext;
-        commandler.injector = injector;
-        logger.info("Loaded all configuration and dependencies in {}.", appContext.getTimeSinceStartupFormatted());
-
-        return commandler;
+        return BeanProvider.getContextualReference(Commandler.class, false);
     }
 
     /**
@@ -88,10 +92,10 @@ public class Commandler {
      * bots by whatever interactive means.
      */
     public void run() {
-        IntegrationConfig integrationConfig = injector.getInstance(IntegrationConfig.class);
-        ActionConfig actionConfig = injector.getInstance(ActionConfig.class);
+        IntegrationConfig integrationConfig = BeanProvider.getContextualReference(IntegrationConfig.class, false);
+        ActionConfig actionConfig = BeanProvider.getContextualReference(ActionConfig.class, false);
         Collection<Class<Integration>> integrations = integrationConfig.getIntegrationTypes();
-        injector.getInstance(actionConfig.getListenerType());
+        BeanProvider.getContextualReference(actionConfig.getListenerType());
 
         if (integrations == null || integrations.isEmpty()) {
             logger.warn("Commandler has not instantiated any integrations, it will likely exit following initialization.");
@@ -100,18 +104,14 @@ public class Commandler {
 
         for (Class<Integration> integrationType : integrations) {
             logger.debug("Creating instance of {}.", integrationType);
-            injector.getInstance(integrationType);
+            var temp = BeanProvider.getContextualReference(integrationType);
+            logger.info(temp.getMessageType().toString());
         }
     }
 
     @Produces
     public NumberFormat getNumberFormat() {
         return NumberFormat.getInstance();
-    }
-
-    @Produces
-    public CdiInjector getInjector() {
-        return injector;
     }
 
     public AppContext getAppContext() {

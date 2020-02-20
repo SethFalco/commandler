@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2019 Elypia CIC
+ * Copyright 2019-2020 Elypia CIC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,15 @@ package org.elypia.commandler.config;
 
 import org.apache.deltaspike.core.api.config.*;
 
+import javax.enterprise.context.ApplicationScoped;
+
 /**
  * @author seth@elypia.org (Seth Falco)
  */
+@ApplicationScoped
 @Configuration(prefix = "application.")
-public class AppConfig {
+public interface AppConfig {
 
-    @ConfigProperty(name = "name")
-    private String applicationName;
-
-    public String getApplicationName() {
-        return applicationName;
-    }
+    @ConfigProperty(name = "name", evaluateVariables = false)
+    String getApplicationName();
 }
