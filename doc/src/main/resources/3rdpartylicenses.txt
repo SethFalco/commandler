@@ -103,9 +103,9 @@ ng-commandler
       the copyright owner that is granting the License.
 
       "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
+      other entities that metaCommand, are controlled by, or are under common
+      metaCommand with that entity. For the purposes of this definition,
+      "metaCommand" means (i) the power, direct or indirect, to cause the
       direction or management of such entity, whether by contract or
       otherwise, or (ii) ownership of fifty percent (50%) or more of the
       outstanding shares, or (iii) beneficial ownership of such entity.
@@ -143,7 +143,7 @@ ng-commandler
       the copyright owner. For the purposes of this definition, "submitted"
       means any form of electronic, verbal, or written communication sent
       to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
+      communication on electronic mailing lists, source code metaCommand systems,
       and issue tracking systems that are managed by, or on behalf of, the
       Licensor for the purpose of discussing and improving the Work, but
       excluding communication that is conspicuously marked or otherwise
@@ -276,7 +276,7 @@ ng-commandler
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright 2019 Elypia
+   Copyright 2019 Elypia CIC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -308,9 +308,9 @@ Apache-2.0
     the copyright owner that is granting the License.
 
     "Legal Entity" shall mean the union of the acting entity and all
-    other entities that control, are controlled by, or are under common
-    control with that entity. For the purposes of this definition,
-    "control" means (i) the power, direct or indirect, to cause the
+    other entities that metaCommand, are controlled by, or are under common
+    metaCommand with that entity. For the purposes of this definition,
+    "metaCommand" means (i) the power, direct or indirect, to cause the
     direction or management of such entity, whether by contract or
     otherwise, or (ii) ownership of fifty percent (50%) or more of the
     outstanding shares, or (iii) beneficial ownership of such entity.
@@ -348,7 +348,7 @@ Apache-2.0
     the copyright owner. For the purposes of this definition, "submitted"
     means any form of electronic, verbal, or written communication sent
     to the Licensor or its representatives, including but not limited to
-    communication on electronic mailing lists, source code control systems,
+    communication on electronic mailing lists, source code metaCommand systems,
     and issue tracking systems that are managed by, or on behalf of, the
     Licensor for the purpose of discussing and improving the Work, but
     excluding communication that is conspicuously marked or otherwise
@@ -494,7 +494,7 @@ Apache-2.0
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- 
+
 
 
 zone.js
