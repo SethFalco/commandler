@@ -22,6 +22,7 @@ import org.elypia.commandler.exceptions.misuse.*;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
  *
  * @author seth@elypia.org (Seth Falco)
  */
+@ApplicationScoped
 public class DefaultMisuseHandler implements MisuseHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultMisuseHandler.class);

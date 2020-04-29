@@ -64,9 +64,10 @@ public class Commandler {
      * can load and validate everything before any attempt to go live to users.
      */
     @Inject
-    public Commandler(final AppContext context, final BeanManager beanManager) {
+    public Commandler(final AppContext context, final BeanManager beanManager, AppConfig app) {
         this.appContext = context;
         this.beanManager = beanManager;
+        logger.info("Initialization application with name {}.", app.getApplicationName());
         logger.info("Loaded all configuration and dependencies in {}.", appContext.getTimeSinceStartupFormatted());
     }
 
@@ -77,9 +78,6 @@ public class Commandler {
         container.boot();
         container.getContextControl().startContexts();
         logger.debug("Initialized {} for dependency injection.", CdiContainer.class);
-
-        AppConfig app = BeanProvider.getContextualReference(AppConfig.class, false);
-        logger.info("Initialization application with name {}.", app.getApplicationName());
 
         return BeanProvider.getContextualReference(Commandler.class, false);
     }

@@ -16,23 +16,23 @@
 
 dependencies {
     // TODO: This is temporarily required due to a bug in our configuration.
-    implementation "org.yaml:snakeyaml:1.25"
+    implementation "org.yaml:snakeyaml:1.26"
 
     // Dependency Injection
     api "javax.enterprise:cdi-api:2.0"
-    api "org.jboss.weld.se:weld-se-core:3.1.3.Final"
+    api "org.jboss.weld.se:weld-se-core:3.1.4.Final"
 
     // DeltaSpike
     api "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:${deltaSpikeVersion}"
     api "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:${deltaSpikeVersion}"
     api "org.apache.deltaspike.core:deltaspike-core-api:${deltaSpikeVersion}"
     api "org.apache.deltaspike.core:deltaspike-core-impl:${deltaSpikeVersion}"
-    api "org.jboss:jandex:2.1.2.Final"
+    api "org.jboss:jandex:2.1.3.Final"
 
     // Java EL (Expression Language) for Default Values and Hibernate Validation
     implementation "org.glassfish:jakarta.el:3.0.3"
 
     // Configuration
-    api "org.apache.commons:commons-configuration2:2.6"
+    api "org.apache.commons:commons-configuration2:2.7"
     implementation "commons-beanutils:commons-beanutils:1.9.4"
 }

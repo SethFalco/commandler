@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotations;
+package org.elypia.commandler.annotation;
 
-import org.elypia.commandler.annotation.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

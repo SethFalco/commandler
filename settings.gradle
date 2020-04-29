@@ -27,6 +27,3 @@ include "validation"
 
 /** Extension to dispatch commands from the console. */
 include "console"
-
-/** Configure Commandler though runtime annotatons in the source code. */
-include "annotation"

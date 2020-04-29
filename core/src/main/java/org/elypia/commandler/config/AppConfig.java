@@ -18,12 +18,9 @@ package org.elypia.commandler.config;
 
 import org.apache.deltaspike.core.api.config.*;
 
-import javax.enterprise.context.ApplicationScoped;
-
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
 @Configuration(prefix = "application.")
 public interface AppConfig {
 
