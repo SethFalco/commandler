@@ -27,3 +27,6 @@ include "validation"
 
 /** Extension to dispatch commands from the console. */
 include "console"
+
+/** Extension which enables integration with a dashboard API. */
+include "api"

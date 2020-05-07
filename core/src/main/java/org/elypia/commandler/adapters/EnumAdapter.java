@@ -17,6 +17,7 @@
 package org.elypia.commandler.adapters;
 
 import org.elypia.commandler.Commandler;
+import org.elypia.commandler.annotation.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
@@ -34,6 +35,7 @@ import java.util.Objects;
  * @author seth@elypia.org (Seth Falco)
  */
 @ApplicationScoped
+@ParamAdapter(Enum.class)
 public class EnumAdapter implements Adapter<Enum> {
 
     @Override

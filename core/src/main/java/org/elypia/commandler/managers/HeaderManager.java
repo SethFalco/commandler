@@ -67,6 +67,9 @@ public class HeaderManager {
         for (Class<HeaderBinder> binderType : binders) {
             Map<String, String> h = BeanProvider.getContextualReference(binderType).bind(request);
 
+            if (h == null)
+                continue;
+
             for (Map.Entry<String, String> entry : h.entrySet())
                 request.setHeader(entry.getKey(), entry.getValue());
         }

@@ -17,6 +17,9 @@
 dependencies {
     implementation project(":core")
 
+    // Jakarta Validation
+    api "jakarta.validation:jakarta.validation-api:2.0.2"
+
     // Hibernate Validation
     api "org.hibernate.validator:hibernate-validator:6.1.4.Final"
 

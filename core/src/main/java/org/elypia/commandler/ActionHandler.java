@@ -73,7 +73,7 @@ public class ActionHandler implements ActionListener {
     /**
      * Receieve and handles the event.
      *
-     * @param integration The name of the service that recieved this.
+     * @param integration The name of the service that receive this.
      * @param content The content of the message.
      * @return The response to this command, or null
      * if this wasn't a command at all.

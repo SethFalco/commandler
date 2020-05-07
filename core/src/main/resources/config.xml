@@ -51,7 +51,6 @@
     <!-- Internal configuration, setting defaults for Commandler. -->
     <xml fileName="application-comcord.xml" config-optional="true"/>
     <xml fileName="application-console.xml" config-optional="true"/>
-    <xml fileName="application-validation.xml" config-optional="true"/>
     <xml fileName="application-default.xml" config-optional="true"/>
   </override>
 </configuration>

@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.adapters;
 
+import org.elypia.commandler.annotation.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
@@ -29,6 +30,7 @@ import java.util.*;
  * @author seth@elypia.org (Seth Falco)
  */
 @ApplicationScoped
+@ParamAdapter(Locale.class)
 public class LocaleAdapter implements Adapter<Locale> {
 
     private static final Logger logger = LoggerFactory.getLogger(LocaleAdapter.class);

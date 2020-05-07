@@ -18,8 +18,8 @@ package org.elypia.commandler;
 
 import org.apache.deltaspike.cdise.api.*;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.api.Integration;
-import org.elypia.commandler.config.*;
+import org.elypia.commandler.api.*;
+import org.elypia.commandler.config.IntegrationConfig;
 import org.elypia.commandler.event.ActionEvent;
 import org.slf4j.*;
 
@@ -46,6 +46,7 @@ import java.util.Collection;
 @ApplicationScoped
 public class Commandler {
 
+    // TODO: Redo doc site in React or using a template engine?
     /** Logging with slf4j. */
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
 
@@ -64,10 +65,9 @@ public class Commandler {
      * can load and validate everything before any attempt to go live to users.
      */
     @Inject
-    public Commandler(final AppContext context, final BeanManager beanManager, AppConfig app) {
+    public Commandler(final AppContext context, final BeanManager beanManager) {
         this.appContext = context;
         this.beanManager = beanManager;
-        logger.info("Initialization application with name {}.", app.getApplicationName());
         logger.info("Loaded all configuration and dependencies in {}.", appContext.getTimeSinceStartupFormatted());
     }
 
@@ -84,16 +84,15 @@ public class Commandler {
 
     /**
      * Instantiate all {@link Integration}s and start receiving and
-     * handling {@link ActionEvent}s recieved.
+     * handling {@link ActionEvent}s receive .
      *
      * This actually runs the Commandler instance and should be used to run any chat
      * bots by whatever interactive means.
      */
     public void run() {
         IntegrationConfig integrationConfig = BeanProvider.getContextualReference(IntegrationConfig.class, false);
-        ActionConfig actionConfig = BeanProvider.getContextualReference(ActionConfig.class, false);
         Collection<Class<Integration>> integrations = integrationConfig.getIntegrationTypes();
-        BeanProvider.getContextualReference(actionConfig.getListenerType());
+        var test = BeanProvider.getContextualReference(ActionListener.class);
 
         if (integrations == null || integrations.isEmpty()) {
             logger.warn("Commandler has not instantiated any integrations, it will likely exit following initialization.");

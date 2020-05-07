@@ -16,10 +16,13 @@
 
 package org.elypia.commandler.validation;
 
+import org.apache.deltaspike.core.api.exception.control.*;
+import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.misuse.MisuseException;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.validation.*;
 import java.util.*;
 
@@ -33,28 +36,22 @@ import java.util.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-public class ValidationMisuseHandler implements MisuseHandler {
-
-    @Override
-    public <X extends MisuseException> Object handle(X ex) {
-        if (ex instanceof ViolationException)
-            return onViolation((ViolationException)ex);
-
-        return null;
-    }
+@ApplicationScoped
+@ExceptionHandler
+public class ValidationMisuseHandler {
 
     /**
      * @param ex The exception that occured.
      * @return An error String reporting all violations.
      * @throws NullPointerException if exception is null.
      */
-    private String onViolation(ViolationException ex) {
+    public String onViolation(@Handles ExceptionEvent<ViolationException> ex) {
         Objects.requireNonNull(ex);
 
         List<ConstraintViolation<Controller>> commandViolations = new ArrayList<>();
         List<ConstraintViolation<Controller>> paramViolations = new ArrayList<>();
 
-        for (ConstraintViolation<Controller> violation : ex.getViolations()) {
+        for (ConstraintViolation<Controller> violation : ex.getException().getViolations()) {
             if (violation.getInvalidValue() instanceof ActionEvent)
                 commandViolations.add(violation);
             else
@@ -92,8 +89,8 @@ public class ValidationMisuseHandler implements MisuseHandler {
             format.append(last.getName()).append(": ").append(violation.getMessage());
         }
 
-        String module = ex.getActionEvent().getMetaController().getName();
-        String command = ex.getActionEvent().getMetaCommand().getName();
+        String module = ex.getException().getActionEvent().getMetaController().getName();
+        String command = ex.getException().getActionEvent().getMetaCommand().getName();
 
         return String.format(format.toString(), module, command);
     }

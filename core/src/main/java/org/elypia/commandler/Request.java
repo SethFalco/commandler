@@ -76,8 +76,10 @@ public class Request<S, M> {
      * @throws IllegalStateException if you try to set a key which has already been set.
      */
     public void setHeader(String key, String value) {
-        if (headers.put(key, value) != null)
+        if (headers.containsKey(key))
             throw new IllegalStateException("Headers in an event can't be overridden.");
+
+        headers.put(key, value);
     }
 
     public Map<String, String> getHeaders() {
@@ -87,7 +89,14 @@ public class Request<S, M> {
     @Override
     public String toString() {
         StringJoiner joiner = new StringJoiner(", ");
-        headers.forEach((key, value) -> joiner.add(key + "=" + "\"" + String.join(value, ";") + "\""));
+
+        headers.forEach((key, value) -> {
+            if (value == null)
+                return;
+
+            joiner.add(key + "=" + "\"" + value + "\"");
+        });
+
         return this.getClass() + ":" + joiner.toString();
     }
 }

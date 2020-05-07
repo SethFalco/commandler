@@ -35,7 +35,7 @@ there are ample developers that would be willing to help; if it's a problem with
 the library itself then we'll make sure to get it sorted.
 
 [matrix-community]: https://matrix.to/#/+elypia:matrix.org "Matrix Invite"
-[discord-guild]: https://discordapp.com/invite/hprGMaM "Discord Invite"
+[discord-guild]: https://discord.com/invite/hprGMaM "Discord Invite"
 [bintray-page]: https://bintray.com/elypia/Commandler/core/_latestVersion "Bintray Latest Version"
 [documentation]: https://elypia.gitlab.io/commandler "Commandler Documentation"
 [gitlab]: https://gitlab.com/Elypia/commandler/commits/master "Repository on GitLab"
@@ -45,7 +45,7 @@ the library itself then we'll make sure to get it sorted.
 [elypia]: https://elypia.org/ "Elypia Homepage"
 
 [Matrix]: https://img.shields.io/matrix/elypia-general:matrix.org?logo=matrix "Matrix Shield"
-[Discord]: https://discordapp.com/api/guilds/184657525990359041/widget.png "Discord Shield"
+[Discord]: https://discord.com/api/guilds/184657525990359041/widget.png "Discord Shield"
 [Bintray]: https://api.bintray.com/packages/elypia/Commandler/core/images/download.svg "Bintray Download Shield"
 [Docs]: https://img.shields.io/badge/Docs-Commandler-blue.svg "Commandler Documentation Shield"
 [Build]: https://gitlab.com/Elypia/commandler/badges/master/pipeline.svg "GitLab Build Shield"

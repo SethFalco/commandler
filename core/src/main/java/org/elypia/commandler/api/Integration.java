@@ -38,7 +38,7 @@ public interface Integration<S, M> {
     Class<M> getMessageType();
 
     /**
-     * @param source The event this integration has recieved.
+     * @param source The event this integration has received.
      * @return A unique and {@link Serializable} ID that represents this action.
      * This can also be a generated ID if the integration does not provide
      * unique IDs itself.

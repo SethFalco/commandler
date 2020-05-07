@@ -18,7 +18,6 @@ package org.elypia.commandler.api;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.Commandler;
-import org.elypia.commandler.config.ActionConfig;
 import org.slf4j.*;
 
 import javax.enterprise.inject.spi.BeanManager;
@@ -36,9 +35,8 @@ public abstract class AbstractIntegration<S, M> implements Integration<S, M> {
     protected Commandler commandler;
 
     public M process(S source, M message, String content) {
-        logger.debug("Recieved `{}` from {}.", content, this.getClass());
-        Class<? extends ActionListener> listener = BeanProvider.getContextualReference(ActionConfig.class, false).getListenerType();
-        return BeanProvider.getContextualReference(listener).onAction(this, source, message, content);
+        logger.debug("Receive `{}` from {}.", content, this.getClass());
+        return BeanProvider.getContextualReference(ActionListener.class).onAction(this, source, message, content);
     }
 
     public Commandler getCommandler() {

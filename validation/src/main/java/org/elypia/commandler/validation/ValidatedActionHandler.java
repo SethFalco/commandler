@@ -26,6 +26,7 @@ import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
@@ -36,6 +37,7 @@ import javax.inject.Inject;
  * @author seth@elypia.org (Seth Falco)
  */
 @ApplicationScoped
+@Alternative
 public class ValidatedActionHandler extends ActionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ValidatedActionHandler.class);
@@ -61,7 +63,7 @@ public class ValidatedActionHandler extends ActionHandler {
     /**
      * Receieve and handles the event.
      *
-     * @param integration The name of the service that recieved this.
+     * @param integration The name of the service that received this.
      * @param content The content of the message.
      * @return The response to this command, or null
      * if this wasn't a command at all.

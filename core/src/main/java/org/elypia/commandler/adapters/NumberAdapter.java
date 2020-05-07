@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.adapters;
 
+import org.elypia.commandler.annotation.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
@@ -27,6 +28,7 @@ import java.util.Objects;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
+@ParamAdapter({Long.class, Integer.class, Short.class, Byte.class, Double.class, Float.class})
 public class NumberAdapter implements Adapter<Number> {
 
     private NumberFormat defaultFormat;

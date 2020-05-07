@@ -71,7 +71,7 @@ public class ConsoleIntegration extends AbstractIntegration<String, String> {
                 if (response != null)
                     logger.info("Response to command was: {}", response);
                 else
-                    logger.info("A message was recieved in console, however it warranted no response.");
+                    logger.info("A message was received in console, however it warranted no response.");
             }
         });
     }

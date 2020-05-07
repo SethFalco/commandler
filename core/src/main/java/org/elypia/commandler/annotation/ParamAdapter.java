@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.config;
+package org.elypia.commandler.annotation;
 
-import org.apache.deltaspike.core.api.config.*;
+import java.lang.annotation.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@Configuration(prefix = "application.")
-public interface AppConfig {
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ParamAdapter {
 
-    @ConfigProperty(name = "name", evaluateVariables = false)
-    String getApplicationName();
+    /**
+     * @return The types this is compatible with working with.
+     */
+    Class<?>[] value();
 }

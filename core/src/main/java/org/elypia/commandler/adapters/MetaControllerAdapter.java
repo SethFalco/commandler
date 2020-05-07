@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.adapters;
 
+import org.elypia.commandler.annotation.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.config.ControllerConfig;
 import org.elypia.commandler.event.ActionEvent;
@@ -29,6 +30,7 @@ import java.util.List;
  * @author seth@elypia.org (Seth Falco)
  */
 @ApplicationScoped
+@ParamAdapter(MetaController.class)
 public class MetaControllerAdapter implements Adapter<MetaController> {
 
     private final ControllerConfig controllerConfig;

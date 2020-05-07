@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.adapters;
 
+import org.elypia.commandler.annotation.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  * @author seth@elypia.org (Seth Falco)
  */
 @ApplicationScoped
+@ParamAdapter(TimeUnit.class)
 public class TimeUnitAdapter implements Adapter<TimeUnit> {
 
     private final Collection<TimeUnit> units;

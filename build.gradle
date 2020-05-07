@@ -23,7 +23,8 @@ def publishedProjects = [
     project("core"),
     project("doc"),
     project("validation"),
-    project("console")
+    project("console"),
+    project("api")
 ]
 
 allprojects() {
