@@ -21,7 +21,7 @@ import org.elypia.commandler.event.ActionEvent;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-public class ModuleDisabledException extends ActionException {
+public class ModuleDisabledException extends AbstractActionException {
 
     public ModuleDisabledException(ActionEvent<?, ?> action) {
         super(action);

@@ -16,6 +16,8 @@
 
 package org.elypia.commandler.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -100,5 +102,32 @@ public final class ChatUtils {
      */
     public static String[] splitSpaces(final String body, final int limit) {
         return SPACE_SPLITTER.split(body, limit);
+    }
+
+    /**
+     * @param body The string body to truncate.
+     * @param maxLength The maximum length the result can be.
+     * @return The string itself, or a truncated version of the string.
+     */
+    public static String truncateAndAppend(String body, int maxLength) {
+        return truncateAndAppend(body, maxLength, null);
+    }
+
+    /**
+     * @param body The string body to truncate.
+     * @param maxLength The maximum length the result can be.
+     * @param append What to append to the end of the string if truncated.
+     * @return The string itself, or a truncated version of the string.
+     */
+    public static String truncateAndAppend(String body, int maxLength, String append) {
+        if (append != null)
+            maxLength -= append.length();
+
+        String truncated = StringUtils.truncate(body, maxLength);
+
+        if (append != null && truncated.length() != body.length())
+            truncated += append;
+
+        return truncated;
     }
 }

@@ -24,7 +24,7 @@ import java.util.Objects;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-public abstract class ParamException extends ActionException {
+public abstract class ParamException extends AbstractActionException {
 
     /** The parameter metadata. */
     private final transient MetaParam metaParam;

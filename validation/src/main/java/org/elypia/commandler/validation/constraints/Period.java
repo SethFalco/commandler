@@ -16,9 +16,10 @@
 
 package org.elypia.commandler.validation.constraints;
 
+import org.elypia.commandler.validation.validators.PeriodValidator;
+
 import javax.validation.*;
 import java.lang.annotation.*;
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = Period.Validator.class)
+@Constraint(validatedBy = PeriodValidator.class)
 public @interface Period {
 
     String message() default "{org.elypia.commandler.validation.constraints.Period.message}";
@@ -44,26 +45,4 @@ public @interface Period {
      * a time under a second shouldn't do anything.
      */
     TimeUnit unit() default TimeUnit.SECONDS;
-
-    class Validator implements ConstraintValidator<Period, Duration> {
-
-        private static final TimeUnit SECONDS = TimeUnit.SECONDS;
-
-        private long min;
-        private long max;
-
-        @Override
-        public void initialize(Period constraintAnnotation) {
-            TimeUnit unit = constraintAnnotation.unit();
-
-            min = SECONDS.convert(constraintAnnotation.min(), unit);
-            max = SECONDS.convert(constraintAnnotation.max(), unit);
-        }
-
-        @Override
-        public boolean isValid(Duration value, ConstraintValidatorContext context) {
-            long seconds = value.toSeconds();
-            return (min <= seconds && seconds <= max);
-        }
-    }
 }

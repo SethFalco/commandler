@@ -57,7 +57,7 @@ public class StandardDispatcher implements Dispatcher {
      * The item regex, this matches every item within a list of parameters.
      * This is for list parameters as a single parameter can contain multiple items.
      */
-    private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.+?)(?<!\\\\)\"|(?<word>[^\\s]+(?<!,))");
+    private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.*?)(?<!\\\\)\"|(?<word>[^\\s]+(?<!,))");
 
     /** The main {@link Commandler} configuration; this contains all metadata on commands. */
     private final ConfigService configService;

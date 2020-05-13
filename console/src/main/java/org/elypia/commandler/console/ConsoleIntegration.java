@@ -17,7 +17,7 @@
 package org.elypia.commandler.console;
 
 import org.elypia.commandler.Commandler;
-import org.elypia.commandler.api.AbstractIntegration;
+import org.elypia.commandler.api.*;
 import org.slf4j.*;
 
 import javax.annotation.PostConstruct;
@@ -34,20 +34,26 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author seth@elypia.com (Seth Falco)
  */
+// TODO: do we want a boot project that comes with all dependencies and such?
 @ApplicationScoped
-public class ConsoleIntegration extends AbstractIntegration<String, String> {
+public class ConsoleIntegration implements Integration<String, String> {
 
     private static final Logger logger = LoggerFactory.getLogger(ConsoleIntegration.class);
 
     private static final AtomicInteger i = new AtomicInteger();
 
+    private final Commandler commandler;
+
+    private final ActionListener listener;
+
     /**
      * Creates a scanner and prompts for input on a new thread.
      */
     @Inject
-    public ConsoleIntegration(final Commandler commandler) {
+    public ConsoleIntegration(final Commandler commandler, ActionListener listener) {
         logger.debug("Construsted instance of ConsoleIntegration.");
         this.commandler = commandler;
+        this.listener = listener;
     }
 
     @PostConstruct
@@ -62,7 +68,8 @@ public class ConsoleIntegration extends AbstractIntegration<String, String> {
                 String response;
 
                 try {
-                    response = process(nextLine, nextLine, nextLine);
+                    logger.debug("Receive `{}` from {}.", nextLine, this.getClass());
+                    response = listener.onAction(this, nextLine, nextLine, nextLine);
                 } catch (Exception ex) {
                     logger.error("Failed to process Console event.", ex);
                     continue;

@@ -16,7 +16,8 @@
 
 package org.elypia.commandler;
 
-import org.elypia.commandler.api.MisuseHandler;
+import org.apache.deltaspike.core.api.exception.control.*;
+import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.misuse.*;
 import org.elypia.commandler.metadata.*;
@@ -27,43 +28,25 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * A default implementation of {@link MisuseHandler}.
- * You can use this to get started quickly and add more on top.
+ * The default handling for certain {@link AbstractMisuseException}
+ * that occur during runtime.
  *
  * It's recommend when configuring your own exceptions
+ * to derive from this class as a base.
  *
  * @author seth@elypia.org (Seth Falco)
  */
 @ApplicationScoped
-public class DefaultMisuseHandler implements MisuseHandler {
+@ExceptionHandler
+public class DefaultMisuseHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultMisuseHandler.class);
-
-    @Override
-    public <X extends MisuseException> Object handle(X ex) {
-        if (ex instanceof OnlyPrefixException)
-            return onOnlyPrefix((OnlyPrefixException)ex);
-        else if (ex instanceof ModuleNotFoundException)
-            return onModuleNotFound((ModuleNotFoundException)ex);
-        else if (ex instanceof ParamCountMismatchException)
-            return onParamMismatch((ParamCountMismatchException)ex);
-        else if (ex instanceof NoDefaultCommandException)
-            return onNoDefaultCommand((NoDefaultCommandException)ex);
-        else if (ex instanceof ParamParseException)
-            return onParamParse((ParamParseException)ex);
-        else if (ex instanceof ListUnsupportedException)
-            return onListUnsupported((ListUnsupportedException)ex);
-        else if (ex instanceof ModuleDisabledException)
-            return onDisabled((ModuleDisabledException)ex);
-        else
-            return onMisuseException(ex);
-    }
 
     /**
      * @param ex The exception that occured.
      * @return Always returns null.
      */
-    private String onOnlyPrefix(OnlyPrefixException ex) {
+    public String onOnlyPrefix(@Handles ExceptionEvent<OnlyPrefixException> ex) {
         return null;
     }
 
@@ -71,7 +54,7 @@ public class DefaultMisuseHandler implements MisuseHandler {
      * @param ex The exception that occured.
      * @return Always returns null.
      */
-    private String onModuleNotFound(ModuleNotFoundException ex) {
+    public String onModuleNotFound(@Handles ExceptionEvent<ModuleNotFoundException> ex) {
         return null;
     }
 
@@ -79,9 +62,9 @@ public class DefaultMisuseHandler implements MisuseHandler {
      * @param ex The exception that occured.
      * @return Don't send any messages.
      */
-    private String onParamMismatch(ParamCountMismatchException ex) {
+    public String onParamMismatch(@Handles ExceptionEvent<ParamCountMismatchException> ex) {
         Objects.requireNonNull(ex);
-        ActionEvent<?, ?> event = ex.getActionEvent();
+        ActionEvent<?, ?> event = ex.getException().getActionEvent();
         MetaCommand metaCommand = event.getMetaCommand();
         String format =
             "Command failed: you provided the wrong amount of parameters.\n" +
@@ -99,7 +82,7 @@ public class DefaultMisuseHandler implements MisuseHandler {
      * @param ex The exception that occured.
      * @return Don't send any messages.
      */
-    private String onNoDefaultCommand(NoDefaultCommandException ex) {
+    public String onNoDefaultCommand(@Handles ExceptionEvent<NoDefaultCommandException> ex) {
         Objects.requireNonNull(ex);
         String format =
             "Command failed; this module has no default command.\n" +
@@ -110,7 +93,7 @@ public class DefaultMisuseHandler implements MisuseHandler {
             "\n" +
             "See the help command for more information.";
 
-        MetaController metaController = ex.getModule();
+        MetaController metaController = ex.getException().getModule();
         String commands = metaController.getPublicCommands().stream()
             .map(MetaCommand::toString)
             .collect(Collectors.joining("\n"));
@@ -121,7 +104,7 @@ public class DefaultMisuseHandler implements MisuseHandler {
      * @param ex The exception that occured.
      * @return Don't send any messages.
      */
-    private String onParamParse(ParamParseException ex) {
+    public String onParamParse(@Handles ExceptionEvent<ParamParseException> ex) {
         Objects.requireNonNull(ex);
         String format =
             "Command failed; I couldn't interpret '%s', as the parameter '%s'.\n" +
@@ -130,13 +113,13 @@ public class DefaultMisuseHandler implements MisuseHandler {
             "Required: %s\n" +
             "Provided: %s";
 
-        ActionEvent input = ex.getActionEvent();
-        MetaParam metaParam = ex.getMetaParam();
+        ActionEvent input = ex.getException().getActionEvent();
+        MetaParam metaParam = ex.getException().getMetaParam();
         MetaCommand metaCommand = input.getMetaCommand();
 
         return String.format(
             format,
-            ex.getItem(),
+            ex.getException().getItem(),
             metaParam.getName(),
             input.getMetaController().getName(),
             metaCommand.getName(),
@@ -149,7 +132,7 @@ public class DefaultMisuseHandler implements MisuseHandler {
      * @param ex The exception that occured.
      * @return Don't send any messages.
      */
-    private String onListUnsupported(ListUnsupportedException ex) {
+    public String onListUnsupported(@Handles ExceptionEvent<ListUnsupportedException> ex) {
         Objects.requireNonNull(ex);
         String format =
             "Command failed; the parameter '%s' can't be a list.\n" +
@@ -158,8 +141,8 @@ public class DefaultMisuseHandler implements MisuseHandler {
             "Required: %s\n" +
             "Provided: %s";
 
-        ActionEvent input = ex.getActionEvent();
-        String param = ex.getMetaParam().getName();
+        ActionEvent input = ex.getException().getActionEvent();
+        String param = ex.getException().getMetaParam().getName();
         String module = input.getMetaController().getName();
         MetaCommand metaCommand = input.getMetaCommand();
         String commandName = metaCommand.getName();
@@ -172,19 +155,19 @@ public class DefaultMisuseHandler implements MisuseHandler {
      * @param ex The exception that occured.
      * @return Don't send any messages.
      */
-    private String onDisabled(ModuleDisabledException ex) {
+    public String onDisabled(@Handles ExceptionEvent<ModuleDisabledException> ex) {
         String format =
             "Command failed; this module is currently disabled due to live issues.\n" +
             "Module: %s";
 
-        return String.format(format, ex.getActionEvent().getMetaController().getName());
+        return String.format(format, ex.getException().getActionEvent().getMetaController().getName());
     }
 
     /**
      * @param ex The exception that occured.
      * @return Don't send any messages.
      */
-    private <X extends MisuseException> String onMisuseException(X ex) {
+    public <X extends AbstractMisuseException> String onMisuseException(@Handles ExceptionEvent<X> ex) {
         String text = "An unknown error occured.";
         logger.error(text, ex);
         return text;

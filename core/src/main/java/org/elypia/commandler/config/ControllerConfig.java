@@ -19,13 +19,14 @@ package org.elypia.commandler.config;
 import org.apache.commons.configuration2.ImmutableHierarchicalConfiguration;
 import org.elypia.commandler.*;
 import org.elypia.commandler.api.Controller;
+import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.*;
 import org.elypia.commandler.utils.ReflectionUtils;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.*;
 
 /**
@@ -92,14 +93,26 @@ public class ControllerConfig {
     }
 
     private List<MetaParam> convertParams(Method method, ImmutableHierarchicalConfiguration command) {
-        List<ImmutableHierarchicalConfiguration> paramsConfig = command.immutableConfigurationsAt("param");
+        Iterator<ImmutableHierarchicalConfiguration> paramsConfig = command.immutableConfigurationsAt("param").iterator();
         List<MetaParam> params = new ArrayList<>();
+        Class<?>[] types = method.getParameterTypes();
+        int index = 0;
 
-        for (ImmutableHierarchicalConfiguration param : paramsConfig) {
-            ComponentConfig component = convertComponent(param);
-            int index = param.getInt("index", params.size());
-            String defaultValue = param.getString("defaultValue");
-            params.add(new MetaParam(index, method.getParameters()[index], component.name, component.description, defaultValue, component.properties));
+        for (Class<?> type : types) {
+            if (!ActionEvent.class.isAssignableFrom(type)) {
+                if (!paramsConfig.hasNext()) {
+                    logger.warn("Missing param metadata for a command, generating metadata.");
+                    Parameter parameter = method.getParameters()[index];
+                    params.add(new MetaParam(index, method.getParameters()[index], parameter.getName(), null, null, null));
+                }
+
+                ImmutableHierarchicalConfiguration param = paramsConfig.next();
+                ComponentConfig component = convertComponent(param);
+                String defaultValue = param.getString("defaultValue");
+                params.add(new MetaParam(index, method.getParameters()[index], component.name, component.description, defaultValue, component.properties));
+            }
+
+            index++;
         }
 
         return params;

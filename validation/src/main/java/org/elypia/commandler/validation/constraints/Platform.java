@@ -18,7 +18,7 @@ package org.elypia.commandler.validation.constraints;
 
 import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.Integration;
-import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.validation.validators.PlatformValidator;
 
 import javax.validation.*;
 import java.lang.annotation.*;
@@ -31,7 +31,7 @@ import java.lang.annotation.*;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = Platform.Validator.class)
+@Constraint(validatedBy = PlatformValidator.class)
 public @interface Platform {
 
     String message() default "{org.elypia.commandler.validation.constraints.Platform.message}";
@@ -39,26 +39,4 @@ public @interface Platform {
     Class<? extends Payload>[] payload() default {};
 
     Class<? extends Integration>[] value();
-
-    class Validator implements ConstraintValidator<Platform, ActionEvent<?, ?>> {
-
-        private Class<? extends Integration>[] controllerTypes;
-
-        @Override
-        public void initialize(Platform constraintAnnotation) {
-            this.controllerTypes = constraintAnnotation.value();
-        }
-
-        @Override
-        public boolean isValid(ActionEvent<?, ?> event, ConstraintValidatorContext context) {
-            Integration controller = event.getRequest().getIntegration();
-
-            for (Class<? extends Integration> type : controllerTypes) {
-                if (type == controller.getClass())
-                    return true;
-            }
-
-            return false;
-        }
-    }
 }

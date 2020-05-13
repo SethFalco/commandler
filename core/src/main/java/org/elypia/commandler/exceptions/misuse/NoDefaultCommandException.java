@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-public class NoDefaultCommandException extends MisuseException {
+public class NoDefaultCommandException extends AbstractMisuseException {
 
     private transient final MetaController module;
 

@@ -21,7 +21,7 @@ import org.elypia.commandler.event.ActionEvent;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-public class ParamCountMismatchException extends ActionException {
+public class ParamCountMismatchException extends AbstractActionException {
 
     public ParamCountMismatchException(ActionEvent<?, ?> event) {
         super(event);

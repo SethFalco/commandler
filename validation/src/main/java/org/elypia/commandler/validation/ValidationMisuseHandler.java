@@ -18,21 +18,17 @@ package org.elypia.commandler.validation;
 
 import org.apache.deltaspike.core.api.exception.control.*;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.elypia.commandler.api.*;
+import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.exceptions.misuse.MisuseException;
+import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.validation.*;
 import java.util.*;
 
 /**
- * An implementation of the {@link MisuseHandler}
- * that covers the {@link ViolationException}, which is
- * concrete implemntation of the {@link MisuseException}.
- *
- * This checks and addresses validation violations that
- * may occur in commands from the validation API.
+ * Handling the {@link ViolationException}, this can be overridden
+ * by expressing an alternative of this class.
  *
  * @author seth@elypia.org (Seth Falco)
  */
@@ -40,12 +36,14 @@ import java.util.*;
 @ExceptionHandler
 public class ValidationMisuseHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(ValidationMisuseHandler.class);
+
     /**
      * @param ex The exception that occured.
      * @return An error String reporting all violations.
      * @throws NullPointerException if exception is null.
      */
-    public String onViolation(@Handles ExceptionEvent<ViolationException> ex) {
+    public void onViolation(@Handles ExceptionEvent<ViolationException> ex) {
         Objects.requireNonNull(ex);
 
         List<ConstraintViolation<Controller>> commandViolations = new ArrayList<>();
@@ -91,7 +89,8 @@ public class ValidationMisuseHandler {
 
         String module = ex.getException().getActionEvent().getMetaController().getName();
         String command = ex.getException().getActionEvent().getMetaCommand().getName();
+        String response = String.format(format.toString(), module, command);
 
-        return String.format(format.toString(), module, command);
+        logger.debug(response);
     }
 }

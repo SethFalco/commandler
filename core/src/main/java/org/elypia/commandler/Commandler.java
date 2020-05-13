@@ -18,17 +18,14 @@ package org.elypia.commandler;
 
 import org.apache.deltaspike.cdise.api.*;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.config.IntegrationConfig;
+import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.event.ActionEvent;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.text.NumberFormat;
-import java.util.Collection;
 
 /**
  * The root {@link Commandler} class, this ultimately enables your
@@ -46,14 +43,11 @@ import java.util.Collection;
 @ApplicationScoped
 public class Commandler {
 
-    // TODO: Redo doc site in React or using a template engine?
     /** Logging with slf4j. */
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
 
     /** Metadata and configurationa associated with this Commandler instance. */
     private final AppContext appContext;
-
-    private final BeanManager beanManager;
 
     /**
      * Construct an instance of Commandler, in most cases this will be used
@@ -65,10 +59,10 @@ public class Commandler {
      * can load and validate everything before any attempt to go live to users.
      */
     @Inject
-    public Commandler(final AppContext context, final BeanManager beanManager) {
+    public Commandler(final AppContext context, Integration<?, ?> type) {
         this.appContext = context;
-        this.beanManager = beanManager;
         logger.info("Loaded all configuration and dependencies in {}.", appContext.getTimeSinceStartupFormatted());
+        type.toString();
     }
 
     public static Commandler create() {
@@ -79,10 +73,12 @@ public class Commandler {
         container.getContextControl().startContexts();
         logger.debug("Initialized {} for dependency injection.", CdiContainer.class);
 
-        return BeanProvider.getContextualReference(Commandler.class, false);
+        return BeanProvider.getContextualReference(Commandler.class);
     }
 
     /**
+     * TODO: Allow multiple integrations to run at a time?
+     *
      * Instantiate all {@link Integration}s and start receiving and
      * handling {@link ActionEvent}s receive .
      *
@@ -90,20 +86,12 @@ public class Commandler {
      * bots by whatever interactive means.
      */
     public void run() {
-        IntegrationConfig integrationConfig = BeanProvider.getContextualReference(IntegrationConfig.class, false);
-        Collection<Class<Integration>> integrations = integrationConfig.getIntegrationTypes();
-        var test = BeanProvider.getContextualReference(ActionListener.class);
-
-        if (integrations == null || integrations.isEmpty()) {
-            logger.warn("Commandler has not instantiated any integrations, it will likely exit following initialization.");
-            return;
-        }
-
-        for (Class<Integration> integrationType : integrations) {
-            logger.debug("Creating instance of {}.", integrationType);
-            var temp = BeanProvider.getContextualReference(integrationType);
-            logger.info(temp.getMessageType().toString());
-        }
+//        Class<? extends Integration<?, ?>> type;
+//
+//        Integration<?, ?> integration = BeanProvider.getContextualReference(type.getClass());
+//
+//        if (integration.getMessageType() == null)
+//            logger.warn("Integration has been instantiated but no message types have been defined, unable to perform commands.");
     }
 
     @Produces

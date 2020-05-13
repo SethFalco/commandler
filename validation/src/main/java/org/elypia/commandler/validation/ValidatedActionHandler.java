@@ -16,15 +16,17 @@
 
 package org.elypia.commandler.validation;
 
+import org.apache.deltaspike.core.api.exception.control.event.ExceptionToCatchEvent;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.exceptions.misuse.MisuseException;
+import org.elypia.commandler.exceptions.misuse.AbstractMisuseException;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.BeanManager;
@@ -36,6 +38,7 @@ import javax.inject.Inject;
  *
  * @author seth@elypia.org (Seth Falco)
  */
+@Priority(Integer.MAX_VALUE)
 @ApplicationScoped
 @Alternative
 public class ValidatedActionHandler extends ActionHandler {
@@ -51,12 +54,11 @@ public class ValidatedActionHandler extends ActionHandler {
         HeaderManager headerManager,
         AdapterManager adapterService,
         //        TestManager testService,
-        MisuseManager misuseManager,
         MessengerManager messengerService,
         HibernateValidationManager validationService
     ) {
 //        super(dispatcherManager, cdiInjector, adapterService, testService, exceptionService, messengerService);
-        super(beanManager, dispatcherManager, headerManager, adapterService, misuseManager, messengerService);
+        super(beanManager, dispatcherManager, headerManager, adapterService, messengerService);
         this.validationService = validationService;
     }
 
@@ -93,12 +95,14 @@ public class ValidatedActionHandler extends ActionHandler {
 
             MetaCommand metaCommand = event.getMetaCommand();
             response = metaCommand.getMethod().invoke(controller, params);
-        } catch (MisuseException ex) {
+        } catch (AbstractMisuseException ex) {
             logger.info("A misuse exception occured when handling a message; command panicked.");
-            response = misuseManager.handle(ex);
+            beanManager.getEvent().fire(new ExceptionToCatchEvent(ex));
+            return null;
         } catch (Exception ex) {
             logger.error("An exception occured when handling a message.", ex);
-            response = "Something has gone wrong!";
+            beanManager.getEvent().fire(new ExceptionToCatchEvent(ex));
+            return null;
         }
 
         if (response == null)

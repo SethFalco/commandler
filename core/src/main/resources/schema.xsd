@@ -35,10 +35,7 @@
         <xs:element name="commandler">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="action-handler" type="pojo" minOccurs="0" maxOccurs="1"/>
               <xs:element name="dispatcher" type="pojo" minOccurs="0" maxOccurs="1"/>
-              <xs:element name="integration" type="pojo" minOccurs="0" maxOccurs="unbounded"/>
-              <xs:element name="misuse" type="pojo" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="controller" type="controller" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="adapter" type="adapter" minOccurs="0" maxOccurs="unbounded"/>
               <xs:element name="messenger" type="messenger" minOccurs="0" maxOccurs="unbounded"/>
@@ -111,7 +108,6 @@
         <xs:sequence>
           <xs:element name="defaultValue" type="xs:string" minOccurs="0"/>
         </xs:sequence>
-        <xs:attribute name="index" type="xs:int"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

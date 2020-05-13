@@ -18,7 +18,7 @@ package org.elypia.commandler.validation;
 
 import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.exceptions.misuse.ActionException;
+import org.elypia.commandler.exceptions.misuse.AbstractActionException;
 
 import javax.validation.ConstraintViolation;
 import java.util.*;
@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-public class ViolationException extends ActionException {
+public class ViolationException extends AbstractActionException {
 
     private final transient Set<ConstraintViolation<Controller>> violations;
 

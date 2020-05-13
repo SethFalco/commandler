@@ -16,6 +16,7 @@
 
 package org.elypia.commandler;
 
+import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
 import org.elypia.commandler.exceptions.misuse.NoDefaultCommandException;
 import org.elypia.commandler.metadata.*;
 import org.junit.jupiter.api.*;
@@ -53,7 +54,11 @@ class DefaultMisuseHandlerTest {
             "Define | [words] ?random\n" +
             "\n" +
             "See the help command for more information.";
-        String actual = (String)handler.handle(ex);
+
+        ExceptionEvent<NoDefaultCommandException> event = mock(ExceptionEvent.class);
+        when(event.getException()).thenReturn(ex);
+
+        String actual = handler.onNoDefaultCommand(event);
 
         assertEquals(expected, actual);
     }

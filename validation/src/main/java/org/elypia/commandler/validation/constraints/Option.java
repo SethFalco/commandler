@@ -16,6 +16,8 @@
 
 package org.elypia.commandler.validation.constraints;
 
+import org.elypia.commandler.validation.validators.OptionValidator;
+
 import javax.validation.*;
 import java.lang.annotation.*;
 
@@ -25,7 +27,7 @@ import java.lang.annotation.*;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = Option.Validator.class)
+@Constraint(validatedBy = OptionValidator.class)
 public @interface Option {
 
     String message() default "{org.elypia.commandler.validation.constraints.Option.message}";
@@ -36,24 +38,4 @@ public @interface Option {
      * The available value for this console.
      */
     String[] value();
-
-    class Validator implements ConstraintValidator<Option, String> {
-
-        private String[] value;
-
-        @Override
-        public void initialize(Option constraintAnnotation) {
-            value = constraintAnnotation.value();
-        }
-
-        @Override
-        public boolean isValid(String value, ConstraintValidatorContext context) {
-            for (String option : this.value) {
-                if (option.equals(value))
-                    return true;
-            }
-
-            return false;
-        }
-    }
 }

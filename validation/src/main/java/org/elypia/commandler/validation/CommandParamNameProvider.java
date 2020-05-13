@@ -88,7 +88,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
 
         Parameter[] parameters = command.getMethod().getParameters();
         List<String> names = Stream.of(parameters).map((p) -> "").collect(Collectors.toList());
-        List<MetaParam> metaParams =  command.getMetaParams();;
+        List<MetaParam> metaParams =  command.getMetaParams();
 
         for (MetaParam metaParam : metaParams)
             names.set(metaParam.getIndex(), metaParam.getName());

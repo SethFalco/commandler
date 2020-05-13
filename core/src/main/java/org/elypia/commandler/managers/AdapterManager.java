@@ -80,9 +80,9 @@ public class AdapterManager {
      * @return An array of all parameters adapted as required for the given method.
      */
     public Object[] adaptEvent(ActionEvent event) {
-        Action input = event.getAction();
+        Action action = event.getAction();
         List<MetaParam> metaParams = event.getMetaCommand().getMetaParams();
-        List<List<String>> inputs = input.getParams();
+        List<List<String>> inputs = action.getParams();
         List<Object> objects = new ArrayList<>();
 
         for (int i = 0; i < metaParams.size(); i++) {
@@ -94,10 +94,10 @@ public class AdapterManager {
             else {
                 ELContext context = new StandardELContext(expressionFactory);
                 VariableMapper mapper = context.getVariableMapper();
-                mapper.setVariable("e", expressionFactory.createValueExpression(event, ActionEvent.class));
-                mapper.setVariable("a", expressionFactory.createValueExpression(event.getAction(), Action.class));
-                mapper.setVariable("c", expressionFactory.createValueExpression(event.getRequest().getIntegration(), Integration.class));
-                mapper.setVariable("s", expressionFactory.createValueExpression(event.getRequest().getSource(), event.getRequest().getClass()));
+                mapper.setVariable("event", expressionFactory.createValueExpression(event, ActionEvent.class));
+                mapper.setVariable("action", expressionFactory.createValueExpression(action, Action.class));
+                mapper.setVariable("integration", expressionFactory.createValueExpression(event.getRequest().getIntegration(), Integration.class));
+                mapper.setVariable("source", expressionFactory.createValueExpression(event.getRequest().getSource(), event.getRequest().getSource().getClass()));
 
                 String defaultValue = metaParam.getDefaultValue();
                 ValueExpression ve = expressionFactory.createValueExpression(context, defaultValue, Object.class);
@@ -117,10 +117,9 @@ public class AdapterManager {
                 }
                 else
                     throw new RuntimeException("defaultValue must be assignable to String, String[], List<String> or " + parameterType + ".");
-
             }
 
-            Object object = adaptParam(input, event, metaParam, param);
+            Object object = adaptParam(action, event, metaParam, param);
             objects.add(object);
         }
 
@@ -139,6 +138,8 @@ public class AdapterManager {
     }
 
     /**
+     * TODO: Add support for other iterable types like collection, list, or streams
+     *
      * <p>This actually converts an individual param into the type
      * required for a command. If the type required is an array,
      * we convert each item in the array using the

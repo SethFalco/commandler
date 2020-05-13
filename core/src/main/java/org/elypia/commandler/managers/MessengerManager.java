@@ -61,7 +61,7 @@ public class MessengerManager {
     public <M> M provide(ActionEvent<?, M> event, Object object, Integration<?, M> integration) {
         Objects.requireNonNull(integration);
         Objects.requireNonNull(object);
-        Messenger messenger = getProvider(integration, object.getClass());
+        Messenger messenger = getMessenger(integration, object.getClass());
 
         Object content = messenger.provide(event, object);
 
@@ -87,7 +87,7 @@ public class MessengerManager {
      * @throws IllegalArgumentException If no {@link Messenger} is
      * registered for this data-type.
      */
-    public <S, M, O> Messenger<O, M> getProvider(Integration<S, M> controller, Class<O> typeRequired) {
+    public <S, M, O> Messenger<O, M> getMessenger(Integration<S, M> controller, Class<O> typeRequired) {
         MetaMessenger provider = null;
 
         for (MetaMessenger metaMessenger : commandlerConfig.getMessengers()) {

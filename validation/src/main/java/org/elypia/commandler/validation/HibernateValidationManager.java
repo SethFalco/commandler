@@ -55,15 +55,15 @@ public class HibernateValidationManager {
 
         ValidatorFactory factory = Validation.byDefaultProvider()
             .configure()
-            .messageInterpolator(new ResourceBundleMessageInterpolator(locator))
             .constraintValidatorFactory(new CDIAwareConstraintValidatorFactory())
+            .messageInterpolator(new ResourceBundleMessageInterpolator(locator))
             .parameterNameProvider(new CommandParamNameProvider(controllerConfig))
             .buildValidatorFactory();
 
         exValidator = factory.getValidator().forExecutables();
     }
 
-    public <S> void validate(ActionEvent<S, ?> event, Controller controller, Object[] parameters) {
+    public void validate(ActionEvent<?, ?> event, Controller controller, Object[] parameters) {
         Method method = event.getMetaCommand().getMethod();
         logger.debug("Validating `{}` with {} parameters.", event.getMetaCommand(), parameters.length);
         Set<ConstraintViolation<Controller>> violations = exValidator.validateParameters(controller, method, parameters);
