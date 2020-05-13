@@ -58,7 +58,8 @@ public class Commandler {
      * actually connecting to any APIs or processing commands, this will ensure Commandler
      * can load and validate everything before any attempt to go live to users.
      *
-     * @param
+     * @param context The application context.
+     * @param type The type of platform this instance was created with.
      */
     @Inject
     public Commandler(final AppContext context, Integration<?, ?> type) {

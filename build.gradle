@@ -33,7 +33,7 @@ allprojects() {
 
     group = "org.elypia.commandler"
     version = "4.0.0"
-    description = "Commandler is a abstract command handling framework for dispatching events."
+    description = "Commandler is an abstract command handling framework for dispatching events."
 
     ext {
         repoUrl = "https://gitlab.com/Elypia/commandler"
@@ -131,7 +131,7 @@ configure(publishedProjects) {
         javadoc {
             options {
                 links += [
-                    "https://docs.oracle.com/en/java/javase/12/docs/api/"
+                    "https://docs.oracle.com/en/java/javase/11/docs/api/"
                 ]
             }
         }

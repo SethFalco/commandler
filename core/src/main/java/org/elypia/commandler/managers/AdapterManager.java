@@ -28,7 +28,6 @@ import org.slf4j.*;
 
 import javax.el.*;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -54,8 +53,6 @@ public class AdapterManager {
      */
     private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
 
-    private final BeanManager beanManager;
-
     /** The configuration class which contains all metadata for this instance. */
     private final CommandlerConfig commandlerConfig;
 
@@ -66,8 +63,7 @@ public class AdapterManager {
      * @param commandlerConfig Main commandler configuration.
      */
     @Inject
-    public AdapterManager(final BeanManager beanManager, final CommandlerConfig commandlerConfig) {
-        this.beanManager = beanManager;
+    public AdapterManager(final CommandlerConfig commandlerConfig) {
         this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
         this.expressionFactory = ELManager.getExpressionFactory();
     }
@@ -148,6 +144,7 @@ public class AdapterManager {
      * <p>This should return null if a parameter fails to adapt or list
      * parameter is provided where lists are not supported.</p>
      *
+     * @param action The user action that required this parsing.
      * @param event The message event to take parameters from.
      * @param param The static parameter data associated with the parameter.
      * @param items The input provided by the user, this will only contain

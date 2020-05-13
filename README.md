@@ -46,7 +46,7 @@ the library itself then we'll make sure to get it sorted.
 
 [Matrix]: https://img.shields.io/matrix/elypia-general:matrix.org?logo=matrix "Matrix Shield"
 [Discord]: https://discord.com/api/guilds/184657525990359041/widget.png "Discord Shield"
-[Bintray]: https://api.bintray.com/packages/elypia/Commandler/core/images/download.svg "Bintray Download Shield"
+[Bintray]: https://img.shields.io/bintray/v/elypia/commandler/core "Bintray Download Shield"
 [Docs]: https://img.shields.io/badge/Docs-Commandler-blue.svg "Commandler Documentation Shield"
 [Build]: https://gitlab.com/Elypia/commandler/badges/master/pipeline.svg "GitLab Build Shield"
 [Coverage]: https://gitlab.com/Elypia/commandler/badges/master/coverage.svg "GitLab Coverage Shield"

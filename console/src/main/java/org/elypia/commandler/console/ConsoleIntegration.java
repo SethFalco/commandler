@@ -16,7 +16,6 @@
 
 package org.elypia.commandler.console;
 
-import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.*;
 import org.slf4j.*;
 
@@ -34,7 +33,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author seth@elypia.com (Seth Falco)
  */
-// TODO: do we want a boot project that comes with all dependencies and such?
 @ApplicationScoped
 public class ConsoleIntegration implements Integration<String, String> {
 
@@ -42,17 +40,14 @@ public class ConsoleIntegration implements Integration<String, String> {
 
     private static final AtomicInteger i = new AtomicInteger();
 
-    private final Commandler commandler;
-
     private final ActionListener listener;
 
     /**
      * Creates a scanner and prompts for input on a new thread.
      */
     @Inject
-    public ConsoleIntegration(final Commandler commandler, ActionListener listener) {
+    public ConsoleIntegration(ActionListener listener) {
         logger.debug("Construsted instance of ConsoleIntegration.");
-        this.commandler = commandler;
         this.listener = listener;
     }
 

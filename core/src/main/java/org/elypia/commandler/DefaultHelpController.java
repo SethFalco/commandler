@@ -85,6 +85,7 @@ public class DefaultHelpController implements Controller {
      * this {@link Controller} to display helpful information
      * to the user.
      *
+     * @param controller The {@link MetaController} to get commands for.
      * @return The message to send to the end user.
      */
     public String getCommands(MetaController controller) {
