@@ -59,7 +59,11 @@ public class DurationAdapter implements Adapter<Duration> {
         this(NumberFormat.getInstance());
     }
 
-    /** Instantiate the DurationAdapter with the default TimeUnitAdapter. */
+    /**
+     * Instantiate the DurationAdapter with the default TimeUnitAdapter.
+     *
+     * @param format The number formatter to use when formatting numbers.
+     */
     public DurationAdapter(NumberFormat format) {
         this(format, new TimeUnitAdapter(UNITS));
     }

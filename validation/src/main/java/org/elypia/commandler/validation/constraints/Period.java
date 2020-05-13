@@ -35,14 +35,27 @@ public @interface Period {
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
+    /**
+     * @return The minimum amount of time in {@link #unit() the specified units}
+     * that something can be.
+     */
     long min() default 0;
 
+    /**
+     * @return The maximum amount of time in {@link #unit() the specified units}
+     * that something can be.
+     */
     long max() default Integer.MAX_VALUE;
 
     /**
      * This is internally validated using {@link TimeUnit#SECONDS}
      * so setting this to {@link TimeUnit#NANOSECONDS} to specify
      * a time under a second shouldn't do anything.
+     *
+     * This avoids issues with {@link TimeUnit#MILLISECONDS} or {@link TimeUnit#NANOSECONDS}
+     * being too large to store in a {@link Long}.
+     *
+     * @return The {@link TimeUnit} the min and max values represent.
      */
     TimeUnit unit() default TimeUnit.SECONDS;
 }

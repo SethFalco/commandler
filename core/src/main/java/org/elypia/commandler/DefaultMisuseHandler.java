@@ -165,6 +165,7 @@ public class DefaultMisuseHandler {
 
     /**
      * @param ex The exception that occured.
+     * @param <X> A type of exception.
      * @return Don't send any messages.
      */
     public <X extends AbstractMisuseException> String onMisuseException(@Handles ExceptionEvent<X> ex) {
@@ -173,9 +174,3 @@ public class DefaultMisuseHandler {
         return text;
     }
 }
-
-
-
-
-
-

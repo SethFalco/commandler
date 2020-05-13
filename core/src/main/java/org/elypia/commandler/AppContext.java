@@ -50,7 +50,7 @@ public class AppContext {
             config = new ConfigService();
             logger.debug("Finished loading all configuration.");
         } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

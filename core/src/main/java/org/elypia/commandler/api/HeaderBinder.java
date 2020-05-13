@@ -41,10 +41,10 @@ import java.util.Map;
 public interface HeaderBinder {
 
     /**
-     * @param request
-     * @param <S>
-     * @param <M>
-     * @return
+     * @param request The serializable request of made by the user.
+     * @param <S> The type of source even thtis {@link Integration} is for.
+     * @param <M> The type of message this {@link Integration} sends and received.
+     * @return The headers to add to the request, or null if none.
      */
     <S, M> Map<String, String>  bind(Request<S, M> request);
 }

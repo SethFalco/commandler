@@ -67,6 +67,7 @@ public class StandardDispatcher implements Dispatcher {
 
     /**
      * @param configService The configuration service which has all Commandler configuration.
+     * @param controllerConfig The configuration for all of the registered controllers in this instance.
      * @throws NullPointerException If the configuration provided is null.
      */
     @Inject

@@ -76,8 +76,8 @@ public class MatchDispatcher implements Dispatcher {
      * As a result all messages are valid Match commands.
      *
      * @param request The action request made by the {@link Integration}.
-     * @param <S>
-     * @param <M>
+     * @param <S> The type of source even thtis {@link Integration} is for.
+     * @param <M> The type of message this {@link Integration} sends and received.
      * @return If this is a valid command or not.
      */
     @Override

@@ -136,6 +136,7 @@ public final class ReflectionUtils {
      * @param pkge <p>The package name to search through, for example:</p>
      * <code>org.elypia.alexis.commandler</code>
      * @return A collection of classes found under this package.
+     * @throws IOException If an IO error occurs.
      */
     public static Collection<Class<?>> getClasses(String pkge) throws IOException {
         Collection<Class<?>> list = new ArrayList<>();

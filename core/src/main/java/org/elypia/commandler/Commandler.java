@@ -57,6 +57,8 @@ public class Commandler {
      * This will only load and initialize as much of Commandler as possible without
      * actually connecting to any APIs or processing commands, this will ensure Commandler
      * can load and validate everything before any attempt to go live to users.
+     *
+     * @param
      */
     @Inject
     public Commandler(final AppContext context, Integration<?, ?> type) {

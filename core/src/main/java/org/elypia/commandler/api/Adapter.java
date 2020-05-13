@@ -37,22 +37,41 @@ public interface Adapter<O> {
      * This method should adapt our input provides
      * which is a single parameter into the desired data type.
      *
+     * @param input The input from the user.
+     * @param type The type of class we need.
      * @param metaParam The type of object we're trying to load,
      *             this may not be the same as the parameterised type
      *             {@link O} if this is assignable from the type.
-     * @param input The input from the user.
+     * @param event The user activated event which requires this parsing.
      * @return The parsed data-type, or null if we're unable to adapt the input.
      */
     O adapt(String input, Class<? extends O> type, MetaParam metaParam, ActionEvent<?, ?> event);
 
+    /**
+     * @param input The input from the user.
+     * @return The parsed data-type, or null if we're unable to adapt the input.
+     */
     default O adapt(String input) {
         return adapt(input, null);
     }
 
+    /**
+     * @param input The input from the user.
+     * @param type The type of class we need.
+     * @return The parsed data-type, or null if we're unable to adapt the input.
+     */
     default O adapt(String input, Class<? extends O> type) {
         return adapt(input, type, null);
     }
 
+    /**
+     * @param input The input from the user.
+     * @param type The type of class we need.
+     * @param metaParam The type of object we're trying to load,
+     *             this may not be the same as the parameterised type
+     *             {@link O} if this is assignable from the type.
+     * @return The parsed data-type, or null if we're unable to adapt the input.
+     */
     default O adapt(String input, Class<? extends O> type, MetaParam metaParam) {
         return adapt(input, type, metaParam, null);
     }

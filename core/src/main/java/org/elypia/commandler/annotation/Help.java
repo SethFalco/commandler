@@ -25,9 +25,13 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Help {
 
-    /** The display name of this item. */
+    /**
+     * @return The display name of this item.
+     */
     String name() default AnnotationUtils.EFFECTIVELY_NULL;
 
-    /** A small description of what this does or contains. */
+    /**
+     * @return A small description of what this does or contains.
+     */
     String description() default AnnotationUtils.EFFECTIVELY_NULL;
 }

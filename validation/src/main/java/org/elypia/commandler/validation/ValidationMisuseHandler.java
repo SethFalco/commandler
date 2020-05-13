@@ -43,7 +43,7 @@ public class ValidationMisuseHandler {
      * @return An error String reporting all violations.
      * @throws NullPointerException if exception is null.
      */
-    public void onViolation(@Handles ExceptionEvent<ViolationException> ex) {
+    public String onViolation(@Handles ExceptionEvent<ViolationException> ex) {
         Objects.requireNonNull(ex);
 
         List<ConstraintViolation<Controller>> commandViolations = new ArrayList<>();
@@ -91,6 +91,8 @@ public class ValidationMisuseHandler {
         String command = ex.getException().getActionEvent().getMetaCommand().getName();
         String response = String.format(format.toString(), module, command);
 
+        // TODO: TEMP
         logger.debug(response);
+        return response;
     }
 }

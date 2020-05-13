@@ -71,7 +71,7 @@ public class MessengerManager {
         if (integration.getMessageType().isAssignableFrom(content.getClass()))
             return integration.getMessageType().cast(content);
 
-        throw new RuntimeException("Provider did not produce the type required.");
+        throw new IllegalStateException("Provider did not produce the type required.");
     }
 
     /**
@@ -79,6 +79,7 @@ public class MessengerManager {
      * if one is available for building an message from this
      * data-type.
      *
+     * @param integration The platform that this event was received from.
      * @param typeRequired The data-type we need to load from.
      * @param <S> The source event the {@link Integration} provides.
      * @param <M> The type of message the {@link Integration} sends and receives.
@@ -87,13 +88,13 @@ public class MessengerManager {
      * @throws IllegalArgumentException If no {@link Messenger} is
      * registered for this data-type.
      */
-    public <S, M, O> Messenger<O, M> getMessenger(Integration<S, M> controller, Class<O> typeRequired) {
+    public <S, M, O> Messenger<O, M> getMessenger(Integration<S, M> integration, Class<O> typeRequired) {
         MetaMessenger provider = null;
 
         for (MetaMessenger metaMessenger : commandlerConfig.getMessengers()) {
             Collection<Class<Object>> compatible = metaMessenger.getCompatibleTypes();
 
-            if (metaMessenger.getBuildType() != controller.getMessageType())
+            if (metaMessenger.getBuildType() != integration.getMessageType())
                 continue;
 
             if (compatible.contains(typeRequired)) {

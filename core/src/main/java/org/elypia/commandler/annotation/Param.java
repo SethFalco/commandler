@@ -29,7 +29,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Param {
 
-	/** Set the default key to a literal string.*/
+	/**
+	 * @return The default key to a literal string.
+	 */
 	String defaultValue() default AnnotationUtils.EFFECTIVELY_NULL;
 }
 

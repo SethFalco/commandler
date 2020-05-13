@@ -35,7 +35,7 @@ public @interface Option {
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * The available value for this console.
+     * @return The available value for this console.
      */
     String[] value();
 }

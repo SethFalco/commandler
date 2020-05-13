@@ -31,8 +31,8 @@ public interface Dispatcher {
 
     /**
      * @param request The action request made by the {@link Integration}.
-     * @param <S>
-     * @param <M>
+     * @param <S> The type of source even thtis {@link Integration} is for.
+     * @param <M> The type of message this {@link Integration} sends and received.
      * @return If this is a valid command or not.
      * This does not mean it is a command, it's just for checking if the text
      * is formatted in a way that it fits the formatting of a command.
@@ -43,8 +43,8 @@ public interface Dispatcher {
      * Break the command down into it's individual components.
      *
      * @param request The action request made by the {@link Integration}.
-     * @param <S>
-     * @param <M>
+     * @param <S> The type of source even thtis {@link Integration} is for.
+     * @param <M> The type of message this {@link Integration} sends and received.
      * @return The input the user provided or null if it's not a valid command.
      */
     <S, M> ActionEvent<S, M> parse(Request<S, M> request);

@@ -32,7 +32,9 @@ public interface ActionListener {
     /**
      * @param integration The integration that handed {@link Commandler} this event.
      * @param source The original event that the {@link Integration} received.
+     * @param message The message object provided by the {@link Integration}.
      * @param content The raw content of the message as percieved by the integration.
+     * @param <S> The type of source even thtis {@link Integration} is for.
      * @param <M> The type of message this {@link Integration} sends and received.
      * @return The response to this action, or null if no response was given.
      */

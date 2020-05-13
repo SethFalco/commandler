@@ -39,6 +39,7 @@ public interface Messenger<O, M> {
      * should return the basic {@link M message} that requires minimal
      * permissions.
      *
+     * @param event The user caused event which represents the command.
      * @param output The output from the {@link Adapter} when parsing the input.
      * @return The message to response to the user.
      */

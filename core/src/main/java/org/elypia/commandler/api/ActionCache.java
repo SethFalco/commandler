@@ -57,7 +57,8 @@ public interface ActionCache extends Iterable<Action> {
      * @param serializable The id of the action to get and delete.
      * The action that relates to this ID, or null if
      * no such action was cached. (This doesn't mean the ID was invalid
-     * or wasn't never an action that was handled, just that it wasn't stored.)
+     * or wasn't ever an action that was handled, just that it wasn't stored.)
+     * @return The action that was previous represented by this key.
      */
     Action pop(Serializable serializable);
 
