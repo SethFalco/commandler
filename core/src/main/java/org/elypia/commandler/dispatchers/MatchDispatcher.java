@@ -40,13 +40,11 @@ import java.util.regex.*;
  * <p>For example the following {@link Pattern}:</p>
  * <p><strong><code>(?i)\b([\d,.]+)\h*(KG|LBS?)\b</code></strong></p>
  *
- * <p>
- *    May be matched by any of the following messages:
- *    <ul>
- *        <li>I weigh 103KG!</li>
- *        <li>Yeah the laptop on the last LinusTechTips video was like 4.5 Lbs.</li>
- *    </ul>
- * </p>
+ * May be matched by any of the following messages:
+ * <ul>
+ *     <li>I weigh 103KG!</li>
+ *     <li>Yeah the laptop on the last LinusTechTips video was like 4.5 Lbs.</li>
+ * </ul>
  *
  * In each case the parameters would be the capture groups, in this case
  * capturing a numeric value, then the units next to it.
