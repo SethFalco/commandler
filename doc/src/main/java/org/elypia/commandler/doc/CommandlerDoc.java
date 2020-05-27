@@ -18,7 +18,7 @@ package org.elypia.commandler.doc;
 
 import com.google.gson.*;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.config.*;
+import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.doc.deserializers.*;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
@@ -45,26 +45,26 @@ public class CommandlerDoc {
     private List<MetaController> modules;
 
     public CommandlerDoc() {
-        this(BeanProvider.getContextualReference(ActivatorConfig.class, false), BeanProvider.getContextualReference(ControllerConfig.class, false));
+        this(BeanProvider.getContextualReference(CommandlerExtension.class, false));
     }
 
-    public CommandlerDoc(ActivatorConfig activatorConfig, ControllerConfig controllerConfig) {
-        this(activatorConfig, controllerConfig.getControllers());
+    public CommandlerDoc(CommandlerExtension extension) {
+        this(extension.getMetaControllers());
     }
 
-    public CommandlerDoc(ActivatorConfig activatorConfig, MetaController... modules) {
-        this(activatorConfig, List.of(modules));
+    public CommandlerDoc(MetaController... modules) {
+        this(List.of(modules));
     }
 
-    public CommandlerDoc(ActivatorConfig activatorConfig, Collection<MetaController> controllers) {
+    public CommandlerDoc(Collection<MetaController> controllers) {
         this.modules = controllers.stream()
             .filter(MetaController::isPublic)
             .sorted()
             .collect(Collectors.toUnmodifiableList());
 
         gson = new GsonBuilder()
-            .registerTypeAdapter(MetaController.class, new MetaControllerSerializer(activatorConfig))
-            .registerTypeAdapter(MetaCommand.class, new MetaControlSerializer(activatorConfig))
+            .registerTypeAdapter(MetaController.class, new MetaControllerSerializer())
+            .registerTypeAdapter(MetaCommand.class, new MetaControlSerializer())
             .registerTypeAdapter(MetaParam.class, new MetaParamSerializer())
             .create();
     }

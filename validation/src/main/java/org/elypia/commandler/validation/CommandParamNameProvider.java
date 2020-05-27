@@ -16,9 +16,10 @@
 
 package org.elypia.commandler.validation;
 
-import org.elypia.commandler.Commandler;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.*;
 import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.config.ControllerConfig;
+import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -42,10 +43,10 @@ public class CommandParamNameProvider implements ParameterNameProvider {
     private static final Logger logger = LoggerFactory.getLogger(CommandParamNameProvider.class);
 
     /** Metadata for all {@link MetaController}s, {@link MetaCommand}s, and {@link MetaParam}s. */
-    private final ControllerConfig controllerConfig;
+    private final CommandlerExtension commandlerExtension;
 
-    public CommandParamNameProvider(final ControllerConfig controllerConfig) {
-        this.controllerConfig = Objects.requireNonNull(controllerConfig);
+    public CommandParamNameProvider(final CommandlerExtension commandlerExtension) {
+        this.commandlerExtension = Objects.requireNonNull(commandlerExtension);
     }
 
     @Override
@@ -61,10 +62,10 @@ public class CommandParamNameProvider implements ParameterNameProvider {
         if (!(Controller.class.isAssignableFrom(type)))
             return getJavaNames(method);
 
-        Collection<MetaController> metaControllers = controllerConfig.getControllers();
+        Collection<MetaController> metaControllers = commandlerExtension.getMetaControllers();
 
         List<MetaController> filtered = metaControllers.stream()
-           .filter((metaController) -> metaController.getHandlerType() == type)
+           .filter((metaController) -> metaController.getControllerType() == type)
            .collect(Collectors.toList());
 
         if (filtered.isEmpty())
@@ -90,8 +91,10 @@ public class CommandParamNameProvider implements ParameterNameProvider {
         List<String> names = Stream.of(parameters).map((p) -> "").collect(Collectors.toList());
         List<MetaParam> metaParams =  command.getMetaParams();
 
+        CommandlerMessageResolver commandlerMessageResolver = BeanProvider.getContextualReference(CommandlerMessageResolver.class);
+
         for (MetaParam metaParam : metaParams)
-            names.set(metaParam.getIndex(), metaParam.getName());
+            names.set(metaParam.getIndex(), commandlerMessageResolver.getMessage(metaParam.getName()));
 
         return names;
     }

@@ -17,16 +17,14 @@
 package org.elypia.commandler.managers;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.Commandler;
+import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
-import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.AdapterRequiredException;
 import org.elypia.commandler.metadata.MetaMessenger;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.util.*;
 
@@ -39,14 +37,11 @@ public class MessengerManager {
     /** SLF4J Logger*/
     private static final Logger logger = LoggerFactory.getLogger(MessengerManager.class);
 
-    private final BeanManager beanManager;
-
-    private final CommandlerConfig commandlerConfig;
+    private final CommandlerExtension commandlerExtension;
 
     @Inject
-    public MessengerManager(final BeanManager beanManager, final CommandlerConfig commandlerConfig) {
-        this.beanManager = beanManager;
-        this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
+    public MessengerManager(final CommandlerExtension commandlerExtension) {
+        this.commandlerExtension = Objects.requireNonNull(commandlerExtension);
     }
 
     /**
@@ -55,12 +50,11 @@ public class MessengerManager {
      *
      * @param event The action event the was processed by {@link Commandler}.
      * @param object The object that should be sent in chat.
-     * @param integration The integration that receives this event.
      * @return A built message ready to send to the client.
      */
-    public <M> M provide(ActionEvent<?, M> event, Object object, Integration<?, M> integration) {
-        Objects.requireNonNull(integration);
+    public <M> M provide(ActionEvent<?, M> event, Object object) {
         Objects.requireNonNull(object);
+        Integration<?, M> integration = event.getRequest().getIntegration();
         Messenger messenger = getMessenger(integration, object.getClass());
 
         Object content = messenger.provide(event, object);
@@ -68,8 +62,10 @@ public class MessengerManager {
         if (content == null)
             throw new IllegalStateException(String.format("String adapter `%s`returned null.", messenger.getClass().getName()));
 
-        if (integration.getMessageType().isAssignableFrom(content.getClass()))
-            return integration.getMessageType().cast(content);
+        Class<M> messageType = integration.getMessageType();
+
+        if (messageType.isAssignableFrom(content.getClass()))
+            return messageType.cast(content);
 
         throw new IllegalStateException("Provider did not produce the type required.");
     }
@@ -91,8 +87,8 @@ public class MessengerManager {
     public <S, M, O> Messenger<O, M> getMessenger(Integration<S, M> integration, Class<O> typeRequired) {
         MetaMessenger provider = null;
 
-        for (MetaMessenger metaMessenger : commandlerConfig.getMessengers()) {
-            Collection<Class<Object>> compatible = metaMessenger.getCompatibleTypes();
+        for (MetaMessenger metaMessenger : commandlerExtension.getMetaMessengers()) {
+            Collection<Class<?>> compatible = metaMessenger.getCompatibleTypes();
 
             if (metaMessenger.getBuildType() != integration.getMessageType())
                 continue;
@@ -107,7 +103,7 @@ public class MessengerManager {
         }
 
         if (provider == null)
-            throw new AdapterRequiredException("ResponseBuilder required for type " + typeRequired + ".");
+            throw new AdapterRequiredException(Messenger.class + " required for type " + typeRequired + ".");
 
         return BeanProvider.getContextualReference(provider.getProviderType());
     }

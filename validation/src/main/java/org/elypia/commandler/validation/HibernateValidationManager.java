@@ -17,8 +17,8 @@
 package org.elypia.commandler.validation;
 
 import org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory;
+import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.config.ControllerConfig;
 import org.elypia.commandler.event.ActionEvent;
 import org.hibernate.validator.messageinterpolation.*;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
@@ -50,14 +50,14 @@ public class HibernateValidationManager {
     private final ExecutableValidator exValidator;
 
     @Inject
-    public HibernateValidationManager(final ControllerConfig controllerConfig) {
+    public HibernateValidationManager(final CommandlerExtension commandlerExtension) {
         var locator = new PlatformResourceBundleLocator(USER_VALIDATION_MESSAGES, null, true);
 
         ValidatorFactory factory = Validation.byDefaultProvider()
             .configure()
             .constraintValidatorFactory(new CDIAwareConstraintValidatorFactory())
             .messageInterpolator(new ResourceBundleMessageInterpolator(locator))
-            .parameterNameProvider(new CommandParamNameProvider(controllerConfig))
+            .parameterNameProvider(new CommandParamNameProvider(commandlerExtension))
             .buildValidatorFactory();
 
         exValidator = factory.getValidator().forExecutables();

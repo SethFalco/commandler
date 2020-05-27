@@ -31,9 +31,9 @@ public class MetaAdapter {
     private Class<? extends Adapter> type;
 
     /** The compatible classes this adapters can adapt for. */
-    private Collection<Class<Object>> compatible;
+    private Collection<Class<?>> compatible;
 
-    public MetaAdapter(Class<? extends Adapter> type, Class<Object>... compatible) {
+    public MetaAdapter(Class<? extends Adapter> type, Class<?>... compatible) {
         this(type, List.of(compatible));
     }
 
@@ -41,7 +41,7 @@ public class MetaAdapter {
      * @param type The class of the adapters itself.
      * @param compatible The compatible classes this adapters can adapt for.
      */
-    public MetaAdapter(Class<? extends Adapter> type, Collection<Class<Object>> compatible) {
+    public MetaAdapter(Class<? extends Adapter> type, Collection<Class<?>> compatible) {
         this.type = Objects.requireNonNull(type);
         this.compatible = Objects.requireNonNull(compatible);
     }
@@ -50,7 +50,7 @@ public class MetaAdapter {
         return type;
     }
 
-    public Collection<Class<Object>> getCompatibleTypes() {
+    public Collection<Class<?>> getCompatibleTypes() {
         return compatible;
     }
 }

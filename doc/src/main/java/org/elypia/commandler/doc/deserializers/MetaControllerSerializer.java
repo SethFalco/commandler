@@ -17,7 +17,6 @@
 package org.elypia.commandler.doc.deserializers;
 
 import com.google.gson.*;
-import org.elypia.commandler.config.ActivatorConfig;
 import org.elypia.commandler.metadata.*;
 
 import java.lang.reflect.Type;
@@ -27,12 +26,6 @@ import java.lang.reflect.Type;
  */
 public class MetaControllerSerializer implements JsonSerializer<MetaController> {
 
-    public final ActivatorConfig activatorConfig;
-
-    public MetaControllerSerializer(final ActivatorConfig activatorConfig) {
-        this.activatorConfig = activatorConfig;
-    }
-
     @Override
     public JsonElement serialize(MetaController src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
@@ -41,16 +34,16 @@ public class MetaControllerSerializer implements JsonSerializer<MetaController> 
         object.addProperty("description", src.getDescription());
 
         JsonArray activators = new JsonArray();
-        activatorConfig.getActivators().forEach((forProperty, displayName) -> {
-            String value = src.getProperty(forProperty);
-
-            if (value != null) {
-                JsonObject activator = new JsonObject();
-                activator.addProperty("name", displayName);
-                activator.addProperty("value", value);
-                activators.add(activator);
-            }
-        });
+//        activatorConfig.getActivators().forEach((forProperty, displayName) -> {
+//            String value = src.getProperty(forProperty);
+//
+//            if (value != null) {
+//                JsonObject activator = new JsonObject();
+//                activator.addProperty("name", displayName);
+//                activator.addProperty("value", value);
+//                activators.add(activator);
+//            }
+//        });
         object.add("activators", activators);
 
         JsonArray commands = new JsonArray();

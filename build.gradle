@@ -24,7 +24,9 @@ def publishedProjects = [
     project("doc"),
     project("validation"),
     project("console"),
-    project("api")
+    project("api"),
+    project("file-configuration"),
+    project("noob")
 ]
 
 allprojects() {
@@ -32,7 +34,7 @@ allprojects() {
     apply plugin: "jacoco"
 
     group = "org.elypia.commandler"
-    version = "4.0.0"
+    version = "4.0.1"
     description = "Commandler is an abstract command handling framework for dispatching events."
 
     ext {
@@ -42,11 +44,15 @@ allprojects() {
         website = "https://elypia.org/"
 
         deltaSpikeVersion = "1.9.3"
+        validationVersion = "2.0.2"
     }
 
     repositories {
         jcenter()
         mavenCentral()
+
+        // Local system
+        mavenLocal()
     }
 
     jacoco {
@@ -154,7 +160,7 @@ configure(publishedProjects) {
             userOrg = "elypia"
             websiteUrl = website
             licenses = ["Apache-2.0"]
-            vcsUrl = gitUrl
+            vcsUrl = repoUrl
             issueTrackerUrl = issueUrl
             publicDownloadNumbers = true
             version {
@@ -182,7 +188,7 @@ configure(publishedProjects) {
                     url = website
                     licenses {
                         license {
-                            name = "The Apache License, Version 2.0"
+                            name = "Apache-2.0"
                             url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                         }
                     }

@@ -33,6 +33,17 @@ import java.io.Serializable;
 public interface Integration<S, M> {
 
     /**
+     * Initialize the integration.
+     * This is intended for integrations that may want to spawn threads
+     * or add listeners. It's safer to do this in an init method to be called
+     * as with CDI these don't always work with the object is injected
+     * with CDI.
+     */
+    default void init() {
+
+    }
+
+    /**
      * @return The type of object that is sent and received by this integration.
      */
     Class<M> getMessageType();

@@ -19,7 +19,6 @@ package org.elypia.commandler.utils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Generic utilities for which can be used in chat.
@@ -28,8 +27,6 @@ import java.util.regex.Pattern;
  * @author seth@elypia.org (Seth Falco)
  */
 public final class ChatUtils {
-
-    private static final Pattern SPACE_SPLITTER = Pattern.compile("\\s+");
 
     /** Many chat services use two regional indicators to represent a country. */
     private static final Map<String, String> regionalIndicators = Map.ofEntries(
@@ -84,24 +81,6 @@ public final class ChatUtils {
             input = input.replace(entry.getValue(), entry.getKey());
 
         return input;
-    }
-
-    /**
-     * @param body The content of a message.
-     * @return A string array of each word in the string provided.
-     */
-    public static String[] splitSpaces(final String body) {
-        return splitSpaces(body, 0);
-    }
-
-    /**
-     * @param body The content of a message.
-     * @param limit The max number of words we're interested in.
-     * @return A string array of each word in the string provided
-     * up to the limit provided.
-     */
-    public static String[] splitSpaces(final String body, final int limit) {
-        return SPACE_SPLITTER.split(body, limit);
     }
 
     /**

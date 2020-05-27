@@ -23,9 +23,10 @@ import org.elypia.commandler.event.ActionEvent;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import java.text.NumberFormat;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.util.TypeLiteral;
+import java.lang.annotation.Annotation;
 
 /**
  * The root {@link Commandler} class, this ultimately enables your
@@ -34,9 +35,9 @@ import java.text.NumberFormat;
  * There are two main means of configurable {@link Commandler}.
  *
  * <strong>Static Configuration:</strong> This entails configuration files either in the
- * classpath or externally, and {@link java.lang.annotation.Annotation}s.
+ * classpath or externally, and {@link Annotation}s.
  * <strong>Dependency Injection Modules:</strong> This entails overriding runtime dependencies
- * for the IoC container to use.
+ * for the CDI/IoC container to use.
  *
  * @author seth@elypia.org (Seth Falco)
  */
@@ -46,28 +47,19 @@ public class Commandler {
     /** Logging with slf4j. */
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
 
-    /** Metadata and configurationa associated with this Commandler instance. */
-    private final AppContext appContext;
-
     /**
      * Construct an instance of Commandler, in most cases this will be used
      * to manage your application, but in some cases may just be a small instance amongst
      * multiple instance or for a small part of your application.
      *
-     * This will only load and initialize as much of Commandler as possible without
-     * actually connecting to any APIs or processing commands, this will ensure Commandler
-     * can load and validate everything before any attempt to go live to users.
+     * This will kick off the CDI container and start initializating the bulk of the
+     * application. This will not however create {@link Integration}s so commands
+     * will not be accepted yet by the application.
      *
-     * @param context The application context.
-     * @param type The type of platform this instance was created with.
+     * Call {@link #run()} to initialize all {@link Integration}s.
+     *
+     * @return The global Commandler instance.
      */
-    @Inject
-    public Commandler(final AppContext context, Integration<?, ?> type) {
-        this.appContext = context;
-        logger.info("Loaded all configuration and dependencies in {}.", appContext.getTimeSinceStartupFormatted());
-        type.toString();
-    }
-
     public static Commandler create() {
         logger.debug("Started Commandler, loading all configuration and dependencies.");
 
@@ -80,8 +72,6 @@ public class Commandler {
     }
 
     /**
-     * TODO: Allow multiple integrations to run at a time?
-     *
      * Instantiate all {@link Integration}s and start receiving and
      * handling {@link ActionEvent}s receive .
      *
@@ -89,20 +79,20 @@ public class Commandler {
      * bots by whatever interactive means.
      */
     public void run() {
-//        Class<? extends Integration<?, ?>> type;
-//
-//        Integration<?, ?> integration = BeanProvider.getContextualReference(type.getClass());
-//
-//        if (integration.getMessageType() == null)
-//            logger.warn("Integration has been instantiated but no message types have been defined, unable to perform commands.");
-    }
+        TypeLiteral<? extends Integration<?, ?>> typeLiteral = new TypeLiteral<>(){};
+        Instance<? extends Integration<?, ?>> integrations = CDI.current().select(typeLiteral);
 
-    @Produces
-    public NumberFormat getNumberFormat() {
-        return NumberFormat.getInstance();
-    }
+        long total = integrations.stream().count();
 
-    public AppContext getAppContext() {
-        return appContext;
+        if (total == 0)
+            logger.warn("No integrations were defined, events will not be caught.");
+
+        else if (total > 1)
+            logger.warn("Detected multiple integrations in the same runtime; it's recommended to submodule the seperate integrations rather than run a monilith.");
+
+        for (Integration<?, ?> integration : integrations) {
+            integration.init();
+            logger.info("Created instance of {} which uses {} for messages.", integration, integration.getMessageType());
+        }
     }
 }

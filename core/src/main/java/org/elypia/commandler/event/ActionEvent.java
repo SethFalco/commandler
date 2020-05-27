@@ -16,7 +16,7 @@
 
 package org.elypia.commandler.event;
 
-import org.elypia.commandler.*;
+import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.metadata.*;
 
@@ -43,6 +43,8 @@ public class ActionEvent<S, M> {
 
     /** The data associated with the selected command. */
     private MetaCommand metaCommand;
+
+    private M response;
 
     public ActionEvent(Request<S, M> request, Action action, MetaController metaController, MetaCommand metaCommand) {
         this.request = request;

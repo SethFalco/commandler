@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
+ * TODO: List isn't serializable
  * Stores user interaction with Commandler.
  * Action is {@link Serializable} to that it can be
  * stored away and retuned again by future events.
@@ -40,46 +41,46 @@ public class Action implements Serializable {
     public static final long serialVersionUID = 400L;
 
     /** ID of this action provided by {@link Integration#getActionId(Object)}. */
-    private final Serializable id;
+    protected final Serializable id;
 
     /** The actual content of the message or event. */
-    private String content;
+    protected String content;
 
-    /** The data associated with the selected module. */
-    private String controllerName;
+    /** The name associated with the selected module. */
+    protected Class<?> controllerType;
 
-    /** The data associated with the selected command. */
-    private  String controlName;
+    /** The name associated with the selected command. */
+    protected String methodName;
 
     /** All parameters the user specified. This list is <strong>never</strong> null. */
-    private List<List<String>> params;
+    protected transient List<List<String>> params;
 
     /**
-     * Calls {@link #Action(Serializable, String, String, String)}
+     * Calls {@link #Action(Serializable, String, Class, String)}
      * with a default id.
      *
      * This should never be used unless the {@link Integration} has no means
      * of referencing previous {@link Action actions}.
      *
      * @param content The content the user has sent.
-     * @param controllerName The name of the {@link MetaController}.
-     * @param commandName The name of the {@link MetaCommand}.
+     * @param controllerType The name of the {@link MetaController}.
+     * @param methodName The name of the {@link MetaCommand}.
      */
-    public Action(String content, String controllerName, String commandName) {
-        this(0, content, controllerName, commandName);
+    public Action(String content, Class<?> controllerType, String methodName) {
+        this(0, content, controllerType, methodName);
     }
 
     /**
-     * Calls {@link #Action(Serializable, String, String, String, List)} but
+     * Calls {@link #Action(Serializable, String, Class, String, List)} but
      * defaults the parameters `params` to an empty {@link ArrayList}.
      *
      * @param id The ID of this action, this should be referenable by other commands.
      * @param content The content the user has sent.
-     * @param controllerName The name of the {@link MetaController}.
-     * @param controlName The name of the {@link MetaCommand}.
+     * @param controllerType The name of the {@link MetaController}.
+     * @param methodName The name of the {@link MetaCommand}.
      */
-    public Action(Serializable id, String content, String controllerName, String controlName) {
-        this(id, content, controllerName, controlName, List.of());
+    public Action(Serializable id, String content, Class<?> controllerType, String methodName) {
+        this(id, content, controllerType, methodName, List.of());
     }
 
     /**
@@ -87,15 +88,15 @@ public class Action implements Serializable {
      *
      * @param id The ID of this action, this should be referenable by other commands.
      * @param content The content the user has sent.
-     * @param controllerName The name of the {@link MetaController}.
-     * @param controlName The name of the {@link MetaCommand}.
+     * @param controllerType The name of the {@link MetaController}.
+     * @param methodName The name of the {@link MetaCommand}.
      * @param params A list of parameters the user provided.
      */
-    public Action(Serializable id, String content, String controllerName, String controlName, List<List<String>> params) {
+    public Action(Serializable id, String content, Class<?> controllerType, String methodName, List<List<String>> params) {
         this.id = id;
         this.content = content;
-        this.controllerName = controllerName;
-        this.controlName = controlName;
+        this.controllerType = controllerType;
+        this.methodName = methodName;
         this.params = params;
     }
 
@@ -130,12 +131,12 @@ public class Action implements Serializable {
         return content;
     }
 
-    public String getControllerName() {
-        return controllerName;
+    public Class<?> getControllerType() {
+        return controllerType;
     }
 
-    public String getCommandName() {
-        return controlName;
+    public String getMethodName() {
+        return methodName;
     }
 
     public List<List<String>> getParams() {
@@ -144,6 +145,6 @@ public class Action implements Serializable {
 
     @Override
     public String toString() {
-        return controllerName + " > " + controlName + " | " + toParamString();
+        return controllerType + " > " + methodName + " | " + toParamString();
     }
 }

@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.annotation;
 
+import org.elypia.commandler.annotation.stereotypes.CommandController;
 import org.elypia.commandler.dispatchers.StandardDispatcher;
 
 import java.lang.annotation.*;
@@ -23,8 +24,8 @@ import java.lang.annotation.*;
 /**
  * A static commands is a commands which can be done globally,
  * for example the {@link StandardDispatcher} uses this property
- * to determine if a {@link CommandData} really needs the {@link Aliases alias}
- * of it's parent {@link ControllerData} before it can be performed.
+ * to determine if a {@link Command} really needs the alias
+ * of it's parent {@link CommandController} before it can be performed.
  *
  * Different Dispatchers may choose to treat this differnetly.
  *

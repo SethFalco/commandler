@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.console.messengers;
 
+import org.elypia.commandler.annotation.stereotypes.MessageProvider;
 import org.elypia.commandler.api.Messenger;
 import org.elypia.commandler.event.ActionEvent;
 
@@ -25,6 +26,7 @@ import java.text.NumberFormat;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
+@MessageProvider(provides = String.class, value = {Number.class, Double.class, Float.class, Long.class, Integer.class, Short.class, Byte.class})
 public class NumberMessenger implements Messenger<Number, String> {
 
     private NumberFormat format;

@@ -22,7 +22,6 @@
     <exclude name="com.**"/>
     <exclude name="javax.**"/>
     <exclude name="org.apache.commons.**"/>
-    <exclude name="org.jboss.**"/>
     <exclude name="org.slf4j.**"/>
   </scan>
 </beans>

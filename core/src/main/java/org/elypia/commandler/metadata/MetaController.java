@@ -37,7 +37,7 @@ public class MetaController extends MetaComponent implements Comparable<MetaCont
     private static final Logger logger = LoggerFactory.getLogger(MetaController.class);
 
     /** The class this annotation data belongs too. */
-    private Class<? extends Controller> type;
+    private Class<? extends Controller> controllerType;
 
     /** The groupName this module belongs to. */
     private String groupName;
@@ -48,8 +48,8 @@ public class MetaController extends MetaComponent implements Comparable<MetaCont
     /** A list of {@link MetaCommand} that were created inside the {@link Controller}. */
     private List<MetaCommand> metaCommands;
 
-    public MetaController(Class<? extends Controller> moduleClass, String groupName, String name, String description, boolean isHidden, Properties properties, List<MetaCommand> metaCommands) {
-        this.type = Objects.requireNonNull(moduleClass);
+    public MetaController(Class<? extends Controller> controllerType, String groupName, String name, String description, boolean isHidden, Properties properties, List<MetaCommand> metaCommands) {
+        this.controllerType = Objects.requireNonNull(controllerType);
         this.groupName = Objects.requireNonNullElse(groupName, "Miscellaneous");
         this.name = Objects.requireNonNull(name);
         this.description = description;
@@ -58,8 +58,8 @@ public class MetaController extends MetaComponent implements Comparable<MetaCont
         this.metaCommands = Objects.requireNonNull(metaCommands);
     }
 
-    public Class<? extends Controller> getHandlerType() {
-        return type;
+    public Class<? extends Controller> getControllerType() {
+        return controllerType;
     }
 
     public String getGroup() {

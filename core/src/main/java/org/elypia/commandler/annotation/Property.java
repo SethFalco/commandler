@@ -33,7 +33,28 @@ public @interface Property {
     /**
      * @return The key to set this property to, this should be
      * {@link AnnotationUtils#EFFECTIVELY_NULL} if this is for a Annotation wrapper
-     * for a property such as {@link Aliases}.
+     * for a property.
      */
     String value() default AnnotationUtils.EFFECTIVELY_NULL;
+
+    /**
+     * @return If this value is allowed to be overridden by the
+     * internationalization provider.
+     */
+    boolean i18n() default false;
+
+    /**
+     * @return If this should be displayed alongside other metadata,
+     * public to users.
+     */
+    boolean isPublic() default false;
+
+    /**
+     * This is useful for properties which should be displayed to users
+     * when the objects metadata is shown.
+     * By default it's only useful when {@link #isPublic()}} is true.
+     *
+     * @return Returns the display name of this property for users.
+     */
+    String displayName() default AnnotationUtils.EFFECTIVELY_NULL;
 }

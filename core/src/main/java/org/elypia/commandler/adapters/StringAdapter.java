@@ -16,18 +16,15 @@
 
 package org.elypia.commandler.adapters;
 
-import org.elypia.commandler.annotation.ParamAdapter;
+import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
 
-import javax.enterprise.context.ApplicationScoped;
-
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
-@ParamAdapter(CharSequence.class)
+@ParamAdapter({String.class, CharSequence.class})
 public class StringAdapter implements Adapter<CharSequence> {
 
     @Override

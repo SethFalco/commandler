@@ -17,9 +17,8 @@
 package org.elypia.commandler.managers;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.AppContext;
+import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.config.ControllerConfig;
 import org.elypia.commandler.metadata.MetaController;
 import org.elypia.commandler.testing.*;
 import org.slf4j.*;
@@ -56,15 +55,15 @@ public class TestManager {
     private final ScheduledExecutorService executor;
 
     @Inject
-    public TestManager(final BeanManager beanManager, final AppContext appContext) {
+    public TestManager(final BeanManager beanManager) {
         this.beanManager = beanManager;
         started = Instant.now();
         testReports = new HashMap<>();
         executor = Executors.newSingleThreadScheduledExecutor();
 
         executor.scheduleAtFixedRate(() -> {
-            for (MetaController data : BeanProvider.getContextualReference(ControllerConfig.class, false).getControllers()) {
-                Controller controller = BeanProvider.getContextualReference(data.getHandlerType());
+            for (MetaController data : BeanProvider.getContextualReference(CommandlerExtension.class, false).getMetaControllers()) {
+                Controller controller = BeanProvider.getContextualReference(data.getControllerType());
 
                 if (controller == null) {
                     logger.debug("Registered handler is not initalised, testing was skipped.");

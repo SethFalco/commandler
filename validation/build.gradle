@@ -18,10 +18,10 @@ dependencies {
     implementation project(":core")
 
     // Jakarta Validation
-    api "jakarta.validation:jakarta.validation-api:2.0.2"
+    api "jakarta.validation:jakarta.validation-api:${validationVersion}"
 
     // Hibernate Validation
-    api "org.hibernate.validator:hibernate-validator:6.1.4.Final"
+    implementation "org.hibernate.validator:hibernate-validator:6.1.5.Final"
 
     // DeltaSpike
     implementation "org.apache.deltaspike.modules:deltaspike-bean-validation-module-impl:${deltaSpikeVersion}"

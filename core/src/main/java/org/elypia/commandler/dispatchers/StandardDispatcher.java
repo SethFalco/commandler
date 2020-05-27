@@ -16,16 +16,16 @@
 
 package org.elypia.commandler.dispatchers;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.*;
+import org.elypia.commandler.annotation.stereotypes.MessageDispatcher;
 import org.elypia.commandler.api.*;
-import org.elypia.commandler.config.*;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.misuse.*;
+import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.metadata.*;
-import org.elypia.commandler.utils.ChatUtils;
 import org.slf4j.*;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.*;
@@ -40,11 +40,13 @@ import java.util.regex.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
+@MessageDispatcher
 public class StandardDispatcher implements Dispatcher {
 
     /** SLF4J Logger */
     private static final Logger logger = LoggerFactory.getLogger(StandardDispatcher.class);
+
+    private static final Pattern VAR_PATTERN = Pattern.compile("(?i)^\\$\\{(?<KEY>[A-Z\\d_-]+)(?::(?<DEFAULT>.*))?}$");
 
     /**
      * This matches every argument in the commands,
@@ -60,27 +62,27 @@ public class StandardDispatcher implements Dispatcher {
     private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.*?)(?<!\\\\)\"|(?<word>[^\\s]+(?<!,))");
 
     /** The main {@link Commandler} configuration; this contains all metadata on commands. */
-    private final ConfigService configService;
+    private final StandardDispatcherConfig standardDispatcherConfig;
 
     /** The configuration for the main metadata for controllers and commands. */
-    private final ControllerConfig controllerConfig;
+    private final CommandlerExtension commandlerExtension;
 
     /**
-     * @param configService The configuration service which has all Commandler configuration.
-     * @param controllerConfig The configuration for all of the registered controllers in this instance.
+     * @param standardDispatcherConfig The configuration service which has all Commandler configuration.
+     * @param commandlerExtension The configuration for all of the registered controllers in this instance.
      * @throws NullPointerException If the configuration provided is null.
      */
     @Inject
-    public StandardDispatcher(final ConfigService configService, final ControllerConfig controllerConfig) {
-        this.configService = Objects.requireNonNull(configService);
-        this.controllerConfig = Objects.requireNonNull(controllerConfig);
+    public StandardDispatcher(StandardDispatcherConfig standardDispatcherConfig, CommandlerExtension commandlerExtension) {
+        this.standardDispatcherConfig = Objects.requireNonNull(standardDispatcherConfig);
+        this.commandlerExtension = Objects.requireNonNull(commandlerExtension);
     }
 
     @Override
     public <S, M> boolean isValid(Request<S, M> request) {
         List<String> prefixes = getPrefixes(request);
 
-        if (prefixes == null)
+        if (prefixes.isEmpty())
             return true;
 
         for (String prefix : prefixes) {
@@ -111,7 +113,8 @@ public class StandardDispatcher implements Dispatcher {
         if (prefix != null)
             content = content.substring(prefix.length()).trim();
 
-        String[] command = ChatUtils.splitSpaces(content);
+        Pattern delimeter = standardDispatcherConfig.getDelimeter();
+        String[] command = delimeter.split(content, 3);
 
         if (command.length == 0)
             throw new OnlyPrefixException("This message only contained the prefix, but no other content.");
@@ -121,8 +124,9 @@ public class StandardDispatcher implements Dispatcher {
         MetaCommand selectedMetaCommand = null;
         String params = null;
 
-        for (MetaController metaController : controllerConfig.getControllers()) {
-            String controllerAliases = metaController.getProperty(this.getClass(), "aliases");
+        for (MetaController metaController : commandlerExtension.getMetaControllers()) {
+            CommandlerMessageResolver resolver = BeanProvider.getContextualReference(CommandlerMessageResolver.class);
+            String controllerAliases = resolver.getMessage(metaController.getProperty(this.getClass(), "aliases"));
 
             if (controllerAliases == null)
                 continue;
@@ -134,7 +138,7 @@ public class StandardDispatcher implements Dispatcher {
 
                 if (command.length > 1) {
                     for (MetaCommand metaCommand : metaController.getMetaCommands()) {
-                        String controlAliases = metaCommand.getProperty(this.getClass(), "aliases");
+                        String controlAliases = resolver.getMessage(metaCommand.getProperty(this.getClass(), "aliases"));
 
                         if (controlAliases == null)
                             continue;
@@ -176,7 +180,7 @@ public class StandardDispatcher implements Dispatcher {
             }
 
             for (MetaCommand metaCommand : metaController.getStaticCommands()) {
-                String controlAliases = metaCommand.getProperty(this.getClass(), "aliases");
+                String controlAliases = resolver.getMessage(metaCommand.getProperty(this.getClass(), "aliases"));
 
                 if (controlAliases == null)
                     continue;
@@ -205,7 +209,7 @@ public class StandardDispatcher implements Dispatcher {
         if (id == null)
             throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
 
-        Action action = new Action(id, request.getContent(), selectedMetaController.getName(), selectedMetaCommand.getName(), parameters);
+        Action action = new Action(id, request.getContent(), selectedMetaController.getControllerType(), selectedMetaCommand.getMethod().getName(), parameters);
         ActionEvent<S, M> e = new ActionEvent<>(request, action, selectedMetaController, selectedMetaCommand);
 
         if (!selectedMetaCommand.isValidParamCount(parameters.size()))
@@ -214,22 +218,18 @@ public class StandardDispatcher implements Dispatcher {
         return e;
     }
 
-    private static final Pattern VAR_PATTERN = Pattern.compile("(?i)^\\$\\{(?<KEY>[A-Z\\d_-]+)(?:\\:(?<DEFAULT>.*))?\\}$");
-
     /**
-     * TODO: We shouldn't pollute this class with configuration code.
-     *
      * @param request The action request containiner all request info and headers.
      * @return The list of prefixes valid for this {@link Request}, or null
      * if no prefixes are configured.
      */
     private List<String> getPrefixes(Request<?, ?> request) {
-        List<String> prefixConfig = configService.getList(String.class, "commandler.dispatcher.prefix");
-
-        if (prefixConfig == null || prefixConfig.isEmpty())
-            return null;
+        List<String> prefixConfig = standardDispatcherConfig.getPrefixes();
 
         List<String> prefixes = new ArrayList<>();
+
+        if (prefixConfig == null || prefixConfig.isEmpty())
+            return prefixes;
 
         for (String config : prefixConfig) {
             Matcher matcher = VAR_PATTERN.matcher(config);
@@ -261,7 +261,7 @@ public class StandardDispatcher implements Dispatcher {
     private <S, M> String parsePrefix(Request<S, M> request) {
         List<String> prefixes = getPrefixes(request);
 
-        if (prefixes != null) {
+        if (!prefixes.isEmpty()) {
             Optional<String> optPrefix = prefixes.stream()
                 .filter(request.getContent()::startsWith)
                 .findAny();

@@ -91,8 +91,7 @@ public class ValidationMisuseHandler {
         String command = ex.getException().getActionEvent().getMetaCommand().getName();
         String response = String.format(format.toString(), module, command);
 
-        // TODO: TEMP
-        logger.debug(response);
+        logger.info(response);
         return response;
     }
 }

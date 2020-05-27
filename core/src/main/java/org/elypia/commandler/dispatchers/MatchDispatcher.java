@@ -16,15 +16,14 @@
 
 package org.elypia.commandler.dispatchers;
 
-import org.elypia.commandler.Request;
+import org.elypia.commandler.CommandlerExtension;
+import org.elypia.commandler.annotation.stereotypes.MessageDispatcher;
 import org.elypia.commandler.api.*;
-import org.elypia.commandler.config.ControllerConfig;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.misuse.ParamCountMismatchException;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.*;
@@ -51,7 +50,7 @@ import java.util.regex.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
+@MessageDispatcher
 public class MatchDispatcher implements Dispatcher {
 
     /** Logging with SLF4J. */
@@ -64,11 +63,11 @@ public class MatchDispatcher implements Dispatcher {
      */
     private static final Map<String, Pattern> PATTERNS = new HashMap<>();
 
-    private final ControllerConfig controllerConfig;
+    private final CommandlerExtension commmanderExtension;
 
     @Inject
-    public MatchDispatcher(final ControllerConfig controllerConfig) {
-        this.controllerConfig = Objects.requireNonNull(controllerConfig);
+    public MatchDispatcher(CommandlerExtension commmanderExtension) {
+        this.commmanderExtension = Objects.requireNonNull(commmanderExtension);
     }
 
     /**
@@ -91,7 +90,7 @@ public class MatchDispatcher implements Dispatcher {
         MetaCommand selectedMetaCommand = null;
         List<List<String>> parameters = null;
 
-        for (MetaController metaController : controllerConfig.getControllers()) {
+        for (MetaController metaController : commmanderExtension.getMetaControllers()) {
             for (MetaCommand metaCommand : metaController.getMetaCommands()) {
                 String patternString = metaCommand.getProperty(this.getClass(), "pattern");
 
@@ -133,7 +132,7 @@ public class MatchDispatcher implements Dispatcher {
         if (id == null)
             throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
 
-        Action action = new Action(id, request.getContent(), selectedMetaController.getName(), selectedMetaCommand.getName(), parameters);
+        Action action = new Action(id, request.getContent(), selectedMetaController.getControllerType(), selectedMetaCommand.getMethod().getName(), parameters);
         ActionEvent<S, M> e = new ActionEvent<>(request, action, selectedMetaController, selectedMetaCommand);
 
         if (!selectedMetaCommand.isValidParamCount(parameters.size()))

@@ -17,13 +17,12 @@
 package org.elypia.commandler.managers;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.Request;
+import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.api.HeaderBinder;
-import org.elypia.commandler.config.HeadersConfig;
+import org.elypia.commandler.event.Request;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.util.*;
 
@@ -39,38 +38,22 @@ public class HeaderManager {
     /** Logging with SLF4J. */
     private static final Logger logger = LoggerFactory.getLogger(HeaderManager.class);
 
-    private final BeanManager beanManager;
-
-    /**
-     * A collection of header binders, used to bindHeaders metadata for
-     * {@link org.elypia.commandler.event.ActionEvent} programatically
-     * to the events as they occur.
-     */
-    private final HeadersConfig config;
-
-    private Collection<Class<HeaderBinder>> binders;
+    private CommandlerExtension extension;
 
     @Inject
-    public HeaderManager(final BeanManager beanManager, final HeadersConfig config) {
-        this.beanManager = beanManager;
-        this.config = config;
-
-        if (config == null) {
-            logger.info("HeaderManager instantiated with NO headers configuration.");
-            return;
-        }
-
-        this.binders = config.getHeaderBindersType();
+    public HeaderManager(CommandlerExtension extension) {
+        this.extension = Objects.requireNonNull(extension);
     }
 
     public <S, M> void bindHeaders(Request<S, M> request) {
-        for (Class<HeaderBinder> binderType : binders) {
-            Map<String, String> h = BeanProvider.getContextualReference(binderType).bind(request);
+        for (Class<? extends HeaderBinder> binderType : extension.getHeaderBinders()) {
+            HeaderBinder binder = BeanProvider.getContextualReference(binderType);
+            Map<String, String> headersToAdd = binder.bind(request);
 
-            if (h == null)
+            if (headersToAdd == null)
                 continue;
 
-            for (Map.Entry<String, String> entry : h.entrySet())
+            for (Map.Entry<String, String> entry : headersToAdd.entrySet())
                 request.setHeader(entry.getKey(), entry.getValue());
         }
     }

@@ -16,10 +16,11 @@
 
 package org.elypia.commandler.console.messengers;
 
+import org.elypia.commandler.annotation.stereotypes.MessageProvider;
 import org.elypia.commandler.api.Messenger;
 import org.elypia.commandler.event.ActionEvent;
 
-import javax.enterprise.context.ApplicationScoped;
+import java.net.URL;
 
 /**
  * A provider for types that can make desireable output from
@@ -27,7 +28,7 @@ import javax.enterprise.context.ApplicationScoped;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
+@MessageProvider(provides = String.class, value = {Boolean.class, CharSequence.class, Character.class, URL.class})
 public class MiscMessenger implements Messenger<Object, String> {
 
     @Override

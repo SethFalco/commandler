@@ -30,3 +30,12 @@ include "console"
 
 /** Extension which enables integration with a dashboard API. */
 include "api"
+
+/** Extension which adds file configuration support for Commandler. */
+include "file-configuration"
+
+/**
+ * This is a quick-start module, which bundles all modules
+ * and libraries to get started as quick as possible.
+ */
+include "noob"

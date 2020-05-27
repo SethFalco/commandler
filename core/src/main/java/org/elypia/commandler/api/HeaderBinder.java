@@ -16,8 +16,8 @@
 
 package org.elypia.commandler.api;
 
-import org.elypia.commandler.Request;
 import org.elypia.commandler.dispatchers.StandardDispatcher;
+import org.elypia.commandler.event.Request;
 
 import java.util.Map;
 
@@ -46,5 +46,5 @@ public interface HeaderBinder {
      * @param <M> The type of message this {@link Integration} sends and received.
      * @return The headers to add to the request, or null if none.
      */
-    <S, M> Map<String, String>  bind(Request<S, M> request);
+    <S, M> Map<String, String> bind(Request<S, M> request);
 }

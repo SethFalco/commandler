@@ -16,20 +16,22 @@
 
 package org.elypia.commandler.adapters;
 
-import org.elypia.commandler.annotation.ParamAdapter;
+import org.apache.deltaspike.core.api.message.LocaleResolver;
+import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
 import org.elypia.commandler.utils.ChatUtils;
 import org.slf4j.*;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import java.util.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
+@RequestScoped
 @ParamAdapter(Locale.class)
 public class LocaleAdapter implements Adapter<Locale> {
 
@@ -37,53 +39,105 @@ public class LocaleAdapter implements Adapter<Locale> {
 
     private static final Locale[] LOCALES = Locale.getAvailableLocales();
 
+    /** The length of a country flag emoji string, available on most operation systems or social media. */
+    private static final int COUNTRY_FLAG_EMOJI_LENGTH = 4;
+
+    /** The max number of acceptable strings we're expecting to have. */
+    private static final int ACCEPTABLE_STRINGS_INITIAL_SIZE = 11;
+
+    private final Locale currentLocale;
+
+    public LocaleAdapter() {
+        this(Locale.getDefault());
+    }
+
+    @Inject
+    public LocaleAdapter(LocaleResolver localeResolver) {
+        this(localeResolver.getLocale());
+    }
+
+    public LocaleAdapter(Locale locale) {
+        this.currentLocale = locale;
+    }
+
     @Override
-    public Locale adapt(String input, Class<? extends Locale> type, MetaParam metaParam, ActionEvent<?, ?> event) {
+    public Locale adapt(final String input, Class<? extends Locale> type, MetaParam metaParam, ActionEvent<?, ?> event) {
         Objects.requireNonNull(input);
 
-        // If using regional indicators, for example emojis, make them the textual equivilent.
-        String country = null;
-        if (input.length() == 4)
-            country = ChatUtils.replaceFromIndicators(input);
+        String query = input.replace('_', '-');
 
-        Locale temp = null;
+        String countryEmoji = null;
+
+        if (query.length() == COUNTRY_FLAG_EMOJI_LENGTH)
+            countryEmoji = ChatUtils.replaceFromIndicators(query);
+
+        Set<Locale> candidates = null;
+        Locale languageLocale = null;
+        Locale countryLocale = null;
 
         for (Locale locale : LOCALES) {
-            if (input.equalsIgnoreCase(locale.toLanguageTag()))
+            if (query.equalsIgnoreCase(locale.toLanguageTag()))
                 return locale;
 
+            if (candidates == null)
+                candidates = new HashSet<>(ACCEPTABLE_STRINGS_INITIAL_SIZE);
+
+            Set<String> acceptableStrings = new HashSet<>();
+            acceptableStrings.add(locale.getLanguage());
+            acceptableStrings.add(locale.getDisplayLanguage(Locale.US));
+            acceptableStrings.add(locale.getDisplayLanguage(locale));
+            acceptableStrings.add(locale.getDisplayLanguage(currentLocale));
+            acceptableStrings.add(locale.getISO3Language());
+
+            if (acceptableStrings.stream().anyMatch(query::equalsIgnoreCase)) {
+                candidates.add(locale);
+                languageLocale = locale;
+            }
+
+            acceptableStrings.clear();
+
             if (!locale.getCountry().isBlank()) {
-                String c = locale.getCountry();
-                String dc = locale.getDisplayCountry(Locale.US);
-                String dcl = locale.getDisplayCountry(locale);
-
-                // Checks flag emote.
-                if (input.equalsIgnoreCase(c) || (country != null && country.equalsIgnoreCase(c)))
-                    temp = locale;
-
-                if (input.equalsIgnoreCase(dc) || input.equalsIgnoreCase(dcl))
-                    return locale;
+                acceptableStrings.add(locale.getCountry());
+                acceptableStrings.add(locale.getDisplayCountry(Locale.US));
+                acceptableStrings.add(locale.getDisplayCountry(locale));
+                acceptableStrings.add(locale.getDisplayCountry(currentLocale));
 
                 try {
-                    if (input.equalsIgnoreCase(locale.getISO3Country()))
-                        return locale;
+                    acceptableStrings.add(locale.getISO3Country());
                 } catch (MissingResourceException ex) {
-                    // Do nothing, there is nothing wrong with this.
+                    // Do nothing, there's nothing wrong with this.
                 }
             }
 
-            String l = locale.getLanguage();
-            String dl = locale.getDisplayLanguage(Locale.US);
-            String dll = locale.getDisplayLanguage(locale);
-            String lc = locale.getISO3Language();
-
-            if (input.equalsIgnoreCase(l))
-                temp = locale;
-
-            if (input.equalsIgnoreCase(dl) || input.equalsIgnoreCase(dll) || input.equalsIgnoreCase(lc))
-                return locale;
+            if (acceptableStrings.stream().anyMatch(query::equalsIgnoreCase) || locale.getCountry().equals(countryEmoji)) {
+                candidates.add(locale);
+                countryLocale = locale;
+            }
         }
 
-        return temp;
+        if (countryLocale == languageLocale)
+            return countryLocale;
+
+        if (languageLocale != null && countryLocale == null) {
+            String ll = languageLocale.getLanguage();
+            Optional<Locale> test = candidates.stream()
+                .filter((l) -> ll.equalsIgnoreCase(l.getLanguage()) && l.getCountry().isBlank())
+                .findAny();
+
+            if (test.isPresent())
+                return test.get();
+        }
+
+        if (languageLocale == null) {
+            String cc = countryLocale.getCountry();
+            Optional<Locale> test = candidates.stream()
+                .filter((l) -> l.getLanguage().equalsIgnoreCase(cc) && l.getCountry().equals(cc))
+                .findAny();
+
+            if (test.isPresent())
+                return test.get();
+        }
+
+        return (countryLocale != null) ? countryLocale : languageLocale;
     }
 }

@@ -17,9 +17,8 @@
 package org.elypia.commandler.managers;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.Commandler;
+import org.elypia.commandler.*;
 import org.elypia.commandler.api.*;
-import org.elypia.commandler.config.CommandlerConfig;
 import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.AdapterRequiredException;
 import org.elypia.commandler.exceptions.misuse.*;
@@ -54,17 +53,14 @@ public class AdapterManager {
     private static final Logger logger = LoggerFactory.getLogger(AdapterManager.class);
 
     /** The configuration class which contains all metadata for this instance. */
-    private final CommandlerConfig commandlerConfig;
+    private final CommandlerExtension extension;
 
     /** Used to evaluate expressions and build default values for parameters. */
     private final ExpressionFactory expressionFactory;
 
-    /**
-     * @param commandlerConfig Main commandler configuration.
-     */
     @Inject
-    public AdapterManager(final CommandlerConfig commandlerConfig) {
-        this.commandlerConfig = Objects.requireNonNull(commandlerConfig);
+    public AdapterManager(final CommandlerExtension extension) {
+        this.extension = Objects.requireNonNull(extension);
         this.expressionFactory = ELManager.getExpressionFactory();
     }
 
@@ -123,9 +119,16 @@ public class AdapterManager {
         List<Object> toReturn = new ArrayList<>();
         Class<?>[] types = event.getMetaCommand().getMethod().getParameterTypes();
 
+        // TODO: make it so we can add other types?
         for (Class<?> type : types) {
             if (ActionEvent.class.isAssignableFrom(type))
                 toReturn.add(event);
+            else if (event.getRequest().getClass().isAssignableFrom(type))
+                toReturn.add(event.getRequest());
+            else if (event.getRequest().getMessage().getClass().isAssignableFrom(type))
+                toReturn.add(event.getRequest().getMessage());
+            else if (event.getRequest().getSource().getClass().isAssignableFrom(type))
+                toReturn.add(event.getRequest().getSource());
             else
                 toReturn.add(iter.next());
         }
@@ -222,8 +225,8 @@ public class AdapterManager {
     public <T> Adapter<?> getAdapter(Class<?> typeRequired) {
         MetaAdapter adapter = null;
 
-        for (MetaAdapter metaAdapter : commandlerConfig.getAdapters()) {
-            Collection<Class<Object>> compatible = metaAdapter.getCompatibleTypes();
+        for (MetaAdapter metaAdapter : extension.getMetaAdapters()) {
+            Collection<Class<?>> compatible = metaAdapter.getCompatibleTypes();
 
             if (compatible.contains(typeRequired)) {
                 adapter = metaAdapter;

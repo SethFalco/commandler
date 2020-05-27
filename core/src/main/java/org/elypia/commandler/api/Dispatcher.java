@@ -16,8 +16,7 @@
 
 package org.elypia.commandler.api;
 
-import org.elypia.commandler.Request;
-import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.event.*;
 
 /**
  * The {@link Dispatcher} has the role of processing an event

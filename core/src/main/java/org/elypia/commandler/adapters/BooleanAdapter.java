@@ -16,18 +16,16 @@
 
 package org.elypia.commandler.adapters;
 
-import org.elypia.commandler.annotation.ParamAdapter;
+import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.util.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
 @ParamAdapter(Boolean.class)
 public class BooleanAdapter implements Adapter<Boolean> {
 

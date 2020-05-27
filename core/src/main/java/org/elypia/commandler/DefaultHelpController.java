@@ -16,11 +16,12 @@
 
 package org.elypia.commandler;
 
+import org.elypia.commandler.annotation.Default;
+import org.elypia.commandler.annotation.command.StandardCommand;
+import org.elypia.commandler.annotation.stereotypes.CommandController;
 import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.config.*;
 import org.elypia.commandler.metadata.*;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,20 +32,21 @@ import java.util.stream.Collectors;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
+@CommandController
+@StandardCommand
 public class DefaultHelpController implements Controller {
 
-    private final ControllerConfig controllerConfig;
-    private final ActivatorConfig activatorConfig;
+    protected final CommandlerExtension commmanderExtension;
 
     @Inject
-    public DefaultHelpController(final ControllerConfig controllerConfig, final ActivatorConfig activatorConfig) {
-        this.controllerConfig = controllerConfig;
-        this.activatorConfig = activatorConfig;
+    public DefaultHelpController(final CommandlerExtension commmanderExtension) {
+        this.commmanderExtension = commmanderExtension;
     }
 
-    public String getGroups() {
-        List<MetaController> controllers = controllerConfig.getControllers();
+    @Default
+    @StandardCommand
+    public Object getGroups() {
+        Collection<MetaController> controllers = commmanderExtension.getMetaControllers();
         List<String> groups = controllers.stream()
             .filter(MetaController::isPublic)
             .map(MetaController::getGroup)
@@ -59,8 +61,9 @@ public class DefaultHelpController implements Controller {
         return builder.toString();
     }
 
-    public String getControllers(String query) {
-        List<MetaController> controllers = controllerConfig.getControllers();
+    @StandardCommand
+    public Object getControllers(String query) {
+        Collection<MetaController> controllers = commmanderExtension.getMetaControllers();
         List<MetaController> group = controllers.stream()
             .filter((c) -> c.getGroup().equalsIgnoreCase(query))
             .collect(Collectors.toList());
@@ -88,7 +91,8 @@ public class DefaultHelpController implements Controller {
      * @param controller The {@link MetaController} to get commands for.
      * @return The message to send to the end user.
      */
-    public String getCommands(MetaController controller) {
+    @StandardCommand
+    public Object getCommands(MetaController controller) {
         StringBuilder builder = new StringBuilder(controller.getName())
             .append("\n")
             .append(controller.getDescription());
@@ -118,12 +122,12 @@ public class DefaultHelpController implements Controller {
         return builder.toString();
     }
 
-    private void appendActivators(final StringBuilder builder, final MetaComponent metaComponent) {
-        activatorConfig.getActivators().forEach((forProperty, displayName) -> {
-            String value = metaComponent.getProperty(forProperty);
-
-            if (value != null)
-                builder.append("\n").append(displayName).append(": ").append(value);
-        });
+    protected void appendActivators(final StringBuilder builder, final MetaComponent metaComponent) {
+//        activatorConfig.getActivators().forEach((forProperty, displayName) -> {
+//            String value = metaComponent.getProperty(forProperty);
+//
+//            if (value != null)
+//                builder.append("\n").append(displayName).append(": ").append(value);
+//        });
     }
 }

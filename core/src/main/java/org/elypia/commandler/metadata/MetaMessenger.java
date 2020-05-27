@@ -29,16 +29,16 @@ public class MetaMessenger {
     private Class<? extends Messenger> type;
 
     /** The class this type provides. */
-    private Class<Object> builds;
+    private Class<?> builds;
 
     /** The types this provider is compatible for. */
-    private Collection<Class<Object>> compatible;
+    private Collection<Class<?>> compatible;
 
-    public MetaMessenger(Class<? extends Messenger> type, Class<Object> builds, Class<Object>... compatible) {
+    public MetaMessenger(Class<? extends Messenger> type, Class<?> builds, Class<?>... compatible) {
         this(type, builds, List.of(compatible));
     }
 
-    public MetaMessenger(Class<? extends Messenger> type, Class<Object> builds, Collection<Class<Object>> compatible) {
+    public MetaMessenger(Class<? extends Messenger> type, Class<?> builds, Collection<Class<?>> compatible) {
         this.type = Objects.requireNonNull(type);
         this.builds = Objects.requireNonNull(builds);
         this.compatible = Objects.requireNonNull(compatible);
@@ -48,11 +48,11 @@ public class MetaMessenger {
         return type;
     }
 
-    public Class<Object> getBuildType() {
+    public Class<?> getBuildType() {
         return builds;
     }
 
-    public Collection<Class<Object>> getCompatibleTypes() {
+    public Collection<Class<?>> getCompatibleTypes() {
         return compatible;
     }
 }

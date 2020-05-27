@@ -30,36 +30,76 @@ public class LocaleAdapterTest {
     @Test
     public void findLocaleByLanguage() {
         LocaleAdapter adapter = new LocaleAdapter();
-        Locale locale = adapter.adapt("English");
-        assertEquals("en", locale.getLanguage());
+
+        Locale expected = Locale.ENGLISH;
+        Locale actual = adapter.adapt("English");
+
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void findLocaleByCountry() {
+    public void findLocaleByOtherLanguage() {
+        LocaleAdapter adapter = new LocaleAdapter(Locale.FRANCE);
+
+        Locale expected = Locale.ENGLISH;
+        Locale actual = adapter.adapt("Anglais");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void findLocaleOfOtherLanguage() {
         LocaleAdapter adapter = new LocaleAdapter();
-        Locale locale = adapter.adapt("United Kingdom");
-        assertEquals("en", locale.getLanguage());
+
+        Locale expected = Locale.FRENCH;
+        Locale actual = adapter.adapt("Français");
+
+        assertEquals(expected, actual);
     }
 
     @Test
     public void findLocaleByTag() {
         LocaleAdapter adapter = new LocaleAdapter();
-        Locale locale = adapter.adapt("en-GB");
-        assertEquals("en", locale.getLanguage());
+
+        Locale expected = Locale.UK;
+        Locale actual = adapter.adapt("en-GB");
+
+        assertEquals(expected, actual);
     }
 
     @Test
+    public void findLocaleByTagUnderscore() {
+        LocaleAdapter adapter = new LocaleAdapter();
+
+        Locale expected = Locale.FRANCE;
+        Locale actual = adapter.adapt("fr_FR");
+
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Internally has a flag to detect if it's an emote.
+     * This will be converted to the country code and only
+     * compared to the ISO codes for country.
+     */
+    @Test
     public void findLocaleByEmote() {
         LocaleAdapter adapter = new LocaleAdapter();
-        Locale locale = adapter.adapt("\uD83C\uDDEC\uD83C\uDDE7");
-        assertEquals("GB", locale.getCountry());
+
+        Locale expected = Locale.FRANCE;
+        Locale actual = adapter.adapt("\uD83C\uDDEB\uD83C\uDDF7");
+
+        assertEquals(expected, actual);
     }
 
     @Test
     public void findLocaleByIso3() {
         LocaleAdapter adapter = new LocaleAdapter();
-        Locale locale = adapter.adapt("pol");
-        assertEquals("pl", locale.getLanguage());
+
+        Locale expected = new Locale("pl", "PL");
+        Locale actual = adapter.adapt("pol");
+
+        assertEquals(expected, actual);
     }
 
     /**
@@ -70,8 +110,25 @@ public class LocaleAdapterTest {
     @Test
     public void findLocaleByIsoByRegionWithMatchingLanguage() {
         LocaleAdapter adapter = new LocaleAdapter();
-        Locale locale = adapter.adapt("fr");
-        assertEquals("fr", locale.toString());
+
+        Locale expected = Locale.FRENCH;
+        Locale actual = adapter.adapt("fr");
+
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * When searching for a locale by country, we should prefer
+     * the country the iso code between language and country are the same.
+     */
+    @Test
+    public void findLocaleByCountryNameWithMatchingLanguage() {
+        LocaleAdapter adapter = new LocaleAdapter();
+
+        Locale expected = Locale.FRANCE;
+        Locale actual = adapter.adapt("france");
+
+        assertEquals(expected, actual);
     }
 
     @Test

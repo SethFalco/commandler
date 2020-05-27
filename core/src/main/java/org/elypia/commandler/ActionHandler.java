@@ -23,14 +23,17 @@ import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.misuse.AbstractMisuseException;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
+import org.elypia.commandler.producers.RequestProducer;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.context.control.ActivateRequestContext;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 /**
+ * TODO: Add back testing logic, but instead it should count up errors that occur
  * The {@link ActionHandler} is what ultimiately handles all events
  * that come through Commandler regardless of service.
  *
@@ -41,34 +44,26 @@ import javax.inject.Inject;
  * @author seth@elypia.org (Seth Falco)
  */
 @ApplicationScoped
-@Alternative
 public class ActionHandler implements ActionListener {
 
     private Logger logger = LoggerFactory.getLogger(ActionHandler.class);
 
-    protected BeanManager beanManager;
-
-    protected DispatcherManager dispatcherManager;
-    protected HeaderManager headerManager;
-    protected AdapterManager adapterService;
-//    protected TestManager testService;
-    protected MessengerManager messengerService;
+    // TODO: dispatcher made all the time :thinking:
+    private final BeanManager beanManager;
+    private final DispatcherManager dispatcher;
+    private final HeaderManager binder;
+    private final AdapterManager adapter;
+    private final MessengerManager messenger;
+    private final Instance<? extends HandlerMiddleware> middlewares;
 
     @Inject
-    public ActionHandler(
-        BeanManager beanManager,
-        DispatcherManager dispatcherManager,
-        HeaderManager headerManager,
-        AdapterManager adapterService,
-//        TestManager testService,
-        MessengerManager messengerService
-    ) {
+    public ActionHandler(BeanManager beanManager, DispatcherManager dispatcher, HeaderManager binder, AdapterManager adapter, MessengerManager messenger, Instance<HandlerMiddleware> middlewares) {
         this.beanManager = beanManager;
-        this.dispatcherManager = dispatcherManager;
-        this.headerManager = headerManager;
-        this.adapterService = adapterService;
-//        this.testService = testService;
-        this.messengerService = messengerService;
+        this.dispatcher = dispatcher;
+        this.binder = binder;
+        this.adapter = adapter;
+        this.messenger = messenger;
+        this.middlewares = middlewares;
     }
 
     /**
@@ -79,42 +74,44 @@ public class ActionHandler implements ActionListener {
      * @return The response to this command, or null
      * if this wasn't a command at all.
      */
+    @ActivateRequestContext
     @Override
     public <S, M> M onAction(Integration<S, M> integration, S source, M message, String content) {
         Request<S, M> request = new Request<>(integration, source, message, content);
-        headerManager.bindHeaders(request);
+        binder.bindHeaders(request);
         logger.debug("Received action request with content: {}", content);
 
-        Object response;
+        BeanProvider.getContextualReference(RequestProducer.class).setRequest(request);
+
+        Object response = null;
         ActionEvent<S, M> event = null;
 
         try {
-            event = dispatcherManager.dispatch(request);
+            event = dispatcher.dispatch(request);
 
             if (event == null)
                 return null;
 
             MetaController module = event.getMetaController();
-            Controller controller = BeanProvider.getContextualReference(module.getHandlerType());
-            Object[] params = adapterService.adaptEvent(event);
+            Controller controller = BeanProvider.getContextualReference(module.getControllerType());
+            Object[] params = adapter.adaptEvent(event);
 
-//            if (testService.isFailing(controller))
-//                throw new ModuleDisabledException(event);
+            for (HandlerMiddleware middleware : middlewares)
+                middleware.onMiddleware(event);
 
             MetaCommand metaCommand = event.getMetaCommand();
             response = metaCommand.getMethod().invoke(controller, params);
         } catch (AbstractMisuseException ex) {
             logger.info("A misuse exception occured when handling a message; command panicked.");
             beanManager.getEvent().fire(new ExceptionToCatchEvent(ex));
-            return null;
         } catch (Exception ex) {
-            logger.error("An exception occured when handling a message.", ex);
-            response = "Something has gone wrong!";
+            logger.error("An uncaught exception occured while handling a request.");
+            beanManager.getEvent().fire(new ExceptionToCatchEvent(ex));
         }
 
         if (response == null)
             return null;
 
-        return messengerService.provide(event, response, integration);
+        return messenger.provide(event, response);
     }
 }

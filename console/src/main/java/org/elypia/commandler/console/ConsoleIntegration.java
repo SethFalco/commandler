@@ -19,7 +19,6 @@ package org.elypia.commandler.console;
 import org.elypia.commandler.api.*;
 import org.slf4j.*;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -51,29 +50,33 @@ public class ConsoleIntegration implements Integration<String, String> {
         this.listener = listener;
     }
 
-    @PostConstruct
-    public void post() {
-        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-
+    @Override
+    public void init() {
         Executors.newSingleThreadExecutor().submit(() -> {
-            logger.info("Started listening to events via console.");
+            Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
+
+            logger.info("Started listening to events in the console.");
             String nextLine;
 
-            while ((nextLine = scanner.nextLine()) != null) {
-                String response;
+            try {
+                while ((nextLine = scanner.nextLine()) != null) {
+                    String response;
 
-                try {
-                    logger.debug("Receive `{}` from {}.", nextLine, this.getClass());
-                    response = listener.onAction(this, nextLine, nextLine, nextLine);
-                } catch (Exception ex) {
-                    logger.error("Failed to process Console event.", ex);
-                    continue;
+                    try {
+                        logger.debug("Receive `{}` from {}.", nextLine, this.getClass());
+                        response = listener.onAction(this, nextLine, nextLine, nextLine);
+                    } catch (Exception ex) {
+                        logger.error("Failed to process Console event.", ex);
+                        continue;
+                    }
+
+                    if (response != null)
+                        logger.info("Response to command was: {}", response);
+                    else
+                        logger.info("A message was received in console, however it warranted no response.");
                 }
-
-                if (response != null)
-                    logger.info("Response to command was: {}", response);
-                else
-                    logger.info("A message was received in console, however it warranted no response.");
+            } catch (Exception ex) {
+                logger.error("Unable to read from the commandline. Make sure there is a connected terminal.", ex);
             }
         });
     }

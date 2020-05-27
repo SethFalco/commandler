@@ -16,33 +16,31 @@
 
 package org.elypia.commandler.adapters;
 
-import org.elypia.commandler.annotation.ParamAdapter;
+import org.elypia.commandler.CommandlerExtension;
+import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
-import org.elypia.commandler.config.ControllerConfig;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.*;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
 @ParamAdapter(MetaController.class)
 public class MetaControllerAdapter implements Adapter<MetaController> {
 
-    private final ControllerConfig controllerConfig;
+    private final CommandlerExtension commmanderExtension;
 
     @Inject
-    public MetaControllerAdapter(final ControllerConfig controllerConfig) {
-        this.controllerConfig = controllerConfig;
+    public MetaControllerAdapter(CommandlerExtension commmanderExtension) {
+        this.commmanderExtension = commmanderExtension;
     }
 
     @Override
     public MetaController adapt(String input, Class<? extends MetaController> type, MetaParam data, ActionEvent<?, ?> event) {
-        List<MetaController> controllers = controllerConfig.getControllers();
+        Collection<MetaController> controllers = commmanderExtension.getMetaControllers();
 
         for (MetaController controller : controllers) {
             if (controller.isPublic() && controller.getName().equalsIgnoreCase(input))

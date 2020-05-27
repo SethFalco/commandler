@@ -60,17 +60,12 @@ public interface ActionCache extends Iterable<Action> {
      * or wasn't ever an action that was handled, just that it wasn't stored.)
      * @return The action that was previous represented by this key.
      */
-    Action pop(Serializable serializable);
-
-    /**
-     * @param serializable The id of the action to delete.
-     */
-    void remove(Serializable serializable);
+    Action remove(Serializable serializable);
 
     /**
      * @return A list of all cached actions in this instance.
      */
-    List<Action> getAll();
+    Collection<Action> getAll();
 
     @Override
     default Iterator<Action> iterator() {

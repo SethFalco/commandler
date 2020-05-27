@@ -29,8 +29,11 @@ public class MetaParam extends MetaComponent {
 
     private Parameter parameter;
 
-    /** The default value if any else null. */
+    /** The default value if null null. */
     private String defaultValue;
+
+    /** The display name for the default value. Null if the default value is viable for display. */
+    private String defaultValueDisplay;
 
     /** If this parameter is required when executing the command. */
     private boolean isOptional;
@@ -38,12 +41,13 @@ public class MetaParam extends MetaComponent {
     /** If this is a single parameter, or a list parameter. */
     private boolean isList;
 
-    public MetaParam(int index, Parameter parameter, String name, String description, String defaultValue, Properties properties) {
+    public MetaParam(int index, Parameter parameter, String name, String description, String defaultValue, String defaultValueDisplay, Properties properties) {
         this.index = index;
         this.parameter = Objects.requireNonNull(parameter);
         this.name = Objects.requireNonNull(name);
         this.description = description;
         this.defaultValue = defaultValue;
+        this.defaultValueDisplay = defaultValueDisplay;
         this.properties = properties;
 
         isOptional = defaultValue != null;
@@ -60,6 +64,10 @@ public class MetaParam extends MetaComponent {
 
     public String getDefaultValue() {
         return defaultValue;
+    }
+
+    public String getDefaultValueDisplay() {
+        return defaultValueDisplay;
     }
 
     public boolean isOptional() {

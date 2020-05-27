@@ -17,13 +17,13 @@
 package org.elypia.commandler.managers;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.Request;
+import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.api.Dispatcher;
-import org.elypia.commandler.config.DispatcherConfig;
-import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.event.*;
 import org.slf4j.*;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.util.*;
@@ -34,7 +34,7 @@ import java.util.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
+@RequestScoped
 public class DispatcherManager {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherManager.class);
@@ -43,12 +43,14 @@ public class DispatcherManager {
 
     private List<Dispatcher> dispatchers;
 
+    private ActionEvent<?, ?> event;
+
     @Inject
-    public DispatcherManager(final BeanManager beanManager, final DispatcherConfig config) {
+    public DispatcherManager(final BeanManager beanManager, final CommandlerExtension extension) {
         this.beanManager = beanManager;
         dispatchers = new ArrayList<>();
 
-        for (Class<Dispatcher> dispatcher : config.getDispatcherTypes()) {
+        for (Class<? extends Dispatcher> dispatcher : extension.getDispatcherTypes()) {
             logger.debug("Creating instance of {}.", dispatcher);
             dispatchers.add(BeanProvider.getContextualReference(dispatcher));
         }
@@ -66,10 +68,17 @@ public class DispatcherManager {
 
             logger.debug("Used dispatcher for event: {}", dispatcher.getClass());
 
+            this.event = event;
             return event;
         }
 
         return null;
+    }
+
+    @RequestScoped
+    @Produces
+    public ActionEvent getActionEvent() {
+        return event;
     }
 
     public void add(Dispatcher... dispatchers) {
