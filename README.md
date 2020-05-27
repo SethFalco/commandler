@@ -84,7 +84,7 @@ public class UtilityController implements Controller {
 }
 ```
 > Here we're creating our first controller and command. By default, it'll activate 
-> whenever we type `utils boop` in console and return the text `boop`.  
+> whenever we type `$utils boop` in console and return the text `boop`.  
 > Commandler also provides i18n (internationalization) support out of the box, 
 > you can omit hardcoding documentation or aliases in the annotations and instead opt
 > to put them in a `CommandlerMessages` resource bundle instead which will use the
