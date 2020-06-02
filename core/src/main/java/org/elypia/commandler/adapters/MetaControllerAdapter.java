@@ -19,7 +19,9 @@ package org.elypia.commandler.adapters;
 import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
+import org.elypia.commandler.dispatchers.StandardDispatcher;
 import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.metadata.*;
 
 import javax.inject.Inject;
@@ -32,10 +34,12 @@ import java.util.Collection;
 public class MetaControllerAdapter implements Adapter<MetaController> {
 
     private final CommandlerExtension commmanderExtension;
+    private final CommandlerMessageResolver resolver;
 
     @Inject
-    public MetaControllerAdapter(CommandlerExtension commmanderExtension) {
+    public MetaControllerAdapter(CommandlerExtension commmanderExtension, CommandlerMessageResolver resolver) {
         this.commmanderExtension = commmanderExtension;
+        this.resolver = resolver;
     }
 
     @Override
@@ -43,7 +47,16 @@ public class MetaControllerAdapter implements Adapter<MetaController> {
         Collection<MetaController> controllers = commmanderExtension.getMetaControllers();
 
         for (MetaController controller : controllers) {
-            if (controller.isPublic() && controller.getName().equalsIgnoreCase(input))
+            if (controller.isHidden())
+                continue;
+
+            if (resolver.getMessage(controller.getName()).equalsIgnoreCase(input))
+                return controller;
+
+            // TODO: Use activators instead?
+            String aliases = controller.getProperty(StandardDispatcher.class, "aliases");
+
+            if (aliases.equalsIgnoreCase(input))
                 return controller;
         }
 

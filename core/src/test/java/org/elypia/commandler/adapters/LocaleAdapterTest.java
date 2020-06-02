@@ -17,6 +17,8 @@
 package org.elypia.commandler.adapters;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Locale;
 
@@ -29,7 +31,7 @@ public class LocaleAdapterTest {
 
     @Test
     public void findLocaleByLanguage() {
-        LocaleAdapter adapter = new LocaleAdapter();
+        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
 
         Locale expected = Locale.ENGLISH;
         Locale actual = adapter.adapt("English");
@@ -49,7 +51,7 @@ public class LocaleAdapterTest {
 
     @Test
     public void findLocaleOfOtherLanguage() {
-        LocaleAdapter adapter = new LocaleAdapter();
+        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
 
         Locale expected = Locale.FRENCH;
         Locale actual = adapter.adapt("Français");
@@ -59,7 +61,7 @@ public class LocaleAdapterTest {
 
     @Test
     public void findLocaleByTag() {
-        LocaleAdapter adapter = new LocaleAdapter();
+        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
 
         Locale expected = Locale.UK;
         Locale actual = adapter.adapt("en-GB");
@@ -69,7 +71,7 @@ public class LocaleAdapterTest {
 
     @Test
     public void findLocaleByTagUnderscore() {
-        LocaleAdapter adapter = new LocaleAdapter();
+        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
 
         Locale expected = Locale.FRANCE;
         Locale actual = adapter.adapt("fr_FR");
@@ -84,7 +86,7 @@ public class LocaleAdapterTest {
      */
     @Test
     public void findLocaleByEmote() {
-        LocaleAdapter adapter = new LocaleAdapter();
+        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
 
         Locale expected = Locale.FRANCE;
         Locale actual = adapter.adapt("\uD83C\uDDEB\uD83C\uDDF7");
@@ -94,7 +96,7 @@ public class LocaleAdapterTest {
 
     @Test
     public void findLocaleByIso3() {
-        LocaleAdapter adapter = new LocaleAdapter();
+        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
 
         Locale expected = new Locale("pl", "PL");
         Locale actual = adapter.adapt("pol");
@@ -109,7 +111,7 @@ public class LocaleAdapterTest {
      */
     @Test
     public void findLocaleByIsoByRegionWithMatchingLanguage() {
-        LocaleAdapter adapter = new LocaleAdapter();
+        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
 
         Locale expected = Locale.FRENCH;
         Locale actual = adapter.adapt("fr");
@@ -123,7 +125,7 @@ public class LocaleAdapterTest {
      */
     @Test
     public void findLocaleByCountryNameWithMatchingLanguage() {
-        LocaleAdapter adapter = new LocaleAdapter();
+        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
 
         Locale expected = Locale.FRANCE;
         Locale actual = adapter.adapt("france");
@@ -131,14 +133,10 @@ public class LocaleAdapterTest {
         assertEquals(expected, actual);
     }
 
-    @Test
-    public void testNull() {
+    @ParameterizedTest
+    @ValueSource(strings = {"invalid", "this place doesn't exist", "en-nou"})
+    public void testNull(String value) {
         LocaleAdapter adapter = new LocaleAdapter();
-
-        assertAll("Check if all these return null.",
-            () -> assertNull(adapter.adapt("invalid")),
-            () -> assertNull(adapter.adapt("this place doesn't exist")),
-            () -> assertNull(adapter.adapt("en-nou"))
-        );
+        assertNull(adapter.adapt(value));
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler;
+package org.elypia.commandler.exceptions.handlers;
 
 import org.apache.deltaspike.core.api.config.*;
 

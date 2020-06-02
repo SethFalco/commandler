@@ -16,9 +16,11 @@
 
 package org.elypia.commandler.adapters;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -32,11 +34,9 @@ public class StringAdapterTest {
         adapter = new StringAdapter();
     }
 
-    @Test
-    public void assertStrings() {
-        assertAll("Check the same text provided.",
-            () -> assertEquals("10000", adapter.adapt("10000")),
-            () -> assertEquals("Hello, world!", adapter.adapt("Hello, world!"))
-        );
+    @ParameterizedTest
+    @ValueSource(strings = {"10000", "Hello, world!"})
+    public void assertStrings(String value) {
+        assertEquals(value, adapter.adapt(value));
     }
 }

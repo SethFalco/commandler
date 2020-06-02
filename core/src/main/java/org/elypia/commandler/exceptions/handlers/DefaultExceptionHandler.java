@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler;
+package org.elypia.commandler.exceptions.handlers;
 
 import org.apache.deltaspike.core.api.exception.control.*;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.elypia.commandler.exceptions.misuse.AbstractMisuseException;
+import org.elypia.commandler.producers.MessageSender;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 /**
- * TODO: Exceptions don't send messages anymroe
- * TODO: Make help command work again
+ * The default handling for certain {@link Exception}s
+ * that haven't been handled by any other handler.
  *
- * The default handling for certain {@link AbstractMisuseException}
- * that occur during runtime.
- *
- * It's recommend when configuring your own exceptions
- * to derive from this class as a base.
+ * Sends a generic failure message to say something went wrong.
  *
  * @author seth@elypia.org (Seth Falco)
  */
@@ -42,18 +38,23 @@ public class DefaultExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultExceptionHandler.class);
 
+    private final MessageSender sender;
     private final DefaultExceptionHandlerConfiguration config;
 
     @Inject
-    public DefaultExceptionHandler(DefaultExceptionHandlerConfiguration config) {
+    public DefaultExceptionHandler(MessageSender sender, DefaultExceptionHandlerConfiguration config) {
+        this.sender = sender;
         this.config = config;
     }
 
     /**
-     * @param ex The exception that occured.
+     * @param exEvent The exception that occured.
      */
-    public void onException(@Handles ExceptionEvent<Exception> ex) {
-        logger.error("An uncaught exception occured during command handling.", ex.getException());
-        logger.info(config.getGenericExceptionMessage());
+    public void onException(@Handles(ordinal = Integer.MIN_VALUE) ExceptionEvent<Exception> exEvent) {
+        if (exEvent.isMarkedHandled())
+            return;
+
+        logger.error("An uncaught and unhandled exception occured during the request. Sending default message.", exEvent.getException());
+        sender.send(config.getGenericExceptionMessage());
     }
 }

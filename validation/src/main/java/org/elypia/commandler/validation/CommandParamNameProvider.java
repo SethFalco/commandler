@@ -94,7 +94,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
         CommandlerMessageResolver commandlerMessageResolver = BeanProvider.getContextualReference(CommandlerMessageResolver.class);
 
         for (MetaParam metaParam : metaParams)
-            names.set(metaParam.getIndex(), commandlerMessageResolver.getMessage(metaParam.getName()));
+            names.set(metaParam.getCommandIndex(), commandlerMessageResolver.getMessage(metaParam.getName()));
 
         return names;
     }

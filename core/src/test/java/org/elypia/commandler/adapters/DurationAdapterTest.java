@@ -17,6 +17,8 @@
 package org.elypia.commandler.adapters;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.text.NumberFormat;
 import java.time.Duration;
@@ -53,23 +55,14 @@ public class DurationAdapterTest {
     @Test
     public void testNullWithPartialValid() {
         DurationAdapter adapter = new DurationAdapter();
-
-        assertAll("Check if partially valid input returns null.",
-            () -> assertNull(adapter.adapt("100 hours invalid"))
-        );
+        assertNull(adapter.adapt("100 hours invalid"));
     }
 
-    @Test
-    public void testNull() {
+    @ParameterizedTest
+    @ValueSource(strings = {"invalid", "100 invalid", "100", "this isn't even close to valid input", ""})
+    public void testNull(String value) {
         DurationAdapter adapter = new DurationAdapter();
-
-        assertAll("Check if all these return null.",
-            () -> assertNull(adapter.adapt("invalid")),
-            () -> assertNull(adapter.adapt("100 invalid")),
-            () -> assertNull(adapter.adapt("100")),
-            () -> assertNull(adapter.adapt("this isn't even close to valid input")),
-            () -> assertNull(adapter.adapt(""))
-        );
+        assertNull(adapter.adapt(value));
     }
 
     @Test

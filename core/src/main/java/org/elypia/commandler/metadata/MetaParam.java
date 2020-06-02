@@ -25,7 +25,10 @@ import java.util.*;
 public class MetaParam extends MetaComponent {
 
     /** Parameter index in the method it is defined in. */
-    private int index;
+    private int methodIndex;
+
+    /** Param index in the command that it is defined in. */
+    private int commandIndex;
 
     private Parameter parameter;
 
@@ -41,8 +44,9 @@ public class MetaParam extends MetaComponent {
     /** If this is a single parameter, or a list parameter. */
     private boolean isList;
 
-    public MetaParam(int index, Parameter parameter, String name, String description, String defaultValue, String defaultValueDisplay, Properties properties) {
-        this.index = index;
+    public MetaParam(int methodIndex, int commandIndex, Parameter parameter, String name, String description, String defaultValue, String defaultValueDisplay, Properties properties) {
+        this.methodIndex = methodIndex;
+        this.commandIndex = commandIndex;
         this.parameter = Objects.requireNonNull(parameter);
         this.name = Objects.requireNonNull(name);
         this.description = description;
@@ -54,8 +58,12 @@ public class MetaParam extends MetaComponent {
         isList = parameter.getType().isArray();
     }
 
-    public int getIndex() {
-        return index;
+    public int getMethodIndex() {
+        return methodIndex;
+    }
+
+    public int getCommandIndex() {
+        return commandIndex;
     }
 
     public Parameter getParameter() {

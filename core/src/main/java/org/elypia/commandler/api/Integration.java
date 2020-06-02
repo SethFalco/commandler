@@ -16,6 +16,8 @@
 
 package org.elypia.commandler.api;
 
+import org.elypia.commandler.event.ActionEvent;
+
 import java.io.Serializable;
 
 /**
@@ -55,4 +57,17 @@ public interface Integration<S, M> {
      * unique IDs itself.
      */
     Serializable getActionId(S source);
+
+    /**
+     * A utility to respond to an event.
+     * This is useful for cases where it's desireable to send a
+     * message in chat in a context outside of the return type of a method.
+     *
+     * For example returning a method in a seperate handler or listener,
+     * or in a thread that's created in a command.
+     *
+     * @param event The event that we're responding to.
+     * @param message The message to send.
+     */
+    void send(ActionEvent<S, M> event, M message);
 }

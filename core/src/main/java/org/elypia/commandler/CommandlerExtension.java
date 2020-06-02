@@ -4,7 +4,6 @@ import org.apache.commons.lang3.ClassUtils;
 import org.elypia.commandler.annotation.*;
 import org.elypia.commandler.annotation.stereotypes.*;
 import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -71,6 +70,10 @@ public class CommandlerExtension implements Extension {
             boolean isHidden = commandController.hidden();
             ComponentConfig component = convertComponent(javaClazz, 0);
             List<MetaCommand> commands = convertCommands(javaClazz);
+
+            if (AnnotationUtils.isEffectivelyNull(group))
+                group = "{" + javaClazz.getName() + ".group}";
+
             metaControllers.add(new MetaController((Class<? extends Controller>)javaClazz, group, component.name, component.description, isHidden, component.properties, commands));
         }
     }
@@ -109,22 +112,24 @@ public class CommandlerExtension implements Extension {
 
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
-            Class<?> parameterType = parameter.getType();
 
-            if (!ActionEvent.class.isAssignableFrom(parameterType)) {
-                ComponentConfig component = convertComponent(parameter, index++);
+            if (!parameter.isAnnotationPresent(Param.class))
+                continue;
 
-                String defaultValue = null;
-                String defaultValueDisplay = null;
+            Param value = parameter.getAnnotation(Param.class);
 
-                if (parameter.isAnnotationPresent(DefaultValue.class)) {
-                    DefaultValue value = parameter.getAnnotation(DefaultValue.class);
-                    defaultValue = value.value();
-                    defaultValueDisplay = value.displayAs();
-                }
+            ComponentConfig component = convertComponent(parameter, index);
 
-                params.add(new MetaParam(i, parameter, component.name, component.description, defaultValue, defaultValueDisplay, component.properties));
-            }
+            String defaultValue = value.value();
+            String defaultValueDisplay = value.displayAs();
+
+            if (AnnotationUtils.isEffectivelyNull(defaultValue))
+                defaultValue = null;
+
+            if (AnnotationUtils.isEffectivelyNull(defaultValueDisplay))
+                defaultValueDisplay = defaultValue;
+
+            params.add(new MetaParam(i, index++, parameter, component.name, component.description, defaultValue, defaultValueDisplay, component.properties));
         }
 
         return params;

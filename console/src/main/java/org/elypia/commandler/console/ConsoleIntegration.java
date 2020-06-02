@@ -17,6 +17,7 @@
 package org.elypia.commandler.console;
 
 import org.elypia.commandler.api.*;
+import org.elypia.commandler.event.ActionEvent;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -71,7 +72,7 @@ public class ConsoleIntegration implements Integration<String, String> {
                     }
 
                     if (response != null)
-                        logger.info("Response to command was: {}", response);
+                        send(null, response);
                     else
                         logger.info("A message was received in console, however it warranted no response.");
                 }
@@ -91,5 +92,14 @@ public class ConsoleIntegration implements Integration<String, String> {
         int id = i.addAndGet(1);
         logger.debug("ID for message `{}`: {}", source, id);
         return id;
+    }
+
+    /**
+     * @param event This is ignored.
+     * @param message The message to send.
+     */
+    @Override
+    public void send(ActionEvent<String, String> event, String message) {
+        logger.info("Response to command was: {}", message);
     }
 }

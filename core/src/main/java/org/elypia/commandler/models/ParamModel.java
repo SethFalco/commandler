@@ -14,30 +14,35 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.producers;
+package org.elypia.commandler.models;
 
-import org.elypia.commandler.api.Integration;
-import org.elypia.commandler.event.Request;
+public class ParamModel {
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+    private String name;
+    private String description;
 
-@RequestScoped
-public class RequestProducer {
-
-    private Request<?, ?> request;
-
-    @Produces
-    public Request getRequest() {
-        return request;
+    public ParamModel() {
+        // Do nothing.
     }
 
-    @Produces
-    public Integration getIntegration() {
-        return request.getIntegration();
+    public ParamModel(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
-    public void setRequest(Request<?, ?> request) {
-        this.request = request;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -17,6 +17,8 @@
 package org.elypia.commandler.adapters;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,12 +51,9 @@ public class CharAdapterTest {
         );
     }
 
-    @Test
-    public void testNull() {
-        assertAll("Check if all these return null.",
-            () -> assertNull(adapter.adapt("128")),
-            () -> assertNull(adapter.adapt("invalid")),
-            () -> assertNull(adapter.adapt("can't be done"))
-        );
+    @ParameterizedTest
+    @ValueSource(strings = {"128", "invalid", "can't be done"})
+    public void testNull(String value) {
+        assertNull(adapter.adapt(value));
     }
 }

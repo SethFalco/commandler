@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler;
+package org.elypia.commandler.exceptions.handlers;
 
 import org.apache.deltaspike.core.api.exception.control.*;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.misuse.*;
+import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.metadata.*;
+import org.elypia.commandler.producers.MessageSender;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -38,31 +41,23 @@ import java.util.stream.Collectors;
  */
 @ApplicationScoped
 @ExceptionHandler
-public class DefaultMisuseHandler {
+public class MisuseExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultMisuseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(MisuseExceptionHandler.class);
 
-    /**
-     * @param ex The exception that occured.
-     * @return Always returns null.
-     */
-    public String onOnlyPrefix(@Handles ExceptionEvent<OnlyPrefixException> ex) {
-        return null;
+    private final CommandlerMessageResolver commandlerMessages;
+    private final MessageSender sender;
+
+    @Inject
+    public MisuseExceptionHandler(CommandlerMessageResolver commandlerMessages, MessageSender sender) {
+        this.commandlerMessages = commandlerMessages;
+        this.sender = sender;
     }
 
     /**
      * @param ex The exception that occured.
-     * @return Always returns null.
      */
-    public String onModuleNotFound(@Handles ExceptionEvent<ModuleNotFoundException> ex) {
-        return null;
-    }
-
-    /**
-     * @param ex The exception that occured.
-     * @return Don't send any messages.
-     */
-    public String onParamMismatch(@Handles ExceptionEvent<ParamCountMismatchException> ex) {
+    public void onParamMismatch(@Handles ExceptionEvent<ParamCountMismatchException> ex) {
         Objects.requireNonNull(ex);
         ActionEvent<?, ?> event = ex.getException().getActionEvent();
         MetaCommand metaCommand = event.getMetaCommand();
@@ -73,16 +68,16 @@ public class DefaultMisuseHandler {
             "Required: %s\n" +
             "Provided: %s";
 
-        String moduleName = event.getMetaController().getName();
-        String commandName = metaCommand.getName();
-        return String.format(format, moduleName, commandName, metaCommand.toParamString(), event.getAction().toParamString());
+        String moduleName = commandlerMessages.getMessage(event.getMetaController().getName());
+        String commandName = commandlerMessages.getMessage(metaCommand.getName());
+        sender.send(String.format(format, moduleName, commandName, metaCommand.toParamString(), event.getAction().toParamString()));
+        ex.handled();
     }
 
     /**
      * @param ex The exception that occured.
-     * @return Don't send any messages.
      */
-    public String onNoDefaultCommand(@Handles ExceptionEvent<NoDefaultCommandException> ex) {
+    public void onNoDefaultCommand(@Handles ExceptionEvent<NoDefaultCommandException> ex) {
         Objects.requireNonNull(ex);
         String format =
             "Command failed; this module has no default command.\n" +
@@ -97,14 +92,14 @@ public class DefaultMisuseHandler {
         String commands = metaController.getPublicCommands().stream()
             .map(MetaCommand::toString)
             .collect(Collectors.joining("\n"));
-        return String.format(format, metaController.getName(), commands);
+        sender.send(String.format(format, metaController.getName(), commands));
+        ex.handled();
     }
 
     /**
      * @param ex The exception that occured.
-     * @return Don't send any messages.
      */
-    public String onParamParse(@Handles ExceptionEvent<ParamParseException> ex) {
+    public void onParamParse(@Handles ExceptionEvent<ParamParseException> ex) {
         Objects.requireNonNull(ex);
         String format =
             "Command failed; I couldn't interpret '%s', as the parameter '%s'.\n" +
@@ -117,22 +112,22 @@ public class DefaultMisuseHandler {
         MetaParam metaParam = ex.getException().getMetaParam();
         MetaCommand metaCommand = input.getMetaCommand();
 
-        return String.format(
+        sender.send(String.format(
             format,
             ex.getException().getItem(),
-            metaParam.getName(),
-            input.getMetaController().getName(),
-            metaCommand.getName(),
+            commandlerMessages.getMessage(metaParam.getName()),
+            commandlerMessages.getMessage(input.getMetaController().getName()),
+            commandlerMessages.getMessage(metaCommand.getName()),
             metaCommand.toParamString(),
             input.getAction().toParamString()
-        );
+        ));
+        ex.handled();
     }
 
     /**
      * @param ex The exception that occured.
-     * @return Don't send any messages.
      */
-    public String onListUnsupported(@Handles ExceptionEvent<ListUnsupportedException> ex) {
+    public void onListUnsupported(@Handles ExceptionEvent<ListUnsupportedException> ex) {
         Objects.requireNonNull(ex);
         String format =
             "Command failed; the parameter '%s' can't be a list.\n" +
@@ -142,35 +137,25 @@ public class DefaultMisuseHandler {
             "Provided: %s";
 
         ActionEvent input = ex.getException().getActionEvent();
-        String param = ex.getException().getMetaParam().getName();
-        String module = input.getMetaController().getName();
+        String param = commandlerMessages.getMessage(ex.getException().getMetaParam().getName());
+        String module = commandlerMessages.getMessage(input.getMetaController().getName());
         MetaCommand metaCommand = input.getMetaCommand();
-        String commandName = metaCommand.getName();
+        String commandName = commandlerMessages.getMessage(metaCommand.getName());
         String commandParams = metaCommand.toParamString();
 
-        return String.format(format, param, module, commandName, commandParams, input.getAction().toParamString());
+        sender.send(String.format(format, param, module, commandName, commandParams, input.getAction().toParamString()));
+        ex.handled();
     }
 
     /**
      * @param ex The exception that occured.
-     * @return Don't send any messages.
      */
-    public String onDisabled(@Handles ExceptionEvent<ModuleDisabledException> ex) {
+    public void onDisabled(@Handles ExceptionEvent<ModuleDisabledException> ex) {
         String format =
             "Command failed; this module is currently disabled due to live issues.\n" +
             "Module: %s";
 
-        return String.format(format, ex.getException().getActionEvent().getMetaController().getName());
-    }
-
-    /**
-     * @param ex The exception that occured.
-     * @param <X> A type of exception.
-     * @return Don't send any messages.
-     */
-    public <X extends AbstractMisuseException> String onMisuseException(@Handles ExceptionEvent<X> ex) {
-        String text = "An unknown error occured.";
-        logger.error(text, ex);
-        return text;
+        sender.send(String.format(format, commandlerMessages.getMessage(ex.getException().getActionEvent().getMetaController().getName())));
+        ex.handled();
     }
 }

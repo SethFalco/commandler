@@ -17,8 +17,10 @@
 package org.elypia.commandler.adapters;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.net.URL;
+import java.net.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,14 +29,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class UrlAdapterTest {
 
-    @Test
-    public void testUrls() {
+    @ParameterizedTest
+    @ValueSource(strings = {"https://elypia.com/", "https://ely.gg/"})
+    public void testUrls(String url) throws MalformedURLException {
         UrlAdapter adapter = new UrlAdapter();
-
-        assertAll("Check the same text provided.",
-            () -> assertEquals(new URL("https://elypia.com/"), adapter.adapt("https://elypia.com/")),
-            () -> assertEquals(new URL("https://ely.gg/"), adapter.adapt("https://ely.gg/"))
-        );
+        assertEquals(new URL(url), adapter.adapt(url));
     }
 
     @Test

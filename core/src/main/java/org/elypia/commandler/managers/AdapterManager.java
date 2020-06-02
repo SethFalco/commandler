@@ -74,66 +74,59 @@ public class AdapterManager {
     public Object[] adaptEvent(ActionEvent event) {
         Action action = event.getAction();
         List<MetaParam> metaParams = event.getMetaCommand().getMetaParams();
-        List<List<String>> inputs = action.getParams();
-        List<Object> objects = new ArrayList<>();
-
-        for (int i = 0; i < metaParams.size(); i++) {
-            MetaParam metaParam = metaParams.get(i);
-            List<String> param;
-
-            if (inputs.size() > i)
-                param = inputs.get(i);
-            else {
-                ELContext context = new StandardELContext(expressionFactory);
-                VariableMapper mapper = context.getVariableMapper();
-                mapper.setVariable("event", expressionFactory.createValueExpression(event, ActionEvent.class));
-                mapper.setVariable("action", expressionFactory.createValueExpression(action, Action.class));
-                mapper.setVariable("integration", expressionFactory.createValueExpression(event.getRequest().getIntegration(), Integration.class));
-                mapper.setVariable("source", expressionFactory.createValueExpression(event.getRequest().getSource(), event.getRequest().getSource().getClass()));
-
-                String defaultValue = metaParam.getDefaultValue();
-                ValueExpression ve = expressionFactory.createValueExpression(context, defaultValue, Object.class);
-                Object value = ve.getValue(context);
-                Class<?> type = value.getClass();
-                Class<?> parameterType = metaParam.getParameter().getType();
-
-                if (String.class.isAssignableFrom(type))
-                    param = List.of((String)value);
-                else if (String[].class.isAssignableFrom(type))
-                    param = List.of((String[])value);
-                else if (List.class.isAssignableFrom(type))
-                    param = (List<String>)value;
-                else if (parameterType.isAssignableFrom(type)) {
-                    objects.add(value);
-                    continue;
-                }
-                else
-                    throw new RuntimeException("defaultValue must be assignable to String, String[], List<String> or " + parameterType + ".");
-            }
-
-            Object object = adaptParam(action, event, metaParam, param);
-            objects.add(object);
-        }
-
-        Iterator<Object> iter = objects.iterator();
-        List<Object> toReturn = new ArrayList<>();
+        Iterator<List<String>> userInputParameters = action.getParams().iterator();
         Class<?>[] types = event.getMetaCommand().getMethod().getParameterTypes();
+        Object[] itemsToReturn = new Object[types.length];
 
-        // TODO: make it so we can add other types?
-        for (Class<?> type : types) {
-            if (ActionEvent.class.isAssignableFrom(type))
-                toReturn.add(event);
-            else if (event.getRequest().getClass().isAssignableFrom(type))
-                toReturn.add(event.getRequest());
-            else if (event.getRequest().getMessage().getClass().isAssignableFrom(type))
-                toReturn.add(event.getRequest().getMessage());
-            else if (event.getRequest().getSource().getClass().isAssignableFrom(type))
-                toReturn.add(event.getRequest().getSource());
-            else
-                toReturn.add(iter.next());
+        for (int i = 0; i < types.length; i++) {
+            final int iFinal = i;
+
+            Optional<MetaParam> optMetaParam = metaParams.stream()
+                .filter((m) -> m.getMethodIndex() == iFinal)
+                .findAny();
+
+            if (optMetaParam.isEmpty())
+                itemsToReturn[i] = BeanProvider.getContextualReference(types[i]);
+            else {
+                MetaParam metaParam = optMetaParam.get();
+                List<String> param;
+
+                if (userInputParameters.hasNext())
+                    param = userInputParameters.next();
+                else {
+                    ELContext context = new StandardELContext(expressionFactory);
+                    VariableMapper mapper = context.getVariableMapper();
+                    mapper.setVariable("event", expressionFactory.createValueExpression(event, ActionEvent.class));
+                    mapper.setVariable("action", expressionFactory.createValueExpression(action, Action.class));
+                    mapper.setVariable("integration", expressionFactory.createValueExpression(event.getRequest().getIntegration(), Integration.class));
+                    mapper.setVariable("source", expressionFactory.createValueExpression(event.getRequest().getSource(), event.getRequest().getSource().getClass()));
+
+                    String defaultValue = metaParam.getDefaultValue();
+                    ValueExpression ve = expressionFactory.createValueExpression(context, defaultValue, Object.class);
+                    Object value = ve.getValue(context);
+                    Class<?> type = value.getClass();
+                    Class<?> parameterType = metaParam.getParameter().getType();
+
+                    if (String.class.isAssignableFrom(type))
+                        param = List.of((String)value);
+                    else if (String[].class.isAssignableFrom(type))
+                        param = List.of((String[])value);
+                    else if (List.class.isAssignableFrom(type))
+                        param = (List<String>)value;
+                    else if (parameterType.isAssignableFrom(type)) {
+                        itemsToReturn[i] = value;
+                        continue;
+                    }
+                    else
+                        throw new RuntimeException("defaultValue must be assignable to String, String[], List<String> or " + parameterType + ".");
+                }
+
+                Object object = adaptParam(action, event, metaParam, param);
+                itemsToReturn[i] = object;
+            }
         }
 
-        return Collections.unmodifiableList(toReturn).toArray();
+        return itemsToReturn;
     }
 
     /**

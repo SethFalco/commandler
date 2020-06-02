@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler;
+dependencies {
+    api project(":core")
 
-/**
- * @author seth@elypia.org (Seth Falco)
- */
-class AdapterManagerTest {
+    // Hibernate Validation and Exposes the Validation API
+    implementation project(":validation")
+    api "jakarta.validation:jakarta.validation-api:${validationVersion}"
 
+    // YAML4DeltaSpike for YAML Support by Default
+    implementation "org.elypia.yaml4deltaspike:yaml4deltaspike:1.2.0"
+
+    // Quartz for @Schedule
+    api "org.quartz-scheduler:quartz:2.3.2"
+
+    // Weld for CDI
+    api "org.jboss.weld.se:weld-se-core:3.1.4.Final"
+    implementation "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:${deltaSpikeVersion}"
 }

@@ -38,4 +38,4 @@ include "file-configuration"
  * This is a quick-start module, which bundles all modules
  * and libraries to get started as quick as possible.
  */
-include "noob"
+include "newb"

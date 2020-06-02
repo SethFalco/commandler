@@ -104,7 +104,7 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
 
     @Override
     public String toString() {
-        return name + " | " + toParamString();
+        return this.getClass() + " | " + toParamString();
     }
 
     /**
@@ -115,16 +115,16 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
         StringJoiner itemJoiner = new StringJoiner(" ");
 
         for (MetaParam metaParam : metaParams) {
-            String name = metaParam.getName();
+            Class<?> clazz = metaParam.getParameter().getType();
             StringBuilder builder = new StringBuilder();
 
             if (metaParam.isOptional())
                 builder.append("?");
 
             if (metaParam.isList())
-                builder.append("[").append(name).append("]");
+                builder.append("[").append(clazz).append("]");
             else
-                builder.append(name);
+                builder.append(clazz);
 
             itemJoiner.add(builder.toString());
         }

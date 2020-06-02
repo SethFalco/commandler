@@ -65,7 +65,7 @@ public class HibernateValidationManager {
 
     public void validate(ActionEvent<?, ?> event, Controller controller, Object[] parameters) {
         Method method = event.getMetaCommand().getMethod();
-        logger.debug("Validating `{}` with {} parameters.", event.getMetaCommand(), parameters.length);
+        logger.debug("Validating {} with {} parameters.", event.getMetaCommand(), parameters.length);
         Set<ConstraintViolation<Controller>> violations = exValidator.validateParameters(controller, method, parameters);
 
         if (!violations.isEmpty())

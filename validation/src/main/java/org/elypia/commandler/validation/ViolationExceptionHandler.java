@@ -20,9 +20,12 @@ import org.apache.deltaspike.core.api.exception.control.*;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
 import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.i18n.CommandlerMessageResolver;
+import org.elypia.commandler.producers.MessageSender;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.validation.*;
 import java.util.*;
 
@@ -34,22 +37,32 @@ import java.util.*;
  */
 @ApplicationScoped
 @ExceptionHandler
-public class ValidationMisuseHandler {
+public class ViolationExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ValidationMisuseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ViolationExceptionHandler.class);
+
+    private final CommandlerMessageResolver commandlerMessages;
+    private final MessageSender sender;
+
+    @Inject
+    public ViolationExceptionHandler(CommandlerMessageResolver commandlerMessages, MessageSender sender) {
+        this.commandlerMessages = commandlerMessages;
+        this.sender = sender;
+    }
 
     /**
-     * @param ex The exception that occured.
-     * @return An error String reporting all violations.
+     * @param event The exception that occured.
      * @throws NullPointerException if exception is null.
      */
-    public String onViolation(@Handles ExceptionEvent<ViolationException> ex) {
-        Objects.requireNonNull(ex);
+    public void onViolation(@Handles ExceptionEvent<ViolationException> event) {
+        Objects.requireNonNull(event);
+        ViolationException ex = event.getException();
 
         List<ConstraintViolation<Controller>> commandViolations = new ArrayList<>();
         List<ConstraintViolation<Controller>> paramViolations = new ArrayList<>();
 
-        for (ConstraintViolation<Controller> violation : ex.getException().getViolations()) {
+        for (ConstraintViolation<Controller> violation : ex.getViolations()) {
+            // TODO: This is invalid now,
             if (violation.getInvalidValue() instanceof ActionEvent)
                 commandViolations.add(violation);
             else
@@ -83,15 +96,14 @@ public class ValidationMisuseHandler {
                 last = iter.next();
 
             Objects.requireNonNull(last);
-
-            format.append(last.getName()).append(": ").append(violation.getMessage());
+            format.append(commandlerMessages.getMessage(last.getName())).append(": ").append(violation.getMessage());
         }
 
-        String module = ex.getException().getActionEvent().getMetaController().getName();
-        String command = ex.getException().getActionEvent().getMetaCommand().getName();
+        String module = commandlerMessages.getMessage(ex.getActionEvent().getMetaController().getName());
+        String command = commandlerMessages.getMessage(ex.getActionEvent().getMetaCommand().getName());
         String response = String.format(format.toString(), module, command);
 
-        logger.info(response);
-        return response;
+        sender.send(response);
+        event.handled();
     }
 }

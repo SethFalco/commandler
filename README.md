@@ -29,7 +29,7 @@ which may offer users a better experience when reading your chatbots documentati
 Commandler is split into several small modules in order give very fine control
 over what logic and dependencies you have in your application(s).
 
-It's recommended to use `org.elypia.commandler:noob` to get started; this pulls 
+It's recommended to use `org.elypia.commandler:newb` to get started; this pulls 
 together the recommended modules and libraries so you can jump straight into
 development without worrying too much about the runtime dependencies or configuration.  
 This uses Weld, Hibernate, and provides YAML support with an `application.yml` by default.
@@ -40,7 +40,7 @@ on whatever libraries or runtimes you want.
 
 ### Example Code
 For this example we're going to assume that you're depending on the 
-`org.elypia.commandler:noob` and `org.elypia.commandler:console` modules.
+`org.elypia.commandler:newb` and `org.elypia.commandler:console` modules.
 The `console` module will add support for performing commands in command line which
 is a great way to gain familiarity with the API and test things out quickly.
 

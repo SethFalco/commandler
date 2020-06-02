@@ -14,23 +14,10 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation;
-
-import java.lang.annotation.*;
-
-@Target(ElementType.PARAMETER)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface DefaultValue {
-
-    String value();
-
-    /**
-     * This is especially useful when the default value is handled
-     * via Java Expression Language.
-     *
-     * @return Returns a user friendly name for this display
-     * value.
-     */
-    String displayAs() default AnnotationUtils.EFFECTIVELY_NULL;
-}
+/**
+ * Models have the sole purpose of being easy to transform for messengers.
+ * They don't use any Commandler, or CDI magic, they're just useful
+ * intermediate objects that have {@link org.elypia.commandler.api.Messenger}s
+ * implemented amongst multiple integrations.
+ */
+package org.elypia.commandler.models;

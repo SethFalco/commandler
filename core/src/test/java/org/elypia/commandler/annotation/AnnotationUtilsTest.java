@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-public class AnnoUtilsTest {
+public class AnnotationUtilsTest {
 
     @Test
     public void isEffectivelyNull() {

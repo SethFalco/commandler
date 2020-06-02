@@ -16,7 +16,9 @@
 
 package org.elypia.commandler.adapters;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,27 +34,21 @@ public class BooleanAdapterTest {
         adapter = new BooleanAdapter();
     }
 
-    @Test
-    public void testTruthy() {
-        assertAll("Check if all these return true.",
-            () -> assertTrue(adapter.adapt("true")),
-            () -> assertTrue(adapter.adapt("1"))
-        );
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "1"})
+    public void testTruthy(String value) {
+        assertTrue(adapter.adapt(value));
     }
 
-    @Test
-    public void testFalsy() {
-        assertAll("Check if all these return false.",
-            () -> assertFalse(adapter.adapt("false")),
-            () -> assertFalse(adapter.adapt("0"))
-        );
+    @ParameterizedTest
+    @ValueSource(strings = {"false", "0"})
+    public void testFalsy(String value) {
+        assertFalse(adapter.adapt(value));
     }
 
-    @Test
-    public void testNull() {
-        assertAll("Check if all these return null.",
-            () -> assertNull(adapter.adapt("neither")),
-            () -> assertNull(adapter.adapt("-1"))
-        );
+    @ParameterizedTest
+    @ValueSource(strings = {"neither", "-1"})
+    public void testNull(String value) {
+        assertNull(adapter.adapt(value));
     }
 }

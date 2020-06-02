@@ -14,11 +14,27 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler;
+package org.elypia.commandler.models;
 
-/**
- * @author seth@elypia.org (Seth Falco)
- */
-public class RequestTest {
+import java.util.*;
 
+public class AllGroupsModel {
+
+    private Map<String, List<ControllerModel>> groups;
+
+    public AllGroupsModel() {
+        // Do nothing.
+    }
+
+    public AllGroupsModel(Map<String, List<ControllerModel>> groups) {
+        this.groups = groups;
+    }
+
+    public Map<String, List<ControllerModel>> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Map<String, List<ControllerModel>> groups) {
+        this.groups = groups;
+    }
 }

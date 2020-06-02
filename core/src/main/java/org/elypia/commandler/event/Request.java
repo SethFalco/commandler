@@ -24,6 +24,9 @@ import java.util.*;
  * A {@link Request} represents each and every event
  * that comes into Commandler that could be a possible command.
  *
+ * This has no knowledge of what command the user wants to perform
+ * but only tracks the request for a potential interaction with the application.
+ *
  * Regardless of which {@link Integration} provided the message,
  * it will first be mapped to this.
  *

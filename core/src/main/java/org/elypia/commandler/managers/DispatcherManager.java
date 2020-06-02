@@ -24,7 +24,6 @@ import org.slf4j.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import java.util.*;
 
@@ -39,15 +38,11 @@ public class DispatcherManager {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherManager.class);
 
-    private final BeanManager beanManager;
-
     private List<Dispatcher> dispatchers;
-
     private ActionEvent<?, ?> event;
 
     @Inject
-    public DispatcherManager(final BeanManager beanManager, final CommandlerExtension extension) {
-        this.beanManager = beanManager;
+    public DispatcherManager(final CommandlerExtension extension) {
         dispatchers = new ArrayList<>();
 
         for (Class<? extends Dispatcher> dispatcher : extension.getDispatcherTypes()) {

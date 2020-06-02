@@ -17,27 +17,28 @@
 package org.elypia.commandler.producers;
 
 import org.elypia.commandler.api.Integration;
-import org.elypia.commandler.event.Request;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.managers.MessengerManager;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 @RequestScoped
-public class RequestProducer {
+public class MessageSender {
 
-    private Request<?, ?> request;
+    protected Integration<Object, Object> integration;
+    protected MessengerManager messengerManager;
+    protected ActionEvent<Object, Object> event;
 
-    @Produces
-    public Request getRequest() {
-        return request;
+    @Inject
+    public MessageSender(Integration integration, MessengerManager messengerManager, ActionEvent event) {
+        this.integration = integration;
+        this.messengerManager = messengerManager;
+        this.event = event;
     }
 
-    @Produces
-    public Integration getIntegration() {
-        return request.getIntegration();
-    }
-
-    public void setRequest(Request<?, ?> request) {
-        this.request = request;
+    public <T> void send(T object) {
+        Object message = messengerManager.provide(event, object);
+        integration.send(event, message);
     }
 }

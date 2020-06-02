@@ -74,10 +74,7 @@ public class NumberAdapterTest {
     @Test
     public void testNull() {
         NumberAdapter adapter = new NumberAdapter();
-
-        assertAll("Check if all these return null.",
-            () -> assertNull(adapter.adapt("invalid"))
-        );
+        assertNull(adapter.adapt("invalid"));
     }
 
     @Test

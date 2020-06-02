@@ -46,20 +46,10 @@ public class StandardDispatcher implements Dispatcher {
     /** SLF4J Logger */
     private static final Logger logger = LoggerFactory.getLogger(StandardDispatcher.class);
 
+    /** Variable for handling key/value pairs with default value. ${key:default-value} */
     private static final Pattern VAR_PATTERN = Pattern.compile("(?i)^\\$\\{(?<KEY>[A-Z\\d_-]+)(?::(?<DEFAULT>.*))?}$");
 
-    /**
-     * This matches every argument in the commands,
-     * any comma seperated <strong>args</strong> will be
-     * split by {@link #itemsPattern} as a list.
-     */
-    private static final Pattern paramsPattern = Pattern.compile("(?:(?:\"(?:\\\\\"|[^\"])*\"|[^\\s,]+)(?:\\s*,\\s*)?)+");
-
-    /**
-     * The item regex, this matches every item within a list of parameters.
-     * This is for list parameters as a single parameter can contain multiple items.
-     */
-    private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.*?)(?<!\\\\)\"|(?<word>[^\\s]+(?<!,))");
+    private final StandardDispatcherParameterParser parameterParser;
 
     /** The main {@link Commandler} configuration; this contains all metadata on commands. */
     private final StandardDispatcherConfig standardDispatcherConfig;
@@ -68,12 +58,14 @@ public class StandardDispatcher implements Dispatcher {
     private final CommandlerExtension commandlerExtension;
 
     /**
+     * @param parameterParser Controls how parameters are parsed by this dispatcher.
      * @param standardDispatcherConfig The configuration service which has all Commandler configuration.
      * @param commandlerExtension The configuration for all of the registered controllers in this instance.
      * @throws NullPointerException If the configuration provided is null.
      */
     @Inject
-    public StandardDispatcher(StandardDispatcherConfig standardDispatcherConfig, CommandlerExtension commandlerExtension) {
+    public StandardDispatcher(StandardDispatcherParameterParser parameterParser, StandardDispatcherConfig standardDispatcherConfig, CommandlerExtension commandlerExtension) {
+        this.parameterParser = Objects.requireNonNull(parameterParser);
         this.standardDispatcherConfig = Objects.requireNonNull(standardDispatcherConfig);
         this.commandlerExtension = Objects.requireNonNull(commandlerExtension);
     }
@@ -203,7 +195,7 @@ public class StandardDispatcher implements Dispatcher {
         if (selectedMetaController == null)
             throw new ModuleNotFoundException();
 
-        List<List<String>> parameters = parseParameters(params);
+        List<List<String>> parameters = parameterParser.parse(params);
         Serializable id = request.getIntegration().getActionId(request.getSource());
 
         if (id == null)
@@ -272,34 +264,5 @@ public class StandardDispatcher implements Dispatcher {
         }
 
         return null;
-    }
-
-    /**
-     * @param paramsString The string of parameters provided by the ser.
-     * @return A list of list of strings that represent all params and items.
-     */
-    private List<List<String>> parseParameters(String paramsString) {
-        List<List<String>> params = new ArrayList<>();
-
-        if (paramsString.isBlank())
-            return params;
-
-        Matcher paramMatcher = paramsPattern.matcher(paramsString);
-
-        while (paramMatcher.find()) {
-            List<String> list = new ArrayList<>();
-
-            String group = paramMatcher.group();
-            Matcher splitMatcher = itemsPattern.matcher(group);
-
-            while (splitMatcher.find()) {
-                String quote = splitMatcher.group("quote");
-                list.add((quote != null) ? quote : splitMatcher.group("word"));
-            }
-
-            params.add(list);
-        }
-
-        return params;
     }
 }

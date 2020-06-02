@@ -26,7 +26,7 @@ def publishedProjects = [
     project("console"),
     project("api"),
     project("file-configuration"),
-    project("noob")
+    project("newb")
 ]
 
 allprojects() {

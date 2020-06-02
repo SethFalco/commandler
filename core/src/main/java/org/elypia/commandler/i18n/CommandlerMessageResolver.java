@@ -31,6 +31,7 @@ public class CommandlerMessageResolver {
         this.messageContext = messageContext;
     }
 
+    // TODO: This shouldn't be hardcoded.
     public String getMessage(String key) {
         Message message = messageContext.messageSource("org.elypia.alexis.i18n.CommandlerMessages").message();
         Message template = message.template(key);
