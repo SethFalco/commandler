@@ -18,6 +18,7 @@ package org.elypia.commandler.annotation.stereotypes;
 
 import org.elypia.commandler.Commandler;
 import org.elypia.commandler.annotation.*;
+import org.elypia.commandler.api.Controller;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Stereotype;
@@ -26,8 +27,6 @@ import java.lang.annotation.*;
 /**
  * A {@link CommandController} in {@link Commandler} is a subset of {@link Command}s
  * and how all {@link Command}s should be registered. <br>
- * See {@link Static} and {@link Default} for making simple commands
- * in {@link org.elypia.commandler.api.Controller}s.
  *
  * A {@link CommandController} can be thought of as a module of commands.
  * A {@link Command} can be thought of as a single command.
@@ -53,4 +52,9 @@ public @interface CommandController {
 	 * and documentation.
 	 */
 	boolean hidden() default false;
+
+	/**
+	 * @return Related {@link Controller}s that users may be interested in.
+	 */
+	Class<? extends Controller>[] seeAlso() default {};
 }

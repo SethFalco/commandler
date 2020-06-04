@@ -35,22 +35,14 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
     /** If this command is hidden from public help messages. */
     private boolean isHidden;
 
-    /** Is this a static command, if so it can be performed without specifying the module. */
-    private boolean isStatic;
-
-    /** If this is the default command of the module. */
-    private boolean isDefault;
-
     /** The parameters this command requires. */
     private List<MetaParam> metaParams;
 
-    public MetaCommand(Method method, String name, String help, boolean isHidden, boolean isStatic, boolean isDefault, Properties properties, List<MetaParam> metaParams) {
+    public MetaCommand(Method method, String name, String help, boolean isHidden, Properties properties, List<MetaParam> metaParams) {
         this.method = Objects.requireNonNull(method);
         this.name = Objects.requireNonNull(name);
         this.description = help;
         this.isHidden = isHidden;
-        this.isStatic = isStatic;
-        this.isDefault = isDefault;
         this.properties = properties;
         this.metaParams = Objects.requireNonNull(metaParams);
     }
@@ -88,14 +80,6 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
 
     public boolean isPublic() {
         return !isHidden;
-    }
-
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    public boolean isStatic() {
-        return isStatic;
     }
 
     public List<MetaParam> getMetaParams() {

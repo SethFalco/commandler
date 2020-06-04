@@ -99,26 +99,6 @@ public class MetaController extends MetaComponent implements Comparable<MetaCont
     }
 
     /**
-     * @return All commands in this module where
-     * {@link MetaCommand#isStatic()} is true.
-     */
-    public List<MetaCommand> getStaticCommands() {
-        return metaCommands.stream()
-            .filter(MetaCommand::isStatic)
-            .collect(Collectors.toUnmodifiableList());
-    }
-
-    /**
-     * @return Return the default command, or null
-     * if this module doesn't have one.
-     */
-    public MetaCommand getDefaultControl() {
-        return metaCommands.stream()
-            .filter(MetaCommand::isDefault)
-            .findAny().orElse(null);
-    }
-
-    /**
      * Sorts {@link MetaController}s into alphabetical order.
      *
      * @param o Another module.

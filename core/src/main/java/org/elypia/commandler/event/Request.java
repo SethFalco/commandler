@@ -40,7 +40,10 @@ public class Request<S, M> {
     /** The source event object that was delivered from the {@link Integration}. */
     private final S source;
 
-    /** The source message object that was delivered from the {@link Integration}. */
+    /**
+     * The source message object that was delivered from the {@link Integration}.
+     * Depending on the {@link Integration} this may be the same as {@link #source}.
+     */
     private final M message;
 
     /** The content of the message, or an equivilent content if the event is not a string. */

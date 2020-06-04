@@ -16,28 +16,15 @@
 
 package org.elypia.commandler.producers;
 
-import org.elypia.commandler.api.Integration;
-import org.elypia.commandler.event.Request;
+public class ParameterWrapper {
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+    private Object[] params;
 
-@RequestScoped
-public class RequestProducer {
-
-    private Request<?, ?> request;
-
-    @Produces
-    public Request getRequest() {
-        return request;
+    public ParameterWrapper(Object[] params) {
+        this.params = params;
     }
 
-    @Produces
-    public Integration getIntegration() {
-        return request.getIntegration();
-    }
-
-    public void setRequest(Request<?, ?> request) {
-        this.request = request;
+    public Object[] getParams() {
+        return params;
     }
 }

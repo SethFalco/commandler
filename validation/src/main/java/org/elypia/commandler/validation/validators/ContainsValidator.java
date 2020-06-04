@@ -18,9 +18,11 @@ package org.elypia.commandler.validation.validators;
 
 import org.elypia.commandler.validation.constraints.Contains;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.validation.*;
 import java.util.Objects;
 
+@ApplicationScoped
 public class ContainsValidator implements ConstraintValidator<Contains, String> {
 
     private String value;

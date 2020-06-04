@@ -56,7 +56,6 @@ public class CommandParamNameProvider implements ParameterNameProvider {
 
     @Override
     public List<String> getParameterNames(Method method) {
-        logger.debug("Getting parameter names for method: {}", method);
         Class<?> type = method.getDeclaringClass();
 
         if (!(Controller.class.isAssignableFrom(type)))

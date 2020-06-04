@@ -19,10 +19,10 @@ package org.elypia.commandler.validation;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.api.*;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.managers.AdapterManager;
+import org.elypia.commandler.producers.ParameterWrapper;
 import org.slf4j.*;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 /**
@@ -31,31 +31,26 @@ import javax.inject.Inject;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@ApplicationScoped
+@RequestScoped
 public class ValidatorMiddleware implements HandlerMiddleware {
 
     private static final Logger logger = LoggerFactory.getLogger(ValidatorMiddleware.class);
 
-    private final AdapterManager adapterManager;
     private final HibernateValidationManager validationService;
 
+    /** The parameters used to call the method. */
+    private final ParameterWrapper parameterWrapper;
+
     @Inject
-    public ValidatorMiddleware(HibernateValidationManager validationService, AdapterManager adapterManager) {
-        this.adapterManager = adapterManager;
-        this.validationService = validationService;
+    public ValidatorMiddleware(HibernateValidationManager validationManager, ParameterWrapper parameterWrapper) {
+        this.validationService = validationManager;
+        this.parameterWrapper = parameterWrapper;
     }
 
-    /**
-     * TODO: We're parsing the parameters twice, we should probably include them in the event
-     * @param event
-     * @param <S>
-     * @param <M>
-     */
     @Override
     public <S, M> void onMiddleware(ActionEvent<S, M> event) {
-        Class<? extends Controller> type = event.getMetaController().getControllerType();
-        Controller controller = BeanProvider.getContextualReference(type);
-        Object[] params = adapterManager.adaptEvent(event);
-        validationService.validate(event, controller, params);
+        Class<? extends Controller> controllerType = event.getMetaController().getControllerType();
+        Controller controller = BeanProvider.getContextualReference(controllerType);
+        validationService.validate(event, controller, parameterWrapper.getParams());
     }
 }

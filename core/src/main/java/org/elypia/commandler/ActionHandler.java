@@ -23,7 +23,7 @@ import org.elypia.commandler.event.*;
 import org.elypia.commandler.exceptions.misuse.AbstractMisuseException;
 import org.elypia.commandler.managers.*;
 import org.elypia.commandler.metadata.*;
-import org.elypia.commandler.producers.RequestProducer;
+import org.elypia.commandler.producers.RequestFactory;
 import org.slf4j.*;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -48,7 +48,6 @@ public class ActionHandler implements ActionListener {
 
     private Logger logger = LoggerFactory.getLogger(ActionHandler.class);
 
-    // TODO: dispatcher made all the time :thinking:
     private final BeanManager beanManager;
     private final DispatcherManager dispatcher;
     private final HeaderManager binder;
@@ -81,7 +80,8 @@ public class ActionHandler implements ActionListener {
         binder.bindHeaders(request);
         logger.debug("Received action request with content: {}", content);
 
-        BeanProvider.getContextualReference(RequestProducer.class).setRequest(request);
+        RequestFactory requestFactory = BeanProvider.getContextualReference(RequestFactory.class);
+        requestFactory.setRequest(request);
 
         Object response = null;
         ActionEvent<S, M> event = null;
@@ -92,9 +92,12 @@ public class ActionHandler implements ActionListener {
             if (event == null)
                 return null;
 
+            requestFactory.setEvent(event);
+
             MetaController module = event.getMetaController();
             Controller controller = BeanProvider.getContextualReference(module.getControllerType());
             Object[] params = adapter.adaptEvent(event);
+            requestFactory.setParams(params);
 
             for (HandlerMiddleware middleware : middlewares)
                 middleware.onMiddleware(event);

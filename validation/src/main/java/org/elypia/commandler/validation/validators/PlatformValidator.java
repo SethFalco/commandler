@@ -20,8 +20,10 @@ import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.validation.constraints.Platform;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.validation.*;
 
+@ApplicationScoped
 public class PlatformValidator implements ConstraintValidator<Platform, ActionEvent<?, ?>> {
 
     private Class<? extends Integration>[] controllerTypes;

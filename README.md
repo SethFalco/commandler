@@ -73,8 +73,7 @@ public class Main {
 
 **UtilityController.java**
 ```java
-@CommandController
-@StandardCommand("utils")
+@StandardController("utils")
 public class UtilityController implements Controller {
     
     @StandardCommand("boop")

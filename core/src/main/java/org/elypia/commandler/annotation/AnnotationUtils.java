@@ -28,7 +28,7 @@ public final class AnnotationUtils {
     }
 
     public static boolean isEffectivelyNull(String value) {
-        return value.equals(EFFECTIVELY_NULL);
+        return EFFECTIVELY_NULL.equals(value);
     }
 
     public static String ifEffectivelyNull(String value) {

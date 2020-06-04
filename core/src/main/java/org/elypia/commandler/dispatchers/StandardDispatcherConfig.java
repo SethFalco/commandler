@@ -17,17 +17,32 @@
 package org.elypia.commandler.dispatchers;
 
 import org.apache.deltaspike.core.api.config.*;
+import org.elypia.commandler.annotation.command.*;
 import org.elypia.commandler.config.PatternConverter;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * The configuration for the {@link StandardDispatcher}.
+ * This allows modifying how standard commands are processed.
+ *
+ * @author seth@elypia.org (Seth Falco)
+ */
 @Configuration(prefix = "commandler.standard-dispatcher.")
 public interface StandardDispatcherConfig {
 
+    /**
+     * @return The prefixes that infer that the message receives
+     * was a command.
+     */
     @ConfigProperty(name = "prefixes", defaultValue = "$")
     List<String> getPrefixes();
 
+    /**
+     * @return The delimeter to seperate a {@link StandardController#value() prefix}
+     * from an {@link StandardCommand#value() alias}.
+     */
     @ConfigProperty(name = "delimeter", defaultValue = "\\s+", converter = PatternConverter.class)
     Pattern getDelimeter();
 }

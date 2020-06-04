@@ -31,8 +31,6 @@ public class MetaControlSerializer implements JsonSerializer<MetaCommand> {
         JsonObject object = new JsonObject();
         object.addProperty("name", src.getName());
         object.addProperty("description", src.getDescription());
-        object.addProperty("default", src.isDefault());
-        object.addProperty("static", src.isStatic());
 
         JsonArray activators = new JsonArray();
 //        activatorConfig.getActivators().forEach((forProperty, displayName) -> {

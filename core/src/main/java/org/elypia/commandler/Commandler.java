@@ -18,6 +18,7 @@ package org.elypia.commandler;
 
 import org.apache.deltaspike.cdise.api.*;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.event.ActionEvent;
 import org.slf4j.*;
@@ -44,8 +45,10 @@ import java.lang.annotation.Annotation;
 @ApplicationScoped
 public class Commandler {
 
-    /** Logging with slf4j. */
+    /** Logging with SLF4J. */
     private static final Logger logger = LoggerFactory.getLogger(Commandler.class);
+
+    private static CdiContainer cdiContainer;
 
     /**
      * Construct an instance of Commandler, in most cases this will be used
@@ -61,11 +64,12 @@ public class Commandler {
      * @return The global Commandler instance.
      */
     public static Commandler create() {
+        logger.info("DeltaSpike computed the following ProjectStage: " + ProjectStageProducer.getInstance().getProjectStage());
         logger.debug("Started Commandler, loading all configuration and dependencies.");
 
-        CdiContainer container = CdiContainerLoader.getCdiContainer();
-        container.boot();
-        container.getContextControl().startContexts();
+        cdiContainer = CdiContainerLoader.getCdiContainer();
+        cdiContainer.boot();
+        cdiContainer.getContextControl().startContexts();
         logger.debug("Initialized {} for dependency injection.", CdiContainer.class);
 
         return BeanProvider.getContextualReference(Commandler.class);
@@ -94,5 +98,18 @@ public class Commandler {
             integration.init();
             logger.info("Created instance of {} which uses {} for messages.", integration, integration.getMessageType());
         }
+    }
+
+    /**
+     * Shutdown all CDI contexts and shutdown the CDI container
+     * managed by Commandler.
+     *
+     * This should be used to gracefully stop any command handling.
+     */
+    public static void stop() {
+        logger.info("Stopping Commandler managed CDI container.");
+        cdiContainer.getContextControl().stopContexts();
+        cdiContainer.shutdown();
+        logger.info("Stopped Commander managed CDI container.");
     }
 }

@@ -18,8 +18,10 @@ package org.elypia.commandler.validation.validators;
 
 import org.elypia.commandler.validation.constraints.Option;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.validation.*;
 
+@ApplicationScoped
 public class OptionValidator implements ConstraintValidator<Option, String> {
 
     private String[] value;

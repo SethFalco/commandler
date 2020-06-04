@@ -16,12 +16,12 @@
 
 package org.elypia.commandler.newb;
 
-import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.jboss.weld.context.WeldAlterableContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.bound.*;
 import org.jboss.weld.manager.api.WeldManager;
 
+import javax.enterprise.inject.spi.CDI;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -34,14 +34,14 @@ public final class AsyncUtils {
     public static Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> copyContext() {
         Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> scopeToContextualInstances = new HashMap<>();
 
-        for (WeldAlterableContext context : BeanProvider.getContextualReference(WeldManager.class).getActiveWeldAlterableContexts())
+        for (WeldAlterableContext context : CDI.current().select(WeldManager.class).get().getActiveWeldAlterableContexts())
             scopeToContextualInstances.put(context.getScope(), context.getAllContextualInstances());
 
         return scopeToContextualInstances;
     }
 
     public static BoundRequestContext applyContext(Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> scopeToContextualInstances) {
-        BoundRequestContext requestContext = BeanProvider.getContextualReference(BoundRequestContext.class, BoundLiteral.INSTANCE);
+        BoundRequestContext requestContext = CDI.current().select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
         Map<String, Object> requestMap = new HashMap<>();
         requestContext.associate(requestMap);
         requestContext.activate();

@@ -17,6 +17,7 @@
 package org.elypia.commandler.annotation.command;
 
 import org.elypia.commandler.annotation.*;
+import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.dispatchers.StandardDispatcher;
 
 import java.lang.annotation.*;
@@ -34,8 +35,44 @@ import java.lang.annotation.*;
 public @interface StandardCommand {
 
     /**
+     * The aliases for this command. This is how the command can be performed.
+     *
+     * If the {@link StandardController} has an alias of <code>utils</code>, and
+     * the {@link StandardCommand} has an alias of <code>ping</code>", then the
+     * command will be <code>utils ping</code>.
+     *
+     * If {@link #isStatic()} is true for either the Controller or Command,
+     * then just <code>ping</code> will work on it's own as well.
+     *
      * @return The aliases for a command to execute this command.
      */
     @Property(key = "aliases", i18n = true, isPublic = true, displayName = "Aliases")
     String value() default AnnotationUtils.EFFECTIVELY_NULL;
+
+    /**
+     * If this command is marked as static,
+     * it will be capable of being performed without the usage
+     * of the parent {@link Controller}s alias.
+     *
+     * This is ignored if the {@link Controller} has the
+     * {@link StandardController} annotation and specified
+     * isStatic as true.
+     *
+     * @return If this command is static.
+     */
+    @Property(key = "static")
+    boolean isStatic() default false;
+
+    /**
+     * Each module can be assigned a default command. The default commands is the
+     * default method we assume the user has intended when they are
+     * attempting a command. The default will be called if either no
+     * command is specified or the "command" specified isn't a valid
+     * commands in the module. (Potentially a parameter.)
+     *
+     * @return If this command should be performed by default if no
+     * other candidate matches.
+     */
+    @Property(key = "default")
+    boolean isDefault() default false;
 }

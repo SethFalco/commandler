@@ -22,8 +22,7 @@ import org.elypia.commandler.api.Dispatcher;
 import org.elypia.commandler.event.*;
 import org.slf4j.*;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.*;
 
@@ -33,13 +32,12 @@ import java.util.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@RequestScoped
+@ApplicationScoped
 public class DispatcherManager {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherManager.class);
 
     private List<Dispatcher> dispatchers;
-    private ActionEvent<?, ?> event;
 
     @Inject
     public DispatcherManager(final CommandlerExtension extension) {
@@ -63,17 +61,10 @@ public class DispatcherManager {
 
             logger.debug("Used dispatcher for event: {}", dispatcher.getClass());
 
-            this.event = event;
             return event;
         }
 
         return null;
-    }
-
-    @RequestScoped
-    @Produces
-    public ActionEvent getActionEvent() {
-        return event;
     }
 
     public void add(Dispatcher... dispatchers) {

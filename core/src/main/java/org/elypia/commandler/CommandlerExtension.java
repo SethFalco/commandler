@@ -64,10 +64,19 @@ public class CommandlerExtension implements Extension {
             metaMessengers.add(metaMessenger);
         }
 
-        if (javaClazz.isAnnotationPresent(CommandController.class)) {
-            CommandController commandController = javaClazz.getAnnotation(CommandController.class);
-            String group = commandController.group();
-            boolean isHidden = commandController.hidden();
+        boolean isController = Stream.of(javaClazz.getAnnotations())
+            .anyMatch((annotation) -> annotation.annotationType().isAnnotationPresent(CommandController.class));
+
+        if (isController || javaClazz.isAnnotationPresent(CommandController.class)) {
+            String group = null;
+            boolean isHidden = false;
+
+            if (javaClazz.isAnnotationPresent(CommandController.class)) {
+                CommandController commandController = javaClazz.getAnnotation(CommandController.class);
+                group = commandController.group();
+                isHidden = commandController.hidden();
+            }
+
             ComponentConfig component = convertComponent(javaClazz, 0);
             List<MetaCommand> commands = convertCommands(javaClazz);
 
@@ -92,14 +101,12 @@ public class CommandlerExtension implements Extension {
             ComponentConfig component = convertComponent(method, 0);
 
             boolean isHidden = false;
-            boolean isStatic = method.isAnnotationPresent(Static.class);
-            boolean isDefault = method.isAnnotationPresent(Default.class);
             List<MetaParam> params = convertParams(method);
 
             if (method.isAnnotationPresent(Command.class))
                 isHidden = method.getAnnotation(Command.class).hidden();
 
-            commands.add(new MetaCommand(method, component.name, component.description, isHidden, isStatic, isDefault, component.properties, params));
+            commands.add(new MetaCommand(method, component.name, component.description, isHidden, component.properties, params));
         }
 
         return commands;

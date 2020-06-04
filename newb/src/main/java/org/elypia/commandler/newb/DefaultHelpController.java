@@ -17,9 +17,8 @@
 package org.elypia.commandler.newb;
 
 import org.elypia.commandler.CommandlerExtension;
-import org.elypia.commandler.annotation.*;
-import org.elypia.commandler.annotation.command.StandardCommand;
-import org.elypia.commandler.annotation.stereotypes.CommandController;
+import org.elypia.commandler.annotation.Param;
+import org.elypia.commandler.annotation.command.*;
 import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.dispatchers.StandardDispatcher;
 import org.elypia.commandler.i18n.CommandlerMessageResolver;
@@ -48,25 +47,24 @@ import java.util.stream.Collectors;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-@CommandController
-@StandardCommand
+@StandardController
 public class DefaultHelpController implements Controller {
 
-    protected final CommandlerExtension commmanderExtension;
+    protected final CommandlerExtension commandlerExtension;
     protected final CommandlerMessageResolver messageResolver;
 
     @Inject
-    public DefaultHelpController(CommandlerExtension commmanderExtension, CommandlerMessageResolver messageResolver) {
-        this.commmanderExtension = commmanderExtension;
+    public DefaultHelpController(CommandlerExtension commandlerExtension, CommandlerMessageResolver messageResolver) {
+        this.commandlerExtension = commandlerExtension;
         this.messageResolver = messageResolver;
     }
 
-    @Default
-    @StandardCommand
+    // Make this display help for the help module, AND a list of all modules
+    @StandardCommand(isDefault = true)
     public AllGroupsModel getAllGroups() {
         Map<String, List<ControllerModel>> groups = new HashMap<>();
 
-        Collection<ControllerModel> allControllers = commmanderExtension.getMetaControllers().stream()
+        Collection<ControllerModel> allControllers = commandlerExtension.getMetaControllers().stream()
             .filter(MetaController::isPublic)
             .map(this::getControllerHelp)
             .collect(Collectors.toList());
@@ -80,12 +78,18 @@ public class DefaultHelpController implements Controller {
             groups.get(group).add(controllerModel);
         }
 
-        return new AllGroupsModel(groups);
+        MetaController helpController = commandlerExtension.getMetaControllers().stream()
+            .filter((meta) -> meta.getControllerType() == this.getClass())
+            .findAny()
+            .get();
+
+        ControllerModel helpModel = getControllerHelp(helpController);
+        return new AllGroupsModel(helpModel, groups);
     }
 
     @StandardCommand
     public Object getGroup(@Param String query) {
-        Collection<MetaController> controllers = commmanderExtension.getMetaControllers();
+        Collection<MetaController> controllers = commandlerExtension.getMetaControllers();
 
         List<ControllerModel> group = controllers.stream()
             .filter(MetaController::isPublic)

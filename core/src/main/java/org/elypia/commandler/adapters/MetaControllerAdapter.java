@@ -54,7 +54,7 @@ public class MetaControllerAdapter implements Adapter<MetaController> {
                 return controller;
 
             // TODO: Use activators instead?
-            String aliases = controller.getProperty(StandardDispatcher.class, "aliases");
+            String aliases = resolver.getMessage(controller.getProperty(StandardDispatcher.class, "aliases"));
 
             if (aliases.equalsIgnoreCase(input))
                 return controller;

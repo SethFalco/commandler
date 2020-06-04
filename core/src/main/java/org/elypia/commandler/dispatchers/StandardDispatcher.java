@@ -16,7 +16,6 @@
 
 package org.elypia.commandler.dispatchers;
 
-import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.*;
 import org.elypia.commandler.annotation.stereotypes.MessageDispatcher;
 import org.elypia.commandler.api.*;
@@ -30,6 +29,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.Collectors;
 
 /**
  * The default implementation of the StandardDispatcher, this implementation
@@ -57,6 +57,9 @@ public class StandardDispatcher implements Dispatcher {
     /** The configuration for the main metadata for controllers and commands. */
     private final CommandlerExtension commandlerExtension;
 
+    /** Get localized strings for prefixes and aliases. */
+    private final CommandlerMessageResolver messageResolver;
+
     /**
      * @param parameterParser Controls how parameters are parsed by this dispatcher.
      * @param standardDispatcherConfig The configuration service which has all Commandler configuration.
@@ -64,10 +67,11 @@ public class StandardDispatcher implements Dispatcher {
      * @throws NullPointerException If the configuration provided is null.
      */
     @Inject
-    public StandardDispatcher(StandardDispatcherParameterParser parameterParser, StandardDispatcherConfig standardDispatcherConfig, CommandlerExtension commandlerExtension) {
+    public StandardDispatcher(StandardDispatcherParameterParser parameterParser, StandardDispatcherConfig standardDispatcherConfig, CommandlerExtension commandlerExtension, CommandlerMessageResolver messageResolver) {
         this.parameterParser = Objects.requireNonNull(parameterParser);
         this.standardDispatcherConfig = Objects.requireNonNull(standardDispatcherConfig);
         this.commandlerExtension = Objects.requireNonNull(commandlerExtension);
+        this.messageResolver = Objects.requireNonNull(messageResolver);
     }
 
     @Override
@@ -117,8 +121,7 @@ public class StandardDispatcher implements Dispatcher {
         String params = null;
 
         for (MetaController metaController : commandlerExtension.getMetaControllers()) {
-            CommandlerMessageResolver resolver = BeanProvider.getContextualReference(CommandlerMessageResolver.class);
-            String controllerAliases = resolver.getMessage(metaController.getProperty(this.getClass(), "aliases"));
+            String controllerAliases = messageResolver.getMessage(metaController.getProperty(this.getClass(), "aliases"));
 
             if (controllerAliases == null)
                 continue;
@@ -130,7 +133,7 @@ public class StandardDispatcher implements Dispatcher {
 
                 if (command.length > 1) {
                     for (MetaCommand metaCommand : metaController.getMetaCommands()) {
-                        String controlAliases = resolver.getMessage(metaCommand.getProperty(this.getClass(), "aliases"));
+                        String controlAliases = messageResolver.getMessage(metaCommand.getProperty(this.getClass(), "aliases"));
 
                         if (controlAliases == null)
                             continue;
@@ -148,7 +151,7 @@ public class StandardDispatcher implements Dispatcher {
                     }
 
                     if (selectedMetaCommand == null) {
-                        selectedMetaCommand = metaController.getDefaultControl();
+                        selectedMetaCommand = getDefaultCommand(metaController);
 
                         if (selectedMetaCommand == null)
                             throw new NoDefaultCommandException(selectedMetaController);
@@ -156,7 +159,7 @@ public class StandardDispatcher implements Dispatcher {
                             params = content.replaceFirst("\\Q" + command[0] + "\\E", "").trim();
                     }
                 } else {
-                    MetaCommand data = metaController.getDefaultControl();
+                    MetaCommand data = getDefaultCommand(metaController);
 
                     if (data != null)
                         selectedMetaCommand = data;
@@ -171,8 +174,8 @@ public class StandardDispatcher implements Dispatcher {
                 break;
             }
 
-            for (MetaCommand metaCommand : metaController.getStaticCommands()) {
-                String controlAliases = resolver.getMessage(metaCommand.getProperty(this.getClass(), "aliases"));
+            for (MetaCommand metaCommand : getStaticCommands(metaController)) {
+                String controlAliases = messageResolver.getMessage(metaCommand.getProperty(this.getClass(), "aliases"));
 
                 if (controlAliases == null)
                     continue;
@@ -208,6 +211,26 @@ public class StandardDispatcher implements Dispatcher {
             throw new ParamCountMismatchException(e);
 
         return e;
+    }
+
+    /**
+     * @return All commands in this module where the
+     * {@link MetaCommand} is considered static.
+     */
+    public List<MetaCommand> getStaticCommands(MetaController controller) {
+        return controller.getMetaCommands().stream()
+            .filter((command) -> command.getProperty(StandardDispatcher.class, "static").equals("true"))
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    /**
+     * @return Return the default command, or null
+     * if this module doesn't have one.
+     */
+    private MetaCommand getDefaultCommand(MetaController controller) {
+        return controller.getMetaCommands().stream()
+            .filter((command) -> command.getProperty(StandardDispatcher.class, "default").equals("true"))
+            .findAny().orElse(null);
     }
 
     /**

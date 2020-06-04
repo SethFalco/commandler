@@ -18,8 +18,10 @@ package org.elypia.commandler.config;
 
 import org.apache.deltaspike.core.api.config.ConfigResolver;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.regex.Pattern;
 
+@ApplicationScoped
 public class PatternConverter implements ConfigResolver.Converter<Pattern> {
 
     @Override

@@ -18,16 +18,36 @@ package org.elypia.commandler.models;
 
 import java.util.*;
 
+/**
+ * A model object that represents all groups.
+ * This should be used to build a localized and display
+ * friendly version of all modules.
+ *
+ * @author seth@elypia.org (Seth Falco)
+ */
 public class AllGroupsModel {
 
+    /** The model of the controller that represents the {@link ControllerModel} for help. */
+    private ControllerModel helpModel;
+
+    /** A map of all groups againt a list of controller models in the group. */
     private Map<String, List<ControllerModel>> groups;
 
     public AllGroupsModel() {
         // Do nothing.
     }
 
-    public AllGroupsModel(Map<String, List<ControllerModel>> groups) {
-        this.groups = groups;
+    public AllGroupsModel(ControllerModel helpModel, Map<String, List<ControllerModel>> groups) {
+        this.helpModel = Objects.requireNonNull(helpModel);
+        this.groups = Objects.requireNonNull(groups);
+    }
+
+    public ControllerModel getHelpModel() {
+        return helpModel;
+    }
+
+    public void setHelpModel(ControllerModel helpModel) {
+        this.helpModel = helpModel;
     }
 
     public Map<String, List<ControllerModel>> getGroups() {
