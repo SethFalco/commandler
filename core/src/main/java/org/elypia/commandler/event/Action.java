@@ -23,7 +23,6 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * TODO: List isn't serializable
  * Stores user interaction with Commandler.
  * Action is {@link Serializable} to that it can be
  * stored away and retuned again by future events.

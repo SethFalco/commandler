@@ -18,8 +18,6 @@ package org.elypia.commandler.validation;
 
 import org.apache.deltaspike.core.api.exception.control.*;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.producers.MessageSender;
 import org.slf4j.*;
@@ -58,37 +56,15 @@ public class ViolationExceptionHandler {
         Objects.requireNonNull(event);
         ViolationException ex = event.getException();
 
-        List<ConstraintViolation<Controller>> commandViolations = new ArrayList<>();
-        List<ConstraintViolation<Controller>> paramViolations = new ArrayList<>();
-
-        for (ConstraintViolation<Controller> violation : ex.getViolations()) {
-            // TODO: This is invalid now,
-            if (violation.getInvalidValue() instanceof ActionEvent)
-                commandViolations.add(violation);
-            else
-                paramViolations.add(violation);
-        }
-
-        StringJoiner invalidType = new StringJoiner(" ");
-
-        if (!commandViolations.isEmpty())
-            invalidType.add("the command");
-        if (!paramViolations.isEmpty())
-            invalidType.add("a parameter");
+        Set<ConstraintViolation<Object>> violations = ex.getViolations();
 
         StringBuilder format = new StringBuilder(
-            "Command failed; " + invalidType.toString() + " was invalidated.\n" +
+            "Command failed; the command was invalidated.\n" +
             "Module: %s\n" +
             "Command: %s\n"
         );
 
-        for (var violation : commandViolations)
-            format.append("command: ").append(violation.getMessage());
-
-        if (!commandViolations.isEmpty())
-            format.append("\n");
-
-        for (var violation : paramViolations) {
+        for (var violation : violations) {
             Iterator<Path.Node> iter = violation.getPropertyPath().iterator();
             Path.Node last = null;
 

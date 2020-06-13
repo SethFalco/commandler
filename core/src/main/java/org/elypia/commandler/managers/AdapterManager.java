@@ -130,8 +130,6 @@ public class AdapterManager {
     }
 
     /**
-     * TODO: Add support for other iterable types like collection, list, or streams
-     *
      * <p>This actually converts an individual param into the type
      * required for a command. If the type required is an array,
      * we convert each item in the array using the

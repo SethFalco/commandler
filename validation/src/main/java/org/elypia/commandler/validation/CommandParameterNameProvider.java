@@ -18,7 +18,6 @@ package org.elypia.commandler.validation;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.*;
-import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
@@ -37,15 +36,15 @@ import java.util.stream.*;
  *
  * @author seth@elypia.org (Seth Falco)
  */
-public class CommandParamNameProvider implements ParameterNameProvider {
+public class CommandParameterNameProvider implements ParameterNameProvider {
 
-    /** Logging with SLF4J */
-    private static final Logger logger = LoggerFactory.getLogger(CommandParamNameProvider.class);
+    /** Logging with SLF4J. */
+    private static final Logger logger = LoggerFactory.getLogger(CommandParameterNameProvider.class);
 
     /** Metadata for all {@link MetaController}s, {@link MetaCommand}s, and {@link MetaParam}s. */
     private final CommandlerExtension commandlerExtension;
 
-    public CommandParamNameProvider(final CommandlerExtension commandlerExtension) {
+    public CommandParameterNameProvider(final CommandlerExtension commandlerExtension) {
         this.commandlerExtension = Objects.requireNonNull(commandlerExtension);
     }
 
@@ -58,9 +57,6 @@ public class CommandParamNameProvider implements ParameterNameProvider {
     public List<String> getParameterNames(Method method) {
         Class<?> type = method.getDeclaringClass();
 
-        if (!(Controller.class.isAssignableFrom(type)))
-            return getJavaNames(method);
-
         Collection<MetaController> metaControllers = commandlerExtension.getMetaControllers();
 
         List<MetaController> filtered = metaControllers.stream()
@@ -68,7 +64,7 @@ public class CommandParamNameProvider implements ParameterNameProvider {
            .collect(Collectors.toList());
 
         if (filtered.isEmpty())
-            throw new IllegalStateException("Attempted to validate Controller which wasn't added to Commandler on initialization.");
+            return getJavaNames(method);
         else if (filtered.size() > 1)
             throw new IllegalStateException("Found more than 1 MetaController for the same Controller implementation.");
 

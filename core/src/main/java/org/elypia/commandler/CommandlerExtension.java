@@ -65,25 +65,25 @@ public class CommandlerExtension implements Extension {
         }
 
         boolean isController = Stream.of(javaClazz.getAnnotations())
-            .anyMatch((annotation) -> annotation.annotationType().isAnnotationPresent(CommandController.class));
+            .anyMatch((annotation) -> annotation.annotationType().isAnnotationPresent(Controller.class));
 
-        if (isController || javaClazz.isAnnotationPresent(CommandController.class)) {
+        if (isController || javaClazz.isAnnotationPresent(Controller.class)) {
             String group = null;
             boolean isHidden = false;
 
-            if (javaClazz.isAnnotationPresent(CommandController.class)) {
-                CommandController commandController = javaClazz.getAnnotation(CommandController.class);
-                group = commandController.group();
-                isHidden = commandController.hidden();
+            if (javaClazz.isAnnotationPresent(Controller.class)) {
+                Controller controller = javaClazz.getAnnotation(Controller.class);
+                group = controller.group();
+                isHidden = controller.hidden();
             }
 
             ComponentConfig component = convertComponent(javaClazz, 0);
             List<MetaCommand> commands = convertCommands(javaClazz);
 
-            if (AnnotationUtils.isEffectivelyNull(group))
+            if (group == null || AnnotationUtils.isEffectivelyNull(group))
                 group = "{" + javaClazz.getName() + ".group}";
 
-            metaControllers.add(new MetaController((Class<? extends Controller>)javaClazz, group, component.name, component.description, isHidden, component.properties, commands));
+            metaControllers.add(new MetaController(javaClazz, group, component.name, component.description, isHidden, component.properties, commands));
         }
     }
 
@@ -145,7 +145,7 @@ public class CommandlerExtension implements Extension {
     private ComponentConfig convertComponent(AnnotatedElement element, int index) throws IllegalAccessException, InvocationTargetException {
         String name = null;
         String description = null;
-        Properties properties = convertProperties(element, index);
+        Map<String, MetaProperty> properties = convertProperties(element, index);
 
         if (element.isAnnotationPresent(Help.class)) {
             Help help = element.getAnnotation(Help.class);
@@ -188,13 +188,14 @@ public class CommandlerExtension implements Extension {
         return new ComponentConfig(name, description, properties);
     }
 
-    private Properties convertProperties(AnnotatedElement element, int index) throws IllegalAccessException, InvocationTargetException {
-        Properties properties = new Properties();
+    private Map<String, MetaProperty> convertProperties(AnnotatedElement element, int index) throws IllegalAccessException, InvocationTargetException {
+        Map<String, MetaProperty> properties = new HashMap<>();
 
         for (Annotation annotation : element.getAnnotations()) {
             if (annotation instanceof Property) {
-                Property annotationProperty = (Property)annotation;
-                properties.put(annotationProperty.key(), annotationProperty.value());
+                Property ap = (Property)annotation;
+                MetaProperty property = new MetaProperty(ap.key(), ap.value(), ap.isPublic(), ap.i18n(), ap.displayName());
+                properties.put(ap.key(), property);
                 continue;
             }
 
@@ -210,20 +211,20 @@ public class CommandlerExtension implements Extension {
                     if (!annotationMethod.isAnnotationPresent(Property.class))
                         continue;
 
-                    Property fieldProperty = annotationMethod.getAnnotation(Property.class);
+                    Property fp = annotationMethod.getAnnotation(Property.class);
                     String value = annotationMethod.invoke(annotation).toString();
 
-                    if (fieldProperty.i18n() && value.equals(AnnotationUtils.EFFECTIVELY_NULL)) {
+                    if (fp.i18n() && value.equals(AnnotationUtils.EFFECTIVELY_NULL)) {
                         if (element instanceof Class) {
                             Class<?> clazz = (Class<?>)element;
                             String clazzName = clazz.getName();
-                            value = "{" +  clazzName + "-" + type.getName() + "." + fieldProperty.key() + "}";
+                            value = "{" +  clazzName + "-" + type.getName() + "." + fp.key() + "}";
                         } else if (element instanceof Method) {
                             Method method = (Method)element;
                             String methodName = method.getName();
                             Class<?> clazz = method.getDeclaringClass();
                             String clazzName = clazz.getName();
-                            value = "{" +  clazzName + "-" + methodName + "-" + type.getName() + "." + fieldProperty.key() + "}";
+                            value = "{" +  clazzName + "-" + methodName + "-" + type.getName() + "." + fp.key() + "}";
                         } else if (element instanceof Parameter) {
                             Parameter parameter = (Parameter)element;
                             String parameterName = String.valueOf(index);
@@ -231,11 +232,12 @@ public class CommandlerExtension implements Extension {
                             String methodName = method.getName();
                             Class<?> clazz = method.getDeclaringClass();
                             String clazzName = clazz.getName();
-                            value = "{" +  clazzName + "-" + methodName + "-" + parameterName + "-" + type.getName() + "." + fieldProperty.key() + "}";
+                            value = "{" +  clazzName + "-" + methodName + "-" + parameterName + "-" + type.getName() + "." + fp.key() + "}";
                         }
                     }
 
-                    properties.put(type.getName() + "." + fieldProperty.key(), value);
+                    MetaProperty property = new MetaProperty(fp.key(), value, fp.isPublic(), fp.i18n(), fp.displayName());
+                    properties.put(type.getName() + "." + fp.key(), property);
                 }
             }
         }
@@ -288,9 +290,9 @@ public class CommandlerExtension implements Extension {
 
         private String name;
         private String description;
-        private Properties properties;
+        private Map<String, MetaProperty> properties;
 
-        private ComponentConfig(String name, String description, Properties properties) {
+        private ComponentConfig(String name, String description, Map<String, MetaProperty> properties) {
             this.name = name;
             this.description = description;
             this.properties = properties;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.dispatchers;
+package org.elypia.commandler.dispatchers.standard;
 
 import java.util.*;
 import java.util.regex.*;

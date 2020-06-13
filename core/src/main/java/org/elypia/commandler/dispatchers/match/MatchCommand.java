@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.api;
+package org.elypia.commandler.dispatchers.match;
+
+import org.elypia.commandler.annotation.*;
+
+import java.lang.annotation.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
-public interface Controller {
+@Command
+@PropertyWrapper(type = MatchDispatcher.class)
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface MatchCommand {
 
     /**
-     * Performs relevent tests to ensure this module
-     * is still working as intended. Commandler
-     * will disable the module until the test passes again
-     * if it fails.
-     *
-     * @return If the module should remain enabled.
+     * @return The regular expression that will be used to
+     * match portions of the event.
      */
-    default boolean test() {
-        return true;
-    }
+    @Property(key = "pattern", i18n = true, isPublic = true, displayName = "Pattern")
+    String value();
 }

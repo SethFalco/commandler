@@ -16,7 +16,7 @@
 
 package org.elypia.commandler.metadata;
 
-import java.util.*;
+import java.util.Map;
 
 /**
  * Abstract class that represents a type with documentable elements
@@ -33,7 +33,7 @@ public abstract class MetaComponent {
     protected String description;
 
     /** Properties that determine how this propery acts in runtime. */
-    protected Properties properties;
+    protected Map<String, MetaProperty> properties;
 
     public String getName() {
         return name;
@@ -43,16 +43,8 @@ public abstract class MetaComponent {
         return description;
     }
 
-    public Properties getProperties() {
+    public Map<String, MetaProperty> getProperties() {
         return properties;
-    }
-
-    public Collection<String> getProperties(Class<?> type, String key) {
-        return getProperties(type.getName() + "." + key);
-    }
-
-    public Collection<String> getProperties(String key) {
-        return List.of(getProperty(key).split("\\s+"));
     }
 
     /**
@@ -62,18 +54,8 @@ public abstract class MetaComponent {
      * @param key The name of the property in this class.
      * @return The property mapped under this key.
      */
-    public String getProperty(Class<?> type, String key) {
+    public MetaProperty getProperty(Class<?> type, String key) {
         return getProperty(type.getName() + "." + key);
-    }
-
-    /**
-     * @param type The prefix class name of the property.
-     * @param key The name of the property in this class.
-     * @param defaultValue The default value if the property is not found.
-     * @return Either the value found for this property, or the default value.
-     */
-    public String getProperty(Class<?> type, String key, Object defaultValue) {
-        return getProperty(type.getName() + "." + key, defaultValue.toString());
     }
 
     /**
@@ -82,16 +64,7 @@ public abstract class MetaComponent {
      * @param key The name of the property to retrieve.
      * @return The property mapped under this key.
      */
-    public String getProperty(String key) {
-        return properties.getProperty(key);
-    }
-
-    /**
-     * @param key The name of the property to retrieve.
-     * @param defaultValue The default value if the property is not found.
-     * @return Either the value found for this property, or the default value.
-     */
-    public String getProperty(String key, Object defaultValue) {
-        return properties.getProperty(key, defaultValue.toString());
+    public MetaProperty getProperty(String key) {
+        return properties.get(key);
     }
 }

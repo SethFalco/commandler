@@ -17,23 +17,47 @@
 package org.elypia.commandler.i18n;
 
 import org.apache.deltaspike.core.api.message.*;
+import org.elypia.commandler.annotation.Property;
+import org.elypia.commandler.metadata.MetaComponent;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Objects;
 
-@RequestScoped
+/**
+ * Used by Commandler to localize metadata for
+ * {@link MetaComponent}s or {@link Property properties}
+ * with {@link Property#i18n()} set to true.
+ *
+ * @author seth@elypia.org (Seth Falco)
+ * @since 4.0.1
+ */
+@ApplicationScoped
 public class CommandlerMessageResolver {
+
+    /** Configuration for Commandler's i18n handling. */
+    private final InternationalizationConfig i18nConfig;
 
     private final MessageContext messageContext;
 
     @Inject
-    public CommandlerMessageResolver(MessageContext messageContext) {
-        this.messageContext = messageContext;
+    public CommandlerMessageResolver(InternationalizationConfig i18nConfig, MessageContext messageContext) {
+        this.i18nConfig = Objects.requireNonNull(i18nConfig);
+        this.messageContext = Objects.requireNonNull(messageContext);
     }
 
-    // TODO: This shouldn't be hardcoded.
+    /**
+     * If the key starts and ends with {} then it'll be searched
+     * in the {@link InternationalizationConfig#getMessageBundle()} path.
+     *
+     * If not then the string will be interpolated and returned literally.
+     *
+     * @param key The resource bundle key or literal string localize.
+     * @return The localized string depending on the {@link LocaleResolver}.
+     */
     public String getMessage(String key) {
-        Message message = messageContext.messageSource("org.elypia.alexis.i18n.CommandlerMessages").message();
+        String messageBundlePath = i18nConfig.getMessageBundle();
+        Message message = messageContext.messageSource(messageBundlePath).message();
         Message template = message.template(key);
         return template.toString();
     }

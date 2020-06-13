@@ -44,7 +44,7 @@ public class MetaParam extends MetaComponent {
     /** If this is a single parameter, or a list parameter. */
     private boolean isList;
 
-    public MetaParam(int methodIndex, int commandIndex, Parameter parameter, String name, String description, String defaultValue, String defaultValueDisplay, Properties properties) {
+    public MetaParam(int methodIndex, int commandIndex, Parameter parameter, String name, String description, String defaultValue, String defaultValueDisplay, Map<String, MetaProperty> properties) {
         this.methodIndex = methodIndex;
         this.commandIndex = commandIndex;
         this.parameter = Objects.requireNonNull(parameter);

@@ -19,7 +19,7 @@ package org.elypia.commandler.adapters;
 import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
-import org.elypia.commandler.dispatchers.StandardDispatcher;
+import org.elypia.commandler.dispatchers.standard.StandardDispatcher;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.metadata.*;
@@ -53,8 +53,7 @@ public class MetaControllerAdapter implements Adapter<MetaController> {
             if (resolver.getMessage(controller.getName()).equalsIgnoreCase(input))
                 return controller;
 
-            // TODO: Use activators instead?
-            String aliases = resolver.getMessage(controller.getProperty(StandardDispatcher.class, "aliases"));
+            String aliases = resolver.getMessage(controller.getProperty(StandardDispatcher.class, "aliases").getValue());
 
             if (aliases.equalsIgnoreCase(input))
                 return controller;

@@ -23,15 +23,17 @@ public class CommandModel {
     private String name;
     private String description;
     private List<ParamModel> params;
+    private List<PropertyModel> properties;
 
     public CommandModel() {
         // Do nothing.
     }
 
-    public CommandModel(String name, String description, List<ParamModel> params) {
+    public CommandModel(String name, String description, List<ParamModel> params, List<PropertyModel> properties) {
         this.name = name;
         this.description = description;
         this.params = params;
+        this.properties = properties;
     }
 
     public String getName() {
@@ -56,5 +58,13 @@ public class CommandModel {
 
     public void setParams(List<ParamModel> params) {
         this.params = params;
+    }
+
+    public List<PropertyModel> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<PropertyModel> properties) {
+        this.properties = properties;
     }
 }

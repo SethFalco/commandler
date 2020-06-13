@@ -24,8 +24,7 @@ def publishedProjects = [
     project("doc"),
     project("validation"),
     project("console"),
-    project("api"),
-    project("file-configuration"),
+//    project("metrics"),
     project("newb")
 ]
 

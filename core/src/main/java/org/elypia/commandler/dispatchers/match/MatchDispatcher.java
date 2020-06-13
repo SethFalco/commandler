@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.dispatchers;
+package org.elypia.commandler.dispatchers.match;
 
 import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.annotation.stereotypes.MessageDispatcher;
@@ -92,11 +92,12 @@ public class MatchDispatcher implements Dispatcher {
 
         for (MetaController metaController : commmanderExtension.getMetaControllers()) {
             for (MetaCommand metaCommand : metaController.getMetaCommands()) {
-                String patternString = metaCommand.getProperty(this.getClass(), "pattern");
+                MetaProperty patternProperty = metaCommand.getProperty(this.getClass(), "pattern");
 
-                if (patternString == null)
+                if (patternProperty == null)
                     continue;
 
+                String patternString = patternProperty.getValue();
                 final Pattern pattern;
 
                 if (!PATTERNS.containsKey(patternString)) {

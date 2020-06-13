@@ -38,7 +38,7 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
     /** The parameters this command requires. */
     private List<MetaParam> metaParams;
 
-    public MetaCommand(Method method, String name, String help, boolean isHidden, Properties properties, List<MetaParam> metaParams) {
+    public MetaCommand(Method method, String name, String help, boolean isHidden, Map<String, MetaProperty> properties, List<MetaParam> metaParams) {
         this.method = Objects.requireNonNull(method);
         this.name = Objects.requireNonNull(name);
         this.description = help;

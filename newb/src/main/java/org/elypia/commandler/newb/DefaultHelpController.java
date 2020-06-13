@@ -18,9 +18,8 @@ package org.elypia.commandler.newb;
 
 import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.annotation.Param;
-import org.elypia.commandler.annotation.command.*;
-import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.dispatchers.StandardDispatcher;
+import org.elypia.commandler.annotation.stereotypes.Controller;
+import org.elypia.commandler.dispatchers.standard.*;
 import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.metadata.*;
 import org.elypia.commandler.models.*;
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
  * @author seth@elypia.org (Seth Falco)
  */
 @StandardController
-public class DefaultHelpController implements Controller {
+public class DefaultHelpController {
 
     protected final CommandlerExtension commandlerExtension;
     protected final CommandlerMessageResolver messageResolver;
@@ -93,7 +92,7 @@ public class DefaultHelpController implements Controller {
 
         List<ControllerModel> group = controllers.stream()
             .filter(MetaController::isPublic)
-            .filter((c) -> messageResolver.getMessage(c.getGroup()).equalsIgnoreCase(query) || messageResolver.getMessage(c.getProperty(StandardDispatcher.class, "aliases")).equalsIgnoreCase(query))
+            .filter((c) -> messageResolver.getMessage(c.getGroup()).equalsIgnoreCase(query))
             .map(this::getControllerHelp)
             .collect(Collectors.toList());
 
@@ -131,23 +130,30 @@ public class DefaultHelpController implements Controller {
             for (MetaParam metaParam : command.getMetaParams()) {
                 String paramName = messageResolver.getMessage(metaParam.getName());
                 String paramDescription = messageResolver.getMessage(metaParam.getDescription());
-                ParamModel paramModel = new ParamModel(paramName, paramDescription);
+                ParamModel paramModel = new ParamModel(paramName, paramDescription, getLocalizedPublicProperties(metaParam));
                 params.add(paramModel);
             }
 
-            CommandModel commandModel = new CommandModel(commandName, commandDescription, params);
+            CommandModel commandModel = new CommandModel(commandName, commandDescription, params, getLocalizedPublicProperties(command));
             commands.add(commandModel);
         }
 
-        return new ControllerModel(controllerName, controllerDescription, controllerGroup, commands);
+        return new ControllerModel(controllerName, controllerDescription, controllerGroup, commands, getLocalizedPublicProperties(controller));
     }
 
-        protected void appendActivators(final StringBuilder builder, final MetaComponent metaComponent) {
-    //        activatorConfig.getActivators().forEach((forProperty, displayName) -> {
-    //            String value = metaComponent.getProperty(forProperty);
-    //
-    //            if (value != null)
-    //                builder.append("\n").append(displayName).append(": ").append(value);
-    //        });
+    protected List<PropertyModel> getLocalizedPublicProperties(final MetaComponent metaComponent) {
+        List<PropertyModel> properties = new ArrayList<>();
+
+        metaComponent.getProperties().forEach((key, property) -> {
+            if (!property.isPublic())
+                return;
+
+            if (property.isI18n())
+                properties.add(new PropertyModel(messageResolver.getMessage(property.getDisplayName()), messageResolver.getMessage(property.getValue())));
+            else
+                properties.add(new PropertyModel(property.getDisplayName(), property.getValue()));
+        });
+
+        return properties;
     }
 }

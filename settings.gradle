@@ -29,10 +29,7 @@ include "validation"
 include "console"
 
 /** Extension which enables integration with a dashboard API. */
-include "api"
-
-/** Extension which adds file configuration support for Commandler. */
-include "file-configuration"
+include "metrics"
 
 /**
  * This is a quick-start module, which bundles all modules

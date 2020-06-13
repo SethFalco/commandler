@@ -24,16 +24,18 @@ public class ControllerModel {
     private String description;
     private String group;
     private List<CommandModel> commands;
+    private List<PropertyModel> properties;
 
     public ControllerModel() {
         // Do nothing.
     }
 
-    public ControllerModel(String name, String description, String group, List<CommandModel> commands) {
+    public ControllerModel(String name, String description, String group, List<CommandModel> commands, List<PropertyModel> properties) {
         this.name = name;
         this.description = description;
         this.group = group;
         this.commands = commands;
+        this.properties = properties;
     }
 
     public String getName() {
@@ -66,5 +68,13 @@ public class ControllerModel {
 
     public void setCommands(List<CommandModel> commands) {
         this.commands = commands;
+    }
+
+    public List<PropertyModel> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<PropertyModel> properties) {
+        this.properties = properties;
     }
 }

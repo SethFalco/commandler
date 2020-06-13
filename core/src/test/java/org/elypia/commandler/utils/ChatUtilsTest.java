@@ -25,7 +25,7 @@ class ChatUtilsTest {
     @Test
     public void truncate() {
         String expected = "Hello";
-        String actual = ChatUtils.truncateAndAppend("Hello, world!", 5);
+        String actual = ChatUtils.truncate("Hello, world!", 5);
         assertEquals(expected, actual);
     }
 

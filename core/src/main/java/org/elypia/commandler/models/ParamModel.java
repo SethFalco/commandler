@@ -16,18 +16,22 @@
 
 package org.elypia.commandler.models;
 
+import java.util.List;
+
 public class ParamModel {
 
     private String name;
     private String description;
+    private List<PropertyModel> properties;
 
     public ParamModel() {
         // Do nothing.
     }
 
-    public ParamModel(String name, String description) {
+    public ParamModel(String name, String description, List<PropertyModel> properties) {
         this.name = name;
         this.description = description;
+        this.properties = properties;
     }
 
     public String getName() {
@@ -44,5 +48,13 @@ public class ParamModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<PropertyModel> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<PropertyModel> properties) {
+        this.properties = properties;
     }
 }

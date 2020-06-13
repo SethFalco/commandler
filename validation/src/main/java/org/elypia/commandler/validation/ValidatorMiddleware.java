@@ -17,7 +17,7 @@
 package org.elypia.commandler.validation;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.api.*;
+import org.elypia.commandler.api.HandlerMiddleware;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.producers.ParameterWrapper;
 import org.slf4j.*;
@@ -49,8 +49,8 @@ public class ValidatorMiddleware implements HandlerMiddleware {
 
     @Override
     public <S, M> void onMiddleware(ActionEvent<S, M> event) {
-        Class<? extends Controller> controllerType = event.getMetaController().getControllerType();
-        Controller controller = BeanProvider.getContextualReference(controllerType);
+        Class<?> controllerType = event.getMetaController().getControllerType();
+        Object controller = BeanProvider.getContextualReference(controllerType);
         validationService.validate(event, controller, parameterWrapper.getParams());
     }
 }

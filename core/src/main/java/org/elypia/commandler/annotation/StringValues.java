@@ -17,21 +17,23 @@
 package org.elypia.commandler.annotation;
 
 import org.elypia.commandler.adapters.EnumAdapter;
-import org.elypia.commandler.dispatchers.StandardDispatcher;
+import org.elypia.commandler.dispatchers.standard.StandardDispatcher;
 
 import java.lang.annotation.*;
 
 /**
  * Allows enums to specify all acceptable inputs that may
- * result in that enum constant.
+ * result in that enum constant during parameter parsing.
  *
  * This is used by the {@link EnumAdapter}.
  *
  * @author seth@elypia.org (Seth Falco)
+ * @since 4.0.1
  */
 @PropertyWrapper(type = StandardDispatcher.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface StringValues {
 
     /**

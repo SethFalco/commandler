@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.dispatchers;
+package org.elypia.commandler.dispatchers.standard;
 
 import org.apache.deltaspike.core.api.config.*;
-import org.elypia.commandler.annotation.command.*;
 import org.elypia.commandler.config.PatternConverter;
 
 import java.util.List;

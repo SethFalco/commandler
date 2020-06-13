@@ -33,7 +33,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 /**
- * TODO: Add back testing logic, but instead it should count up errors that occur
  * The {@link ActionHandler} is what ultimiately handles all events
  * that come through Commandler regardless of service.
  *
@@ -95,7 +94,7 @@ public class ActionHandler implements ActionListener {
             requestFactory.setEvent(event);
 
             MetaController module = event.getMetaController();
-            Controller controller = BeanProvider.getContextualReference(module.getControllerType());
+            Object controller = BeanProvider.getContextualReference(module.getControllerType());
             Object[] params = adapter.adaptEvent(event);
             requestFactory.setParams(params);
 

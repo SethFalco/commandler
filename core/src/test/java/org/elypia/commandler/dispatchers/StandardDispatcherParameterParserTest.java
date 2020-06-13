@@ -16,6 +16,7 @@
 
 package org.elypia.commandler.dispatchers;
 
+import org.elypia.commandler.dispatchers.standard.StandardDispatcherParameterParser;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -68,7 +69,8 @@ public class StandardDispatcherParameterParserTest {
         assertEquals(expected, actual);
     }
 
-//    @Test
+    @Disabled
+    @Test
     public void testEscapedQuotes() {
         StandardDispatcherParameterParser parser = new StandardDispatcherParameterParser();
 
@@ -154,7 +156,8 @@ public class StandardDispatcherParameterParserTest {
         assertEquals(expected, actual);
     }
 
-//    @Test
+    @Disabled
+    @Test
     public void testStringWithEscapedQuote() {
         StandardDispatcherParameterParser parser = new StandardDispatcherParameterParser();
 

@@ -14,31 +14,6 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.testing;
+package org.elypia.commandler;
 
-import java.util.*;
-
-/**
- * @author seth@elypia.org (Seth Falco)
- */
-public class ModuleReport implements Iterable<Report> {
-
-    private List<Report> reports;
-
-    public ModuleReport() {
-        reports = new ArrayList<>();
-    }
-
-    public void add(Report report) {
-        reports.add(report);
-    }
-
-    public List<Report> getReports() {
-        return reports;
-    }
-
-    @Override
-    public Iterator<Report> iterator() {
-        return reports.iterator();
-    }
-}
+public class PropertyInterpolator { }

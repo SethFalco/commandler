@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.command;
+package org.elypia.commandler.dispatchers.standard;
 
 import org.elypia.commandler.annotation.*;
-import org.elypia.commandler.annotation.stereotypes.CommandController;
-import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.dispatchers.StandardDispatcher;
+import org.elypia.commandler.annotation.stereotypes.Controller;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Stereotype;
@@ -33,10 +31,11 @@ import java.lang.annotation.*;
  */
 @ApplicationScoped
 @Stereotype
-@CommandController
+@Controller
 @PropertyWrapper(type = StandardDispatcher.class)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface StandardController {
 
     /**

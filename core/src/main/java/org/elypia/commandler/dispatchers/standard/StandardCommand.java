@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.command;
+package org.elypia.commandler.dispatchers.standard;
 
 import org.elypia.commandler.annotation.*;
-import org.elypia.commandler.api.Controller;
-import org.elypia.commandler.dispatchers.StandardDispatcher;
+import org.elypia.commandler.annotation.stereotypes.Controller;
 
 import java.lang.annotation.*;
 
@@ -32,6 +31,7 @@ import java.lang.annotation.*;
 @PropertyWrapper(type = StandardDispatcher.class)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface StandardCommand {
 
     /**
@@ -60,7 +60,7 @@ public @interface StandardCommand {
      *
      * @return If this command is static.
      */
-    @Property(key = "static")
+    @Property(key = "static", value = "{#CLASS-org.elypia.commandler.dispatchers.static}")
     boolean isStatic() default false;
 
     /**

@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.annotation.command;
+package org.elypia.commandler.i18n;
 
-import org.elypia.commandler.annotation.*;
-import org.elypia.commandler.dispatchers.MatchDispatcher;
-
-import java.lang.annotation.*;
+import org.apache.deltaspike.core.api.config.*;
+import org.apache.deltaspike.core.api.message.MessageBundle;
 
 /**
+ * Configuration for internationalization of Commandler.
+ *
  * @author seth@elypia.org (Seth Falco)
+ * @since 4.0.1
  */
-@Command
-@PropertyWrapper(type = MatchDispatcher.class)
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface MatchCommand {
+@Configuration(prefix = "commandler.i18n.")
+public interface InternationalizationConfig {
 
     /**
-     * @return The regular expression that will be used to
-     * match portions of the event.
+     * @return The location in the classpath to find the
+     * {@link MessageBundle}s for Commandler.
      */
-    @Property(key = "pattern", i18n = true, isPublic = true, displayName = "Pattern")
-    String value();
+    @ConfigProperty(name = "message-bundle")
+    String getMessageBundle();
 }

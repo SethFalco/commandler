@@ -16,7 +16,6 @@
 
 package org.elypia.commandler.validation;
 
-import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.exceptions.misuse.AbstractActionException;
 
@@ -28,14 +27,14 @@ import java.util.*;
  */
 public class ViolationException extends AbstractActionException {
 
-    private final transient Set<ConstraintViolation<Controller>> violations;
+    private final transient Set<ConstraintViolation<Object>> violations;
 
-    public ViolationException(ActionEvent<?, ?> action, Set<ConstraintViolation<Controller>> violations) {
+    public ViolationException(ActionEvent<?, ?> action, Set<ConstraintViolation<Object>> violations) {
         super(action);
         this.violations = Objects.requireNonNull(violations);
     }
 
-    public Set<ConstraintViolation<Controller>> getViolations() {
+    public Set<ConstraintViolation<Object>> getViolations() {
         return violations;
     }
 }

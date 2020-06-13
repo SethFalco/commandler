@@ -88,7 +88,7 @@ public final class ChatUtils {
      * @param maxLength The maximum length the result can be.
      * @return The string itself, or a truncated version of the string.
      */
-    public static String truncateAndAppend(String body, int maxLength) {
+    public static String truncate(String body, int maxLength) {
         return truncateAndAppend(body, maxLength, null);
     }
 

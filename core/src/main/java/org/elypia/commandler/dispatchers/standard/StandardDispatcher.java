@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.dispatchers;
+package org.elypia.commandler.dispatchers.standard;
 
 import org.elypia.commandler.*;
 import org.elypia.commandler.annotation.stereotypes.MessageDispatcher;
@@ -91,7 +91,7 @@ public class StandardDispatcher implements Dispatcher {
 
     /**
      * Map the command against Commandler using the StandardDispatcher.
-     * The StandardDispatcher uses the `org.elypia.commandler.dispatchers.StandardDispatcher.aliases`
+     * The StandardDispatcher uses the `org.elypia.commandler.dispatchers.standard.StandardDispatcher.aliases`
      * property to determine if a {@link MetaController} and {@link MetaCommand} support this
      * dispatcher, both the parent {@link MetaController} and {@link MetaCommand} must
      * have this set in order to be usable.
@@ -121,7 +121,7 @@ public class StandardDispatcher implements Dispatcher {
         String params = null;
 
         for (MetaController metaController : commandlerExtension.getMetaControllers()) {
-            String controllerAliases = messageResolver.getMessage(metaController.getProperty(this.getClass(), "aliases"));
+            String controllerAliases = getAliases(metaController);
 
             if (controllerAliases == null)
                 continue;
@@ -133,7 +133,7 @@ public class StandardDispatcher implements Dispatcher {
 
                 if (command.length > 1) {
                     for (MetaCommand metaCommand : metaController.getMetaCommands()) {
-                        String controlAliases = messageResolver.getMessage(metaCommand.getProperty(this.getClass(), "aliases"));
+                        String controlAliases = getAliases(metaCommand);
 
                         if (controlAliases == null)
                             continue;
@@ -175,7 +175,7 @@ public class StandardDispatcher implements Dispatcher {
             }
 
             for (MetaCommand metaCommand : getStaticCommands(metaController)) {
-                String controlAliases = messageResolver.getMessage(metaCommand.getProperty(this.getClass(), "aliases"));
+                String controlAliases = getAliases(metaCommand);
 
                 if (controlAliases == null)
                     continue;
@@ -219,7 +219,8 @@ public class StandardDispatcher implements Dispatcher {
      */
     public List<MetaCommand> getStaticCommands(MetaController controller) {
         return controller.getMetaCommands().stream()
-            .filter((command) -> command.getProperty(StandardDispatcher.class, "static").equals("true"))
+            .filter((command) -> command.getProperties().containsKey(StandardDispatcher.class.getName() + ".static"))
+            .filter((command) -> command.getProperty(StandardDispatcher.class, "static").getValue().equals("true"))
             .collect(Collectors.toUnmodifiableList());
     }
 
@@ -229,7 +230,8 @@ public class StandardDispatcher implements Dispatcher {
      */
     private MetaCommand getDefaultCommand(MetaController controller) {
         return controller.getMetaCommands().stream()
-            .filter((command) -> command.getProperty(StandardDispatcher.class, "default").equals("true"))
+            .filter((command) -> command.getProperties().containsKey(StandardDispatcher.class.getName() + ".default"))
+            .filter((command) -> command.getProperty(StandardDispatcher.class, "default").getValue().equals("true"))
             .findAny().orElse(null);
     }
 
@@ -287,5 +289,14 @@ public class StandardDispatcher implements Dispatcher {
         }
 
         return null;
+    }
+
+    private String getAliases(MetaComponent component) {
+        MetaProperty aliasesProperty = component.getProperty(this.getClass(), "aliases");
+
+        if (aliasesProperty == null)
+            return null;
+
+        return messageResolver.getMessage(aliasesProperty.getValue());
     }
 }

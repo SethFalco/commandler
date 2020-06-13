@@ -16,7 +16,7 @@
 
 package org.elypia.commandler.api;
 
-import org.elypia.commandler.dispatchers.StandardDispatcher;
+import org.elypia.commandler.dispatchers.standard.StandardDispatcher;
 import org.elypia.commandler.event.Request;
 
 import java.util.Map;

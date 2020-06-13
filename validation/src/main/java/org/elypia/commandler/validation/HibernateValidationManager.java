@@ -18,7 +18,6 @@ package org.elypia.commandler.validation;
 
 import org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory;
 import org.elypia.commandler.CommandlerExtension;
-import org.elypia.commandler.api.Controller;
 import org.elypia.commandler.event.ActionEvent;
 import org.hibernate.validator.messageinterpolation.*;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
@@ -57,16 +56,16 @@ public class HibernateValidationManager {
             .configure()
             .constraintValidatorFactory(new CDIAwareConstraintValidatorFactory())
             .messageInterpolator(new ResourceBundleMessageInterpolator(locator))
-            .parameterNameProvider(new CommandParamNameProvider(commandlerExtension))
+            .parameterNameProvider(new CommandParameterNameProvider(commandlerExtension))
             .buildValidatorFactory();
 
         exValidator = factory.getValidator().forExecutables();
     }
 
-    public void validate(ActionEvent<?, ?> event, Controller controller, Object[] parameters) {
+    public void validate(ActionEvent<?, ?> event, Object controller, Object[] parameters) {
         Method method = event.getMetaCommand().getMethod();
         logger.debug("Validating {} with {} parameters.", event.getMetaCommand(), parameters.length);
-        Set<ConstraintViolation<Controller>> violations = exValidator.validateParameters(controller, method, parameters);
+        Set<ConstraintViolation<Object>> violations = exValidator.validateParameters(controller, method, parameters);
 
         if (!violations.isEmpty())
             throw new ViolationException(event, violations);
