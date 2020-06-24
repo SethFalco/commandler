@@ -1,4 +1,4 @@
-# Feature Request
+# Improvement
 <!-- If you feel a heading is irrelevant, just leave it empty or remove it. -->
 
 ## Sub-Project
@@ -8,9 +8,6 @@
 -->
 
 ## Description
-<!-- Explain what this is about, try to use full sentences, and make your point clear. -->
+<!-- Explain what could be done better, try to use full sentences, and make your point clear. -->
 
-## Expected Behavior
-<!-- What were you expecting to happen instead of this? -->
-
-/label ~Bug 
+/label ~Improvement 

@@ -33,7 +33,7 @@ allprojects() {
     apply plugin: "jacoco"
 
     group = "org.elypia.commandler"
-    version = "4.0.1"
+    version = "4.0.2"
     description = "Commandler is an abstract command handling framework for dispatching events."
 
     ext {
@@ -42,7 +42,7 @@ allprojects() {
         issueUrl = "${repoUrl}/issues"
         website = "https://elypia.org/"
 
-        deltaSpikeVersion = "1.9.3"
+        deltaSpikeVersion = "1.9.4"
         validationVersion = "2.0.2"
     }
 

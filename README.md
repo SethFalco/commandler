@@ -94,9 +94,9 @@ public class UtilityController {
 This project is licenced under the Apache 2.0 project, don't be afraid to
 derive or reference from this project all you want!
 
-**All non-code files including videos, models, audio, bitmaps, vectors, and 
-animations such as gifs, are not under the aforementioned license; all rights
-are reserved by Elypia CIC.**
+**The repository includes our trade name and registered trademarks, 
+which are not granted under the license. Please do not use these 
+except as required to describe the origin of work.**
 
 ## Support
 Should any problems occur, come visit us over on [Discord][discord-guild]! We're always around and
@@ -113,7 +113,7 @@ the library itself then we'll make sure to get it sorted.
 [Maven]: https://maven.apache.org/ "Depend via Maven"
 [elypia]: https://elypia.org/ "Elypia Homepage"
 
-[Matrix]: https://img.shields.io/matrix/elypia-general:matrix.org?logo=matrix "Matrix Shield"
+[Matrix]: https://img.shields.io/matrix/elypia:matrix.org?logo=matrix "Matrix Shield"
 [Discord]: https://discord.com/api/guilds/184657525990359041/widget.png "Discord Shield"
 [Maven Central]: https://img.shields.io/maven-central/v/org.elypia.commandler/core "Download Shield"
 [Docs]: https://img.shields.io/badge/docs-commandler-blue.svg "Commandler Documentation Shield"

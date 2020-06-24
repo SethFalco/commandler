@@ -1,25 +1,16 @@
 # Feature Request
-<!--  
-  If you feel a heading is irrelevant, just leave it empty or remove it.
--->
+<!-- If you feel a heading is irrelevant, just leave it empty or remove it. -->
 
 ## Sub-Project
-<!-- 
-  Can you specify which sub-project(s) this is relevant to? If you aren't sure,
-  or this is a proposal for a new sub-project, you can delete this.
--->
+<!-- Can you specify which sub-project(s) this is relevant to? -->
 
 ## Description
-<!-- 
-  Explain what this is about, try to use full sentences, and make your point clear.
--->
+<!-- Explain what this is about, try to use full sentences, and make your point clear. -->
 
 ## Motivation
 <!--
-  Why is this a feature that should be implemented in Commandler
-  rather than in your own project using it?
-  What makes this fundamental, or reusable, or of demand to 
-  other developers?
+  Why is this a feature that should be implemented in Commandler rather than in your own project using it?
+  What makes this fundamental, or reusable, or of demand to other developers?
 -->
 
 ## Interface
@@ -28,3 +19,5 @@
   to help describe how you'd want to use this, or for others to discuss
   and improve ahead of time before final implementation.
 -->
+
+/label ~"New Feature" 

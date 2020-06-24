@@ -22,7 +22,7 @@ dependencies {
     api "jakarta.validation:jakarta.validation-api:${validationVersion}"
 
     // YAML4DeltaSpike for YAML Support by Default
-    implementation "org.elypia.yaml4deltaspike:yaml4deltaspike:1.2.0"
+    implementation "org.elypia.yaml4deltaspike:yaml4deltaspike:1.2.1"
 
     // Quartz for @Schedule
     api "org.quartz-scheduler:quartz:2.3.2"
