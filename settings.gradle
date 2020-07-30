@@ -16,17 +16,17 @@
 
 rootProject.name = 'commandler'
 
+/** Extension to dispatch commands from the console. */
+include "console"
+
 /** The core of Commandler, has the bits that make it work. */
 include "core"
 
 /** Exports all metadata as documentation which can be provided to third-parties. */
-include "doc"
+include "commandlerdoc"
 
-/** Uses Hibernates Validation to validate Commandler commands and parmaters. */
-include "validation"
-
-/** Extension to dispatch commands from the console. */
-include "console"
+/** Generates a static website with the user-guide for Commandler. */
+include "documentation"
 
 /** Extension which enables integration with a dashboard API. */
 include "metrics"
@@ -36,3 +36,6 @@ include "metrics"
  * and libraries to get started as quick as possible.
  */
 include "newb"
+
+/** Uses Hibernates Validation to validate Commandler commands and parmaters. */
+include "validation"

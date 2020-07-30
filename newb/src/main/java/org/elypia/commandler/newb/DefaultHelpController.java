@@ -20,6 +20,7 @@ import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.annotation.Param;
 import org.elypia.commandler.annotation.stereotypes.Controller;
 import org.elypia.commandler.dispatchers.standard.*;
+import org.elypia.commandler.groups.Guidance;
 import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.metadata.*;
 import org.elypia.commandler.models.*;
@@ -46,6 +47,7 @@ import java.util.stream.Collectors;
  *
  * @author seth@elypia.org (Seth Falco)
  */
+@Guidance
 @StandardController
 public class DefaultHelpController {
 

@@ -22,7 +22,7 @@ import org.elypia.commandler.metadata.MetaComponent;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Used by Commandler to localize metadata for
@@ -35,6 +35,11 @@ import java.util.Objects;
 @ApplicationScoped
 public class CommandlerMessageResolver {
 
+    /** Messages to load by default. */
+    private static final String[] DEFAULT_MESSAGES = {
+        "org.elypia.commandler.i18n.GroupMessages"
+    };
+
     /** Configuration for Commandler's i18n handling. */
     private final InternationalizationConfig i18nConfig;
 
@@ -44,11 +49,16 @@ public class CommandlerMessageResolver {
     public CommandlerMessageResolver(InternationalizationConfig i18nConfig, MessageContext messageContext) {
         this.i18nConfig = Objects.requireNonNull(i18nConfig);
         this.messageContext = Objects.requireNonNull(messageContext);
+
+        List<String> messages = new ArrayList<>(i18nConfig.getMessageBundles());
+        messages.addAll(Arrays.asList(DEFAULT_MESSAGES));
+
+        messageContext.messageSource(messages.toArray(String[]::new));
     }
 
     /**
      * If the key starts and ends with {} then it'll be searched
-     * in the {@link InternationalizationConfig#getMessageBundle()} path.
+     * in the {@link InternationalizationConfig#getMessageBundles()} path.
      *
      * If not then the string will be interpolated and returned literally.
      *
@@ -56,8 +66,21 @@ public class CommandlerMessageResolver {
      * @return The localized string depending on the {@link LocaleResolver}.
      */
     public String getMessage(String key) {
-        String messageBundlePath = i18nConfig.getMessageBundle();
-        Message message = messageContext.messageSource(messageBundlePath).message();
+        return getMessage(key, null);
+    }
+
+    /**
+     * If the key starts and ends with {} then it'll be searched
+     * in the {@link InternationalizationConfig#getMessageBundles()} path.
+     *
+     * If not then the string will be interpolated and returned literally.
+     *
+     * @param key The resource bundle key or literal string localize.
+     * @param locale Override the default locale resolver implementation to use this locale.
+     * @return The localized string in the locale specified.
+     */
+    public String getMessage(String key, Locale locale) {
+        Message message = messageContext.message();
         Message template = message.template(key);
         return template.toString();
     }

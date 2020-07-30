@@ -17,7 +17,7 @@
 package org.elypia.commandler.annotation.stereotypes;
 
 import org.elypia.commandler.Commandler;
-import org.elypia.commandler.annotation.*;
+import org.elypia.commandler.annotation.Command;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Stereotype;
@@ -39,12 +39,6 @@ import java.lang.annotation.*;
 @ApplicationScoped
 @Stereotype
 public @interface Controller {
-
-	/**
-	 * @return The group this module belongs too, this is used for
-	 * navigating the help menu.
-	 */
-	String group() default AnnotationUtils.EFFECTIVELY_NULL;
 
 	/**
 	 * @return If true the module will be hidden from help commands

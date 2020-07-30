@@ -20,12 +20,12 @@ plugins {
 }
 
 def publishedProjects = [
-    project("core"),
-    project("doc"),
-    project("validation"),
     project("console"),
+    project("core"),
+    project("commandlerdoc"),
 //    project("metrics"),
-    project("newb")
+    project("newb"),
+    project("validation")
 ]
 
 allprojects() {
@@ -33,7 +33,7 @@ allprojects() {
     apply plugin: "jacoco"
 
     group = "org.elypia.commandler"
-    version = "4.0.2"
+    version = "4.1.0"
     description = "Commandler is an abstract command handling framework for dispatching events."
 
     ext {
@@ -61,7 +61,6 @@ allprojects() {
 
 configure(publishedProjects) {
     apply plugin: "java-library"
-    apply plugin: "maven"
     apply plugin: "maven-publish"
     apply plugin: "com.jfrog.bintray"
     apply plugin: "io.spring.dependency-management"
@@ -118,9 +117,11 @@ configure(publishedProjects) {
     /** Upload to Bintray */
 
     jar {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
         manifest {
             attributes "Implementation-Title": this.name + project.path.replace(':', '-'),
-                       "Implementation-Version": version
+                       "Implementation-Version": archiveVersion
         }
     }
 

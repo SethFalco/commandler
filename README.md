@@ -22,7 +22,7 @@ or register another `Integration` and see the command port over to another servi
 * Commandler under the hood is using familiar APIs such as CDI, 
 Hibernate, and DeltaSpike, which should massively reduce the learning curve,
 or if these things are new to you, give you enterprise knowledge through a smaller framework.
-* Using `Commandlerdoc` you can export your controllers/command as it's own website
+* Using `CommandlerDoc` you can export your controllers/command as it's own website
 which may offer users a better experience when reading your chatbots documentation. 
 
 ## Getting Started

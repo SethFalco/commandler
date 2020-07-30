@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.i18n;
+package org.elypia.commandler.commandlerdoc;
 
-import org.apache.deltaspike.core.api.config.*;
-import org.apache.deltaspike.core.api.message.MessageBundle;
+import org.elypia.commandler.commandlerdoc.models.ExportableData;
 
-import java.util.List;
+import java.io.IOException;
 
 /**
- * Configuration for internationalization of Commandler.
+ * Defines a class that is capable of exporting data.
  *
  * @author seth@elypia.org (Seth Falco)
- * @since 4.0.1
+ * @since 4.0.2
  */
-@Configuration(prefix = "commandler.i18n.")
-public interface InternationalizationConfig {
+@FunctionalInterface
+public interface Exporter {
 
     /**
-     * @return The location in the classpath to find the
-     * {@link MessageBundle}s for Commandler.
+     * Perform the implementations export operation.
+     *
+     * @param data The exportable data that needs to be transformed into
+     * the desired format.
+     * @throws IOException If an exceptions occurs while writing the data.
      */
-    @ConfigProperty(name = "message-bundles")
-    List<String> getMessageBundles();
+    void export(ExportableData data) throws IOException;
 }

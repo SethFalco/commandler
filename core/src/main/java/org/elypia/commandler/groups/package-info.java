@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.i18n;
-
-import org.apache.deltaspike.core.api.config.*;
-import org.apache.deltaspike.core.api.message.MessageBundle;
-
-import java.util.List;
-
 /**
- * Configuration for internationalization of Commandler.
+ * Sensible default grouping annotations that can be applied
+ * to {@link org.elypia.commandler.annotation.stereotypes.Controller}
+ * classes.
+ *
+ * <pre><code>
+ * {@literal @}Miscellaneous
+ * {@literal @}StandardController
+ *  public class UtilityController {
+ *
+ *     {@literal @}StandardCommand
+ *      public int sum({@literal @}Param int x, {@literal @}Param int y) {
+ *          return x + y;
+ *      }
+ *  }</code></pre>
  *
  * @author seth@elypia.org (Seth Falco)
- * @since 4.0.1
+ * @since 4.1.0
  */
-@Configuration(prefix = "commandler.i18n.")
-public interface InternationalizationConfig {
-
-    /**
-     * @return The location in the classpath to find the
-     * {@link MessageBundle}s for Commandler.
-     */
-    @ConfigProperty(name = "message-bundles")
-    List<String> getMessageBundles();
-}
+package org.elypia.commandler.groups;

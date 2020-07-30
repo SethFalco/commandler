@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.elypia.commandler.annotation.*;
 import org.elypia.commandler.annotation.stereotypes.*;
 import org.elypia.commandler.api.*;
+import org.elypia.commandler.groups.Miscellaneous;
 import org.elypia.commandler.metadata.*;
 import org.slf4j.*;
 
@@ -15,6 +16,14 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * CDI extention for Java CDI. This seeks and registeres all beans
+ * to make Commandler function. All of Commandler's functionalities
+ * are bound to the CDI container and the beans picked up by this extension.
+ *
+ * @author seth@elypia.org
+ * @since 4.0.0
+ */
 public class CommandlerExtension implements Extension {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandlerExtension.class);
@@ -73,15 +82,31 @@ public class CommandlerExtension implements Extension {
 
             if (javaClazz.isAnnotationPresent(Controller.class)) {
                 Controller controller = javaClazz.getAnnotation(Controller.class);
-                group = controller.group();
                 isHidden = controller.hidden();
             }
+
+            if (javaClazz.isAnnotationPresent(Group.class)) {
+                group = javaClazz.getAnnotation(Group.class).message();
+            } else if (Stream.of(javaClazz.getAnnotations()).anyMatch((annotation) -> annotation.annotationType().isAnnotationPresent(Group.class))) {
+                Annotation annotation = Stream.of(javaClazz.getAnnotations())
+                    .filter((anno) -> anno.annotationType().isAnnotationPresent(Group.class))
+                    .limit(1)
+                    .findAny()
+                    .get();
+
+                String message = annotation.annotationType().getAnnotation(Group.class).message();
+
+                if (AnnotationUtils.isEffectivelyNull(message))
+                    group = "{" + annotation.annotationType().getName() + "}";
+                else
+                    group = message;
+            } // Make this check package too, going up recursively
 
             ComponentConfig component = convertComponent(javaClazz, 0);
             List<MetaCommand> commands = convertCommands(javaClazz);
 
             if (group == null || AnnotationUtils.isEffectivelyNull(group))
-                group = "{" + javaClazz.getName() + ".group}";
+                group = "{" + Miscellaneous.class.getName() + "}";
 
             metaControllers.add(new MetaController(javaClazz, group, component.name, component.description, isHidden, component.properties, commands));
         }

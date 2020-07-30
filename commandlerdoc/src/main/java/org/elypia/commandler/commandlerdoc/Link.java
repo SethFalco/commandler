@@ -14,26 +14,37 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.i18n;
-
-import org.apache.deltaspike.core.api.config.*;
-import org.apache.deltaspike.core.api.message.MessageBundle;
-
-import java.util.List;
+package org.elypia.commandler.commandlerdoc;
 
 /**
- * Configuration for internationalization of Commandler.
- *
  * @author seth@elypia.org (Seth Falco)
- * @since 4.0.1
  */
-@Configuration(prefix = "commandler.i18n.")
-public interface InternationalizationConfig {
+public class Link {
 
-    /**
-     * @return The location in the classpath to find the
-     * {@link MessageBundle}s for Commandler.
-     */
-    @ConfigProperty(name = "message-bundles")
-    List<String> getMessageBundles();
+    /** Where this link should take the user. */
+    private String url;
+
+    /** The class to apply to the element displaying which should display an icon. */
+    private String icon;
+
+    public Link(final String url, final String icon) {
+        this.url = url;
+        this.icon = icon;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 }

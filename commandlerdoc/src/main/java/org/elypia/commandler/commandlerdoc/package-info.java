@@ -14,26 +14,9 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.i18n;
-
-import org.apache.deltaspike.core.api.config.*;
-import org.apache.deltaspike.core.api.message.MessageBundle;
-
-import java.util.List;
-
 /**
- * Configuration for internationalization of Commandler.
- *
- * @author seth@elypia.org (Seth Falco)
- * @since 4.0.1
+ * This module is for exporting static data in a standard
+ * format that can be used by websites or tools that want to
+ * interface with or display Commandler application data.
  */
-@Configuration(prefix = "commandler.i18n.")
-public interface InternationalizationConfig {
-
-    /**
-     * @return The location in the classpath to find the
-     * {@link MessageBundle}s for Commandler.
-     */
-    @ConfigProperty(name = "message-bundles")
-    List<String> getMessageBundles();
-}
+package org.elypia.commandler.commandlerdoc;

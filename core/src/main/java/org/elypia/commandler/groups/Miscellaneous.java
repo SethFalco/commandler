@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.i18n;
+package org.elypia.commandler.groups;
 
-import org.apache.deltaspike.core.api.config.*;
-import org.apache.deltaspike.core.api.message.MessageBundle;
+import org.elypia.commandler.annotation.Group;
 
-import java.util.List;
+import java.lang.annotation.*;
 
 /**
- * Configuration for internationalization of Commandler.
+ * The default miscellaneous group used for commands that haven't specifically
+ * had a group assigned or that don't apply to any other category.
  *
  * @author seth@elypia.org (Seth Falco)
- * @since 4.0.1
+ * @since 4.1.0
  */
-@Configuration(prefix = "commandler.i18n.")
-public interface InternationalizationConfig {
+@Group
+@Target({ElementType.TYPE, ElementType.PACKAGE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Miscellaneous {
 
-    /**
-     * @return The location in the classpath to find the
-     * {@link MessageBundle}s for Commandler.
-     */
-    @ConfigProperty(name = "message-bundles")
-    List<String> getMessageBundles();
 }

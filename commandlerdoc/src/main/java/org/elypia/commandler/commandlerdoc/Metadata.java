@@ -14,26 +14,40 @@
  * limitations under the License.
  */
 
-package org.elypia.commandler.i18n;
-
-import org.apache.deltaspike.core.api.config.*;
-import org.apache.deltaspike.core.api.message.MessageBundle;
+package org.elypia.commandler.commandlerdoc;
 
 import java.util.List;
 
 /**
- * Configuration for internationalization of Commandler.
- *
  * @author seth@elypia.org (Seth Falco)
- * @since 4.0.1
  */
-@Configuration(prefix = "commandler.i18n.")
-public interface InternationalizationConfig {
+public class Metadata {
 
-    /**
-     * @return The location in the classpath to find the
-     * {@link MessageBundle}s for Commandler.
-     */
-    @ConfigProperty(name = "message-bundles")
-    List<String> getMessageBundles();
+    private String title;
+    private String logo;
+    private List<Link> links;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 }
