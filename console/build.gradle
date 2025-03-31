@@ -17,3 +17,7 @@
 dependencies {
     implementation project(":core")
 }
+
+tasks.named('compileJava') {
+    dependsOn parent.project('core').tasks.named('processResources')
+}

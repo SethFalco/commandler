@@ -31,3 +31,7 @@ dependencies {
     api "org.jboss.weld.se:weld-se-core:3.1.4.Final"
     implementation "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:${deltaSpikeVersion}"
 }
+
+tasks.named('compileJava') {
+    dependsOn parent.project('core').tasks.named('processResources')
+}

@@ -26,3 +26,7 @@ dependencies {
     // DeltaSpike
     implementation "org.apache.deltaspike.modules:deltaspike-bean-validation-module-impl:${deltaSpikeVersion}"
 }
+
+tasks.named('compileJava') {
+    dependsOn parent.project('core').tasks.named('processResources')
+}
