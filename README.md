@@ -1,69 +1,41 @@
-# Commandler [![Matrix]][matrix-community] [![Discord]][discord-guild] [![Maven Central]][maven-page] [![Docs]][documentation] [![Build]][gitlab] [![Coverage]][gitlab] [![Donate]][elypia-donate]
-The [Gradle]/[Maven] import string can be found at the maven-central badge above!
+# Commandler [![](https://img.shields.io/maven-central/v/org.elypia.commandler/core)](https://search.maven.org/search?q=g:org.elypia.commandler) [![](https://gitlab.com/SethFalco/commandler/badges/main/pipeline.svg)](https://gitlab.com/SethFalco/commandler)
 
 ## About
-Command Handler
-Commandler (**Comm**nd H**andler**) is a command handling framework for Java.
-It's purpose is to try keep as much of the reusable code as possible into a core
-project which can be the heart of any chatbot.  
-You'll be able to get started quickly making clean, reliable, and reusable code 
-with the framework which will help manage dependency injection, validation, and
-even generate a website with all relevent documentation for your commands.
 
-### Why use Commandler?
-Commandler makes it a lot easier to get started making anything that requires command
-handling, namely chatbots. It's designed using standard enterprise Java APIs
-like CDI and DeltaSpike to give a modern Java framework feel so should feel
-familiar to users of Java/Jakarta EE or Spring.
-
-* The controllers and commands you write are portable, so long as they aren't tied
-down to any API specific functionality you can just plop them over to another project,
-or register another `Integration` and see the command port over to another service.
-* Commandler under the hood is using familiar APIs such as CDI, 
-Hibernate, and DeltaSpike, which should massively reduce the learning curve,
-or if these things are new to you, give you enterprise knowledge through a smaller framework.
-* Using `CommandlerDoc` you can export your controllers/command as it's own website
-which may offer users a better experience when reading your chatbots documentation. 
+Commandler (**Comm**nd H**andler**) is a command handling framework for Java. It takes a lot of inspiration from Spring, so if you're coming from there it should be immediately familiar, and uses the same standards to provide dependency injection, validation, and cron jobs, etc.
 
 ## Getting Started
-Commandler is split into several small modules in order give very fine control
-over what logic and dependencies you have in your application(s).
 
-It's recommended to use `org.elypia.commandler:newb` to get started; this pulls 
-together the recommended modules and libraries so you can jump straight into
-development without worrying too much about the runtime dependencies or configuration.  
-This uses Weld, Hibernate, and provides YAML support with an `application.yml` by default.
+Commandler is split into multiple packages to give you control over what logic and dependencies you have in your application(s).
 
-When or if your requirements grow and you might want to change the CDI or validation
-implementation then you can go back to `org.elypia.commandler:core` and depend
-on whatever libraries or runtimes you want.
+It's recommended to use the `newb` package to start with. This is an opinionated package that provides sensible runtime dependencies and default implementations. When or if your requirements become more complex, you can always replace `newb` with the `core` package to choose your own CDI or validation implementations.
 
-### Example Code
-For this example we're going to assume that you're depending on the 
-`org.elypia.commandler:newb` and `org.elypia.commandler:console` modules.
-The `console` module will add support for performing commands in command line which
-is a great way to gain familiarity with the API and test things out quickly.
+### Import
 
-**./META-INF/beans.xml**
+Visit [Commandler on Maven Central](https://search.maven.org/search?q=g:org.elypia.commandler), and follow the instructions for your build system of choice to add Commandler to your project.
+
+### Your First Command
+
+This example assumes you depend on the following packages:
+
+* `newb` - an opinionated distribution of Commandler with sensible defaults
+* `console` - command-line interface support for commandler
+
+You must define a `beans.xml` file for the CDI API to find your Java beans. You can just copy and paste this to start with!
+
+**`main/resources/META-INF/beans.xml`**
 ```xml
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd"
        bean-discovery-mode="all" version="2.0">
 </beans>
 ```
-> You need to have a beans.xml file for the CDI API to find your Java beans. 
-> You can just copy and paste this at first!
 
-**Main.java**
+**`main/java/org/example/bot/Main.java`**
 ```java
 public class Main {
 
-    /**
-    * This creates the Commandler instance and then runs all integrations.
-    * 
-    * Get more information on Commandler here: 
-    * https://gitlab.com/Elypia/commandler
-    */
+    /** Create the Commandler instance and runs all integrations. */
     public static void main(String[] args) {
         Commandler commandler = Commandler.create();
         commandler.run();
@@ -71,52 +43,79 @@ public class Main {
 }
 ```
 
-**UtilityController.java**
+To implement your first command, you must create a class which by convention will be named with the `Controller` suffix, for example `DebugController`. A controller contains a series of related commands for the chatbot.
+
+It must be annotated with a controller annotation, such as `@StandardController`. This indicates to Commandler and the CDI container that it's a controller.
+
+**`main/java/org/example/bot/DebugController.java`**
 ```java
-@StandardController("utils")
-public class UtilityController {
+@StandardController
+public class DebugController {
     
-    @StandardCommand("boop")
-    public String boop() {
-        return "boop!";
+    @StandardCommand
+    public String ping() {
+        return "pong!";
     }
 }
 ```
-> Here we're creating our first controller and command. By default, it'll activate 
-> whenever we type `$utils boop` in console and return the text `boop!`.  
-> Commandler also provides i18n (internationalization) support out of the box, 
-> you can omit hardcoding documentation or aliases in the annotations and instead opt
-> to put them in a `CommandlerMessages` resource bundle instead which will use the
-> configured `LocaleResolver` implementation (defaults to system locale) to get localized
-> strings per event.
 
-## Open-Source
-This project is licenced under the Apache 2.0 project, don't be afraid to
-derive or reference from this project all you want!
+You've now made your first command! If you run your application, you'll be able to invoke this command in the command-line interface. By default, all commands are done by specifying a prefix, the controllers alias, then the commands alias. In this case:
 
-**The repository includes our trade name and registered trademarks, 
-which are not granted under the license. Please do not use these 
-except as required to describe the origin of work.**
+* Default prefix is `$`, Commandler ships with this value.
+* Controller's alias is `debug`, inferred from the class name.
+* Command's alias is `ping`, inferred from the method name.
 
-## Support
-Should any problems occur, come visit us over on [Discord][discord-guild]! We're always around and
-there are ample developers that would be willing to help; if it's a problem with
-the library itself then we'll make sure to get it sorted.
+```
+$debug ping
+pong!
+```
 
-[matrix-community]: https://matrix.to/#/+elypia:matrix.org "Matrix Invite"
-[discord-guild]: https://discord.com/invite/hprGMaM "Discord Invite"
-[maven-page]: https://search.maven.org/search?q=g:org.elypia.commandler "Maven Central"
-[documentation]: https://elypia.gitlab.io/commandler "Commandler Documentation"
-[gitlab]: https://gitlab.com/Elypia/commandler/commits/master "Repository on GitLab"
-[elypia-donate]: https://elypia.org/donate "Donate to Elypia"
-[Gradle]: https://gradle.org/ "Depend via Gradle"
-[Maven]: https://maven.apache.org/ "Depend via Maven"
-[elypia]: https://elypia.org/ "Elypia Homepage"
+However, for some commands like `ping`, having to mention the controller's alias might feel burdensome. For common or simple commands, you can define a command as "static". This makes it possible to use the command without specifying the controller's alias.
 
-[Matrix]: https://img.shields.io/matrix/elypia:matrix.org?logo=matrix "Matrix Shield"
-[Discord]: https://discord.com/api/guilds/184657525990359041/widget.png "Discord Shield"
-[Maven Central]: https://img.shields.io/maven-central/v/org.elypia.commandler/core "Download Shield"
-[Docs]: https://img.shields.io/badge/docs-commandler-blue.svg "Commandler Documentation Shield"
-[Build]: https://gitlab.com/Elypia/commandler/badges/master/pipeline.svg "GitLab Build Shield"
-[Coverage]: https://gitlab.com/Elypia/commandler/badges/master/coverage.svg "GitLab Coverage Shield"
-[Donate]: https://img.shields.io/badge/donate-elypia-blueviolet "Donate Shield"
+**`main/java/org/example/bot/DebugController.java`**
+```diff
+  @StandardController
+  public class DebugController {
+    
+-     @StandardCommand
++     @StandardCommand(isStatic = true)
+      public String ping() {
+          return "pong!";
+      }
+  }
+```
+
+Now it's possible to do the commands through both of the following ways, and both yield the same result:
+
+* `$debug ping`
+* `$ping`
+
+### Internationalization
+
+Commandler also provides i18n (internationalization) support out of the box for controller names, command names, and parameter names. These are to populate your help pages and documentation across locales. It's also just a lot cleaner than inlining copy into your annotations.
+
+**`main/resources/org/example/project/i18n/CommandlerMessages.properties`**
+```properties
+org.example.project.DebugController.name=Debug
+org.example.project.DebugController.description=Tools for the developer.
+org.example.project.DebugController-ping.name=ping!
+org.example.project.DebugController-ping.description=Check if the chatbot is responsive.
+```
+
+**`main/resources/org/example/project/i18n/CommandlerMessages_nl.properties`**
+```properties
+org.example.project.DebugController.name=Debug
+org.example.project.DebugController.description=Hulpmiddelen voor developers.
+org.example.project.DebugController-ping.name=ping!
+org.example.project.DebugController-ping.description=Test of de chatbot responsief is.
+```
+
+By creating these resource bundles, the help command now has guidance for the user. If you configure or provide an implementation for the [`LocaleResolver`](https://deltaspike.apache.org/javadoc/1.8.0/org/apache/deltaspike/core/api/message/class-use/LocaleResolver.html) (defaults to the system locale), you get change which language it served between invocations of the command.
+
+## Why use Commandler?
+
+Commandler uses standard APIs, and the knowledge is transferable to other Java frameworks. In other words, a chatbot can be a simple use case to get accustomed to the APIs and concepts that you'll use for commercial applications.
+
+The controllers and commands you write are portable, so long as you don't tie them down to a vendor yourself in your implementation. To add support for a new platform, you can register enough `Integration` and the command will _just work_ ™.
+
+You can use CommandlerDoc to export all guidance for your controllers and commands, which can be used to generate a better documentation than a help command. 
