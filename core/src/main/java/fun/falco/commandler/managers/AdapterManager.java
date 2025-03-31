@@ -43,20 +43,14 @@ import fun.falco.commandler.exceptions.AdapterRequiredException;
 import fun.falco.commandler.exceptions.misuse.ListUnsupportedException;
 import fun.falco.commandler.exceptions.misuse.ParamParseException;
 import fun.falco.commandler.metadata.MetaAdapter;
-import fun.falco.commandler.metadata.MetaCommand;
 import fun.falco.commandler.metadata.MetaParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>The {@link MetaParam param} adapter which is used to interpret
- * params specified in the {@link MetaCommand commands}.
- * Before a type can be used as an param an {@link Adapter}
- * must be specified and registered to the {@link Commandler}.</p>
- *
- * <p>The {@link AdapterManager} is how {@link String} input provided
- * by the chat client is converted into the respective object and passed
- * to the method associated with the {@link MetaCommand}.</p>
+ * Manager for parameter adapters. Parses parameter values from incoming
+ * requests. Before a data-type can be used a parameter, an {@link Adapter} must
+ * be implemented and registered with {@link Commandler}.
  *
  * @author seth@falco.fun (Seth Falco)
  */

@@ -19,7 +19,7 @@ Visit [Commandler on Maven Central](https://search.maven.org/search?q=g:org.elyp
 This example assumes you depend on the following packages:
 
 * `newb` - an opinionated distribution of Commandler with sensible defaults
-* `console` - command-line interface support for commandler
+* `console` - command-line interface support for Commandler
 
 You must define a `beans.xml` file for the CDI API to find your Java beans. You can just copy and paste this to start with!
 

@@ -36,9 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Vaidates annotations associated with commands and parameters to ensure
- * they are within the bounds that is specified relative to the input
- * provided when performing the commands.
+ * Validates annotations associated with commands and parameters to ensure they
+ * are within the bounds that is specified relative to the input provided when
+ * performing the commands.
  *
  * @author seth@falco.fun (Seth Falco)
  */
