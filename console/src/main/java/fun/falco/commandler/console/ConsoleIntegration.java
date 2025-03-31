@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This is a minimal integration designed to handle console input.
  *
- * @author seth@elypia.com (Seth Falco)
+ * @author seth@falco.fun (Seth Falco)
  */
 @ApplicationScoped
 public class ConsoleIntegration implements Integration<String, String> {

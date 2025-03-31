@@ -49,8 +49,8 @@ subprojects() {
     apply plugin: "maven-publish"
     apply plugin: "io.spring.dependency-management"
 
-    sourceCompatibility = 11
-    targetCompatibility = 11
+    sourceCompatibility = 17
+    targetCompatibility = 17
 
     [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 

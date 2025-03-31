@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class UrlAdapterTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"https://elypia.com/", "https://ely.gg/"})
+    @ValueSource(strings = {"https://falco.fun/", "https://example.org/"})
     public void testUrls(String url) throws MalformedURLException {
         UrlAdapter adapter = new UrlAdapter();
         assertEquals(new URL(url), adapter.adapt(url));
