@@ -31,15 +31,15 @@ class ChatUtilsTest {
 
     @Test
     public void truncateWithElipsis() {
-        String expected = "Hello...";
-        String actual = ChatUtils.truncateAndAppend("Hello, world!", 8, "...");
+        String expected = "Hello…";
+        String actual = ChatUtils.truncateAndAppend("Hello, world!", 6, "…");
         assertEquals(expected, actual);
     }
 
     @Test
     public void testNoTruncatingNeeded() {
         String expected = "Hello, world!";
-        String actual = ChatUtils.truncateAndAppend("Hello, world!", Integer.MAX_VALUE, "...");
+        String actual = ChatUtils.truncateAndAppend("Hello, world!", Integer.MAX_VALUE, "…");
         assertEquals(expected, actual);
     }
 }

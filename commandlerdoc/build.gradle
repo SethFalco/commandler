@@ -28,8 +28,6 @@ dependencies {
     implementation 'org.asciidoctor:asciidoctorj:2.2.0'
 }
 
-
-
 asciidoctor {
     sourceDir file('docs')
     outputDir file('build/commandlerdocs')

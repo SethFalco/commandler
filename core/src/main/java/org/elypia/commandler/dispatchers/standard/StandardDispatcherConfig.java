@@ -16,8 +16,9 @@
 
 package org.elypia.commandler.dispatchers.standard;
 
-import org.apache.deltaspike.core.api.config.*;
-import org.elypia.commandler.config.PatternConverter;
+import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.apache.deltaspike.core.api.config.Configuration;
+import org.elypia.converters4deltaspike.PatternConverter;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -39,9 +40,9 @@ public interface StandardDispatcherConfig {
     List<String> getPrefixes();
 
     /**
-     * @return The delimeter to seperate a {@link StandardController#value() prefix}
+     * @return The delimiter to separate a {@link StandardController#value() prefix}
      * from an {@link StandardCommand#value() alias}.
      */
-    @ConfigProperty(name = "delimeter", defaultValue = "\\s+", converter = PatternConverter.class)
-    Pattern getDelimeter();
+    @ConfigProperty(name = "delimiter", defaultValue = "\\s+", converter = PatternConverter.class)
+    Pattern getDelimiter();
 }

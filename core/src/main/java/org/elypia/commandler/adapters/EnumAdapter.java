@@ -49,10 +49,7 @@ public class EnumAdapter implements Adapter<Enum<?>> {
         for (Enum<?> e : type.getEnumConstants()) {
             String name = e.name().toLowerCase().replace("_", "");
 
-            if (name.equals(input))
-                return e;
-
-            if (checkStringValues(input, e, type))
+            if (name.equals(input) || checkStringValues(input, e, type))
                 return e;
         }
 

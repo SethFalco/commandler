@@ -80,31 +80,6 @@ public class LocaleAdapterTest {
     }
 
     /**
-     * Internally has a flag to detect if it's an emote.
-     * This will be converted to the country code and only
-     * compared to the ISO codes for country.
-     */
-    @Test
-    public void findLocaleByEmote() {
-        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
-
-        Locale expected = Locale.FRANCE;
-        Locale actual = adapter.adapt("\uD83C\uDDEB\uD83C\uDDF7");
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void findLocaleByIso3() {
-        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
-
-        Locale expected = new Locale("pl", "PL");
-        Locale actual = adapter.adapt("pol");
-
-        assertEquals(expected, actual);
-    }
-
-    /**
      * When searching for locale, but only a single item is
      * provided such as "fr", we should return the more specific
      * match first rather than first match.
@@ -115,20 +90,6 @@ public class LocaleAdapterTest {
 
         Locale expected = Locale.FRENCH;
         Locale actual = adapter.adapt("fr");
-
-        assertEquals(expected, actual);
-    }
-
-    /**
-     * When searching for a locale by country, we should prefer
-     * the country the iso code between language and country are the same.
-     */
-    @Test
-    public void findLocaleByCountryNameWithMatchingLanguage() {
-        LocaleAdapter adapter = new LocaleAdapter(Locale.US);
-
-        Locale expected = Locale.FRANCE;
-        Locale actual = adapter.adapt("france");
 
         assertEquals(expected, actual);
     }

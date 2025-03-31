@@ -25,17 +25,11 @@ include "core"
 /** Exports all metadata as documentation which can be provided to third-parties. */
 include "commandlerdoc"
 
-/** Generates a static website with the user-guide for Commandler. */
-include "documentation"
-
-/** Extension which enables integration with a dashboard API. */
-include "metrics"
-
 /**
  * This is a quick-start module, which bundles all modules
  * and libraries to get started as quick as possible.
  */
 include "newb"
 
-/** Uses Hibernates Validation to validate Commandler commands and parmaters. */
+/** Uses Hibernates Validation to validate Commandler commands and parameters. */
 include "validation"

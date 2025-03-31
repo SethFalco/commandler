@@ -21,14 +21,14 @@ import org.elypia.commandler.annotation.Group;
 import java.lang.annotation.*;
 
 /**
- * The default guidance group, this group should be applies to infomational
+ * The default guidance group, this group should be applied to informational
  * modules such as help, instructions, interactive guides, privacy policy,
  * or any other more technical module to help users use the bot.
  *
- * This is standardised in Commandler for easier integration between
+ * This is standardized in Commandler for easier integration between
  * libraries and extensions.
  *
- * If the default localized names for the {@link Guidance} are undiresable,
+ * If the default localized names for the {@link Guidance} are undesirable,
  * they can be overridden in your own <code>GroupMessages.properties</code>.
  *
  * @author seth@elypia.org (Seth Falco)

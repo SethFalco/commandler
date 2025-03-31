@@ -109,8 +109,8 @@ public class StandardDispatcher implements Dispatcher {
         if (prefix != null)
             content = content.substring(prefix.length()).trim();
 
-        Pattern delimeter = standardDispatcherConfig.getDelimeter();
-        String[] command = delimeter.split(content, 3);
+        Pattern delimiter = standardDispatcherConfig.getDelimiter();
+        String[] command = delimiter.split(content, 3);
 
         if (command.length == 0)
             throw new OnlyPrefixException("This message only contained the prefix, but no other content.");
@@ -236,7 +236,7 @@ public class StandardDispatcher implements Dispatcher {
     }
 
     /**
-     * @param request The action request containiner all request info and headers.
+     * @param request The action request container all request info and headers.
      * @return The list of prefixes valid for this {@link Request}, or null
      * if no prefixes are configured.
      */

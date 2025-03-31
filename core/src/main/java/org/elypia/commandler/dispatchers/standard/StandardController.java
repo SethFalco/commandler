@@ -46,7 +46,7 @@ public @interface StandardController {
 
     /**
      * If this {@link Controller} is marked as static then
-     * all {@link StandardCommand} will be static commadns regardless
+     * all {@link StandardCommand} will be static commands regardless
      * of the value of {@link StandardCommand#isStatic()}.
      *
      * @return If this command is static.

@@ -64,7 +64,7 @@ public class Commandler {
      * @return The global Commandler instance.
      */
     public static Commandler create() {
-        logger.info("DeltaSpike computed the following ProjectStage: " + ProjectStageProducer.getInstance().getProjectStage());
+        logger.info("DeltaSpike computed the following ProjectStage: {}", ProjectStageProducer.getInstance().getProjectStage());
         logger.debug("Started Commandler, loading all configuration and dependencies.");
 
         cdiContainer = CdiContainerLoader.getCdiContainer();
