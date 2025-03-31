@@ -25,12 +25,8 @@ import fun.falco.commandler.api.HandlerMiddleware;
 import fun.falco.commandler.event.ActionEvent;
 
 /**
- * Adds a cache step to the registered {@link ActionListener}
- * in order to cache actions that occur during runtime.
- *
- * This can be useful for applications that want to record
- * may need to reference future events to older ones.
- *
+ * Adds a cache step to the registered {@link ActionListener} in order to cache
+ * actions that occur during runtime.
  *
  * @author seth@falco.fun (Seth Falco)
  */

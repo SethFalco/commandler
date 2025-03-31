@@ -24,18 +24,15 @@ import fun.falco.commandler.event.Action;
 import fun.falco.commandler.metadata.MetaController;
 
 /**
- * The {@link ActionCache} allows caching a {@link Serializable}
- * identifier of an action or message to be cached against metadata regarding
- * the {@link Integration} and {@link MetaController} associated with it.
+ * To map and save a {@link Serializable} identifier of an action or message to
+ * be cached against metadata regarding the {@link Integration} and
+ * {@link MetaController} associated with it.
  *
- * This should only cache events that have been interacted with are
- * of interest of the Commandler application.
+ * <p>This should only cache events that have been interacted with are of
+ * interest of the Commandler application.</p>
  *
- * This is helpful for linking commands together, or allowing additional commands
- * on top of an existing message that has already been sent.
- *
- * It's strongly recommended to implement this yourself with something
- * more persistent such as a database.
+ * <p>It's strongly recommended to provide your own implementation that is more
+ * persistent, such as an external database.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */
