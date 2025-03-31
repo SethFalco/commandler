@@ -16,16 +16,18 @@
 
 package org.elypia.commandler.commandlerdoc;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.commandlerdoc.markdown.MarkdownExporter;
 import org.elypia.commandler.commandlerdoc.models.ExportableData;
-import org.elypia.commandler.metadata.*;
-import org.slf4j.*;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaController;
 
 /**
  * A class to manage exportable metadata. This includes
@@ -38,8 +40,6 @@ import java.util.stream.Collectors;
  * @author seth@elypia.org (Seth Falco)
  */
 public class CommandlerDoc {
-
-    private static final Logger logger = LoggerFactory.getLogger(CommandlerDoc.class);
 
     private List<MetaController> modules;
 

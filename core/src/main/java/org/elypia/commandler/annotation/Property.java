@@ -16,7 +16,11 @@
 
 package org.elypia.commandler.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -27,26 +31,29 @@ import java.lang.annotation.*;
 public @interface Property {
 
     /**
-     * @return The name of the property this is setting.
+     * @return Name of the property this is setting.
      */
     String key();
 
     /**
-     * @return The key to set this property to, this should be
-     * {@link AnnotationUtils#EFFECTIVELY_NULL} if this is for a Annotation wrapper
-     * for a property.
+     * @return
+     *     Key to set this property to, this should be
+     *     {@link AnnotationUtils#EFFECTIVELY_NULL} if this is for a Annotation
+     *     wrapper for a property.
      */
     String value() default AnnotationUtils.EFFECTIVELY_NULL;
 
     /**
-     * @return If this value is allowed to be overridden by the
-     * internationalization provider.
+     * @return
+     *     If this value is allowed to be overridden by the internationalization
+     *     provider.
      */
     boolean i18n() default false;
 
     /**
-     * @return If this should be displayed alongside other metadata,
-     * public to users.
+     * @return
+     *     If this should be displayed alongside other metadata, public to
+     *     users.
      */
     boolean isPublic() default false;
 
@@ -55,7 +62,7 @@ public @interface Property {
      * when the objects metadata is shown.
      * By default it's only useful when {@link #isPublic()}} is true.
      *
-     * @return Returns the display name of this property for users.
+     * @return Display name of this property for users.
      */
     String displayName() default AnnotationUtils.EFFECTIVELY_NULL;
 }

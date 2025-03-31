@@ -16,9 +16,9 @@
 
 package org.elypia.commandler.commandlerdoc;
 
-import org.elypia.commandler.commandlerdoc.models.ExportableData;
-
 import java.io.IOException;
+
+import org.elypia.commandler.commandlerdoc.models.ExportableData;
 
 /**
  * Defines a class that is capable of exporting data.
@@ -32,8 +32,8 @@ public interface Exporter {
     /**
      * Perform the implementations export operation.
      *
-     * @param data The exportable data that needs to be transformed into
-     * the desired format.
+     * @param data
+     *     Exportable data that needs to be transformed into the desired format.
      * @throws IOException If an exceptions occurs while writing the data.
      */
     void export(ExportableData data) throws IOException;

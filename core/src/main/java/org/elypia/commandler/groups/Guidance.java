@@ -16,9 +16,13 @@
 
 package org.elypia.commandler.groups;
 
-import org.elypia.commandler.annotation.Group;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.*;
+import org.elypia.commandler.annotation.Group;
 
 /**
  * The default guidance group, this group should be applied to informational

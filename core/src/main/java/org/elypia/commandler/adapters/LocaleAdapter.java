@@ -16,17 +16,22 @@
 
 package org.elypia.commandler.adapters;
 
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
 import org.apache.deltaspike.core.api.message.LocaleResolver;
 import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
 import org.elypia.commandler.utils.ChatUtils;
-import org.slf4j.*;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import java.util.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -34,8 +39,6 @@ import java.util.*;
 @RequestScoped
 @ParamAdapter(Locale.class)
 public class LocaleAdapter implements Adapter<Locale> {
-
-    private static final Logger logger = LoggerFactory.getLogger(LocaleAdapter.class);
 
     private static final Locale[] LOCALES = Locale.getAvailableLocales();
 
@@ -68,19 +71,22 @@ public class LocaleAdapter implements Adapter<Locale> {
 
         String countryEmoji = null;
 
-        if (query.length() == COUNTRY_FLAG_EMOJI_LENGTH)
+        if (query.length() == COUNTRY_FLAG_EMOJI_LENGTH) {
             countryEmoji = ChatUtils.replaceFromIndicators(query);
+        }
 
         Set<Locale> candidates = null;
         Locale languageLocale = null;
         Locale countryLocale = null;
 
         for (Locale locale : LOCALES) {
-            if (query.equalsIgnoreCase(locale.toLanguageTag()))
+            if (query.equalsIgnoreCase(locale.toLanguageTag())) {
                 return locale;
+            }
 
-            if (candidates == null)
+            if (candidates == null) {
                 candidates = new HashSet<>(ACCEPTABLE_STRINGS_INITIAL_SIZE);
+            }
 
             Set<String> acceptableStrings = new HashSet<>();
             acceptableStrings.add(locale.getLanguage());
@@ -115,8 +121,9 @@ public class LocaleAdapter implements Adapter<Locale> {
             }
         }
 
-        if (countryLocale == languageLocale)
+        if (countryLocale == languageLocale) {
             return countryLocale;
+        }
 
         if (languageLocale != null && countryLocale == null) {
             String ll = languageLocale.getLanguage();
@@ -124,8 +131,9 @@ public class LocaleAdapter implements Adapter<Locale> {
                 .filter((l) -> ll.equalsIgnoreCase(l.getLanguage()) && l.getCountry().isBlank())
                 .findAny();
 
-            if (test.isPresent())
+            if (test.isPresent()) {
                 return test.get();
+            }
         }
 
         if (languageLocale == null) {
@@ -134,8 +142,9 @@ public class LocaleAdapter implements Adapter<Locale> {
                 .filter((l) -> l.getLanguage().equalsIgnoreCase(cc) && l.getCountry().equals(cc))
                 .findAny();
 
-            if (test.isPresent())
+            if (test.isPresent()) {
                 return test.get();
+            }
         }
 
         return (countryLocale != null) ? countryLocale : languageLocale;

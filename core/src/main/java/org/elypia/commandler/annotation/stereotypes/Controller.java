@@ -16,12 +16,18 @@
 
 package org.elypia.commandler.annotation.stereotypes;
 
-import org.elypia.commandler.Commandler;
-import org.elypia.commandler.annotation.Command;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Stereotype;
-import java.lang.annotation.*;
+
+import org.elypia.commandler.Commandler;
+import org.elypia.commandler.annotation.Command;
 
 /**
  * A {@link Controller} in {@link Commandler} is a subset of {@link Command}s
@@ -40,14 +46,15 @@ import java.lang.annotation.*;
 @Stereotype
 public @interface Controller {
 
-	/**
-	 * @return If true the module will be hidden from help commands
-	 * and documentation.
-	 */
-	boolean hidden() default false;
+    /**
+     * @return
+     *     If true the module will be hidden from help commands and
+     *     documentation.
+     */
+    boolean hidden() default false;
 
-	/**
-	 * @return Related {@link Controller}s that users may be interested in.
-	 */
-	Class<?>[] seeAlso() default {};
+    /**
+     * @return Related {@link Controller}s that users may be interested in.
+     */
+    Class<?>[] seeAlso() default {};
 }

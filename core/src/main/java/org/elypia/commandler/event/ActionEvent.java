@@ -17,34 +17,35 @@
 package org.elypia.commandler.event;
 
 import org.elypia.commandler.Commandler;
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.metadata.*;
+import org.elypia.commandler.api.Dispatcher;
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaController;
 
 /**
- * The Abstract Event object for Commandler, this can be extended for specialised
- * {@link Dispatcher}s to allow more fields.
- * This is what {@link Commandler} will fire whenever a user performs an action.
+ * Abstract Event object for Commandler, this can be extended for specialized
+ * {@link Dispatcher}s to allow more fields. This is what {@link Commandler}
+ * will fire whenever a user performs an action.
  *
- * @param <S> The source event that this is wrapping around.
- * @param <M> The type of message supported by this {@link Integration},
- *            this is specified for stricter typing and to reduce the need to cast.
  * @author seth@elypia.org (Seth Falco)
+ * @param <S> Source event that this is wrapping around.
+ * @param <M>
+ *     Type of message supported by this {@link Integration}, this is specified
+ *     for stricter typing and to reduce the need to cast.
  */
 public class ActionEvent<S, M> {
 
-    /** The request provided by the {@link Integration}. */
+    /** Request provided by the {@link Integration}. */
     private final Request<S, M> request;
 
     /** Represents the action performed by user, like as module/command and params. */
     private final Action action;
 
-    /** The data associated with the selected module. */
+    /** Data associated with the selected module. */
     private MetaController metaController;
 
-    /** The data associated with the selected command. */
+    /** Data associated with the selected command. */
     private MetaCommand metaCommand;
-
-    private M response;
 
     public ActionEvent(Request<S, M> request, Action action, MetaController metaController, MetaCommand metaCommand) {
         this.request = request;

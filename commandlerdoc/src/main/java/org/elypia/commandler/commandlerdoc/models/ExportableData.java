@@ -16,10 +16,12 @@
 
 package org.elypia.commandler.commandlerdoc.models;
 
-import org.elypia.commandler.metadata.MetaController;
-
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.elypia.commandler.metadata.MetaController;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -35,9 +37,11 @@ public class ExportableData implements Serializable {
     private Map<Locale, List<ExportableController>> controllers;
 
     /**
-     * @return Map of {@link Locale} to {@link ExportableController}.
-     * This represents a transformed model of the {@link MetaController}
-     * to conviniently export all data that would need to be exported for documentation.
+     * @return
+     *     Map of {@link Locale} to {@link ExportableController}. This
+     *     represents a transformed model of the {@link MetaController} to
+     *     conveniently export all data that would need to be exported for
+     *     documentation.
      */
     public Map<Locale, List<ExportableController>> getControllers() {
         return controllers;

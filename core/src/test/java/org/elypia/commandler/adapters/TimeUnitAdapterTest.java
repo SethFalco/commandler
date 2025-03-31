@@ -16,13 +16,16 @@
 
 package org.elypia.commandler.adapters;
 
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -47,12 +50,12 @@ public class TimeUnitAdapterTest {
     @Test
     public void assertTimeUnits() {
         assertAll("Check that they all return the correct type.",
-            () -> assertEquals(TimeUnit.SECONDS,      adapter.adapt("seconds")),
-            () -> assertEquals(TimeUnit.HOURS,        adapter.adapt("h")),
+            () -> assertEquals(TimeUnit.SECONDS, adapter.adapt("seconds")),
+            () -> assertEquals(TimeUnit.HOURS, adapter.adapt("h")),
             () -> assertEquals(TimeUnit.MICROSECONDS, adapter.adapt("mic")),
-            () -> assertEquals(TimeUnit.MINUTES,      adapter.adapt("mins")),
-            () -> assertEquals(TimeUnit.NANOSECONDS,  adapter.adapt("n")),
-            () -> assertEquals(TimeUnit.SECONDS,      adapter.adapt("secs"))
+            () -> assertEquals(TimeUnit.MINUTES, adapter.adapt("mins")),
+            () -> assertEquals(TimeUnit.NANOSECONDS, adapter.adapt("n")),
+            () -> assertEquals(TimeUnit.SECONDS, adapter.adapt("secs"))
         );
     }
 

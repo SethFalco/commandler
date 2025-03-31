@@ -16,12 +16,13 @@
 
 package org.elypia.commandler.adapters;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
-
-import java.util.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -49,11 +50,13 @@ public class BooleanAdapter implements Adapter<Boolean> {
     public Boolean adapt(String input, Class<? extends Boolean> type, MetaParam data, ActionEvent<?, ?> event) {
         input = input.toLowerCase();
 
-        if (TRUE.contains(input))
+        if (TRUE.contains(input)) {
             return true;
+        }
 
-        if (FALSE.contains(input))
+        if (FALSE.contains(input)) {
             return false;
+        }
 
         return null;
     }

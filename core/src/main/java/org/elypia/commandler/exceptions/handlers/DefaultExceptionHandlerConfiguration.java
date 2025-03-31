@@ -16,7 +16,8 @@
 
 package org.elypia.commandler.exceptions.handlers;
 
-import org.apache.deltaspike.core.api.config.*;
+import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.apache.deltaspike.core.api.config.Configuration;
 
 @Configuration(prefix = "commandler.default-exception-handler.")
 public interface DefaultExceptionHandlerConfiguration {

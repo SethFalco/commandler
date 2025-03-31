@@ -36,9 +36,9 @@ public final class AnnotationUtils {
     }
 
     /**
-     * @param value The key to check if {@link #isEffectivelyNull(String)}
-     * @param elseValue The key to set if it is {@link #isEffectivelyNull(String)}.
-     * @return The key provided provided if not null, else the else parameter.
+     * @param value Key to check if {@link #isEffectivelyNull(String)}
+     * @param elseValue Key to set if it is {@link #isEffectivelyNull(String)}.
+     * @return Key provided provided if not null, else the else parameter.
      */
     public static String ifEffectivelyNull(String value, String elseValue) {
         return (isEffectivelyNull(value)) ? elseValue : value;

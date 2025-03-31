@@ -17,7 +17,8 @@
 package org.elypia.commandler.commandlerdoc.models;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author seth@elypia.org (Seth Falco)

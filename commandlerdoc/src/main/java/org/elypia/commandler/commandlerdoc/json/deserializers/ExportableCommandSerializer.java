@@ -16,10 +16,16 @@
 
 package org.elypia.commandler.commandlerdoc.json.deserializers;
 
-import com.google.gson.*;
-import org.elypia.commandler.commandlerdoc.models.*;
-
 import java.lang.reflect.Type;
+
+import org.elypia.commandler.commandlerdoc.models.ExportableCommand;
+import org.elypia.commandler.commandlerdoc.models.ExportableParameter;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -34,10 +40,12 @@ public class ExportableCommandSerializer implements JsonSerializer<ExportableCom
         object.addProperty("description", command.getDescription());
 
         JsonArray params = new JsonArray();
-        for (ExportableParameter exportableParameter : command.getParams())
-            params.add(context.serialize(exportableParameter));
-        object.add("params", params);
 
+        for (ExportableParameter exportableParameter : command.getParams()) {
+            params.add(context.serialize(exportableParameter));
+        }
+
+        object.add("params", params);
         return object;
     }
 }

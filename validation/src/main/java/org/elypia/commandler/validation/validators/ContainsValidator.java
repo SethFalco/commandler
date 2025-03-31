@@ -16,11 +16,13 @@
 
 package org.elypia.commandler.validation.validators;
 
-import org.elypia.commandler.validation.constraints.Contains;
+import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.validation.*;
-import java.util.Objects;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.elypia.commandler.validation.constraints.Contains;
 
 @ApplicationScoped
 public class ContainsValidator implements ConstraintValidator<Contains, String> {
@@ -34,8 +36,9 @@ public class ContainsValidator implements ConstraintValidator<Contains, String> 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null)
+        if (value == null) {
             return false;
+        }
 
         return value.contains(this.value);
     }

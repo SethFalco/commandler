@@ -16,12 +16,13 @@
 
 package org.elypia.commandler.validation.validators;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.validation.constraints.Platform;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.validation.*;
 
 @ApplicationScoped
 public class PlatformValidator implements ConstraintValidator<Platform, ActionEvent<?, ?>> {
@@ -38,8 +39,9 @@ public class PlatformValidator implements ConstraintValidator<Platform, ActionEv
         Integration<?, ?> controller = event.getRequest().getIntegration();
 
         for (Class<? extends Integration> type : controllerTypes) {
-            if (type == controller.getClass())
+            if (type == controller.getClass()) {
                 return true;
+            }
         }
 
         return false;

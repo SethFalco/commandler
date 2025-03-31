@@ -16,25 +16,33 @@
 
 package org.elypia.commandler.dispatchers.match;
 
-import org.elypia.commandler.CommandlerExtension;
-import org.elypia.commandler.annotation.stereotypes.MessageDispatcher;
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.*;
-import org.elypia.commandler.exceptions.misuse.ParamCountMismatchException;
-import org.elypia.commandler.metadata.*;
-import org.slf4j.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-import java.io.Serializable;
-import java.util.*;
-import java.util.regex.*;
+
+import org.elypia.commandler.CommandlerExtension;
+import org.elypia.commandler.annotation.stereotypes.MessageDispatcher;
+import org.elypia.commandler.api.Dispatcher;
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.event.Action;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.event.Request;
+import org.elypia.commandler.exceptions.misuse.ParamCountMismatchException;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaController;
+import org.elypia.commandler.metadata.MetaProperty;
 
 /**
- * <p>
- *    The {@link MatchDispatcher} is a {@link Dispatcher} implementation
- *    which uses regular expression to match commands and matching groups
- *    as command parameters.
- * </p>
+ * The {@link MatchDispatcher} is a {@link Dispatcher} implementation which uses
+ * regular expression to match commands and matching groups as command
+ * parameters.
  *
  * <p>For example the following {@link Pattern}:</p>
  * <p><strong><code>(?i)\b([\d,.]+)\h*(KG|LBS?)\b</code></strong></p>
@@ -53,9 +61,6 @@ import java.util.regex.*;
 @MessageDispatcher
 public class MatchDispatcher implements Dispatcher {
 
-    /** Logging with SLF4J. */
-    private static final Logger logger = LoggerFactory.getLogger(MatchDispatcher.class);
-
     /**
      * Rather than compiling patterns each time they're required,
      * we can store them in a map as we compile them and get them back,
@@ -71,12 +76,12 @@ public class MatchDispatcher implements Dispatcher {
     }
 
     /**
-     * Any message could match a potential regular expression.
-     * As a result all messages are valid Match commands.
+     * Any message could match a potential regular expression. As a result all
+     * messages are valid Match commands.
      *
-     * @param request The action request made by the {@link Integration}.
-     * @param <S> The type of source even thtis {@link Integration} is for.
-     * @param <M> The type of message this {@link Integration} sends and received.
+     * @param request Action request made by the {@link Integration}.
+     * @param <S> Type of source event this {@link Integration} is for.
+     * @param <M> Type of message this {@link Integration} sends and received.
      * @return If this is a valid command or not.
      */
     @Override
@@ -94,8 +99,9 @@ public class MatchDispatcher implements Dispatcher {
             for (MetaCommand metaCommand : metaController.getMetaCommands()) {
                 MetaProperty patternProperty = metaCommand.getProperty(this.getClass(), "pattern");
 
-                if (patternProperty == null)
+                if (patternProperty == null) {
                     continue;
+                }
 
                 String patternString = patternProperty.getValue();
                 final Pattern pattern;
@@ -109,8 +115,9 @@ public class MatchDispatcher implements Dispatcher {
 
                 Matcher matcher = pattern.matcher(request.getContent());
 
-                if (!matcher.find())
+                if (!matcher.find()) {
                     return null;
+                }
 
                 selectedMetaController = metaController;
                 selectedMetaCommand = metaCommand;
@@ -125,19 +132,22 @@ public class MatchDispatcher implements Dispatcher {
             }
         }
 
-        if (selectedMetaController == null)
+        if (selectedMetaController == null) {
             return null;
+        }
 
         Serializable id = request.getIntegration().getActionId(request.getSource());
 
-        if (id == null)
+        if (id == null) {
             throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
+        }
 
         Action action = new Action(id, request.getContent(), selectedMetaController.getControllerType(), selectedMetaCommand.getMethod().getName(), parameters);
         ActionEvent<S, M> e = new ActionEvent<>(request, action, selectedMetaController, selectedMetaCommand);
 
-        if (!selectedMetaCommand.isValidParamCount(parameters.size()))
+        if (!selectedMetaCommand.isValidParamCount(parameters.size())) {
             throw new ParamCountMismatchException(e);
+        }
 
         return e;
     }

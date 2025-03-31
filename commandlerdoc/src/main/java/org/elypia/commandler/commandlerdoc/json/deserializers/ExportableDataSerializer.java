@@ -16,12 +16,21 @@
 
 package org.elypia.commandler.commandlerdoc.json.deserializers;
 
-import com.google.gson.*;
-import org.elypia.commandler.commandlerdoc.models.*;
-import org.slf4j.*;
-
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.elypia.commandler.commandlerdoc.models.ExportableController;
+import org.elypia.commandler.commandlerdoc.models.ExportableData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -40,8 +49,9 @@ public class ExportableDataSerializer implements JsonSerializer<ExportableData> 
         controllers.forEach((locale, exportableControllers) -> {
             JsonArray array = new JsonArray();
 
-            for (ExportableController ec : exportableControllers)
+            for (ExportableController ec : exportableControllers) {
                 array.add(context.serialize(ec));
+            }
 
             object.add(locale.toLanguageTag(), array);
         });

@@ -16,11 +16,11 @@
 
 package org.elypia.commandler.console.messengers;
 
+import java.net.URL;
+
 import org.elypia.commandler.annotation.stereotypes.MessageProvider;
 import org.elypia.commandler.api.Messenger;
 import org.elypia.commandler.event.ActionEvent;
-
-import java.net.URL;
 
 /**
  * A provider for types that can make desireable output from

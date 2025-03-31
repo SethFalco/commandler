@@ -16,12 +16,19 @@
 
 package org.elypia.commandler.dispatchers.standard;
 
-import org.elypia.commandler.annotation.*;
-import org.elypia.commandler.annotation.stereotypes.Controller;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Stereotype;
-import java.lang.annotation.*;
+
+import org.elypia.commandler.annotation.AnnotationUtils;
+import org.elypia.commandler.annotation.Property;
+import org.elypia.commandler.annotation.PropertyWrapper;
+import org.elypia.commandler.annotation.stereotypes.Controller;
 
 /**
  * Denotes that this is a module or command that can be accessed

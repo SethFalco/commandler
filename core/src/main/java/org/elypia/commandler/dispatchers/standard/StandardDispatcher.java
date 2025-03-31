@@ -16,20 +16,34 @@
 
 package org.elypia.commandler.dispatchers.standard;
 
-import org.elypia.commandler.*;
-import org.elypia.commandler.annotation.stereotypes.MessageDispatcher;
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.*;
-import org.elypia.commandler.exceptions.misuse.*;
-import org.elypia.commandler.i18n.CommandlerMessageResolver;
-import org.elypia.commandler.metadata.*;
-import org.slf4j.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import java.io.Serializable;
-import java.util.*;
-import java.util.regex.*;
-import java.util.stream.Collectors;
+
+import org.elypia.commandler.Commandler;
+import org.elypia.commandler.CommandlerExtension;
+import org.elypia.commandler.annotation.stereotypes.MessageDispatcher;
+import org.elypia.commandler.api.Dispatcher;
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.event.Action;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.event.Request;
+import org.elypia.commandler.exceptions.misuse.ModuleNotFoundException;
+import org.elypia.commandler.exceptions.misuse.NoDefaultCommandException;
+import org.elypia.commandler.exceptions.misuse.OnlyPrefixException;
+import org.elypia.commandler.exceptions.misuse.ParamCountMismatchException;
+import org.elypia.commandler.i18n.CommandlerMessageResolver;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaComponent;
+import org.elypia.commandler.metadata.MetaController;
+import org.elypia.commandler.metadata.MetaProperty;
 
 /**
  * The default implementation of the StandardDispatcher, this implementation
@@ -42,9 +56,6 @@ import java.util.stream.Collectors;
  */
 @MessageDispatcher
 public class StandardDispatcher implements Dispatcher {
-
-    /** SLF4J Logger */
-    private static final Logger logger = LoggerFactory.getLogger(StandardDispatcher.class);
 
     /** Variable for handling key/value pairs with default value. ${key:default-value} */
     private static final Pattern VAR_PATTERN = Pattern.compile("(?i)^\\$\\{(?<KEY>[A-Z\\d_-]+)(?::(?<DEFAULT>.*))?}$");
@@ -62,8 +73,10 @@ public class StandardDispatcher implements Dispatcher {
 
     /**
      * @param parameterParser Controls how parameters are parsed by this dispatcher.
-     * @param standardDispatcherConfig The configuration service which has all Commandler configuration.
-     * @param commandlerExtension The configuration for all of the registered controllers in this instance.
+     * @param standardDispatcherConfig
+     *     Configuration service which has all Commandler configuration.
+     * @param commandlerExtension
+     *     Configuration for all of the registered controllers in this instance.
      * @throws NullPointerException If the configuration provided is null.
      */
     @Inject
@@ -78,12 +91,14 @@ public class StandardDispatcher implements Dispatcher {
     public <S, M> boolean isValid(Request<S, M> request) {
         List<String> prefixes = getPrefixes(request);
 
-        if (prefixes.isEmpty())
+        if (prefixes.isEmpty()) {
             return true;
+        }
 
         for (String prefix : prefixes) {
-            if (request.getContent().startsWith(prefix))
+            if (request.getContent().startsWith(prefix)) {
                 return true;
+            }
         }
 
         return false;
@@ -96,24 +111,26 @@ public class StandardDispatcher implements Dispatcher {
      * dispatcher, both the parent {@link MetaController} and {@link MetaCommand} must
      * have this set in order to be usable.
      *
-     * @param request The request received by the {@link Integration}.
-     * @param <S> The type of source event from the integration.
-     * @param <M> The type of message that was received.
-     * @return An ActionEvent all event data parsed in a way Commandler is happy to proceed with the request.
+     * @param request Request received by the {@link Integration}.
+     * @param <S> Type of source event from the integration.
+     * @param <M> Type of message that was received.
+     * @return ActionEvent all event data parsed in a way Commandler is happy to proceed with the request.
      */
     @Override
     public <S, M> ActionEvent<S, M> parse(Request<S, M> request) {
         String prefix = parsePrefix(request);
         String content = request.getContent();
 
-        if (prefix != null)
+        if (prefix != null) {
             content = content.substring(prefix.length()).trim();
+        }
 
         Pattern delimiter = standardDispatcherConfig.getDelimiter();
         String[] command = delimiter.split(content, 3);
 
-        if (command.length == 0)
+        if (command.length == 0) {
             throw new OnlyPrefixException("This message only contained the prefix, but no other content.");
+        }
 
         String arg1 = command[0];
         MetaController selectedMetaController = null;
@@ -123,8 +140,9 @@ public class StandardDispatcher implements Dispatcher {
         for (MetaController metaController : commandlerExtension.getMetaControllers()) {
             String controllerAliases = getAliases(metaController);
 
-            if (controllerAliases == null)
+            if (controllerAliases == null) {
                 continue;
+            }
 
             boolean controllerMatch = controllerAliases.equalsIgnoreCase(arg1.toLowerCase());
 
@@ -135,8 +153,9 @@ public class StandardDispatcher implements Dispatcher {
                     for (MetaCommand metaCommand : metaController.getMetaCommands()) {
                         String controlAliases = getAliases(metaCommand);
 
-                        if (controlAliases == null)
+                        if (controlAliases == null) {
                             continue;
+                        }
 
                         boolean controlMatch = controlAliases.equalsIgnoreCase(command[1].toLowerCase());
 
@@ -153,18 +172,20 @@ public class StandardDispatcher implements Dispatcher {
                     if (selectedMetaCommand == null) {
                         selectedMetaCommand = getDefaultCommand(metaController);
 
-                        if (selectedMetaCommand == null)
+                        if (selectedMetaCommand == null) {
                             throw new NoDefaultCommandException(selectedMetaController);
-                        else
+                        } else {
                             params = content.replaceFirst("\\Q" + command[0] + "\\E", "").trim();
+                        }
                     }
                 } else {
                     MetaCommand data = getDefaultCommand(metaController);
 
-                    if (data != null)
+                    if (data != null) {
                         selectedMetaCommand = data;
-                    else
+                    } else {
                         throw new NoDefaultCommandException(metaController);
+                    }
 
                     params = content
                         .replaceFirst("\\Q" + command[0] + "\\E", "")
@@ -177,8 +198,9 @@ public class StandardDispatcher implements Dispatcher {
             for (MetaCommand metaCommand : getStaticCommands(metaController)) {
                 String controlAliases = getAliases(metaCommand);
 
-                if (controlAliases == null)
+                if (controlAliases == null) {
                     continue;
+                }
 
                 boolean controlMatch = controlAliases.equalsIgnoreCase(command[0].toLowerCase());
 
@@ -195,27 +217,31 @@ public class StandardDispatcher implements Dispatcher {
             }
         }
 
-        if (selectedMetaController == null)
+        if (selectedMetaController == null) {
             throw new ModuleNotFoundException();
+        }
 
         List<List<String>> parameters = parameterParser.parse(params);
         Serializable id = request.getIntegration().getActionId(request.getSource());
 
-        if (id == null)
+        if (id == null) {
             throw new IllegalStateException("All user interactions must be associated with a serializable ID.");
+        }
 
         Action action = new Action(id, request.getContent(), selectedMetaController.getControllerType(), selectedMetaCommand.getMethod().getName(), parameters);
         ActionEvent<S, M> e = new ActionEvent<>(request, action, selectedMetaController, selectedMetaCommand);
 
-        if (!selectedMetaCommand.isValidParamCount(parameters.size()))
+        if (!selectedMetaCommand.isValidParamCount(parameters.size())) {
             throw new ParamCountMismatchException(e);
+        }
 
         return e;
     }
 
     /**
-     * @return All commands in this module where the
-     * {@link MetaCommand} is considered static.
+     * @return
+     *     All commands in this module where the {@link MetaCommand} is
+     *     considered static.
      */
     public List<MetaCommand> getStaticCommands(MetaController controller) {
         return controller.getMetaCommands().stream()
@@ -225,8 +251,7 @@ public class StandardDispatcher implements Dispatcher {
     }
 
     /**
-     * @return Return the default command, or null
-     * if this module doesn't have one.
+     * @return Default command, or null if this module doesn't have one.
      */
     private MetaCommand getDefaultCommand(MetaController controller) {
         return controller.getMetaCommands().stream()
@@ -236,17 +261,19 @@ public class StandardDispatcher implements Dispatcher {
     }
 
     /**
-     * @param request The action request container all request info and headers.
-     * @return The list of prefixes valid for this {@link Request}, or null
-     * if no prefixes are configured.
+     * @param request Action request container all request info and headers.
+     * @return
+     *     List of prefixes valid for this {@link Request}, or null if no
+     *     prefixes are configured.
      */
     private List<String> getPrefixes(Request<?, ?> request) {
         List<String> prefixConfig = standardDispatcherConfig.getPrefixes();
 
         List<String> prefixes = new ArrayList<>();
 
-        if (prefixConfig == null || prefixConfig.isEmpty())
+        if (prefixConfig == null || prefixConfig.isEmpty()) {
             return prefixes;
+        }
 
         for (String config : prefixConfig) {
             Matcher matcher = VAR_PATTERN.matcher(config);
@@ -258,11 +285,12 @@ public class StandardDispatcher implements Dispatcher {
                 if (value == null || value.isBlank()) {
                     String defaultValue = matcher.group("DEFAULT");
 
-                    if (defaultValue != null)
+                    if (defaultValue != null) {
                         prefixes.add(defaultValue);
-                }
-                else
+                    }
+                } else {
                     prefixes.add(value);
+                }
             } else {
                 prefixes.add(config);
             }
@@ -272,8 +300,8 @@ public class StandardDispatcher implements Dispatcher {
     }
 
     /**
-     * @param request The action request containiner all request info and headers.
-     * @return The prefix that was used, or null if no prefix was used.
+     * @param request Action request containing all request info and headers.
+     * @return Prefix that was used, or null if no prefix was used.
      */
     private <S, M> String parsePrefix(Request<S, M> request) {
         List<String> prefixes = getPrefixes(request);
@@ -294,8 +322,9 @@ public class StandardDispatcher implements Dispatcher {
     private String getAliases(MetaComponent component) {
         MetaProperty aliasesProperty = component.getProperty(this.getClass(), "aliases");
 
-        if (aliasesProperty == null)
+        if (aliasesProperty == null) {
             return null;
+        }
 
         return messageResolver.getMessage(aliasesProperty.getValue());
     }

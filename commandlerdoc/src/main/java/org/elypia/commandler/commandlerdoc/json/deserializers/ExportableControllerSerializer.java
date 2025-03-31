@@ -16,10 +16,16 @@
 
 package org.elypia.commandler.commandlerdoc.json.deserializers;
 
-import com.google.gson.*;
-import org.elypia.commandler.commandlerdoc.models.*;
-
 import java.lang.reflect.Type;
+
+import org.elypia.commandler.commandlerdoc.models.ExportableCommand;
+import org.elypia.commandler.commandlerdoc.models.ExportableController;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -35,10 +41,12 @@ public class ExportableControllerSerializer implements JsonSerializer<Exportable
         object.addProperty("group", controller.getGroup());
 
         JsonArray commands = new JsonArray();
-        for (ExportableCommand exportableCommand : controller.getCommands())
-            commands.add(context.serialize(exportableCommand));
-        object.add("commands", commands);
 
+        for (ExportableCommand exportableCommand : controller.getCommands()) {
+            commands.add(context.serialize(exportableCommand));
+        }
+
+        object.add("commands", commands);
         return object;
     }
 }

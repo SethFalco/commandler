@@ -16,16 +16,20 @@
 
 package org.elypia.commandler.adapters;
 
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.time.Duration;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
 import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
-
-import javax.inject.Inject;
-import java.text.*;
-import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Adapt user input into Java {@link Duration} objects.
@@ -62,7 +66,7 @@ public class DurationAdapter implements Adapter<Duration> {
     /**
      * Instantiate the DurationAdapter with the default TimeUnitAdapter.
      *
-     * @param format The number formatter to use when formatting numbers.
+     * @param format Number formatter to use when formatting numbers.
      */
     public DurationAdapter(NumberFormat format) {
         this(format, new TimeUnitAdapter(UNITS));
@@ -75,15 +79,15 @@ public class DurationAdapter implements Adapter<Duration> {
     }
 
     /**
-     * Uses the NumberFormat to parse the number from the start,
-     * then look for characters matching <code>(?i)[A-Z ]+</code>
-     * to discover the timeunit, and repeat.
+     * Uses the NumberFormat to parse the number from the start, then look for
+     * characters matching <code>(?i)[A-Z ]+</code> to discover the timeunit,
+     * and repeat.
      *
-     * @param input The input from the user.
-     * @param type The type of data required.
-     * @param data The parameter this is returning too.
-     * @param event The event that required this parameter adapted.
-     * @return The Duration object this represents, or null if it failed to parse.
+     * @param input Input from the user.
+     * @param type Type of data required.
+     * @param data Parameter this is returning too.
+     * @param event Event that required this parameter adapted.
+     * @return Duration object this represents, or null if it failed to parse.
      */
     @Override
     public Duration adapt(String input, Class<? extends Duration> type, MetaParam data, ActionEvent<?, ?> event) {
@@ -99,37 +103,41 @@ public class DurationAdapter implements Adapter<Duration> {
             while (end < sequence.length) {
                 char c = sequence[end];
 
-                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ')
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ') {
                     end++;
-                else
+                } else {
                     break;
+                }
             }
 
             position.setIndex(end);
             String unitString = input.substring(start, end);
             TimeUnit unit = timeUnitAdapter.adapt(unitString);
 
-            if (unit == null)
+            if (unit == null) {
                 return null;
+            }
 
-            if (units.containsKey(unit))
+            if (units.containsKey(unit)) {
                 units.put(unit, units.get(unit) + number.longValue());
-            else
+            } else {
                 units.putIfAbsent(unit, number.longValue());
+            }
         }
 
-        if (units.size() == 0)
+        if (units.size() == 0) {
             return null;
+        }
 
         return buildDuration(units);
     }
 
     /**
-     * Returns true if an error occured in parsing, or it just went through all
+     * Returns true if an error occurred in parsing, or it just went through all
      * of the input and finished.
      *
-     * @param input The string being parsed.
-     * @param position The parse position being used against this string.
+     * @param input String being parsed.
+     * @param position Parse position being used against this string.
      * @return If this input and parse position are done parsing regardless of reason.
      */
     private boolean isFinished(String input, ParsePosition position) {
@@ -137,11 +145,11 @@ public class DurationAdapter implements Adapter<Duration> {
     }
 
     /**
-     * Take the map if timeunits to UNITS and put it together into a
+     * Take the map of timeunits to UNITS and put it together into a
      * Duration object which reflects the total time.
      *
      * @param units Each timeunit mapped against the value of time.
-     * @return A duration object which puts all timeunits and values together.
+     * @return Duration object which puts all timeunits and values together.
      */
     private Duration buildDuration(Map<TimeUnit, Long> units) {
         Duration duration = Duration.ZERO;

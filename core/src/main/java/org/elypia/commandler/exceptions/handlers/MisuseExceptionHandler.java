@@ -16,19 +16,27 @@
 
 package org.elypia.commandler.exceptions.handlers;
 
-import org.apache.deltaspike.core.api.exception.control.*;
-import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.exceptions.misuse.*;
-import org.elypia.commandler.i18n.CommandlerMessageResolver;
-import org.elypia.commandler.metadata.*;
-import org.elypia.commandler.producers.MessageSender;
-import org.slf4j.*;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.Objects;
-import java.util.stream.Collectors;
+
+import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
+import org.apache.deltaspike.core.api.exception.control.Handles;
+import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.exceptions.misuse.AbstractMisuseException;
+import org.elypia.commandler.exceptions.misuse.ListUnsupportedException;
+import org.elypia.commandler.exceptions.misuse.ModuleDisabledException;
+import org.elypia.commandler.exceptions.misuse.NoDefaultCommandException;
+import org.elypia.commandler.exceptions.misuse.ParamCountMismatchException;
+import org.elypia.commandler.exceptions.misuse.ParamParseException;
+import org.elypia.commandler.i18n.CommandlerMessageResolver;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaController;
+import org.elypia.commandler.metadata.MetaParam;
+import org.elypia.commandler.producers.MessageSender;
 
 /**
  * The default handling for certain {@link AbstractMisuseException}
@@ -43,8 +51,6 @@ import java.util.stream.Collectors;
 @ExceptionHandler
 public class MisuseExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(MisuseExceptionHandler.class);
-
     private final CommandlerMessageResolver commandlerMessages;
     private final MessageSender sender;
 
@@ -55,7 +61,7 @@ public class MisuseExceptionHandler {
     }
 
     /**
-     * @param ex The exception that occured.
+     * @param ex Exception that occurred.
      */
     public void onParamMismatch(@Handles ExceptionEvent<ParamCountMismatchException> ex) {
         Objects.requireNonNull(ex);
@@ -75,7 +81,7 @@ public class MisuseExceptionHandler {
     }
 
     /**
-     * @param ex The exception that occured.
+     * @param ex Exception that occurred.
      */
     public void onNoDefaultCommand(@Handles ExceptionEvent<NoDefaultCommandException> ex) {
         Objects.requireNonNull(ex);
@@ -97,7 +103,7 @@ public class MisuseExceptionHandler {
     }
 
     /**
-     * @param ex The exception that occured.
+     * @param ex Exception that occurred.
      */
     public void onParamParse(@Handles ExceptionEvent<ParamParseException> ex) {
         Objects.requireNonNull(ex);
@@ -125,7 +131,7 @@ public class MisuseExceptionHandler {
     }
 
     /**
-     * @param ex The exception that occured.
+     * @param ex Exception that occurred.
      */
     public void onListUnsupported(@Handles ExceptionEvent<ListUnsupportedException> ex) {
         Objects.requireNonNull(ex);
@@ -148,7 +154,7 @@ public class MisuseExceptionHandler {
     }
 
     /**
-     * @param ex The exception that occured.
+     * @param ex Exception that occurred.
      */
     public void onDisabled(@Handles ExceptionEvent<ModuleDisabledException> ex) {
         String format =

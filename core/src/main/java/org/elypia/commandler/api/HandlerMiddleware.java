@@ -20,22 +20,21 @@ import org.elypia.commandler.ActionHandler;
 import org.elypia.commandler.event.ActionEvent;
 
 /**
- * This can be implemented to add additional steps
- * during action handling, these steps will typically
- * only manipulate parameters or perform pre or post
+ * This can be implemented to add additional steps during action handling, these
+ * steps will typically only manipulate parameters or perform pre or post
  * handling steps.
  *
- * If you want to make drastic changes to how action handling
- * is performed, you may want to implement {@link ActionHandler} instead.
+ * <p>If you want to make drastic changes to how action handling is performed,
+ * you may want to implement {@link ActionHandler} instead.</p>
  *
  * @author seth@elypia.org (Seth Falco)
  */
 public interface HandlerMiddleware {
 
     /**
-     * @param event The event that represents the current request.
-     * @param <S> The type of source even thtis {@link Integration} is for.
-     * @param <M> The type of message this {@link Integration} sends and received.
+     * @param event Event that represents the current request.
+     * @param <S> Type of source event this {@link Integration} is for.
+     * @param <M> Type of message this {@link Integration} sends and received.
      */
     <S, M> void onMiddleware(ActionEvent<S, M> event);
 }

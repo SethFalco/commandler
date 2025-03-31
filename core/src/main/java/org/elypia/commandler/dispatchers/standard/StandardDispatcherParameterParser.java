@@ -16,8 +16,10 @@
 
 package org.elypia.commandler.dispatchers.standard;
 
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -26,27 +28,27 @@ import java.util.regex.*;
 public class StandardDispatcherParameterParser {
 
     /**
-     * This matches every argument in the commands,
-     * any comma seperated <strong>args</strong> will be
-     * split by {@link #itemsPattern} as a list.
+     * This matches every argument in the commands, any comma separated
+     * <strong>args</strong> will be split by {@link #itemsPattern} as a list.
      */
     private static final Pattern paramsPattern = Pattern.compile("(?:(?:\"(?:[^\"])*\"|[^\\s,]+)(?:\\s*,\\s*)?)+");
 
     /**
-     * The item regex, this matches every item within a list of parameters.
-     * This is for list parameters as a single parameter can contain multiple items.
+     * Item regex, this matches every item within a list of parameters. This is
+     * for list parameters as a single parameter can contain multiple items.
      */
     private static final Pattern itemsPattern = Pattern.compile("(?<!\\\\)\"(?<quote>.*?)(?<!\\\\)\"|(?<word>[^\\s]+(?<!,))");
 
     /**
-     * @param paramString The string of parameters provided by the ser.
-     * @return A list of list of strings that represent all params and items.
+     * @param paramString String of parameters provided by the ser.
+     * @return List of list of strings that represent all params and items.
      */
     public List<List<String>> parse(String paramString) {
         List<List<String>> params = new ArrayList<>();
 
-        if (paramString.isBlank())
+        if (paramString.isBlank()) {
             return params;
+        }
 
         Matcher paramMatcher = paramsPattern.matcher(paramString);
 
@@ -60,12 +62,13 @@ public class StandardDispatcherParameterParser {
     }
 
     /**
-     * @param param A parameter, or list of items to parse.
-     * @return The parameter split into it's individual items.
+     * @param param Parameter, or list of items to parse.
+     * @return Parameter split into it's individual items.
      */
     public List<String> parseItems(String param) {
-        if (param == null || param.isBlank())
+        if (param == null || param.isBlank()) {
             throw new IllegalStateException("Can't have parameter with no items.");
+        }
 
         List<String> list = new ArrayList<>();
         Matcher splitMatcher = itemsPattern.matcher(param);

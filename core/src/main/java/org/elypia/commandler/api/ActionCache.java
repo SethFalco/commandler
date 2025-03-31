@@ -16,11 +16,12 @@
 
 package org.elypia.commandler.api;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.elypia.commandler.event.Action;
 import org.elypia.commandler.metadata.MetaController;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * The {@link ActionCache} allows caching a {@link Serializable}
@@ -41,29 +42,31 @@ import java.util.*;
 public interface ActionCache extends Iterable<Action> {
 
     /**
-     * @param action The action to store.
+     * @param action Action to store.
      */
     void put(Action action);
 
     /**
-     * @param serializable The id of the action.
-     * @return The action that relates to this ID, or null if
-     * no such action was cached. (This doesn't mean the ID was invalid
-     * or wasn't never an action that was handled, just that it wasn't stored.)
+     * @param serializable ID of the action.
+     * @return
+     *     Action that relates to this ID, or null if no such action was cached.
+     *     (This doesn't mean the ID was invalid or wasn't never an action that
+     *     was handled, just that it wasn't stored.)
      */
     Action get(Serializable serializable);
 
     /**
-     * @param serializable The id of the action to get and delete.
-     * The action that relates to this ID, or null if
-     * no such action was cached. (This doesn't mean the ID was invalid
-     * or wasn't ever an action that was handled, just that it wasn't stored.)
-     * @return The action that was previous represented by this key.
+     * @param serializable
+     *     ID of the action to get and delete. The action that relates to this
+     *     ID, or null if no such action was cached. (This doesn't mean the ID
+     *     was invalid or wasn't ever an action that was handled, just that it
+     *     wasn't stored.)
+     * @return Action that was previous represented by this key.
      */
     Action remove(Serializable serializable);
 
     /**
-     * @return A list of all cached actions in this instance.
+     * @return List of all cached actions in this instance.
      */
     Collection<Action> getAll();
 

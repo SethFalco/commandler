@@ -16,12 +16,12 @@
 
 package org.elypia.commandler.dispatchers.standard;
 
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.apache.deltaspike.core.api.config.ConfigProperty;
 import org.apache.deltaspike.core.api.config.Configuration;
 import org.elypia.converters4deltaspike.PatternConverter;
-
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * The configuration for the {@link StandardDispatcher}.
@@ -33,15 +33,15 @@ import java.util.regex.Pattern;
 public interface StandardDispatcherConfig {
 
     /**
-     * @return The prefixes that infer that the message receives
-     * was a command.
+     * @return Prefixes that infer that the message receives was a command.
      */
     @ConfigProperty(name = "prefixes", defaultValue = "$")
     List<String> getPrefixes();
 
     /**
-     * @return The delimiter to separate a {@link StandardController#value() prefix}
-     * from an {@link StandardCommand#value() alias}.
+     * @return
+     *     Delimiter to separate a {@link StandardController#value() prefix}
+     *     from an {@link StandardCommand#value() alias}.
      */
     @ConfigProperty(name = "delimiter", defaultValue = "\\s+", converter = PatternConverter.class)
     Pattern getDelimiter();

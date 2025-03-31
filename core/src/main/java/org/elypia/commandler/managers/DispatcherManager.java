@@ -16,19 +16,24 @@
 
 package org.elypia.commandler.managers;
 
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.CommandlerExtension;
-import org.elypia.commandler.api.Dispatcher;
-import org.elypia.commandler.event.*;
-import org.slf4j.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.*;
+
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.CommandlerExtension;
+import org.elypia.commandler.api.Dispatcher;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.event.Request;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * An ordered list of dispatchers to dispatch events
- * that are received appropriately.
+ * Ordered list of dispatchers to dispatch events that are received
+ * appropriately.
  *
  * @author seth@elypia.org (Seth Falco)
  */
@@ -51,16 +56,17 @@ public class DispatcherManager {
 
     public <S, M> ActionEvent<S, M> dispatch(Request<S, M> request) {
         for (Dispatcher dispatcher : dispatchers) {
-            if (!dispatcher.isValid(request))
+            if (!dispatcher.isValid(request)) {
                 continue;
+            }
 
             ActionEvent<S, M> event = dispatcher.parse(request);
 
-            if (event == null)
+            if (event == null) {
                 continue;
+            }
 
             logger.debug("Used dispatcher for event: {}", dispatcher.getClass());
-
             return event;
         }
 

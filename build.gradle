@@ -19,6 +19,7 @@ plugins {
 }
 
 allprojects() {
+    apply plugin: "checkstyle"
     apply plugin: "jacoco-report-aggregation"
     apply plugin: "application"
 

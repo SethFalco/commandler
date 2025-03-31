@@ -16,10 +16,16 @@
 
 package org.elypia.commandler.validation.constraints;
 
-import org.elypia.commandler.validation.validators.ContainsValidator;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import javax.validation.*;
-import java.lang.annotation.*;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
+import org.elypia.commandler.validation.validators.ContainsValidator;
 
 /**
  * @author seth@elypia.org (Seth Falco)

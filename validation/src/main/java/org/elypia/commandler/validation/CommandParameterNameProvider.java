@@ -16,16 +16,26 @@
 
 package org.elypia.commandler.validation;
 
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.*;
-import org.elypia.commandler.i18n.CommandlerMessageResolver;
-import org.elypia.commandler.metadata.*;
-import org.slf4j.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.ParameterNameProvider;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.stream.*;
+
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.Commandler;
+import org.elypia.commandler.CommandlerExtension;
+import org.elypia.commandler.i18n.CommandlerMessageResolver;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaController;
+import org.elypia.commandler.metadata.MetaParam;
 
 /**
  * Overrides how the validation implementation obtains names
@@ -37,9 +47,6 @@ import java.util.stream.*;
  * @author seth@elypia.org (Seth Falco)
  */
 public class CommandParameterNameProvider implements ParameterNameProvider {
-
-    /** Logging with SLF4J. */
-    private static final Logger logger = LoggerFactory.getLogger(CommandParameterNameProvider.class);
 
     /** Metadata for all {@link MetaController}s, {@link MetaCommand}s, and {@link MetaParam}s. */
     private final CommandlerExtension commandlerExtension;
@@ -63,13 +70,13 @@ public class CommandParameterNameProvider implements ParameterNameProvider {
            .filter((metaController) -> metaController.getControllerType() == type)
            .collect(Collectors.toList());
 
-        if (filtered.isEmpty())
+        if (filtered.isEmpty()) {
             return getJavaNames(method);
-        else if (filtered.size() > 1)
+        } else if (filtered.size() > 1) {
             throw new IllegalStateException("Found more than 1 MetaController for the same Controller implementation.");
+        }
 
         MetaController module = filtered.get(0);
-
         MetaCommand command = null;
 
         for (MetaCommand metaCommand : module.getMetaCommands()) {
@@ -79,17 +86,19 @@ public class CommandParameterNameProvider implements ParameterNameProvider {
             }
         }
 
-        if (command == null)
+        if (command == null) {
             return getJavaNames(method);
+        }
 
         Parameter[] parameters = command.getMethod().getParameters();
         List<String> names = Stream.of(parameters).map((p) -> "").collect(Collectors.toList());
-        List<MetaParam> metaParams =  command.getMetaParams();
+        List<MetaParam> metaParams = command.getMetaParams();
 
         CommandlerMessageResolver commandlerMessageResolver = BeanProvider.getContextualReference(CommandlerMessageResolver.class);
 
-        for (MetaParam metaParam : metaParams)
+        for (MetaParam metaParam : metaParams) {
             names.set(metaParam.getCommandIndex(), commandlerMessageResolver.getMessage(metaParam.getName()));
+        }
 
         return names;
     }
@@ -97,8 +106,9 @@ public class CommandParameterNameProvider implements ParameterNameProvider {
     private List<String> getJavaNames(Executable executable) {
         List<String> params = new ArrayList<>();
 
-        for (Parameter parameter : executable.getParameters())
+        for (Parameter parameter : executable.getParameters()) {
             params.add(parameter.getName());
+        }
 
         return params;
     }

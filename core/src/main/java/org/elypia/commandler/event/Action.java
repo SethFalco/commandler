@@ -16,22 +16,24 @@
 
 package org.elypia.commandler.event;
 
-import org.elypia.commandler.api.Integration;
-import org.elypia.commandler.metadata.*;
-
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringJoiner;
+
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaController;
 
 /**
- * Stores user interaction with Commandler.
- * Action is {@link Serializable} to that it can be
- * stored away and retuned again by future events.
+ * Stores user interaction with Commandler. Action is {@link Serializable} to
+ * that it can be stored away and returned again by future events.
  *
- * An instance is created for every action performed by the user
- * that was picked up by a registered Dispatcher.
+ * An instance is created for every action performed by the user  that was
+ * picked up by a registered Dispatcher.
  *
- * Action should only contain serializable information that is relevent
- * for all command types.
+ * Action should only contain serializable information that is relevant for all
+ * command types.
  *
  * @author seth@elypia.org (Seth Falco)
  */
@@ -55,15 +57,15 @@ public class Action implements Serializable {
     protected transient List<List<String>> params;
 
     /**
-     * Calls {@link #Action(Serializable, String, Class, String)}
-     * with a default id.
+     * Calls {@link #Action(Serializable, String, Class, String)} with a default
+     * id.
      *
-     * This should never be used unless the {@link Integration} has no means
-     * of referencing previous {@link Action actions}.
+     * <p>This should never be used unless the {@link Integration} has no means of
+     * referencing previous {@link Action actions}.</p>
      *
-     * @param content The content the user has sent.
-     * @param controllerType The name of the {@link MetaController}.
-     * @param methodName The name of the {@link MetaCommand}.
+     * @param content Content the user has sent.
+     * @param controllerType Name of the {@link MetaController}.
+     * @param methodName Name of the {@link MetaCommand}.
      */
     public Action(String content, Class<?> controllerType, String methodName) {
         this(0, content, controllerType, methodName);
@@ -73,10 +75,11 @@ public class Action implements Serializable {
      * Calls {@link #Action(Serializable, String, Class, String, List)} but
      * defaults the parameters `params` to an empty {@link ArrayList}.
      *
-     * @param id The ID of this action, this should be referenable by other commands.
-     * @param content The content the user has sent.
-     * @param controllerType The name of the {@link MetaController}.
-     * @param methodName The name of the {@link MetaCommand}.
+     * @param id
+     *      ID of this action, this should be referenceable by other commands.
+     * @param content Content the user has sent.
+     * @param controllerType Name of the {@link MetaController}.
+     * @param methodName Name of the {@link MetaCommand}.
      */
     public Action(Serializable id, String content, Class<?> controllerType, String methodName) {
         this(id, content, controllerType, methodName, List.of());
@@ -85,11 +88,12 @@ public class Action implements Serializable {
     /**
      * Create an instance of an Action.
      *
-     * @param id The ID of this action, this should be referenable by other commands.
-     * @param content The content the user has sent.
-     * @param controllerType The name of the {@link MetaController}.
-     * @param methodName The name of the {@link MetaCommand}.
-     * @param params A list of parameters the user provided.
+     * @param id
+     *     ID of this action, this should be referenceable by other commands.
+     * @param content Content the user has sent.
+     * @param controllerType Name of the {@link MetaController}.
+     * @param methodName Name of the {@link MetaCommand}.
+     * @param params List of parameters the user provided.
      */
     public Action(Serializable id, String content, Class<?> controllerType, String methodName, List<List<String>> params) {
         this.id = id;
@@ -100,11 +104,12 @@ public class Action implements Serializable {
     }
 
     /**
-     * @return The parameters in a user displayable state.
+     * @return Parameters in a user displayable state.
      */
     public String toParamString() {
-        if (params.isEmpty())
+        if (params.isEmpty()) {
             return "None";
+        }
 
         final StringJoiner joiner = new StringJoiner(" ");
         int i = 1;
@@ -112,10 +117,11 @@ public class Action implements Serializable {
         for (List<String> items : params) {
             joiner.add("(" + i++ + ")");
 
-            if (items.size() == 1)
+            if (items.size() == 1) {
                 joiner.add(items.get(0));
-            else
+            } else {
                 joiner.add("[" + String.join(", ", items) + "]");
+            }
         }
 
         return joiner.toString();

@@ -16,7 +16,11 @@
 
 package org.elypia.commandler.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The Command annotation is used to supply metadata
@@ -33,18 +37,17 @@ import java.lang.annotation.*;
 @Documented
 public @interface Param {
 
-	/**
-	 * @return The default value of this parameter if there is one,
-	 * else it's mandatory.
-	 */
-	String value() default AnnotationUtils.EFFECTIVELY_NULL;
+    /**
+     * @return
+     *     Default value of this parameter if there is one, else it's mandatory.
+     */
+    String value() default AnnotationUtils.EFFECTIVELY_NULL;
 
-	/**
-	 * This is especially useful when the default value is handled
-	 * via Java Expression Language.
-	 *
-	 * @return Returns a user friendly name for this display
-	 * value.
-	 */
-	String displayAs() default AnnotationUtils.EFFECTIVELY_NULL;
+    /**
+     * This is especially useful when the default value is handled
+     * via Java Expression Language.
+     *
+     * @return User friendly name for this display value.
+     */
+    String displayAs() default AnnotationUtils.EFFECTIVELY_NULL;
 }

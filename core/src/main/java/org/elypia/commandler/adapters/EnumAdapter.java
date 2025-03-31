@@ -16,15 +16,16 @@
 
 package org.elypia.commandler.adapters;
 
+import java.util.Objects;
+
 import org.elypia.commandler.Commandler;
 import org.elypia.commandler.annotation.StringValues;
 import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
-import org.slf4j.*;
-
-import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is the generic {@link Enum} parser. This should be the fallback parser
@@ -49,8 +50,9 @@ public class EnumAdapter implements Adapter<Enum<?>> {
         for (Enum<?> e : type.getEnumConstants()) {
             String name = e.name().toLowerCase().replace("_", "");
 
-            if (name.equals(input) || checkStringValues(input, e, type))
+            if (name.equals(input) || checkStringValues(input, e, type)) {
                 return e;
+            }
         }
 
         return null;
@@ -65,13 +67,15 @@ public class EnumAdapter implements Adapter<Enum<?>> {
             logger.error("This shouldn't be possible.", ex);
         }
 
-        if (values == null)
+        if (values == null) {
             return false;
+        }
 
         for (String string : values.value()) {
             if (values.isCaseSensitive()) {
-                if (string.equals(input))
+                if (string.equals(input)) {
                     return true;
+                }
             } else if (string.equalsIgnoreCase(input)) {
                 return true;
             }

@@ -16,12 +16,13 @@
 
 package org.elypia.commandler.console.messengers;
 
+import java.text.NumberFormat;
+
+import javax.inject.Inject;
+
 import org.elypia.commandler.annotation.stereotypes.MessageProvider;
 import org.elypia.commandler.api.Messenger;
 import org.elypia.commandler.event.ActionEvent;
-
-import javax.inject.Inject;
-import java.text.NumberFormat;
 
 /**
  * @author seth@elypia.org (Seth Falco)

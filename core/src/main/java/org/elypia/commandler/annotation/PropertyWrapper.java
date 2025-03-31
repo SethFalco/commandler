@@ -16,7 +16,11 @@
 
 package org.elypia.commandler.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -27,9 +31,10 @@ import java.lang.annotation.*;
 public @interface PropertyWrapper {
 
     /**
-     * @return The type of object that owns and will use this property.
-     * Type is seperated here so Commandler can internally call {@link Class#toString()}
-     * which can improve compile time validation.
+     * @return
+     *     Type of object that owns and will use this property. Type is
+     *     separated here so Commandler can internally call
+     *     {@link Class#toString()} which can improve compile time validation.
      */
     Class<?> type();
 }

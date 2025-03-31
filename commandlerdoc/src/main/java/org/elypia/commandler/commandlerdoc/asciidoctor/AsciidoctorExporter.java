@@ -16,13 +16,21 @@
 
 package org.elypia.commandler.commandlerdoc.asciidoctor;
 
-import org.elypia.commandler.commandlerdoc.Exporter;
-import org.elypia.commandler.commandlerdoc.models.*;
-import org.slf4j.*;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringJoiner;
+
+import org.elypia.commandler.commandlerdoc.Exporter;
+import org.elypia.commandler.commandlerdoc.models.ExportableController;
+import org.elypia.commandler.commandlerdoc.models.ExportableData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -42,8 +50,9 @@ public class AsciidoctorExporter implements Exporter {
 
             File parent = file.getParentFile();
 
-            if (parent != null && parent.mkdirs())
+            if (parent != null && parent.mkdirs()) {
                 logger.info("Created directory at path: {}", parent.getAbsolutePath());
+            }
 
             try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)){
                 writer.write(entry.getValue());
@@ -71,27 +80,6 @@ public class AsciidoctorExporter implements Exporter {
             String filepath = "commandlerdoc/" + locale.toLanguageTag() + File.separator + filename;
             File output = new File(filepath);
             adocFiles.put(output, joiner.toString());
-        });
-
-        return adocFiles;
-    }
-
-    /**
-     * Export controllers individually as their own documents.
-     *
-     * @return A map of file to write mapped to the content to write against them.
-     */
-    private Map<File, String> exportSeperated(Map<Locale, List<ExportableController>> controllers) {
-        Map<File, String> adocFiles = new HashMap<>();
-
-        controllers.forEach((locale, exportableControllers) -> {
-            for (ExportableController exportableController : exportableControllers) {
-                String serialized = serializeController(exportableController);
-                String filename = exportableController.getName().toLowerCase().replace(" ", "-") + ".adoc";
-                String filepath = "commandlerdoc/" + locale.toLanguageTag() + File.separator + filename;
-                File output = new File(filepath);
-                adocFiles.put(output, serialized);
-            }
         });
 
         return adocFiles;

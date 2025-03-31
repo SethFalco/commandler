@@ -16,18 +16,21 @@
 
 package org.elypia.commandler;
 
-import org.apache.deltaspike.cdise.api.*;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.apache.deltaspike.core.util.ProjectStageProducer;
-import org.elypia.commandler.api.Integration;
-import org.elypia.commandler.event.ActionEvent;
-import org.slf4j.*;
+import java.lang.annotation.Annotation;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
-import java.lang.annotation.Annotation;
+
+import org.apache.deltaspike.cdise.api.CdiContainer;
+import org.apache.deltaspike.cdise.api.CdiContainerLoader;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.apache.deltaspike.core.util.ProjectStageProducer;
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.event.ActionEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The root {@link Commandler} class, this ultimately enables your
@@ -88,11 +91,11 @@ public class Commandler {
 
         long total = integrations.stream().count();
 
-        if (total == 0)
+        if (total == 0) {
             logger.warn("No integrations were defined, events will not be caught.");
-
-        else if (total > 1)
-            logger.warn("Detected multiple integrations in the same runtime; it's recommended to submodule the seperate integrations rather than run a monilith.");
+        } else if (total > 1) {
+            logger.warn("Detected multiple integrations in the same runtime; it's recommended to submodule the separate integrations rather than run a monolith.");
+        }
 
         for (Integration<?, ?> integration : integrations) {
             integration.init();

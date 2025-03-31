@@ -16,19 +16,24 @@
 
 package org.elypia.commandler.validation;
 
-import org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory;
-import org.elypia.commandler.CommandlerExtension;
-import org.elypia.commandler.event.ActionEvent;
-import org.hibernate.validator.messageinterpolation.*;
-import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
-import org.slf4j.*;
+import java.lang.reflect.Method;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.validation.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import javax.validation.executable.ExecutableValidator;
-import java.lang.reflect.Method;
-import java.util.Set;
+
+import org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory;
+import org.elypia.commandler.CommandlerExtension;
+import org.elypia.commandler.event.ActionEvent;
+import org.hibernate.validator.messageinterpolation.AbstractMessageInterpolator;
+import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
+import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Vaidates annotations associated with commands and parameters to ensure
@@ -67,7 +72,8 @@ public class HibernateValidationManager {
         logger.debug("Validating {} with {} parameters.", event.getMetaCommand(), parameters.length);
         Set<ConstraintViolation<Object>> violations = exValidator.validateParameters(controller, method, parameters);
 
-        if (!violations.isEmpty())
+        if (!violations.isEmpty()) {
             throw new ViolationException(event, violations);
+        }
     }
 }

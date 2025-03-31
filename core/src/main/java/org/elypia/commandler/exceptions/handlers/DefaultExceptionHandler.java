@@ -16,19 +16,21 @@
 
 package org.elypia.commandler.exceptions.handlers;
 
-import org.apache.deltaspike.core.api.exception.control.*;
-import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.elypia.commandler.producers.MessageSender;
-import org.slf4j.*;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
+import org.apache.deltaspike.core.api.exception.control.Handles;
+import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
+import org.elypia.commandler.producers.MessageSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * The default handling for certain {@link Exception}s
- * that haven't been handled by any other handler.
+ * Default handling for certain {@link Exception}s that haven't been handled by
+ * any other handler.
  *
- * Sends a generic failure message to say something went wrong.
+ * <p>Sends a generic failure message to say something went wrong.</p>
  *
  * @author seth@elypia.org (Seth Falco)
  */
@@ -48,13 +50,14 @@ public class DefaultExceptionHandler {
     }
 
     /**
-     * @param exEvent The exception that occured.
+     * @param exEvent Exception that occurred.
      */
     public void onException(@Handles(ordinal = Integer.MIN_VALUE) ExceptionEvent<Exception> exEvent) {
-        if (exEvent.isMarkedHandled())
+        if (exEvent.isMarkedHandled()) {
             return;
+        }
 
-        logger.error("An uncaught and unhandled exception occured during the request. Sending default message.", exEvent.getException());
+        logger.error("An uncaught and unhandled exception occurred during the request. Sending default message.", exEvent.getException());
         sender.send(config.getGenericExceptionMessage());
     }
 }

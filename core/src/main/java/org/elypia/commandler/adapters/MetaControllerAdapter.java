@@ -16,16 +16,18 @@
 
 package org.elypia.commandler.adapters;
 
+import java.util.Collection;
+
+import javax.inject.Inject;
+
 import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.dispatchers.standard.StandardDispatcher;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.i18n.CommandlerMessageResolver;
-import org.elypia.commandler.metadata.*;
-
-import javax.inject.Inject;
-import java.util.Collection;
+import org.elypia.commandler.metadata.MetaController;
+import org.elypia.commandler.metadata.MetaParam;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -47,16 +49,19 @@ public class MetaControllerAdapter implements Adapter<MetaController> {
         Collection<MetaController> controllers = commmanderExtension.getMetaControllers();
 
         for (MetaController controller : controllers) {
-            if (controller.isHidden())
+            if (controller.isHidden()) {
                 continue;
+            }
 
-            if (resolver.getMessage(controller.getName()).equalsIgnoreCase(input))
+            if (resolver.getMessage(controller.getName()).equalsIgnoreCase(input)) {
                 return controller;
+            }
 
             String aliases = resolver.getMessage(controller.getProperty(StandardDispatcher.class, "aliases").getValue());
 
-            if (aliases.equalsIgnoreCase(input))
+            if (aliases.equalsIgnoreCase(input)) {
                 return controller;
+            }
         }
 
         return null;

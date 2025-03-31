@@ -16,14 +16,20 @@
 
 package org.elypia.commandler.dispatchers.standard;
 
-import org.elypia.commandler.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.elypia.commandler.annotation.AnnotationUtils;
+import org.elypia.commandler.annotation.Command;
+import org.elypia.commandler.annotation.Property;
+import org.elypia.commandler.annotation.PropertyWrapper;
 import org.elypia.commandler.annotation.stereotypes.Controller;
 
-import java.lang.annotation.*;
-
 /**
- * Denotes that this is a module or command that can be accessed
- * under aliases.
+ * Denotes that this is a module or command that can be accessed under aliases.
  *
  * @author seth@elypia.org (Seth Falco)
  */
@@ -50,13 +56,11 @@ public @interface StandardCommand {
     String value() default AnnotationUtils.EFFECTIVELY_NULL;
 
     /**
-     * If this command is marked as static,
-     * it will be capable of being performed without the usage
-     * of the parent {@link Controller}s alias.
+     * If this command is marked as static, it will be capable of being
+     * performed without the usage of the parent {@link Controller}s alias.
      *
-     * This is ignored if the {@link Controller} has the
-     * {@link StandardController} annotation and specified
-     * isStatic as true.
+     * <p>This is ignored if the {@link Controller} has the
+     * {@link StandardController} annotation and specified isStatic as true.</p>
      *
      * @return If this command is static.
      */
@@ -64,14 +68,15 @@ public @interface StandardCommand {
     boolean isStatic() default false;
 
     /**
-     * Each module can be assigned a default command. The default commands is the
-     * default method we assume the user has intended when they are
-     * attempting a command. The default will be called if either no
-     * command is specified or the "command" specified isn't a valid
-     * commands in the module. (Potentially a parameter.)
+     * Each module can be assigned a default command. The default commands is
+     * the default method we assume the user has intended when they are
+     * attempting a command. The default will be called if either no command is
+     * specified or the "command" specified isn't a valid commands in the
+     * module. (Potentially a parameter.)
      *
-     * @return If this command should be performed by default if no
-     * other candidate matches.
+     * @return
+     *     If this command should be performed by default if no other candidate
+     *     matches.
      */
     @Property(key = "default")
     boolean isDefault() default false;

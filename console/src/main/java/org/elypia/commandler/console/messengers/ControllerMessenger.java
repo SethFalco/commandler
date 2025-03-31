@@ -16,12 +16,15 @@
 
 package org.elypia.commandler.console.messengers;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.elypia.commandler.annotation.stereotypes.MessageProvider;
 import org.elypia.commandler.api.Messenger;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.models.*;
-
-import java.util.*;
+import org.elypia.commandler.models.CommandModel;
+import org.elypia.commandler.models.ControllerModel;
+import org.elypia.commandler.models.ParamModel;
 
 @MessageProvider(provides = String.class, value = ControllerModel.class)
 public class ControllerMessenger implements Messenger<ControllerModel, String> {
@@ -32,7 +35,6 @@ public class ControllerMessenger implements Messenger<ControllerModel, String> {
             .append("\n")
             .append(controller.getDescription());
 
-//        appendActivators(builder, controller);
         builder.append("\n\n");
 
         Iterator<CommandModel> commands = controller.getCommands().iterator();
@@ -42,7 +44,6 @@ public class ControllerMessenger implements Messenger<ControllerModel, String> {
             builder.append(metaCommand.getName())
                 .append("\n")
                 .append(metaCommand.getDescription());
-//            appendActivators(builder, metaCommand);
             List<ParamModel> params = metaCommand.getParams();
 
             params.forEach((param) -> {
@@ -50,8 +51,9 @@ public class ControllerMessenger implements Messenger<ControllerModel, String> {
                 builder.append(param.getDescription());
             });
 
-            if (commands.hasNext())
+            if (commands.hasNext()) {
                 builder.append("\n\n");
+            }
         }
 
         return builder.toString();

@@ -16,10 +16,11 @@
 
 package org.elypia.commandler.validation.validators;
 
-import org.elypia.commandler.validation.constraints.Option;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.validation.*;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.elypia.commandler.validation.constraints.Option;
 
 @ApplicationScoped
 public class OptionValidator implements ConstraintValidator<Option, String> {
@@ -34,8 +35,9 @@ public class OptionValidator implements ConstraintValidator<Option, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         for (String option : this.value) {
-            if (option.equals(value))
+            if (option.equals(value)) {
                 return true;
+            }
         }
 
         return false;

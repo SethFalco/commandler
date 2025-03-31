@@ -16,7 +16,11 @@
 
 package org.elypia.commandler.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * The Command annotation is used to supply metadata
@@ -33,8 +37,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface Command {
 
-	/**
-	 * @return If this module should be hidden from documentation.
-	 */
-	boolean hidden() default false;
+    /**
+     * @return If this module should be hidden from documentation.
+     */
+    boolean hidden() default false;
 }

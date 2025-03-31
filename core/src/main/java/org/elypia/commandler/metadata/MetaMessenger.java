@@ -16,9 +16,11 @@
 
 package org.elypia.commandler.metadata;
 
-import org.elypia.commandler.api.Messenger;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
-import java.util.*;
+import org.elypia.commandler.api.Messenger;
 
 /**
  * @author seth@elypia.org (Seth Falco)

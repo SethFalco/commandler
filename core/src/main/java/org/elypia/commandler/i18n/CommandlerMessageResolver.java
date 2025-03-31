@@ -16,13 +16,20 @@
 
 package org.elypia.commandler.i18n;
 
-import org.apache.deltaspike.core.api.message.*;
-import org.elypia.commandler.annotation.Property;
-import org.elypia.commandler.metadata.MetaComponent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.*;
+
+import org.apache.deltaspike.core.api.message.LocaleResolver;
+import org.apache.deltaspike.core.api.message.Message;
+import org.apache.deltaspike.core.api.message.MessageContext;
+import org.elypia.commandler.annotation.Property;
+import org.elypia.commandler.metadata.MetaComponent;
 
 /**
  * Used by Commandler to localize metadata for
@@ -62,7 +69,7 @@ public class CommandlerMessageResolver {
      *
      * If not then the string will be interpolated and returned literally.
      *
-     * @param key The resource bundle key or literal string localize.
+     * @param key Resource bundle key or literal string localize.
      * @return The localized string depending on the {@link LocaleResolver}.
      */
     public String getMessage(String key) {
@@ -75,9 +82,9 @@ public class CommandlerMessageResolver {
      *
      * If not then the string will be interpolated and returned literally.
      *
-     * @param key The resource bundle key or literal string localize.
+     * @param key Resource bundle key or literal string localize.
      * @param locale Override the default locale resolver implementation to use this locale.
-     * @return The localized string in the locale specified.
+     * @return Localized string in the locale specified.
      */
     public String getMessage(String key, Locale locale) {
         Message message = messageContext.message();

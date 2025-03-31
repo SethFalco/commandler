@@ -16,12 +16,13 @@
 
 package org.elypia.commandler.middleware;
 
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.ActionEvent;
-import org.slf4j.*;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import org.elypia.commandler.api.ActionCache;
+import org.elypia.commandler.api.ActionListener;
+import org.elypia.commandler.api.HandlerMiddleware;
+import org.elypia.commandler.event.ActionEvent;
 
 /**
  * Adds a cache step to the registered {@link ActionListener}
@@ -35,8 +36,6 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class CacheMiddleware implements HandlerMiddleware {
-
-    private static final Logger logger = LoggerFactory.getLogger(CacheMiddleware.class);
 
     private final ActionCache cache;
 

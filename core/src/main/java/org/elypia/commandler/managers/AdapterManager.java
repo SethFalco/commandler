@@ -16,20 +16,37 @@
 
 package org.elypia.commandler.managers;
 
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.*;
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.*;
-import org.elypia.commandler.exceptions.AdapterRequiredException;
-import org.elypia.commandler.exceptions.misuse.*;
-import org.elypia.commandler.metadata.*;
-import org.slf4j.*;
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-import javax.el.*;
+import javax.el.ELContext;
+import javax.el.ELManager;
+import javax.el.ExpressionFactory;
+import javax.el.StandardELContext;
+import javax.el.ValueExpression;
+import javax.el.VariableMapper;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.lang.reflect.Array;
-import java.util.*;
+
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.Commandler;
+import org.elypia.commandler.CommandlerExtension;
+import org.elypia.commandler.api.Adapter;
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.event.Action;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.exceptions.AdapterRequiredException;
+import org.elypia.commandler.exceptions.misuse.ListUnsupportedException;
+import org.elypia.commandler.exceptions.misuse.ParamParseException;
+import org.elypia.commandler.metadata.MetaAdapter;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>The {@link MetaParam param} adapter which is used to interpret
@@ -68,8 +85,8 @@ public class AdapterManager {
      * Take the String parameters from the message event and adapt them into the required
      * format the commands method requires to execute.
      *
-     * @param event The message event to take parameters from.
-     * @return An array of all parameters adapted as required for the given method.
+     * @param event Message event to take parameters from.
+     * @return Array of all parameters adapted as required for the given method.
      */
     public Object[] adaptEvent(ActionEvent event) {
         Action action = event.getAction();
@@ -85,15 +102,15 @@ public class AdapterManager {
                 .filter((m) -> m.getMethodIndex() == iFinal)
                 .findAny();
 
-            if (optMetaParam.isEmpty())
+            if (optMetaParam.isEmpty()) {
                 itemsToReturn[i] = BeanProvider.getContextualReference(types[i]);
-            else {
+            } else {
                 MetaParam metaParam = optMetaParam.get();
                 List<String> param;
 
-                if (userInputParameters.hasNext())
+                if (userInputParameters.hasNext()) {
                     param = userInputParameters.next();
-                else {
+                } else {
                     ELContext context = new StandardELContext(expressionFactory);
                     VariableMapper mapper = context.getVariableMapper();
                     mapper.setVariable("event", expressionFactory.createValueExpression(event, ActionEvent.class));
@@ -107,18 +124,18 @@ public class AdapterManager {
                     Class<?> type = value.getClass();
                     Class<?> parameterType = metaParam.getParameter().getType();
 
-                    if (String.class.isAssignableFrom(type))
-                        param = List.of((String)value);
-                    else if (String[].class.isAssignableFrom(type))
-                        param = List.of((String[])value);
-                    else if (List.class.isAssignableFrom(type))
-                        param = (List<String>)value;
-                    else if (parameterType.isAssignableFrom(type)) {
+                    if (String.class.isAssignableFrom(type)) {
+                        param = List.of((String) value);
+                    } else if (String[].class.isAssignableFrom(type)) {
+                        param = List.of((String[]) value);
+                    } else if (List.class.isAssignableFrom(type)) {
+                        param = (List<String>) value;
+                    } else if (parameterType.isAssignableFrom(type)) {
                         itemsToReturn[i] = value;
                         continue;
-                    }
-                    else
+                    } else {
                         throw new RuntimeException("defaultValue must be assignable to String, String[], List<String> or " + parameterType + ".");
+                    }
                 }
 
                 Object object = adaptParam(action, event, metaParam, param);
@@ -130,29 +147,31 @@ public class AdapterManager {
     }
 
     /**
-     * <p>This actually converts an individual param into the type
-     * required for a command. If the type required is an array,
-     * we convert each item in the array using the
-     * {@link Class#getComponentType() component type}.</p>
+     * This actually converts an individual param into the type required for a
+     * command. If the type required is an array, we convert each item in the
+     * array using the {@link Class#getComponentType() component type}.
      *
      * <p>This should return null if a parameter fails to adapt or list
      * parameter is provided where lists are not supported.</p>
      *
-     * @param action The user action that required this parsing.
-     * @param event The message event to take parameters from.
-     * @param param The static parameter data associated with the parameter.
-     * @param items The input provided by the user, this will only contain
-     * more than one item if the user provided a list of items.
-     * @return The parsed object as required for the command, or  null
-     * if we failed to adapt the input. (Usually user misuse.)
+     * @param action User action that required this parsing.
+     * @param event Message event to take parameters from.
+     * @param param Static parameter data associated with the parameter.
+     * @param items
+     *     Input provided by the user, this will only contain more than one item
+     *     if the user provided a list of items.
+     * @return
+     *     Parsed object as required for the command, or null if we failed to
+     *     adapt the input. (Usually user misuse.)
      */
     protected Object adaptParam(Action action, ActionEvent event, MetaParam param, List<String> items) {
         Class<?> type = param.getParameter().getType();
         Class<?> componentType = type.isArray() ? type.getComponentType() : type;
         Adapter adapter = this.getAdapter(componentType);
 
-        if (adapter == null)
+        if (adapter == null) {
             throw new RuntimeException(String.format("No adapters was created for the data-type %s.", componentType.getName()));
+        }
 
         int size = items.size();
 
@@ -163,27 +182,29 @@ public class AdapterManager {
                 String item = items.get(i);
                 Object o = adapter.adapt(item, componentType, param, event);
 
-                if (o == null)
+                if (o == null) {
                     throw new ParamParseException(event, param, item);
+                }
 
-                if (componentType == boolean.class)
-                    Array.setBoolean(output, i, (boolean)o);
-                else if (componentType == char.class)
-                    Array.setChar(output, i, (char)o);
-                else if (componentType == double.class)
-                    Array.setDouble(output, i, (double)o);
-                else if (componentType == float.class)
-                    Array.setFloat(output, i, (float)o);
-                else if (componentType == long.class)
-                    Array.setLong(output, i, (long)o);
-                else if (componentType == int.class)
-                    Array.setInt(output, i, (int)o);
-                else if (componentType == short.class)
-                    Array.setShort(output, i, (short)o);
-                else if (componentType == byte.class)
-                    Array.setByte(output, i, (byte)o);
-                else
+                if (componentType == boolean.class) {
+                    Array.setBoolean(output, i, (boolean) o);
+                } else if (componentType == char.class) {
+                    Array.setChar(output, i, (char) o);
+                } else if (componentType == double.class) {
+                    Array.setDouble(output, i, (double) o);
+                } else if (componentType == float.class) {
+                    Array.setFloat(output, i, (float) o);
+                } else if (componentType == long.class) {
+                    Array.setLong(output, i, (long) o);
+                } else if (componentType == int.class) {
+                    Array.setInt(output, i, (int) o);
+                } else if (componentType == short.class) {
+                    Array.setShort(output, i, (short) o);
+                } else if (componentType == byte.class) {
+                    Array.setByte(output, i, (byte) o);
+                } else {
                     Array.set(output, i, o);
+                }
             }
 
             return output;
@@ -192,8 +213,9 @@ public class AdapterManager {
         if (size == 1) {
             Object o = adapter.adapt(items.get(0), componentType, param, event);
 
-            if (o == null)
+            if (o == null) {
                 throw new ParamParseException(event, param, items.get(0));
+            }
 
             return o;
         }
@@ -202,16 +224,16 @@ public class AdapterManager {
     }
 
     /**
-     * <p>Iterate adapters and get the most appropriate one
-     * for to adapt this type.</p>
-     * <p>Starts by looking for one with an exact compatible type,
-     * if not found then resorts to searching for adapters that work with
-     * a {@link Class#isAssignableFrom(Class)} with a compatible class.
-     * <strong>It's favourable not to rely on {@link Class#isAssignableFrom(Class)}
-     * where possible.</strong>
+     * Iterate adapters and get the most appropriate one for to adapt this type.
      *
-     * @param typeRequired The type that needs adapting.
-     * @return The adapter for this data into the required type.
+     * <p>Starts by looking for one with an exact compatible type, if not found
+     * then resorts to searching for adapters that work with a
+     * {@link Class#isAssignableFrom(Class)} with a compatible class.
+     * <strong>It's favorable not to rely on
+     * {@link Class#isAssignableFrom(Class)} where possible.</strong></p>
+     *
+     * @param typeRequired Type that needs adapting.
+     * @return Adapter for this data into the required type.
      */
     public <T> Adapter<?> getAdapter(Class<?> typeRequired) {
         MetaAdapter adapter = null;
@@ -224,12 +246,14 @@ public class AdapterManager {
                 break;
             }
 
-            if (compatible.stream().anyMatch(c -> c.isAssignableFrom(typeRequired)))
+            if (compatible.stream().anyMatch(c -> c.isAssignableFrom(typeRequired))) {
                 adapter = metaAdapter;
+            }
         }
 
-        if (adapter == null)
+        if (adapter == null) {
             throw new AdapterRequiredException("Adapter required for type " + typeRequired + ".");
+        }
 
         logger.debug("Using `{}` to parse parameter.", adapter.getAdapterType());
         return BeanProvider.getContextualReference(adapter.getAdapterType());

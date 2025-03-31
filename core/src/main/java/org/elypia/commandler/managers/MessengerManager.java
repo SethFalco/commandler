@@ -16,26 +16,26 @@
 
 package org.elypia.commandler.managers;
 
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.*;
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.exceptions.AdapterRequiredException;
-import org.elypia.commandler.metadata.MetaMessenger;
-import org.slf4j.*;
+import java.util.Collection;
+import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.*;
+
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.Commandler;
+import org.elypia.commandler.CommandlerExtension;
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.api.Messenger;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.exceptions.AdapterRequiredException;
+import org.elypia.commandler.metadata.MetaMessenger;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
 @ApplicationScoped
 public class MessengerManager {
-
-    /** SLF4J Logger*/
-    private static final Logger logger = LoggerFactory.getLogger(MessengerManager.class);
 
     private final CommandlerExtension commandlerExtension;
 
@@ -45,12 +45,12 @@ public class MessengerManager {
     }
 
     /**
-     * Build an message object to send back to the client using
-     * the respective {@link Messenger}.
+     * Build an message object to send back to the client using the respective
+     * {@link Messenger}.
      *
-     * @param event The action event the was processed by {@link Commandler}.
-     * @param object The object that should be sent in chat.
-     * @return A built message ready to send to the client.
+     * @param event Action event the was processed by {@link Commandler}.
+     * @param object Object that should be sent in chat.
+     * @return Built message ready to send to the client.
      */
     public <M> M provide(ActionEvent<?, M> event, Object object) {
         Objects.requireNonNull(object);
@@ -59,30 +59,31 @@ public class MessengerManager {
 
         Object content = messenger.provide(event, object);
 
-        if (content == null)
+        if (content == null) {
             throw new IllegalStateException(String.format("String adapter `%s`returned null.", messenger.getClass().getName()));
+        }
 
         Class<M> messageType = integration.getMessageType();
 
-        if (messageType.isAssignableFrom(content.getClass()))
+        if (messageType.isAssignableFrom(content.getClass())) {
             return messageType.cast(content);
+        }
 
         throw new IllegalStateException("Provider did not produce the type required.");
     }
 
     /**
-     * Go through the builders and find the most appropriate adapters
-     * if one is available for building an message from this
-     * data-type.
+     * Go through the builders and find the most appropriate adapters if one is
+     * available for building an message from this data-type.
      *
-     * @param integration The platform that this event was received from.
-     * @param typeRequired The data-type we need to load from.
-     * @param <S> The source event the {@link Integration} provides.
-     * @param <M> The type of message the {@link Integration} sends and receives.
-     * @param <O> The object which a provider is required for.
-     * @return The messenger to convert this to a message.
-     * @throws IllegalArgumentException If no {@link Messenger} is
-     * registered for this data-type.
+     * @param integration Platform that this event was received from.
+     * @param typeRequired Data-type we need to load from.
+     * @param <S> Source event the {@link Integration} provides.
+     * @param <M> Type of message the {@link Integration} sends and receives.
+     * @param <O> Object which a provider is required for.
+     * @return Messenger to convert this to a message.
+     * @throws IllegalArgumentException
+     *      If no {@link Messenger} is registered for this data-type.
      */
     public <S, M, O> Messenger<O, M> getMessenger(Integration<S, M> integration, Class<O> typeRequired) {
         MetaMessenger provider = null;
@@ -90,20 +91,23 @@ public class MessengerManager {
         for (MetaMessenger metaMessenger : commandlerExtension.getMetaMessengers()) {
             Collection<Class<?>> compatible = metaMessenger.getCompatibleTypes();
 
-            if (metaMessenger.getBuildType() != integration.getMessageType())
+            if (metaMessenger.getBuildType() != integration.getMessageType()) {
                 continue;
+            }
 
             if (compatible.contains(typeRequired)) {
                 provider = metaMessenger;
                 break;
             }
 
-            if (compatible.stream().anyMatch(c -> c.isAssignableFrom(typeRequired)))
+            if (compatible.stream().anyMatch(c -> c.isAssignableFrom(typeRequired))) {
                 provider = metaMessenger;
+            }
         }
 
-        if (provider == null)
+        if (provider == null) {
             throw new AdapterRequiredException(Messenger.class + " required for type " + typeRequired + ".");
+        }
 
         return BeanProvider.getContextualReference(provider.getProviderType());
     }

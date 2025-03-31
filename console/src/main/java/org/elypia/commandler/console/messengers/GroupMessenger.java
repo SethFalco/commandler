@@ -19,7 +19,8 @@ package org.elypia.commandler.console.messengers;
 import org.elypia.commandler.annotation.stereotypes.MessageProvider;
 import org.elypia.commandler.api.Messenger;
 import org.elypia.commandler.event.ActionEvent;
-import org.elypia.commandler.models.*;
+import org.elypia.commandler.models.ControllerModel;
+import org.elypia.commandler.models.GroupModel;
 
 @MessageProvider(provides = String.class, value = GroupModel.class)
 public class GroupMessenger implements Messenger<GroupModel, String> {
@@ -30,7 +31,6 @@ public class GroupMessenger implements Messenger<GroupModel, String> {
 
         for (ControllerModel controller : group) {
             builder.append(controller.getName()).append("\n").append(controller.getDescription());
-//            appendActivators(builder, controller);
             builder.append("\n\n");
         }
 

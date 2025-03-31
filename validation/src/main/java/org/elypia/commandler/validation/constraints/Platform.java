@@ -16,12 +16,18 @@
 
 package org.elypia.commandler.validation.constraints;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
 import org.elypia.commandler.Commandler;
 import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.validation.validators.PlatformValidator;
-
-import javax.validation.*;
-import java.lang.annotation.*;
 
 /**
  * This constraint is {@link Commandler} specific.

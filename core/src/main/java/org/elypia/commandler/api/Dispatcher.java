@@ -16,35 +16,37 @@
 
 package org.elypia.commandler.api;
 
-import org.elypia.commandler.event.*;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.event.Request;
 
 /**
- * The {@link Dispatcher} has the role of processing an event
- * from your respective platform into something that can be interperted
- * by Commandler, this should be used to verify if it's a command as well as
- * parse it into an input and event object to be used internally.
+ * The {@link Dispatcher} has the role of processing an event from your
+ * respective platform into something that can be interpreted by Commandler,
+ * this should be used to verify if it's a command as well as parse it into an
+ * input and event object to be used internally.
  *
  * @author seth@elypia.org (Seth Falco)
  */
 public interface Dispatcher {
 
     /**
-     * @param request The action request made by the {@link Integration}.
-     * @param <S> The type of source even thtis {@link Integration} is for.
-     * @param <M> The type of message this {@link Integration} sends and received.
-     * @return If this is a valid command or not.
-     * This does not mean it is a command, it's just for checking if the text
-     * is formatted in a way that it fits the formatting of a command.
+     * @param request Action request made by the {@link Integration}.
+     * @param <S> Type of source event this {@link Integration} is for.
+     * @param <M> Type of message this {@link Integration} sends and received.
+     * @return
+     *     If this is a valid command or not. This does not mean it is a
+     *     command, it's just for checking if the text is formatted in a way
+     *     that it fits the formatting of a command.
      */
     <S, M> boolean isValid(Request<S, M> request);
 
     /**
      * Break the command down into it's individual components.
      *
-     * @param request The action request made by the {@link Integration}.
-     * @param <S> The type of source even thtis {@link Integration} is for.
-     * @param <M> The type of message this {@link Integration} sends and received.
-     * @return The input the user provided or null if it's not a valid command.
+     * @param request Action request made by the {@link Integration}.
+     * @param <S> Type of source even thtis {@link Integration} is for.
+     * @param <M> Type of message this {@link Integration} sends and received.
+     * @return Input the user provided or null if it's not a valid command.
      */
     <S, M> ActionEvent<S, M> parse(Request<S, M> request);
 }

@@ -16,18 +16,32 @@
 
 package org.elypia.commandler.newb;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.annotation.Param;
 import org.elypia.commandler.annotation.stereotypes.Controller;
-import org.elypia.commandler.dispatchers.standard.*;
+import org.elypia.commandler.dispatchers.standard.StandardCommand;
+import org.elypia.commandler.dispatchers.standard.StandardController;
 import org.elypia.commandler.groups.Guidance;
 import org.elypia.commandler.i18n.CommandlerMessageResolver;
-import org.elypia.commandler.metadata.*;
-import org.elypia.commandler.models.*;
-
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaComponent;
+import org.elypia.commandler.metadata.MetaController;
+import org.elypia.commandler.metadata.MetaParam;
+import org.elypia.commandler.models.AllGroupsModel;
+import org.elypia.commandler.models.CommandModel;
+import org.elypia.commandler.models.ControllerModel;
+import org.elypia.commandler.models.GroupModel;
+import org.elypia.commandler.models.ParamModel;
+import org.elypia.commandler.models.PropertyModel;
 
 /**
  * The default help module, this is an optional module
@@ -73,8 +87,9 @@ public class DefaultHelpController {
         for (ControllerModel controllerModel : allControllers) {
             String group = messageResolver.getMessage(controllerModel.getGroup());
 
-            if (!groups.containsKey(group))
+            if (!groups.containsKey(group)) {
                 groups.put(group, new ArrayList<>());
+            }
 
             groups.get(group).add(controllerModel);
         }
@@ -98,8 +113,9 @@ public class DefaultHelpController {
             .map(this::getControllerHelp)
             .collect(Collectors.toList());
 
-        if (group.isEmpty())
+        if (group.isEmpty()) {
             return "There is no group by the name.";
+        }
 
         String groupName = group.get(0).getGroup();
 
@@ -112,8 +128,8 @@ public class DefaultHelpController {
      * this {@link Controller} to display helpful information
      * to the user.
      *
-     * @param controller The {@link MetaController} to get commands for.
-     * @return The message to send to the end user.
+     * @param controller Controller to get commands for.
+     * @return Message to send to the end user.
      */
     @StandardCommand
     public ControllerModel getControllerHelp(@Param MetaController controller) {
@@ -147,13 +163,15 @@ public class DefaultHelpController {
         List<PropertyModel> properties = new ArrayList<>();
 
         metaComponent.getProperties().forEach((key, property) -> {
-            if (!property.isPublic())
+            if (!property.isPublic()) {
                 return;
+            }
 
-            if (property.isI18n())
+            if (property.isI18n()) {
                 properties.add(new PropertyModel(messageResolver.getMessage(property.getDisplayName()), messageResolver.getMessage(property.getValue())));
-            else
+            } else {
                 properties.add(new PropertyModel(property.getDisplayName(), property.getValue()));
+            }
         });
 
         return properties;

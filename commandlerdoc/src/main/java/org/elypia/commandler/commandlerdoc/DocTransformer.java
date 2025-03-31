@@ -16,13 +16,20 @@
 
 package org.elypia.commandler.commandlerdoc;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.commandlerdoc.models.*;
+import org.elypia.commandler.commandlerdoc.models.ExportableCommand;
+import org.elypia.commandler.commandlerdoc.models.ExportableController;
+import org.elypia.commandler.commandlerdoc.models.ExportableData;
+import org.elypia.commandler.commandlerdoc.models.ExportableParameter;
 import org.elypia.commandler.i18n.CommandlerMessageResolver;
 import org.elypia.commandler.metadata.MetaController;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Transforms the standard metadata objects such as {@link MetaController}

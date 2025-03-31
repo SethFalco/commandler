@@ -16,14 +16,18 @@
 
 package org.elypia.commandler.newb;
 
-import org.jboss.weld.context.WeldAlterableContext;
-import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.context.bound.*;
-import org.jboss.weld.manager.api.WeldManager;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.enterprise.inject.spi.CDI;
-import java.lang.annotation.Annotation;
-import java.util.*;
+
+import org.jboss.weld.context.WeldAlterableContext;
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.context.bound.BoundLiteral;
+import org.jboss.weld.context.bound.BoundRequestContext;
+import org.jboss.weld.manager.api.WeldManager;
 
 public final class AsyncUtils {
 
@@ -34,8 +38,9 @@ public final class AsyncUtils {
     public static Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> copyContext() {
         Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> scopeToContextualInstances = new HashMap<>();
 
-        for (WeldAlterableContext context : CDI.current().select(WeldManager.class).get().getActiveWeldAlterableContexts())
+        for (WeldAlterableContext context : CDI.current().select(WeldManager.class).get().getActiveWeldAlterableContexts()) {
             scopeToContextualInstances.put(context.getScope(), context.getAllContextualInstances());
+        }
 
         return scopeToContextualInstances;
     }
@@ -46,8 +51,9 @@ public final class AsyncUtils {
         requestContext.associate(requestMap);
         requestContext.activate();
 
-        if (scopeToContextualInstances.get(requestContext.getScope()) != null)
+        if (scopeToContextualInstances.get(requestContext.getScope()) != null) {
             requestContext.clearAndSet(scopeToContextualInstances.get(requestContext.getScope()));
+        }
 
         return requestContext;
     }

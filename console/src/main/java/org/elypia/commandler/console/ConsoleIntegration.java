@@ -16,17 +16,20 @@
 
 package org.elypia.commandler.console;
 
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.ActionEvent;
-import org.slf4j.*;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.elypia.commandler.api.ActionListener;
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.event.ActionEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a minimal integration designed to handle console input.
@@ -47,7 +50,7 @@ public class ConsoleIntegration implements Integration<String, String> {
      */
     @Inject
     public ConsoleIntegration(ActionListener listener) {
-        logger.debug("Construsted instance of ConsoleIntegration.");
+        logger.debug("Constructed instance of ConsoleIntegration.");
         this.listener = listener;
     }
 
@@ -71,10 +74,11 @@ public class ConsoleIntegration implements Integration<String, String> {
                         continue;
                     }
 
-                    if (response != null)
+                    if (response != null) {
                         send(null, response);
-                    else
+                    } else {
                         logger.info("A message was received in console, however it warranted no response.");
+                    }
                 }
             } catch (Exception ex) {
                 logger.error("Unable to read from the commandline. Make sure there is a connected terminal.", ex);
@@ -96,7 +100,7 @@ public class ConsoleIntegration implements Integration<String, String> {
 
     /**
      * @param event This is ignored.
-     * @param message The message to send.
+     * @param message Message to send.
      */
     @Override
     public void send(ActionEvent<String, String> event, String message) {

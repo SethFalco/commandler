@@ -16,9 +16,15 @@
 
 package org.elypia.commandler.dispatchers.match;
 
-import org.elypia.commandler.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.*;
+import org.elypia.commandler.annotation.Command;
+import org.elypia.commandler.annotation.Property;
+import org.elypia.commandler.annotation.PropertyWrapper;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -31,8 +37,8 @@ import java.lang.annotation.*;
 public @interface MatchCommand {
 
     /**
-     * @return The regular expression that will be used to
-     * match portions of the event.
+     * @return
+     *     Regular expression that will be used to match portions of the event.
      */
     @Property(key = "pattern", i18n = true, isPublic = true, displayName = "Pattern")
     String value();

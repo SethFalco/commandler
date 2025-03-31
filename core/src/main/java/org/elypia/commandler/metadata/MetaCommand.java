@@ -16,18 +16,18 @@
 
 package org.elypia.commandler.metadata;
 
-import org.slf4j.*;
-
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
 public class MetaCommand extends MetaComponent implements Comparable<MetaCommand>, Iterable<MetaParam> {
-
-    /** We use SLF4J for logging, be sure to include an implementation / binding. */
-    private static final Logger logger = LoggerFactory.getLogger(MetaCommand.class);
 
     /** The actual method that is called when this command is performed. */
     private Method method;
@@ -56,12 +56,13 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
     }
 
     /**
-     * Returns if the number provided is a suitable number of
-     * parameters for this command.
+     * Returns if the number provided is a suitable number of parameters for
+     * this command.
      *
-     * @param count The number to check against.
-     * @return If this number represents an appropriate number of params
-     * to perform this command.
+     * @param count Number to check against.
+     * @return
+     *     If this number represents an appropriate number of params to perform
+     *     this command.
      */
     public boolean isValidParamCount(int count) {
         long required = getMinParams();
@@ -92,8 +93,9 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
     }
 
     /**
-     * @return The {@link #metaParams params} names displayed
-     * in a user friendly that shows more info about them inline.
+     * @return
+     *     {@link #metaParams Parameter} names displayed in a user friendly that
+     *     shows more info about them inline.
      */
     public String toParamString() {
         StringJoiner itemJoiner = new StringJoiner(" ");
@@ -102,13 +104,15 @@ public class MetaCommand extends MetaComponent implements Comparable<MetaCommand
             Class<?> clazz = metaParam.getParameter().getType();
             StringBuilder builder = new StringBuilder();
 
-            if (metaParam.isOptional())
+            if (metaParam.isOptional()) {
                 builder.append("?");
+            }
 
-            if (metaParam.isList())
+            if (metaParam.isList()) {
                 builder.append("[").append(clazz).append("]");
-            else
+            } else {
                 builder.append(clazz);
+            }
 
             itemJoiner.add(builder.toString());
         }

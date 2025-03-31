@@ -16,16 +16,16 @@
 
 package org.elypia.commandler.exceptions.misuse;
 
-import org.elypia.commandler.metadata.MetaController;
-
 import java.util.Objects;
+
+import org.elypia.commandler.metadata.MetaController;
 
 /**
  * @author seth@elypia.org (Seth Falco)
  */
 public class NoDefaultCommandException extends AbstractMisuseException {
 
-    private transient final MetaController module;
+    private final transient MetaController module;
 
     public NoDefaultCommandException(MetaController module) {
         this(module, null);

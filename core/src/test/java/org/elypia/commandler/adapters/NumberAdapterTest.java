@@ -16,13 +16,16 @@
 
 package org.elypia.commandler.adapters;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author seth@elypia.org (Seth Falco)
@@ -91,7 +94,7 @@ public class NumberAdapterTest {
     public void testShorts() {
         NumberAdapter adapter = new NumberAdapter();
 
-        Number expected = (short)420;
+        Number expected = (short) 420;
         Number actual = adapter.adapt("420", Short.class);
 
         assertEquals(expected, actual);
@@ -101,7 +104,7 @@ public class NumberAdapterTest {
     public void testBytes() {
         NumberAdapter adapter = new NumberAdapter();
 
-        Number expected = (byte)3;
+        Number expected = (byte) 3;
         Number actual = adapter.adapt("3", Byte.class);
 
         assertEquals(expected, actual);

@@ -16,10 +16,15 @@
 
 package org.elypia.commandler.annotation;
 
-import org.elypia.commandler.annotation.stereotypes.Controller;
-import org.elypia.commandler.groups.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.*;
+import org.elypia.commandler.annotation.stereotypes.Controller;
+import org.elypia.commandler.groups.Guidance;
+import org.elypia.commandler.groups.Miscellaneous;
 
 /**
  * Marks an annotation as a grouping annotation.

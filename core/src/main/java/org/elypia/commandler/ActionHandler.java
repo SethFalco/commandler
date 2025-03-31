@@ -16,21 +16,31 @@
 
 package org.elypia.commandler;
 
-import org.apache.deltaspike.core.api.exception.control.event.ExceptionToCatchEvent;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.elypia.commandler.api.*;
-import org.elypia.commandler.event.*;
-import org.elypia.commandler.exceptions.misuse.AbstractMisuseException;
-import org.elypia.commandler.managers.*;
-import org.elypia.commandler.metadata.*;
-import org.elypia.commandler.producers.RequestFactory;
-import org.slf4j.*;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.control.ActivateRequestContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+
+import org.apache.deltaspike.core.api.exception.control.event.ExceptionToCatchEvent;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.elypia.commandler.api.ActionListener;
+import org.elypia.commandler.api.Dispatcher;
+import org.elypia.commandler.api.HandlerMiddleware;
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.event.Action;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.event.Request;
+import org.elypia.commandler.exceptions.misuse.AbstractMisuseException;
+import org.elypia.commandler.managers.AdapterManager;
+import org.elypia.commandler.managers.DispatcherManager;
+import org.elypia.commandler.managers.HeaderManager;
+import org.elypia.commandler.managers.MessengerManager;
+import org.elypia.commandler.metadata.MetaCommand;
+import org.elypia.commandler.metadata.MetaController;
+import org.elypia.commandler.producers.RequestFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The {@link ActionHandler} is what ultimiately handles all events
@@ -65,12 +75,12 @@ public class ActionHandler implements ActionListener {
     }
 
     /**
-     * Receieve and handles the event.
+     * Receive and handles the event.
      *
-     * @param integration The name of the service that receive this.
-     * @param content The content of the message.
-     * @return The response to this command, or null
-     * if this wasn't a command at all.
+     * @param integration Name of the service that receive this.
+     * @param content Content of the message.
+     * @return
+     *     Response to this command, or null if this wasn't a command at all.
      */
     @ActivateRequestContext
     @Override
@@ -88,8 +98,9 @@ public class ActionHandler implements ActionListener {
         try {
             event = dispatcher.dispatch(request);
 
-            if (event == null)
+            if (event == null) {
                 return null;
+            }
 
             requestFactory.setEvent(event);
 
@@ -98,21 +109,23 @@ public class ActionHandler implements ActionListener {
             Object[] params = adapter.adaptEvent(event);
             requestFactory.setParams(params);
 
-            for (HandlerMiddleware middleware : middlewares)
+            for (HandlerMiddleware middleware : middlewares) {
                 middleware.onMiddleware(event);
+            }
 
             MetaCommand metaCommand = event.getMetaCommand();
             response = metaCommand.getMethod().invoke(controller, params);
         } catch (AbstractMisuseException ex) {
-            logger.info("A misuse exception occured when handling a message; command panicked.");
+            logger.info("A misuse exception occurred when handling a message; command panicked.");
             beanManager.getEvent().fire(new ExceptionToCatchEvent(ex));
         } catch (Exception ex) {
-            logger.error("An uncaught exception occured while handling a request.");
+            logger.error("An uncaught exception occurred while handling a request.");
             beanManager.getEvent().fire(new ExceptionToCatchEvent(ex));
         }
 
-        if (response == null)
+        if (response == null) {
             return null;
+        }
 
         return messenger.provide(event, response);
     }

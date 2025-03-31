@@ -16,14 +16,13 @@
 
 package org.elypia.commandler.validation;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.api.HandlerMiddleware;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.producers.ParameterWrapper;
-import org.slf4j.*;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
 /**
  * Adds a validation step to verify the parameters adhere to all
@@ -33,8 +32,6 @@ import javax.inject.Inject;
  */
 @RequestScoped
 public class ValidatorMiddleware implements HandlerMiddleware {
-
-    private static final Logger logger = LoggerFactory.getLogger(ValidatorMiddleware.class);
 
     private final HibernateValidationManager validationService;
 

@@ -16,7 +16,8 @@
 
 package org.elypia.commandler.api;
 
-import org.elypia.commandler.*;
+import org.elypia.commandler.ActionHandler;
+import org.elypia.commandler.Commandler;
 
 /**
  * Whenever Commandler recieves an Action from any of the registered
@@ -30,13 +31,13 @@ import org.elypia.commandler.*;
 public interface ActionListener {
 
     /**
-     * @param integration The integration that handed {@link Commandler} this event.
-     * @param source The original event that the {@link Integration} received.
-     * @param message The message object provided by the {@link Integration}.
-     * @param content The raw content of the message as percieved by the integration.
-     * @param <S> The type of source even thtis {@link Integration} is for.
-     * @param <M> The type of message this {@link Integration} sends and received.
-     * @return The response to this action, or null if no response was given.
+     * @param integration Integration that handed {@link Commandler} this event.
+     * @param source Original event that the {@link Integration} received.
+     * @param message Message object provided by the {@link Integration}.
+     * @param content Raw content of the message as perceived by the integration.
+     * @param <S> Type of source event this {@link Integration} is for.
+     * @param <M> Type of message this {@link Integration} sends and received.
+     * @return Response to this action, or null if no response was given.
      */
     <S, M> M onAction(Integration<S, M> integration, S source, M message, String content);
 }

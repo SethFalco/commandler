@@ -28,8 +28,9 @@ public class AllGroupsMessenger implements Messenger<AllGroupsModel, String> {
     public String provide(ActionEvent<?, String> event, AllGroupsModel groups) {
         StringBuilder builder = new StringBuilder("Groups");
 
-        for (String group : groups.getGroups().keySet())
+        for (String group : groups.getGroups().keySet()) {
             builder.append("\n* ").append(group);
+        }
 
         return builder.toString();
     }

@@ -16,11 +16,12 @@
 
 package org.elypia.commandler.producers;
 
-import org.elypia.commandler.api.Integration;
-import org.elypia.commandler.event.*;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
+
+import org.elypia.commandler.api.Integration;
+import org.elypia.commandler.event.ActionEvent;
+import org.elypia.commandler.event.Request;
 
 @RequestScoped
 public class RequestFactory {

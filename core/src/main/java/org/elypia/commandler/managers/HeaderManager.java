@@ -16,27 +16,25 @@
 
 package org.elypia.commandler.managers;
 
+import java.util.Map;
+import java.util.Objects;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.elypia.commandler.CommandlerExtension;
 import org.elypia.commandler.api.HeaderBinder;
 import org.elypia.commandler.event.Request;
-import org.slf4j.*;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.*;
 
 /**
- * Manage {@link HeaderBinder}s and actually add
- * headers to events before command processing.
+ * Manage {@link HeaderBinder}s and actually add headers to events before
+ * command processing.
  *
  * @author seth@elypia.org (Seth Falco)
  */
 @ApplicationScoped
 public class HeaderManager {
-
-    /** Logging with SLF4J. */
-    private static final Logger logger = LoggerFactory.getLogger(HeaderManager.class);
 
     private CommandlerExtension extension;
 
@@ -50,11 +48,13 @@ public class HeaderManager {
             HeaderBinder binder = BeanProvider.getContextualReference(binderType);
             Map<String, String> headersToAdd = binder.bind(request);
 
-            if (headersToAdd == null)
+            if (headersToAdd == null) {
                 continue;
+            }
 
-            for (Map.Entry<String, String> entry : headersToAdd.entrySet())
+            for (Map.Entry<String, String> entry : headersToAdd.entrySet()) {
                 request.setHeader(entry.getKey(), entry.getValue());
+            }
         }
     }
 }

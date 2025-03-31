@@ -16,10 +16,11 @@
 
 package org.elypia.commandler.commandlerdoc.models;
 
-import org.elypia.commandler.metadata.MetaController;
-
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+
+import org.elypia.commandler.metadata.MetaController;
 
 /**
  * This represents a completely localized and ready to export

@@ -16,7 +16,8 @@
 
 package org.elypia.commandler.models;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 public class GroupModel implements Iterable<ControllerModel> {
 

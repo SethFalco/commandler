@@ -16,13 +16,14 @@
 
 package org.elypia.commandler.producers;
 
-import org.apache.deltaspike.core.api.message.LocaleResolver;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import java.text.NumberFormat;
-import java.util.Locale;
+
+import org.apache.deltaspike.core.api.message.LocaleResolver;
 
 @RequestScoped
 public class NumberFormatProducer {

@@ -16,21 +16,23 @@
 
 package org.elypia.commandler.metadata;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
 import org.elypia.commandler.api.Adapter;
 
-import java.util.*;
-
 /**
- * The metadata-data associated with a parameter adapters.
+ * Metadata-data associated with a parameter adapters.
  *
  * @author seth@elypia.org (Seth Falco)
  */
 public class MetaAdapter {
 
-    /** The class of the adapters itself. */
+    /** Class of the adapters itself. */
     private Class<? extends Adapter> type;
 
-    /** The compatible classes this adapters can adapt for. */
+    /** Compatible classes this adapters can adapt for. */
     private Collection<Class<?>> compatible;
 
     public MetaAdapter(Class<? extends Adapter> type, Class<?>... compatible) {
@@ -38,8 +40,8 @@ public class MetaAdapter {
     }
 
     /**
-     * @param type The class of the adapters itself.
-     * @param compatible The compatible classes this adapters can adapt for.
+     * @param type Class of the adapters itself.
+     * @param compatible Compatible classes this adapters can adapt for.
      */
     public MetaAdapter(Class<? extends Adapter> type, Collection<Class<?>> compatible) {
         this.type = Objects.requireNonNull(type);

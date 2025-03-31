@@ -16,12 +16,12 @@
 
 package org.elypia.commandler.producers;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
 import org.elypia.commandler.api.Integration;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.managers.MessengerManager;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
 @RequestScoped
 public class MessageSender {

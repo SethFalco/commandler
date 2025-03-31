@@ -16,23 +16,23 @@
 
 package org.elypia.commandler.api;
 
+import java.util.Map;
+
 import org.elypia.commandler.dispatchers.standard.StandardDispatcher;
 import org.elypia.commandler.event.Request;
 
-import java.util.Map;
-
 /**
- * Implement this to attach metadata for requests.
- * Headers are used to manage data for requests which could
- * be defined here either because it's dynamic data, or obtained
- * from external sources, but relevent to the processing of a command.
+ * Implement this to attach metadata for requests. Headers are used to manage
+ * data for requests which could be defined here either because it's dynamic
+ * data, or obtained from external sources, but relevant to the processing of a
+ * command.
  *
- * An example of this could be if your requirements dictate
- * the {@link StandardDispatcher} must operate with a different prefix
- * depending on the user performing the command.
+ * An example of this could be if your requirements dictate the
+ * {@link StandardDispatcher} must operate with a different prefix depending on
+ * the user performing the command.
  *
- * The {@link StandardDispatcher} could be configured to use ${USER_PREFIX}
- * and a {@link HeaderBinder} could be used to set the header
+ * The {@link StandardDispatcher} could be configured to use ${USER_PREFIX} and
+ * a {@link HeaderBinder} could be used to set the header
  * <code>USER_PREFIX</code> per event.
  *
  * @author seth@elypia.org (Seth Falco)
@@ -41,10 +41,10 @@ import java.util.Map;
 public interface HeaderBinder {
 
     /**
-     * @param request The serializable request of made by the user.
-     * @param <S> The type of source even thtis {@link Integration} is for.
-     * @param <M> The type of message this {@link Integration} sends and received.
-     * @return The headers to add to the request, or null if none.
+     * @param request Serializable request of made by the user.
+     * @param <S> Type of source event this {@link Integration} is for.
+     * @param <M> Type of message this {@link Integration} sends and received.
+     * @return Headers to add to the request, or null if none.
      */
     <S, M> Map<String, String> bind(Request<S, M> request);
 }

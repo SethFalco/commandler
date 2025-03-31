@@ -16,9 +16,9 @@
 
 package org.elypia.commandler.utils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Generic utilities for which can be used in chat.
@@ -30,32 +30,32 @@ public final class ChatUtils {
 
     /** Many chat services use two regional indicators to represent a country. */
     private static final Map<String, String> regionalIndicators = Map.ofEntries(
-        Map.entry("A", "\uD83C\uDDE6"),
-        Map.entry("B", "\uD83C\uDDE7"),
-        Map.entry("C", "\uD83C\uDDE8"),
-        Map.entry("D", "\uD83C\uDDE9"),
-        Map.entry("E", "\uD83C\uDDEA"),
-        Map.entry("F", "\uD83C\uDDEB"),
-        Map.entry("G", "\uD83C\uDDEC"),
-        Map.entry("H", "\uD83C\uDDED"),
-        Map.entry("I", "\uD83C\uDDEE"),
-        Map.entry("J", "\uD83C\uDDEF"),
-        Map.entry("K", "\uD83C\uDDF0"),
-        Map.entry("L", "\uD83C\uDDF1"),
-        Map.entry("M", "\uD83C\uDDF2"),
-        Map.entry("N", "\uD83C\uDDF3"),
-        Map.entry("O", "\uD83C\uDDF4"),
-        Map.entry("P", "\uD83C\uDDF5"),
-        Map.entry("Q", "\uD83C\uDDF6"),
-        Map.entry("R", "\uD83C\uDDF7"),
-        Map.entry("S", "\uD83C\uDDF8"),
-        Map.entry("T", "\uD83C\uDDF9"),
-        Map.entry("U", "\uD83C\uDDFA"),
-        Map.entry("V", "\uD83C\uDDFB"),
-        Map.entry("W", "\uD83C\uDDFC"),
-        Map.entry("X", "\uD83C\uDDFD"),
-        Map.entry("Y", "\uD83C\uDDFE"),
-        Map.entry("Z", "\uD83C\uDDFF")
+        Map.entry("A", "🇦"),
+        Map.entry("B", "🇧"),
+        Map.entry("C", "🇨"),
+        Map.entry("D", "🇩"),
+        Map.entry("E", "🇪"),
+        Map.entry("F", "🇫"),
+        Map.entry("G", "🇬"),
+        Map.entry("H", "🇭"),
+        Map.entry("I", "🇮"),
+        Map.entry("J", "🇯"),
+        Map.entry("K", "🇰"),
+        Map.entry("L", "🇱"),
+        Map.entry("M", "🇲"),
+        Map.entry("N", "🇳"),
+        Map.entry("O", "🇴"),
+        Map.entry("P", "🇵"),
+        Map.entry("Q", "🇶"),
+        Map.entry("R", "🇷"),
+        Map.entry("S", "🇸"),
+        Map.entry("T", "🇹"),
+        Map.entry("U", "🇺"),
+        Map.entry("V", "🇻"),
+        Map.entry("W", "🇼"),
+        Map.entry("X", "🇽"),
+        Map.entry("Y", "🇾"),
+        Map.entry("Z", "🇿")
     );
 
     private ChatUtils() {
@@ -66,46 +66,50 @@ public final class ChatUtils {
      * Replace all upper case characters with regional indicators
      * characters instead.
      *
-     * @param input The source string to replace from.
-     * @return The new string with all upper case characters replaced.
+     * @param input Source string to replace from.
+     * @return New string with all upper case characters replaced.
      */
     public static String replaceWithIndicators(String input) {
-        for (Map.Entry<String, String> entry : regionalIndicators.entrySet())
+        for (Map.Entry<String, String> entry : regionalIndicators.entrySet()) {
             input = input.replace(entry.getKey(), entry.getValue());
+        }
 
         return input;
     }
 
     public static String replaceFromIndicators(String input) {
-        for (Map.Entry<String, String> entry : regionalIndicators.entrySet())
+        for (Map.Entry<String, String> entry : regionalIndicators.entrySet()) {
             input = input.replace(entry.getValue(), entry.getKey());
+        }
 
         return input;
     }
 
     /**
-     * @param body The string body to truncate.
-     * @param maxLength The maximum length the result can be.
-     * @return The string itself, or a truncated version of the string.
+     * @param body String body to truncate.
+     * @param maxLength Maximum length the result can be.
+     * @return String itself, or a truncated version of the string.
      */
     public static String truncate(String body, int maxLength) {
         return truncateAndAppend(body, maxLength, null);
     }
 
     /**
-     * @param body The string body to truncate.
-     * @param maxLength The maximum length the result can be.
+     * @param body String body to truncate.
+     * @param maxLength Maximum length the result can be.
      * @param append What to append to the end of the string if truncated.
-     * @return The string itself, or a truncated version of the string.
+     * @return String itself, or a truncated version of the string.
      */
     public static String truncateAndAppend(String body, int maxLength, String append) {
-        if (append != null)
+        if (append != null) {
             maxLength -= append.length();
+        }
 
         String truncated = StringUtils.truncate(body, maxLength);
 
-        if (append != null && truncated.length() != body.length())
+        if (append != null && truncated.length() != body.length()) {
             truncated += append;
+        }
 
         return truncated;
     }

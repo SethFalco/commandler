@@ -26,13 +26,13 @@ import java.util.Map;
  */
 public abstract class MetaComponent {
 
-    /** The user-friendly name of this item. */
+    /** User-friendly name of this item. */
     protected String name;
 
-    /** A short help description or message for what this item does. */
+    /** Short help description or message for what this item does. */
     protected String description;
 
-    /** Properties that determine how this propery acts in runtime. */
+    /** Properties that determine how this property acts in runtime. */
     protected Map<String, MetaProperty> properties;
 
     public String getName() {
@@ -48,11 +48,11 @@ public abstract class MetaComponent {
     }
 
     /**
-     * Recieve a property of this which may be prefixed by another class.
+     * Receive a property of this which may be prefixed by another class.
      *
-     * @param type The prefix class name of the property.
-     * @param key The name of the property in this class.
-     * @return The property mapped under this key.
+     * @param type Prefix class name of the property.
+     * @param key Name of the property in this class.
+     * @return Property mapped under this key.
      */
     public MetaProperty getProperty(Class<?> type, String key) {
         return getProperty(type.getName() + "." + key);
@@ -61,8 +61,8 @@ public abstract class MetaComponent {
     /**
      * Retrieve a property by it's full key.
      *
-     * @param key The name of the property to retrieve.
-     * @return The property mapped under this key.
+     * @param key Name of the property to retrieve.
+     * @return Property mapped under this key.
      */
     public MetaProperty getProperty(String key) {
         return properties.get(key);

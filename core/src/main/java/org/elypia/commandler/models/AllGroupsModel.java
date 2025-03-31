@@ -16,7 +16,9 @@
 
 package org.elypia.commandler.models;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * A model object that represents all groups.

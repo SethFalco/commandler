@@ -16,10 +16,10 @@
 
 package org.elypia.commandler.exceptions.misuse;
 
+import java.util.Objects;
+
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 import org.elypia.commandler.event.ActionEvent;
-
-import java.util.Objects;
 
 /**
  * All exceptions that should panic and stop processing a command

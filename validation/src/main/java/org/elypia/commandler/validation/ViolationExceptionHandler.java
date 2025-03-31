@@ -16,16 +16,20 @@
 
 package org.elypia.commandler.validation;
 
-import org.apache.deltaspike.core.api.exception.control.*;
-import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.elypia.commandler.i18n.CommandlerMessageResolver;
-import org.elypia.commandler.producers.MessageSender;
-import org.slf4j.*;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.validation.*;
-import java.util.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Path;
+
+import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
+import org.apache.deltaspike.core.api.exception.control.Handles;
+import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
+import org.elypia.commandler.i18n.CommandlerMessageResolver;
+import org.elypia.commandler.producers.MessageSender;
 
 /**
  * Handling the {@link ViolationException}, this can be overridden
@@ -37,8 +41,6 @@ import java.util.*;
 @ExceptionHandler
 public class ViolationExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ViolationExceptionHandler.class);
-
     private final CommandlerMessageResolver commandlerMessages;
     private final MessageSender sender;
 
@@ -49,7 +51,7 @@ public class ViolationExceptionHandler {
     }
 
     /**
-     * @param event The exception that occured.
+     * @param event Exception that occurred.
      * @throws NullPointerException if exception is null.
      */
     public void onViolation(@Handles ExceptionEvent<ViolationException> event) {
@@ -68,8 +70,9 @@ public class ViolationExceptionHandler {
             Iterator<Path.Node> iter = violation.getPropertyPath().iterator();
             Path.Node last = null;
 
-            while (iter.hasNext())
+            while (iter.hasNext()) {
                 last = iter.next();
+            }
 
             Objects.requireNonNull(last);
             format.append(commandlerMessages.getMessage(last.getName())).append(": ").append(violation.getMessage());

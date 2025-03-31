@@ -16,9 +16,12 @@
 
 package org.elypia.commandler.event;
 
-import org.elypia.commandler.api.Integration;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringJoiner;
 
-import java.util.*;
+import org.elypia.commandler.api.Integration;
 
 /**
  * A {@link Request} represents each and every event
@@ -77,13 +80,14 @@ public class Request<S, M> {
     }
 
     /**
-     * @param key The name of the header.
-     * @param value The value of the header, seperate with semi-colons (;) if it's a list.
-     * @throws IllegalStateException if you try to set a key which has already been set.
+     * @param key Name of the header.
+     * @param value Value of the header, separate with semi-colons (;) if it's a list.
+     * @throws IllegalStateException If you try to set a key which has already been set.
      */
     public void setHeader(String key, String value) {
-        if (headers.containsKey(key))
+        if (headers.containsKey(key)) {
             throw new IllegalStateException("Headers in an event can't be overridden.");
+        }
 
         headers.put(key, value);
     }
@@ -97,8 +101,9 @@ public class Request<S, M> {
         StringJoiner joiner = new StringJoiner(", ");
 
         headers.forEach((key, value) -> {
-            if (value == null)
+            if (value == null) {
                 return;
+            }
 
             joiner.add(key + "=" + "\"" + value + "\"");
         });

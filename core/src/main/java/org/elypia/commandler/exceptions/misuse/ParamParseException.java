@@ -16,10 +16,10 @@
 
 package org.elypia.commandler.exceptions.misuse;
 
+import java.util.Objects;
+
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
-
-import java.util.Objects;
 
 /**
  * @author seth@elypia.org (Seth Falco)

@@ -16,10 +16,14 @@
 
 package org.elypia.commandler.annotation;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.elypia.commandler.adapters.EnumAdapter;
 import org.elypia.commandler.dispatchers.standard.StandardDispatcher;
-
-import java.lang.annotation.*;
 
 /**
  * Allows enums to specify all acceptable inputs that may

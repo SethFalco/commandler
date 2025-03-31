@@ -16,12 +16,13 @@
 
 package org.elypia.commandler.adapters;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.elypia.commandler.annotation.stereotypes.ParamAdapter;
 import org.elypia.commandler.api.Adapter;
 import org.elypia.commandler.event.ActionEvent;
 import org.elypia.commandler.metadata.MetaParam;
-
-import java.net.*;
 
 /**
  * @author seth@elypia.org (Seth Falco)

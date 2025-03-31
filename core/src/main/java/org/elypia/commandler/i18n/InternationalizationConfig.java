@@ -16,10 +16,11 @@
 
 package org.elypia.commandler.i18n;
 
-import org.apache.deltaspike.core.api.config.*;
-import org.apache.deltaspike.core.api.message.MessageBundle;
-
 import java.util.List;
+
+import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.apache.deltaspike.core.api.config.Configuration;
+import org.apache.deltaspike.core.api.message.MessageBundle;
 
 /**
  * Configuration for internationalization of Commandler.
@@ -31,8 +32,8 @@ import java.util.List;
 public interface InternationalizationConfig {
 
     /**
-     * @return The location in the classpath to find the
-     * {@link MessageBundle}s for Commandler.
+     * @return
+     *     Location in the classpath to find the {@link MessageBundle}s for Commandler.
      */
     @ConfigProperty(name = "message-bundles")
     List<String> getMessageBundles();

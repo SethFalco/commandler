@@ -50,7 +50,6 @@ gradle-app.setting
 ###########
 
 # Configuration
-/config/**
 *.p12
 *.jks
 *.key

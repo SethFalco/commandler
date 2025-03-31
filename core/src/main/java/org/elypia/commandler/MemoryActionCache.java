@@ -16,12 +16,17 @@
 
 package org.elypia.commandler;
 
-import org.elypia.commandler.api.ActionCache;
-import org.elypia.commandler.event.Action;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.io.Serializable;
-import java.util.*;
+
+import org.elypia.commandler.api.ActionCache;
+import org.elypia.commandler.event.Action;
 
 /**
  * @author seth@elypia.org (Seth Falco)
