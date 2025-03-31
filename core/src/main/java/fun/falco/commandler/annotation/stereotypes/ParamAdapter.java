@@ -36,7 +36,7 @@ import javax.enterprise.inject.Stereotype;
 public @interface ParamAdapter {
 
     /**
-     * @return The types this is compatible with working with.
+     * @return Types this is compatible with working with.
      */
     Class<?>[] value();
 }

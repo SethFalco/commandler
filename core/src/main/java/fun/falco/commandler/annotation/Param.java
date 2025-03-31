@@ -23,12 +23,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The Command annotation is used to supply metadata
- * to commands. This can be aliases, or the help to
- * let people know how to use this commands.
+ * Command annotation is used to supply metadata to commands. This can be
+ * aliases, or the help to let people know how to use this commands.
  *
- * All static data will be stored in an annotation, reserving the
- * method body for what it's meant for, logic.
+ * <p>All static data will be stored in an annotation, reserving the method body
+ * for what it's meant for, logic.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */

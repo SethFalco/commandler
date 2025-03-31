@@ -41,7 +41,7 @@ public @interface MessageProvider {
     Class<?> provides();
 
     /**
-     * @return The types this is compatible with working with.
+     * @return Types this is compatible with working with.
      */
     Class<?>[] value();
 }

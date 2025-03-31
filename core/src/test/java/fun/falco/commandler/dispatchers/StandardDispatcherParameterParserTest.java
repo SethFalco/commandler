@@ -172,11 +172,11 @@ public class StandardDispatcherParameterParserTest {
     }
 
     /**
-     * Regex can sometimes cause StackOverflows when handling
-     * large repetitive input.
+     * Regex can sometimes cause StackOverflows when handling large repetitive
+     * input.
      *
-     * This is the same test as before with a long string, but
-     * we only check if item splitting is good.
+     * <p>Same test as previous test with a long string, but we only check if
+     * item splitting is good.</p>
      */
     @RepeatedTest(4)
     public void testLargeRepetitiveStringItemOnly() {

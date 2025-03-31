@@ -39,11 +39,11 @@ import fun.falco.commandler.metadata.MetaParam;
 import fun.falco.commandler.producers.MessageSender;
 
 /**
- * The default handling for certain {@link AbstractMisuseException}
- * that occur during runtime.
+ * Default handling for certain {@link AbstractMisuseException} that occur
+ * during runtime.
  *
- * It's recommend when configuring your own exceptions
- * to derive from this class as a base.
+ * <p>It's recommend when configuring your own exceptions to derive from this
+ * class as a base.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */

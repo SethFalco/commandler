@@ -21,11 +21,11 @@ import java.io.Serializable;
 import fun.falco.commandler.event.ActionEvent;
 
 /**
- * An integration represents an class which manages the integration or
+ * Integration represents an class which manages the integration or
  * implementation of Commandler with another service or platform.
  *
- * This could represent a terminal if it's a console application or a form of
- * social media such as Discord.
+ * <p>Could represent a terminal if it's a console application or a form of
+ * social media.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  * @param <S>
@@ -46,7 +46,7 @@ public interface Integration<S, M> {
     }
 
     /**
-     * @return The type of object that is sent and received by this integration.
+     * @return Type of object that is sent and received by this integration.
      */
     Class<M> getMessageType();
 

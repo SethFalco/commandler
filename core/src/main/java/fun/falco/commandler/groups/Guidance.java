@@ -25,15 +25,15 @@ import java.lang.annotation.Target;
 import fun.falco.commandler.annotation.Group;
 
 /**
- * The default guidance group, this group should be applied to informational
- * modules such as help, instructions, interactive guides, privacy policy,
- * or any other more technical module to help users use the bot.
+ * Default guidance group, this group should be applied to informational modules
+ * such as help, instructions, interactive guides, privacy policy,  or any other
+ * more technical module to help users use the bot.
  *
- * This is standardized in Commandler for easier integration between
- * libraries and extensions.
+ * <p>This is standardized in Commandler for easier integration between
+ * libraries and extensions.</p>
  *
- * If the default localized names for the {@link Guidance} are undesirable,
- * they can be overridden in your own <code>GroupMessages.properties</code>.
+ * <p>If the default localized names for the {@link Guidance} are undesirable,
+ * they can be overridden in your own <code>GroupMessages.properties</code>.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  * @since 4.1.0

@@ -26,15 +26,13 @@ import java.lang.annotation.Target;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Stereotype;
 
-import fun.falco.commandler.Commandler;
 import fun.falco.commandler.annotation.Command;
 
 /**
- * A {@link Controller} in {@link Commandler} is a subset of {@link Command}s
- * and how all {@link Command}s should be registered. <br>
+ * Subset of {@link Command commands} and how all commands must be registered.
  *
- * A {@link Controller} can be thought of as a module of commands.
- * A {@link Command} can be thought of as a single command.
+ * <p>A {@link Controller} can be thought of as a module of commands. A
+ * {@link Command} can be thought of as a single command.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */

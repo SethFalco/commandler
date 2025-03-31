@@ -33,15 +33,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The root {@link Commandler} class, this ultimately enables your
+ * Root {@link Commandler} class, this ultimately enables your
  * {@link Commandler} Application with your configuration and runtime dependencies.
  *
- * There are two main means of configurable {@link Commandler}.
- *
- * <strong>Static Configuration:</strong> This entails configuration files either in the
- * classpath or externally, and {@link Annotation}s.
- * <strong>Dependency Injection Modules:</strong> This entails overriding runtime dependencies
- * for the CDI/IoC container to use.
+ * <p>There are two main means of configurable {@link Commandler}.</p>
+ * <ul>
+ * <li><strong>Static Configuration:</strong> Uses configuration files either in
+ * the classpath or externally, and {@link Annotation}s.</li>
+ * <li><strong>Dependency Injection Modules:</strong> This entails overriding
+ * runtime dependencies for the CDI/IoC container to use.</li>
+ * </ul>
  *
  * @author seth@falco.fun (Seth Falco)
  */
@@ -54,17 +55,17 @@ public class Commandler {
     private static CdiContainer cdiContainer;
 
     /**
-     * Construct an instance of Commandler, in most cases this will be used
-     * to manage your application, but in some cases may just be a small instance amongst
-     * multiple instance or for a small part of your application.
+     * Construct an instance of Commandler, in most cases this will be used to
+     * manage your application, but in some cases may just be a small instance
+     * amongst multiple instance or for a small part of your application.
      *
-     * This will kick off the CDI container and start initializating the bulk of the
-     * application. This will not however create {@link Integration}s so commands
-     * will not be accepted yet by the application.
+     * <p>Kicks off the CDI container and start initializing the bulk of the
+     * application. This will not however create {@link Integration}s so
+     * commands will not be accepted yet by the application.</p>
      *
-     * Call {@link #run()} to initialize all {@link Integration}s.
+     * <p>Call {@link #run()} to initialize all {@link Integration}s.</p>
      *
-     * @return The global Commandler instance.
+     * @return Global Commandler instance.
      */
     public static Commandler create() {
         logger.info("DeltaSpike computed the following ProjectStage: {}", ProjectStageProducer.getInstance().getProjectStage());
@@ -79,11 +80,11 @@ public class Commandler {
     }
 
     /**
-     * Instantiate all {@link Integration}s and start receiving and
-     * handling {@link ActionEvent}s receive .
+     * Instantiate all {@link Integration}s and start receiving and handling
+     * {@link ActionEvent}s receive .
      *
-     * This actually runs the Commandler instance and should be used to run any chat
-     * bots by whatever interactive means.
+     * <p>Runs the Commandler instance and should be used to run any chat bots
+     * by whatever interactive means.</p>
      */
     public void run() {
         TypeLiteral<? extends Integration<?, ?>> typeLiteral = new TypeLiteral<>(){};
@@ -104,10 +105,10 @@ public class Commandler {
     }
 
     /**
-     * Shutdown all CDI contexts and shutdown the CDI container
-     * managed by Commandler.
+     * Shutdown all CDI contexts and shutdown the CDI container managed by
+     * Commandler.
      *
-     * This should be used to gracefully stop any command handling.
+     * <p>This should be used to gracefully stop any command handling.</p>
      */
     public static void stop() {
         logger.info("Stopping Commandler managed CDI container.");

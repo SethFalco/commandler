@@ -44,20 +44,20 @@ import fun.falco.commandler.models.ParamModel;
 import fun.falco.commandler.models.PropertyModel;
 
 /**
- * The default help module, this is an optional module
- * one can add to provide some basic help functionality.
+ * Default help module, this is an optional module one can add to provide some
+ * basic help functionality.
  *
- * This is pre-implemented it can only be created with knowledge
- * of Commandler as a framework, which we're not expecting new
- * consumers of the API to immediately be able to follow.
+ * <p>This is pre-implemented it can only be created with knowledge of Commandler
+ * as a framework, which we're not expecting new consumers of the API to
+ * immediately be able to follow.</p>
  *
- * You'll need to ensure you have a {@link fun.falco.commandler.api.Messenger}
+ * <p>Ensure you have a {@link fun.falco.commandler.api.Messenger}
  * implementation for the following types to use this effectively:
  * <ul>
- *     <li>{@link CommandModel}</li>
- *     <li>{@link GroupModel}</li>
- *     <li>{@link ControllerModel}</li>
- * </ul>
+ * <li>{@link CommandModel}</li>
+ * <li>{@link GroupModel}</li>
+ * <li>{@link ControllerModel}</li>
+ * </ul></p>
  *
  * @author seth@falco.fun (Seth Falco)
  */
@@ -74,7 +74,6 @@ public class DefaultHelpController {
         this.messageResolver = messageResolver;
     }
 
-    // Make this display help for the help module, AND a list of all modules
     @StandardCommand(isDefault = true)
     public AllGroupsModel getAllGroups() {
         Map<String, List<ControllerModel>> groups = new HashMap<>();
@@ -123,10 +122,9 @@ public class DefaultHelpController {
     }
 
     /**
-     * The default help command for a {@link Controller},
-     * this should use the {@link MetaController} around
-     * this {@link Controller} to display helpful information
-     * to the user.
+     * Default help command for a {@link Controller}, this should use the
+     * {@link MetaController} around this {@link Controller} to display helpful
+     * information to the user.
      *
      * @param controller Controller to get commands for.
      * @return Message to send to the end user.

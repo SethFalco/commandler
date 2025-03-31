@@ -27,13 +27,13 @@ import fun.falco.commandler.event.Request;
  * data, or obtained from external sources, but relevant to the processing of a
  * command.
  *
- * An example of this could be if your requirements dictate the
+ * <p>An example of this could be if your requirements dictate the
  * {@link StandardDispatcher} must operate with a different prefix depending on
- * the user performing the command.
+ * the user performing the command.</p>
  *
- * The {@link StandardDispatcher} could be configured to use ${USER_PREFIX} and
+ * <p>The {@link StandardDispatcher} could be configured to use ${USER_PREFIX} and
  * a {@link HeaderBinder} could be used to set the header
- * <code>USER_PREFIX</code> per event.
+ * <code>USER_PREFIX</code> per event.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */

@@ -64,23 +64,25 @@ public class CommandlerMessageResolver {
     }
 
     /**
-     * If the key starts and ends with {} then it'll be searched
-     * in the {@link InternationalizationConfig#getMessageBundles()} path.
+     * If the key starts and ends with {} then it'll be searched in the
+     * {@link InternationalizationConfig#getMessageBundles()} path.
      *
-     * If not then the string will be interpolated and returned literally.
+     * <p>If not then the string will be interpolated and returned
+     * literally.</p>
      *
      * @param key Resource bundle key or literal string localize.
-     * @return The localized string depending on the {@link LocaleResolver}.
+     * @return Localized string depending on the {@link LocaleResolver}.
      */
     public String getMessage(String key) {
         return getMessage(key, null);
     }
 
     /**
-     * If the key starts and ends with {} then it'll be searched
-     * in the {@link InternationalizationConfig#getMessageBundles()} path.
+     * If the key starts and ends with {} then it'll be searched in the
+     * {@link InternationalizationConfig#getMessageBundles()} path.
      *
-     * If not then the string will be interpolated and returned literally.
+     * <p>If not then the string will be interpolated and returned
+     * literally.</p>
      *
      * @param key Resource bundle key or literal string localize.
      * @param locale Override the default locale resolver implementation to use this locale.

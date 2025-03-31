@@ -41,16 +41,16 @@ import fun.falco.commandler.annotation.stereotypes.Controller;
 public @interface StandardCommand {
 
     /**
-     * The aliases for this command. This is how the command can be performed.
+     * Aliases for this command. This is how the command can be performed.
      *
-     * If the {@link StandardController} has an alias of <code>utils</code>, and
-     * the {@link StandardCommand} has an alias of <code>ping</code>", then the
-     * command will be <code>utils ping</code>.
+     * <p>If the {@link StandardController} has an alias of <code>utils</code>,
+     * and the {@link StandardCommand} has an alias of <code>ping</code>", then
+     * the command will be <code>utils ping</code>.</p>
      *
-     * If {@link #isStatic()} is true for either the Controller or Command,
-     * then just <code>ping</code> will work on it's own as well.
+     * <p>If {@link #isStatic()} is true for either the Controller or Command,
+     * then just <code>ping</code> will work on it's own as well.</p>
      *
-     * @return The aliases for a command to execute this command.
+     * @return Aliases for a command to execute this command.
      */
     @Property(key = "aliases", i18n = true, isPublic = true, displayName = "Aliases")
     String value() default AnnotationUtils.EFFECTIVELY_NULL;

@@ -99,7 +99,7 @@ public class ConsoleIntegration implements Integration<String, String> {
     }
 
     /**
-     * @param event This is ignored.
+     * @param event Is ignored.
      * @param message Message to send.
      */
     @Override

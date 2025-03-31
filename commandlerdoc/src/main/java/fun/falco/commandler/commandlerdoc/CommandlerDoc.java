@@ -30,12 +30,13 @@ import fun.falco.commandler.metadata.MetaCommand;
 import fun.falco.commandler.metadata.MetaController;
 
 /**
- * A class to manage exportable metadata. This includes
- * actual command data for the command handler, and possibly metadata
- * for the application, or configuration for a service to work with.
+ * Manages exportable metadata. Includes actual command data for the command
+ * handler, and possibly metadata for the application, or configuration for a
+ * service to work with.
  *
- * This will only export public metadata. For example where
- * {@link MetaController#isPublic()} and {@link MetaCommand#isPublic} is true.
+ * <p>This will only export public metadata. For example where
+ * {@link MetaController#isPublic()} and {@link MetaCommand#isPublic} is
+ * true.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */

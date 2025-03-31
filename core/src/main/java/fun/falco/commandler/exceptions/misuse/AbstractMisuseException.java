@@ -22,10 +22,9 @@ import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
  * All exceptions that should panic and stop processing a command
  * due to user error should extend this abstract class.
  *
- * The {@link AbstractMisuseException} is intended to be thrown when
- * users have done something wrong in order for an {@link ExceptionHandler}
- * to pick up the error and return a clean and helpful error
- * message to users.
+ * <p>To be thrown when users have done something wrong in order for an
+ * {@link ExceptionHandler} to pick up the error and return a clean and helpful
+ * error message to users.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */

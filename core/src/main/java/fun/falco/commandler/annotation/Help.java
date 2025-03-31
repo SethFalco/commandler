@@ -31,12 +31,12 @@ import java.lang.annotation.Target;
 public @interface Help {
 
     /**
-     * @return The display name of this item.
+     * @return Display name of this item.
      */
     String name() default AnnotationUtils.EFFECTIVELY_NULL;
 
     /**
-     * @return A small description of what this does or contains.
+     * @return Small description of what this does or contains.
      */
     String description() default AnnotationUtils.EFFECTIVELY_NULL;
 }

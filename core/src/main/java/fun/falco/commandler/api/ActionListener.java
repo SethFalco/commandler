@@ -20,11 +20,11 @@ import fun.falco.commandler.ActionHandler;
 import fun.falco.commandler.Commandler;
 
 /**
- * Whenever Commandler recieves an Action from any of the registered
- * {@link Integration}s, it goes through all registred {@link ActionListener}.
+ * When Commandler receives an Action from any of the registered
+ * {@link Integration}s, it goes through all registered {@link ActionListener}.
  *
- * One {@link ActionListener} implementation is provided by default which
- * is the {@link ActionHandler}.
+ * <p>One {@link ActionListener} implementation is provided by default which is
+ * the {@link ActionHandler}.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */

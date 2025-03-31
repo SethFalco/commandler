@@ -63,7 +63,7 @@ public class AsciidoctorExporter implements Exporter {
     /**
      * Export all controllers into a single document per language.
      *
-     * @return A map of file to write mapped to the content to write against them.
+     * @return Map of file to write mapped to the content to write against them.
      */
     private Map<File, String> exportBundled(Map<Locale, List<ExportableController>> controllers) {
         Map<File, String> adocFiles = new HashMap<>();

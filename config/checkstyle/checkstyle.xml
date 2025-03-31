@@ -29,8 +29,9 @@
     <module name="WhitespaceAfter"/>
     <module name="ModifierOrder"/>
     <module name="JavadocStyle"/>
+    <module name="JavadocParagraph"/>
     <module name="Regexp">
-      <property name="format" value="@(param|return) [A-Za-z\d&gt;&lt;]+ (The|An?|All) "/>
+      <property name="format" value="@(param [A-Za-z\d&gt;&lt;]+|return) ([Tt]he|[Aa]n?|[Aa]ll|[Tt]his) "/>
       <property name="illegalPattern" value="true"/>
       <property name="message" value="Don't start Javadocs with terms like &quot;the&quot;, &quot;a&quot;, or &quot;all&quot;, use the noun instead."/>
     </module>

@@ -26,10 +26,10 @@ import fun.falco.commandler.adapters.EnumAdapter;
 import fun.falco.commandler.dispatchers.standard.StandardDispatcher;
 
 /**
- * Allows enums to specify all acceptable inputs that may
- * result in that enum constant during parameter parsing.
+ * Allows enums to specify all acceptable inputs that may result in that enum
+ * constant during parameter parsing.
  *
- * This is used by the {@link EnumAdapter}.
+ * <p>Used by {@link EnumAdapter}.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  * @since 4.0.1

@@ -43,12 +43,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link ActionHandler} is what ultimiately handles all events
- * that come through Commandler regardless of service.
+ * Ultimately handles all events that come through Commandler regardless of
+ * service.
  *
- * This will iterate the registered {@link Dispatcher}s that report
- * an {@link Action} as {@link Dispatcher#isValid(Request)}
- * until one returns an object to respond to the user.
+ * <p>Iterates the registered {@link Dispatcher}s that report an {@link Action}
+ * as {@link Dispatcher#isValid(Request)} until one returns an object to respond
+ * to the user.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */

@@ -27,13 +27,11 @@ import fun.falco.commandler.groups.Guidance;
 import fun.falco.commandler.groups.Miscellaneous;
 
 /**
- * Marks an annotation as a grouping annotation.
- * Grouping annotations can be applied to {@link Controller}s to
- * group them up in a type-safe manner.
+ * Marks an annotation as a grouping annotation. Grouping annotations can be
+ * applied to {@link Controller}s to group them up in a type-safe manner.
  *
- * This makes is safer to put objects into groups, and makes it much
- * easier to programmatically use and sort through groups, or manage
- * internalization.
+ * <p>Makes is safer to put objects into groups, and makes it much easier to
+ * programmatically use and sort through groups, or manage internalization.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  * @since 4.1.0
@@ -44,22 +42,20 @@ import fun.falco.commandler.groups.Miscellaneous;
 public @interface Group {
 
     /**
-     * The key to use to obtain the localized name of this group.
-     * It's recommended to leave this as null unless you're requirements
-     * disallow you to.
+     * Key to use to obtain the localized name of this group. It's recommended
+     * to leave this as null unless you're requirements disallow you to.
      *
-     * Leaving this as null defaults the key to be fully qualified
-     * class name of the group annotation.
+     * <p>Leaving this as null defaults the key to be fully qualified class name
+     * of the group annotation.</p>
      *
-     * <strong>
-     *     This must be specified if it's applied on a {@link Controller} directly.
-     *     It's strongly recommended to use this to create a grouping annotation
-     *     such as the default {@link Guidance} and {@link Miscellaneous} annotations provided.
-     *     Using the group annotation on types or packages directly is only for if
-     *     your requirements absolutely disallow using it otherwise.
-     * </strong>
+     * <p><strong>This must be specified if it's applied on a {@link Controller}
+     * directly. It's strongly recommended to use this to create a grouping
+     * annotation such as the default {@link Guidance} and {@link Miscellaneous}
+     * annotations provided. Using the group annotation on types or packages
+     * directly is only for if your requirements absolutely disallow using it
+     * otherwise.</strong></p>
      *
-     * @return The message key that refers to the name of this group.
+     * @return Message key that refers to the name of this group.
      */
     String message() default AnnotationUtils.EFFECTIVELY_NULL;
 }

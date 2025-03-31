@@ -29,11 +29,11 @@ import fun.falco.commandler.metadata.MetaController;
  * Stores user interaction with Commandler. Action is {@link Serializable} to
  * that it can be stored away and returned again by future events.
  *
- * An instance is created for every action performed by the user  that was
- * picked up by a registered Dispatcher.
+ * <p>Created for every action performed by the user  that was picked up by a
+ * registered Dispatcher.</p>
  *
- * Action should only contain serializable information that is relevant for all
- * command types.
+ * <p>Action should only contain serializable information that is relevant for all
+ * command types.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */

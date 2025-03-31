@@ -46,7 +46,8 @@ import fun.falco.commandler.annotation.stereotypes.Controller;
 public @interface StandardController {
 
     /**
-     * @return The prefixes for all {@link StandardCommand}s in the {@link Controller}.
+     * @return
+     *     Prefixes for all {@link StandardCommand}s in the {@link Controller}.
      */
     @Property(key = "aliases", i18n = true, isPublic = true, displayName = "Aliases")
     String value() default AnnotationUtils.EFFECTIVELY_NULL;

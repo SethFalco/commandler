@@ -38,11 +38,11 @@ import fun.falco.commandler.metadata.MetaController;
 import fun.falco.commandler.metadata.MetaParam;
 
 /**
- * Overrides how the validation implementation obtains names
- * for validation error messages.
+ * Overrides how the validation implementation obtains names for validation
+ * error messages.
  *
- * This ensures that invalidated parameters use their
- * {@link Commandler} {@link MetaParam} names.
+ * <p>Ensures that invalidated parameters use their {@link Commandler}
+ * {@link MetaParam} names.</p>
  *
  * @author seth@falco.fun (Seth Falco)
  */
