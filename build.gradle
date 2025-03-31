@@ -23,7 +23,7 @@ allprojects() {
     apply plugin: "jacoco-report-aggregation"
     apply plugin: "application"
 
-    group = "org.elypia.commandler"
+    group = "fun.falco.commandler"
     version = "4.1.0"
     description = "Commandler is an abstract command handling framework for dispatching events."
 
