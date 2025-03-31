@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elypia CIC
+ * Copyright 2019-2025 Seth Falco and Commandler Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 
 dependencies {
+    // Adds Additional Configuration Converters
+    implementation "org.elypia.converters4deltaspike:converters4deltaspike:1.1.0"
+
     implementation "org.apache.commons:commons-lang3:3.10"
 
     // Dependency Injection

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elypia CIC
+ * Copyright 2019-2025 Seth Falco and Commandler Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,39 +15,24 @@
  */
 
 plugins {
-    id "com.jfrog.bintray" version "1.8.5" apply false
-    id "io.spring.dependency-management" version "1.0.9.RELEASE" apply false
+    id "io.spring.dependency-management" version "1.0.10.RELEASE" apply false
 }
 
-def publishedProjects = [
-    project("console"),
-    project("core"),
-    project("commandlerdoc"),
-//    project("metrics"),
-    project("newb"),
-    project("validation")
-]
-
 allprojects() {
-    apply plugin: "idea"
-    apply plugin: "jacoco"
+    apply plugin: "checkstyle"
+    apply plugin: "jacoco-report-aggregation"
+    apply plugin: "application"
 
-    group = "org.elypia.commandler"
+    group = "fun.falco.commandler"
     version = "4.1.0"
     description = "Commandler is an abstract command handling framework for dispatching events."
 
     ext {
-        repoUrl = "https://gitlab.com/Elypia/commandler"
-        gitUrl = "${repoUrl}.git"
-        issueUrl = "${repoUrl}/issues"
-        website = "https://elypia.org/"
-
         deltaSpikeVersion = "1.9.4"
         validationVersion = "2.0.2"
     }
 
     repositories {
-        jcenter()
         mavenCentral()
 
         // Local system
@@ -55,18 +40,17 @@ allprojects() {
     }
 
     jacoco {
-        toolVersion = "0.8.5"
+        toolVersion = "0.8.8"
     }
 }
 
-configure(publishedProjects) {
+subprojects() {
     apply plugin: "java-library"
     apply plugin: "maven-publish"
-    apply plugin: "com.jfrog.bintray"
     apply plugin: "io.spring.dependency-management"
 
-    sourceCompatibility = 11
-    targetCompatibility = 11
+    sourceCompatibility = 17
+    targetCompatibility = 17
 
     [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
@@ -88,11 +72,11 @@ configure(publishedProjects) {
 
     dependencies {
         // Logging
-        implementation "org.slf4j:slf4j-api:1.7.30"
+        implementation "org.slf4j:slf4j-api:1.7.31"
         testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
 
         // Testing
-        testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
+        testImplementation "org.junit.jupiter:junit-jupiter:5.7.2"
         testImplementation "org.mockito:mockito-core:3.3.3"
     }
 
@@ -102,137 +86,19 @@ configure(publishedProjects) {
         finalizedBy jacocoTestReport
 
         reports {
-            html.enabled = false
+            html.required = false
         }
     }
 
     /** Code Coverage */
     jacocoTestReport {
         reports {
-            html.enabled = false
-            xml.enabled = false
-        }
-    }
-
-    /** Upload to Bintray */
-
-    jar {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-        manifest {
-            attributes "Implementation-Title": this.name + project.path.replace(':', '-'),
-                       "Implementation-Version": archiveVersion
-        }
-    }
-
-    task sourcesJar(type: Jar) {
-        from sourceSets.main.allSource
-        archiveClassifier = 'sources'
-    }
-
-    task javadocJar(type: Jar) {
-        from javadoc
-        archiveClassifier = 'javadoc'
-
-        javadoc {
-            options {
-                links += [
-                    "https://docs.oracle.com/en/java/javase/11/docs/api/"
-                ]
-            }
-        }
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
-
-    bintray {
-        user = System.getenv("BINTRAY_USER")
-        key = System.getenv("BINTRAY_KEY")
-        publications = ['mavenJava']
-        publish = true
-        pkg {
-            repo = this.name
-            name = project.path.substring(1).replace(':', '-')
-            desc = project.description
-            userOrg = "elypia"
-            websiteUrl = website
-            licenses = ["Apache-2.0"]
-            vcsUrl = repoUrl
-            issueTrackerUrl = issueUrl
-            publicDownloadNumbers = true
-            version {
-                name = project.version
-                desc = project.description
-                vcsTag = project.version
-                released = new Date()
-            }
-        }
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifactId project.path.substring(1).replace(':', '-')
-                groupId project.group
-                version project.version
-                from components.java
-                artifact sourcesJar
-                artifact javadocJar
-
-                pom {
-                    name = this.name
-                    description = project.description
-                    url = website
-                    licenses {
-                        license {
-                            name = "Apache-2.0"
-                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = "Seth"
-                            name = "Seth"
-                            email = "seth@elypia.org"
-                        }
-                    }
-                    scm {
-                        url = gitUrl
-                    }
-                }
-            }
+            html.required = false
+            xml.required = false
         }
     }
 }
 
-/** Generate Global JavaDocs for GitLab Pages */
-task globalJavadoc(type: Javadoc) {
-    source = publishedProjects.collect { it.sourceSets.main.allJava }
-    classpath = files(publishedProjects.collect { it.sourceSets.main.compileClasspath })
-    destinationDir = file("${buildDir}/docs/javadoc")
-}
-
-/** Combine and output code coverage. */
-task jacocoMerge(type: JacocoMerge) {
-    executionData = files(publishedProjects.jacocoTestReport.executionData.findAll {it.asList() })
-
-    doFirst {
-        executionData = files(executionData.findAll {
-            it.exists()
-        })
-    }
-}
-
-task jacocoReport(type: JacocoReport, dependsOn: jacocoMerge) {
-    sourceDirectories.from = files(publishedProjects.sourceSets.main.allSource.srcDirs.findAll { it.asList() })
-    classDirectories.from = files(publishedProjects.sourceSets.main.output.findAll { it.asList() })
-    executionData.from = files(jacocoMerge.destinationFile)
-
-    reports {
-        html.enabled = true
-        xml.enabled = false
-    }
+tasks.named('check') {
+    dependsOn tasks.named('testCodeCoverageReport', JacocoReport)
 }

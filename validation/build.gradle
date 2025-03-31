@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elypia CIC
+ * Copyright 2019-2025 Seth Falco and Commandler Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,4 +25,8 @@ dependencies {
 
     // DeltaSpike
     implementation "org.apache.deltaspike.modules:deltaspike-bean-validation-module-impl:${deltaSpikeVersion}"
+}
+
+tasks.named('compileJava') {
+    dependsOn parent.project('core').tasks.named('processResources')
 }

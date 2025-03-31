@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elypia CIC
+ * Copyright 2019-2025 Seth Falco and Commandler Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ dependencies {
     api "jakarta.validation:jakarta.validation-api:${validationVersion}"
 
     // YAML4DeltaSpike for YAML Support by Default
-    implementation "org.elypia.yaml4deltaspike:yaml4deltaspike:1.2.1"
+    implementation "org.elypia.yaml4deltaspike:yaml4deltaspike:1.3.0"
 
     // Quartz for @Schedule
     api "org.quartz-scheduler:quartz:2.3.2"
@@ -30,4 +30,8 @@ dependencies {
     // Weld for CDI
     api "org.jboss.weld.se:weld-se-core:3.1.4.Final"
     implementation "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:${deltaSpikeVersion}"
+}
+
+tasks.named('compileJava') {
+    dependsOn parent.project('core').tasks.named('processResources')
 }
