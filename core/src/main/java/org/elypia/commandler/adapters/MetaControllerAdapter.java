@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elypia CIC
+ * Copyright 2019-2025 Seth Falco and Commandler Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.elypia.commandler.metadata.MetaController;
 import org.elypia.commandler.metadata.MetaParam;
 
 /**
- * @author seth@elypia.org (Seth Falco)
+ * @author seth@falco.fun (Seth Falco)
  */
 @ParamAdapter(MetaController.class)
 public class MetaControllerAdapter implements Adapter<MetaController> {

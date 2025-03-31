@@ -49,7 +49,7 @@ import org.elypia.commandler.metadata.MetaProperty;
  * Commandler function. All of Commandler's functionalities are bound to the CDI
  * container and the beans picked up by this extension.
  *
- * @author seth@elypia.org
+ * @author seth@falco.fun (Seth Falco)
  * @since 4.0.0
  */
 public class CommandlerExtension implements Extension {
@@ -353,7 +353,7 @@ public class CommandlerExtension implements Extension {
      * Private object to convert abstract data and put it in
      * the implementations.
      *
-     * @author seth@elypia.org (Seth Falco)
+     * @author seth@falco.fun (Seth Falco)
      */
     private static class ComponentConfig {
 

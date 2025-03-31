@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elypia CIC
+ * Copyright 2019-2025 Seth Falco and Commandler Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.elypia.commandler.metadata.MetaController;
  * {@link Dispatcher}s to allow more fields. This is what {@link Commandler}
  * will fire whenever a user performs an action.
  *
- * @author seth@elypia.org (Seth Falco)
+ * @author seth@falco.fun (Seth Falco)
  * @param <S> Source event that this is wrapping around.
  * @param <M>
  *     Type of message supported by this {@link Integration}, this is specified

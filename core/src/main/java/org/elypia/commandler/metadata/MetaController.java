@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elypia CIC
+ * Copyright 2019-2025 Seth Falco and Commandler Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.elypia.commandler.annotation.stereotypes.Controller;
  * can process commands; it holds information on the commands in a
  * form convenient to access to {@link Commandler} and any other APIs.
  *
- * @author seth@elypia.org (Seth Falco)
+ * @author seth@falco.fun (Seth Falco)
  */
 public class MetaController extends MetaComponent implements Comparable<MetaController>, Iterable<MetaCommand> {
 

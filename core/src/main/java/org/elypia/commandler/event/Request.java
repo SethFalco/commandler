@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Elypia CIC
+ * Copyright 2019-2025 Seth Falco and Commandler Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,32 +24,38 @@ import java.util.StringJoiner;
 import org.elypia.commandler.api.Integration;
 
 /**
- * A {@link Request} represents each and every event
- * that comes into Commandler that could be a possible command.
+ * A {@link Request} represents each and every event that comes into Commandler
+ * that could be a possible command.
  *
- * This has no knowledge of what command the user wants to perform
- * but only tracks the request for a potential interaction with the application.
+ * <p>This has no knowledge of what command the user wants to perform but only
+ * tracks the request for a potential interaction with the application.</p>
  *
- * Regardless of which {@link Integration} provided the message,
- * it will first be mapped to this.
+ * <p>Regardless of which {@link Integration} provided the message, it will
+ * first be mapped to this.</p>
  *
- * @author seth@elypia.org
+ * @author seth@falco.fun (Seth Falco)
  */
 public class Request<S, M> {
 
-    /** The {@link Integration} that received this message. */
+    /** Integration that received this message. */
     private final Integration<S, M> integration;
 
-    /** The source event object that was delivered from the {@link Integration}. */
+    /**
+     * The source event object that was delivered from the {@link Integration}.
+     */
     private final S source;
 
     /**
-     * The source message object that was delivered from the {@link Integration}.
-     * Depending on the {@link Integration} this may be the same as {@link #source}.
+     * The source message object that was delivered from the
+     * {@link Integration}. Depending on the {@link Integration} this may be the
+     * same as {@link #source}.
      */
     private final M message;
 
-    /** The content of the message, or an equivilent content if the event is not a string. */
+    /**
+     * The content of the message, or an equivalent content if the event is not
+     * a string.
+     */
     private final String content;
 
     /** Headers that define how this request is processed. */
@@ -81,8 +87,10 @@ public class Request<S, M> {
 
     /**
      * @param key Name of the header.
-     * @param value Value of the header, separate with semi-colons (;) if it's a list.
-     * @throws IllegalStateException If you try to set a key which has already been set.
+     * @param value
+     *     Value of the header, separate with semi-colons (;) if it's a list.
+     * @throws IllegalStateException
+     *     If you try to set a key which has already been set.
      */
     public void setHeader(String key, String value) {
         if (headers.containsKey(key)) {
