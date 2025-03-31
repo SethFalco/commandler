@@ -17,14 +17,14 @@
 dependencies {
     api project(":core")
 
-    // Hibernate Validation and Exposes the Validation API
+    // Hibernate Validation to exposes the validation API
     implementation project(":validation")
     api "jakarta.validation:jakarta.validation-api:${validationVersion}"
 
-    // YAML4DeltaSpike for YAML Support by Default
+    // YAML4DeltaSpike for YAML support
     implementation "org.elypia.yaml4deltaspike:yaml4deltaspike:1.3.0"
 
-    // Quartz for @Schedule
+    // Quartz for cron jobs with @Schedule
     api "org.quartz-scheduler:quartz:2.3.2"
 
     // Weld for CDI

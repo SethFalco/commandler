@@ -10,6 +10,7 @@ cache:
   paths:
     - .gradle/
     - build/
+    - "*/build/"
 
 build:
   stage: build
