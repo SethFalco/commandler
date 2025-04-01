@@ -25,7 +25,7 @@ allprojects() {
 
     group = "fun.falco.commandler"
     version = "4.1.0"
-    description = "Commandler is an abstract command handling framework for dispatching events."
+    description = " Commandler is a command handling framework for Java."
 
     ext {
         deltaSpikeVersion = "1.9.4"
@@ -77,7 +77,6 @@ subprojects() {
 
         // Testing
         testImplementation "org.junit.jupiter:junit-jupiter:5.7.2"
-        testImplementation "org.mockito:mockito-core:3.3.3"
     }
 
     /** Testing */
