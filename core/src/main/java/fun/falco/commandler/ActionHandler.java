@@ -77,10 +77,10 @@ public class ActionHandler implements ActionListener {
     /**
      * Receive and handles the event.
      *
-     * @param integration Name of the service that receive this.
+     * @param integration Name of the service that received the message.
      * @param content Content of the message.
      * @return
-     *     Response to this command, or null if this wasn't a command at all.
+     *     Response to the message, or null if there is nothing to respond.
      */
     @ActivateRequestContext
     @Override

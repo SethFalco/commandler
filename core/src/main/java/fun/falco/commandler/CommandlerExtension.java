@@ -350,8 +350,7 @@ public class CommandlerExtension implements Extension {
     }
 
     /**
-     * Private object to convert abstract data and put it in
-     * the implementations.
+     * Convert abstract data and put it in the implementations.
      *
      * @author seth@falco.fun (Seth Falco)
      */
