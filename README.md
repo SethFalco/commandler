@@ -1,4 +1,6 @@
-# Commandler [![](https://img.shields.io/maven-central/v/org.elypia.commandler/core)](https://search.maven.org/search?q=g:org.elypia.commandler) [![](https://gitlab.com/SethFalco/commandler/badges/main/pipeline.svg)](https://gitlab.com/SethFalco/commandler)
+# Commandler
+
+[![](https://img.shields.io/maven-central/v/org.elypia.commandler/core)](https://search.maven.org/search?q=g:org.elypia.commandler) [![](https://gitlab.com/SethFalco/commandler/badges/main/pipeline.svg)](https://gitlab.com/SethFalco/commandler)
 
 ## About
 
