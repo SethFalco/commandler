@@ -125,7 +125,7 @@ You can use CommandlerDoc to export all guidance for your controllers and comman
 
 ### CDI Java Beans
 
-To use Commandler you must define `beans.xml` in your classpath, even if you don't configure it. However, it's often helpful to populate the `<scan>` tag with exclusions.
+To use Commandler you must define `beans.xml` in your classpath, even if you don't configure it. However, it's often helpful to populate the `<scan>` tag with [exclude filters](https://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#exclude_filters).
 
 The `<exclude>` tag is used to tell the CDI container to skip processing certain package paths in the archive it's present in. If you build your project with a plugin like [shadow](https://github.com/GradleUp/shadow), you'll have a single standalone archive that contains _everything_ in your classpath in a single archive.
 
