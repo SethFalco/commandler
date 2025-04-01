@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.apache.deltaspike.core.api.message.LocaleResolver;
 import org.apache.deltaspike.core.api.message.Message;
 import org.apache.deltaspike.core.api.message.MessageContext;
+
 import fun.falco.commandler.annotation.Property;
 import fun.falco.commandler.metadata.MetaComponent;
 
@@ -47,14 +48,10 @@ public class CommandlerMessageResolver {
         "fun.falco.commandler.i18n.GroupMessages"
     };
 
-    /** Configuration for Commandler's i18n handling. */
-    private final InternationalizationConfig i18nConfig;
-
     private final MessageContext messageContext;
 
     @Inject
     public CommandlerMessageResolver(InternationalizationConfig i18nConfig, MessageContext messageContext) {
-        this.i18nConfig = Objects.requireNonNull(i18nConfig);
         this.messageContext = Objects.requireNonNull(messageContext);
 
         List<String> messages = new ArrayList<>(i18nConfig.getMessageBundles());
