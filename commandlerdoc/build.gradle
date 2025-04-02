@@ -22,10 +22,10 @@ dependencies {
     implementation project(":core")
 
     // GSON
-    implementation "com.google.code.gson:gson:2.8.6"
+    implementation("com.google.code.gson:gson:2.8.6")
 
     // AsciiDoctor
-    implementation 'org.asciidoctor:asciidoctorj:2.2.0'
+    implementation("org.asciidoctor:asciidoctorj:2.2.0")
 }
 
 asciidoctor {

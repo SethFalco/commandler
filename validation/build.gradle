@@ -18,13 +18,13 @@ dependencies {
     implementation project(":core")
 
     // Jakarta Validation
-    api "jakarta.validation:jakarta.validation-api:${validationVersion}"
+    api("jakarta.validation:jakarta.validation-api:${validationVersion}")
 
     // Hibernate Validation
-    implementation "org.hibernate.validator:hibernate-validator:6.1.5.Final"
+    implementation("org.hibernate.validator:hibernate-validator:6.1.5.Final")
 
     // DeltaSpike
-    implementation "org.apache.deltaspike.modules:deltaspike-bean-validation-module-impl:${deltaSpikeVersion}"
+    implementation("org.apache.deltaspike.modules:deltaspike-bean-validation-module-impl:${deltaSpikeVersion}")
 }
 
 tasks.named('compileJava') {

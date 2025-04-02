@@ -71,11 +71,11 @@ subprojects() {
 
     dependencies {
         // Logging
-        implementation "org.slf4j:slf4j-api:1.7.31"
-        testRuntimeOnly "ch.qos.logback:logback-classic:1.2.3"
+        implementation("org.slf4j:slf4j-api:1.7.31")
+        testRuntimeOnly("ch.qos.logback:logback-classic:1.2.3")
 
         // Testing
-        testImplementation "org.junit.jupiter:junit-jupiter:5.7.2"
+        testImplementation("org.junit.jupiter:junit-jupiter:5.7.2")
     }
 
     /** Testing */
