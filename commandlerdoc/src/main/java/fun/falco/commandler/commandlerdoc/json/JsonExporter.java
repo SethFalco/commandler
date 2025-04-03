@@ -16,6 +16,12 @@
 
 package fun.falco.commandler.commandlerdoc.json;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import fun.falco.commandler.commandlerdoc.Exporter;
 import fun.falco.commandler.commandlerdoc.json.deserializers.ExportableCommandSerializer;
 import fun.falco.commandler.commandlerdoc.json.deserializers.ExportableControllerSerializer;
@@ -25,11 +31,6 @@ import fun.falco.commandler.commandlerdoc.models.ExportableCommand;
 import fun.falco.commandler.commandlerdoc.models.ExportableController;
 import fun.falco.commandler.commandlerdoc.models.ExportableData;
 import fun.falco.commandler.commandlerdoc.models.ExportableParameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * @author seth@falco.fun (Seth Falco)

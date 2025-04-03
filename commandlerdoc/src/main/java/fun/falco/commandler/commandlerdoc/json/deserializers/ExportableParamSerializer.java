@@ -18,12 +18,12 @@ package fun.falco.commandler.commandlerdoc.json.deserializers;
 
 import java.lang.reflect.Type;
 
-import fun.falco.commandler.commandlerdoc.models.ExportableParameter;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+
+import fun.falco.commandler.commandlerdoc.models.ExportableParameter;
 
 /**
  * @author seth@falco.fun (Seth Falco)

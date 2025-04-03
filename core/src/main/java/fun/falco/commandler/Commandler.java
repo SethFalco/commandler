@@ -27,10 +27,11 @@ import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
-import fun.falco.commandler.api.Integration;
-import fun.falco.commandler.event.ActionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import fun.falco.commandler.api.Integration;
+import fun.falco.commandler.event.ActionEvent;
 
 /**
  * Root {@link Commandler} class, this ultimately enables your

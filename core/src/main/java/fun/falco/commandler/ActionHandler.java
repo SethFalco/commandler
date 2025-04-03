@@ -24,6 +24,9 @@ import javax.inject.Inject;
 
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionToCatchEvent;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fun.falco.commandler.api.ActionListener;
 import fun.falco.commandler.api.Dispatcher;
 import fun.falco.commandler.api.HandlerMiddleware;
@@ -39,8 +42,6 @@ import fun.falco.commandler.managers.MessengerManager;
 import fun.falco.commandler.metadata.MetaCommand;
 import fun.falco.commandler.metadata.MetaController;
 import fun.falco.commandler.producers.RequestFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Ultimately handles all events that come through Commandler regardless of

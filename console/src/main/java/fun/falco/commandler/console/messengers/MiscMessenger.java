@@ -23,8 +23,8 @@ import fun.falco.commandler.api.Messenger;
 import fun.falco.commandler.event.ActionEvent;
 
 /**
- * A provider for types that can make desireable output from
- * just the {@link Object#toString()} method.
+ * Provider for types that can make desirable output from just the
+ * {@link Object#toString()} method.
  *
  * @author seth@falco.fun (Seth Falco)
  */

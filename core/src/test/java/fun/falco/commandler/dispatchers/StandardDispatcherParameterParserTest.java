@@ -20,10 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import fun.falco.commandler.dispatchers.standard.StandardDispatcherParameterParser;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+
+import fun.falco.commandler.dispatchers.standard.StandardDispatcherParameterParser;
 
 /**
  * @author seth@falco.fun (Seth Falco)

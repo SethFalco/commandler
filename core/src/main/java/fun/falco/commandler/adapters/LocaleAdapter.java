@@ -27,6 +27,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.core.api.message.LocaleResolver;
+
 import fun.falco.commandler.annotation.stereotypes.ParamAdapter;
 import fun.falco.commandler.api.Adapter;
 import fun.falco.commandler.event.ActionEvent;

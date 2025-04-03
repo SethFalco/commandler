@@ -20,6 +20,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+
 import fun.falco.commandler.api.HandlerMiddleware;
 import fun.falco.commandler.event.ActionEvent;
 import fun.falco.commandler.producers.ParameterWrapper;

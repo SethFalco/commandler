@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import fun.falco.commandler.commandlerdoc.models.ExportableController;
-import fun.falco.commandler.commandlerdoc.models.ExportableData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +29,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+
+import fun.falco.commandler.commandlerdoc.models.ExportableController;
+import fun.falco.commandler.commandlerdoc.models.ExportableData;
 
 /**
  * @author seth@falco.fun (Seth Falco)

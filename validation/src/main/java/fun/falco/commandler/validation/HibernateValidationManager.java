@@ -27,13 +27,14 @@ import javax.validation.ValidatorFactory;
 import javax.validation.executable.ExecutableValidator;
 
 import org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory;
-import fun.falco.commandler.CommandlerExtension;
-import fun.falco.commandler.event.ActionEvent;
 import org.hibernate.validator.messageinterpolation.AbstractMessageInterpolator;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import fun.falco.commandler.CommandlerExtension;
+import fun.falco.commandler.event.ActionEvent;
 
 /**
  * Validates annotations associated with commands and parameters to ensure they

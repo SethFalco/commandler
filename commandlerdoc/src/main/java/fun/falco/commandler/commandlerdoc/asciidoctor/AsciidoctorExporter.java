@@ -26,11 +26,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fun.falco.commandler.commandlerdoc.Exporter;
 import fun.falco.commandler.commandlerdoc.models.ExportableController;
 import fun.falco.commandler.commandlerdoc.models.ExportableData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author seth@falco.fun (Seth Falco)

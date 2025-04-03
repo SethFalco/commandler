@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+
 import fun.falco.commandler.CommandlerExtension;
 import fun.falco.commandler.commandlerdoc.markdown.MarkdownExporter;
 import fun.falco.commandler.commandlerdoc.models.ExportableData;

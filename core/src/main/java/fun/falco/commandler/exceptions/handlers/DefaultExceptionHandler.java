@@ -22,9 +22,10 @@ import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 import org.apache.deltaspike.core.api.exception.control.Handles;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import fun.falco.commandler.producers.MessageSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import fun.falco.commandler.producers.MessageSender;
 
 /**
  * Default handling for certain {@link Exception}s that haven't been handled by

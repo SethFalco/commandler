@@ -24,12 +24,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fun.falco.commandler.CommandlerExtension;
 import fun.falco.commandler.api.Dispatcher;
 import fun.falco.commandler.event.ActionEvent;
 import fun.falco.commandler.event.Request;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Ordered list of dispatchers to dispatch events that are received

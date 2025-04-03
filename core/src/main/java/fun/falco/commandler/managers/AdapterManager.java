@@ -33,6 +33,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fun.falco.commandler.Commandler;
 import fun.falco.commandler.CommandlerExtension;
 import fun.falco.commandler.api.Adapter;
@@ -44,8 +47,6 @@ import fun.falco.commandler.exceptions.misuse.ListUnsupportedException;
 import fun.falco.commandler.exceptions.misuse.ParamParseException;
 import fun.falco.commandler.metadata.MetaAdapter;
 import fun.falco.commandler.metadata.MetaParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Manager for parameter adapters. Parses parameter values from incoming

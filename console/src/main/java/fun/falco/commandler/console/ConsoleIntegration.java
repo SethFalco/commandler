@@ -25,11 +25,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fun.falco.commandler.api.ActionListener;
 import fun.falco.commandler.api.Integration;
 import fun.falco.commandler.event.ActionEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is a minimal integration designed to handle console input.

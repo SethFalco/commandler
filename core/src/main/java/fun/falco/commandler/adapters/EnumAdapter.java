@@ -18,14 +18,15 @@ package fun.falco.commandler.adapters;
 
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fun.falco.commandler.Commandler;
 import fun.falco.commandler.annotation.StringValues;
 import fun.falco.commandler.annotation.stereotypes.ParamAdapter;
 import fun.falco.commandler.api.Adapter;
 import fun.falco.commandler.event.ActionEvent;
 import fun.falco.commandler.metadata.MetaParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is the generic {@link Enum} parser. This should be the fallback parser
