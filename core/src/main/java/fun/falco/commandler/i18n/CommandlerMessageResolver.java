@@ -33,9 +33,8 @@ import fun.falco.commandler.annotation.Property;
 import fun.falco.commandler.metadata.MetaComponent;
 
 /**
- * Used by Commandler to localize metadata for
- * {@link MetaComponent}s or {@link Property properties}
- * with {@link Property#i18n()} set to true.
+ * Used by Commandler to localize metadata for {@link MetaComponent}s or
+ * {@link Property properties} with {@link Property#i18n()} set to true.
  *
  * @author seth@falco.fun (Seth Falco)
  * @since 4.0.1
@@ -82,7 +81,9 @@ public class CommandlerMessageResolver {
      * literally.</p>
      *
      * @param key Resource bundle key or literal string localize.
-     * @param locale Override the default locale resolver implementation to use this locale.
+     * @param locale
+     *     Override the default locale resolver implementation to use this
+     *     locale.
      * @return Localized string in the locale specified.
      */
     public String getMessage(String key, Locale locale) {

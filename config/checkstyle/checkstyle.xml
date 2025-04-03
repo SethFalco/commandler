@@ -36,7 +36,7 @@
       <property name="message" value="Don't start Javadocs with terms like &quot;the&quot;, &quot;a&quot;, or &quot;all&quot;, use the noun instead."/>
     </module>
     <module name="Regexp">
-      <property name="format" value="@return Returns? "/>
+      <property name="format" value="@return ([Rr]eturn|[Gg]et)s? "/>
       <property name="illegalPattern" value="true"/>
       <property name="message" value="Don't start @return with &quot;return&quot;."/>
     </module>
