@@ -34,10 +34,11 @@ import fun.falco.commandler.api.Integration;
 import fun.falco.commandler.event.ActionEvent;
 
 /**
- * Root {@link Commandler} class, this ultimately enables your
- * {@link Commandler} Application with your configuration and runtime dependencies.
+ * Bootstraps and initializes Commandler application, and pulls in your
+ * configuration and runtime dependencies.
  *
- * <p>There are two main means of configurable {@link Commandler}.</p>
+ * <p>There are two ways to configure Commandler:</p>
+ *
  * <ul>
  * <li><strong>Static Configuration:</strong> Uses configuration files either in
  * the classpath or externally, and {@link Annotation}s.</li>

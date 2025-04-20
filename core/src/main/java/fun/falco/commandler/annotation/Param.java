@@ -43,8 +43,8 @@ public @interface Param {
     String value() default AnnotationUtils.EFFECTIVELY_NULL;
 
     /**
-     * This is especially useful when the default value is handled
-     * via Java Expression Language.
+     * This is especially useful when the default value is handled via Java
+     * Expression Language.
      *
      * @return User friendly name for this display value.
      */
